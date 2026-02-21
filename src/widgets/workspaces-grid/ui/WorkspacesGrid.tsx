@@ -54,7 +54,7 @@ export function WorkspacesGrid({ className }: WorkspacesGridProps) {
               key={workspace.id}
               workspace={workspace}
               accessRole={accessRole}
-              buttonText={t("workspace.view")}
+              buttonText={t("open")}
               onEditWorkspaceName={handleChangeWorkspaceName}
               onEditWorkspaceAccess={handleChangeWorkspaceAccess}
               onDeleteWorkspace={handleDeleteWorkspace}

@@ -61,7 +61,7 @@ export function WorkspacesCarousel({ className }: WorkspacesCarouselProps) {
                 <WorkspaceCard
                   workspace={workspace}
                   accessRole={accessRole}
-                  buttonText={t("workspace.view")}
+                  buttonText={t("open")}
                   onEditWorkspaceName={handleChangeWorkspaceName}
                   onEditWorkspaceAccess={handleChangeWorkspaceAccess}
                   onDeleteWorkspace={handleDeleteWorkspace}

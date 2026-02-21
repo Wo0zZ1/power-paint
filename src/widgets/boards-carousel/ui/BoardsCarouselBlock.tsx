@@ -26,7 +26,7 @@ export async function BoardsCarouselBlock() {
         <h3 className="text-2xl font-semibold">{t("board.plural")}</h3>
 
         <Button size="xs" variant="link" className="text-sm" asChild>
-          <Link href={ROUTES.DASHBOARD.BOARDS}>{t("board.viewAll")}</Link>
+          <Link href={ROUTES.DASHBOARD.BOARDS}>{t("viewAll")}</Link>
         </Button>
       </div>
 
