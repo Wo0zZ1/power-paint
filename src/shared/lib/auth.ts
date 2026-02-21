@@ -1,29 +1,17 @@
-import {
-  AccessLevel,
-  Board,
-  MemberRole,
-  Workspace,
-  WorkspaceMember,
-} from "@prisma/client";
+import { AccessLevel, Board, MemberRole, Workspace } from "@prisma/client";
 import { getServerSession, Session } from "next-auth";
 
 import { AUTH_CONFIG } from "../config/authConfig";
+import { AccessRole } from "../constants";
 import { prisma } from "./prisma";
 
 export const getSession = () => getServerSession(AUTH_CONFIG);
 
-export type Access = {
-  canView: boolean;
-  canEdit: boolean;
-  canDelete: boolean;
-};
-
 export const getAccessToWorkspace = async (
   workspace: Workspace,
   user?: Session["user"],
-): Promise<Access> => {
-  if (user && user.id === workspace.ownerId)
-    return { canView: true, canEdit: true, canDelete: true };
+): Promise<AccessRole> => {
+  if (user && user.id === workspace.ownerId) return "OWNER";
 
   const workspaceMember = user
     ? await prisma.workspaceMember.findUnique({
@@ -36,42 +24,39 @@ export const getAccessToWorkspace = async (
   if (workspaceMember) {
     switch (workspaceMember.role) {
       case MemberRole.admin:
-        return { canView: true, canEdit: true, canDelete: true };
+        return "ADMIN";
       case MemberRole.editor:
-        return { canView: true, canEdit: true, canDelete: false };
+        return "EDITOR";
       case MemberRole.viewer:
-        return { canView: true, canEdit: false, canDelete: false };
+        return "VIEWER";
       default:
-        return { canView: false, canEdit: false, canDelete: false };
+        return "NONE";
     }
   }
 
   switch (workspace.accessLevel) {
-    case AccessLevel.private:
-      return { canView: false, canEdit: false, canDelete: false };
-    case AccessLevel.public_view:
-      return { canView: true, canEdit: false, canDelete: false };
     case AccessLevel.public_edit:
-      return { canView: true, canEdit: true, canDelete: false };
+      return "EDITOR";
+    case AccessLevel.public_view:
+      return "VIEWER";
+    case AccessLevel.private:
     default:
-      return { canView: false, canEdit: false, canDelete: false };
+      return "NONE";
   }
 };
 
 export const getAccessToBoard = async (
   board: Board,
   user?: Session["user"],
-): Promise<Access> => {
-  if (user && user.id === board.ownerId)
-    return { canView: true, canEdit: true, canDelete: true };
+): Promise<AccessRole> => {
+  if (user && user.id === board.ownerId) return "OWNER";
 
   const workspace = await prisma.workspace.findUnique({
     where: { id: board.workspaceId },
   });
-  if (!workspace) return { canView: false, canEdit: false, canDelete: false };
+  if (!workspace) return "NONE";
 
-  if (user && user.id === workspace.ownerId)
-    return { canView: true, canEdit: true, canDelete: true };
+  if (user && user.id === workspace.ownerId) return "OWNER";
 
   const boardMember = user
     ? await prisma.boardMember.findUnique({
@@ -92,31 +77,33 @@ export const getAccessToBoard = async (
       boardMember?.role === MemberRole.admin ||
       workspaceMember?.role === MemberRole.admin
     ) {
-      return { canView: true, canEdit: true, canDelete: true };
+      return "ADMIN";
     } else if (
       boardMember?.role === MemberRole.editor ||
       workspaceMember?.role === MemberRole.editor
     ) {
-      return { canView: true, canEdit: true, canDelete: false };
+      return "EDITOR";
     } else if (
       boardMember?.role === MemberRole.viewer ||
       workspaceMember?.role === MemberRole.viewer
     ) {
-      return { canView: true, canEdit: false, canDelete: false };
-    } else return { canView: false, canEdit: false, canDelete: false };
+      return "VIEWER";
+    } else {
+      return "NONE";
+    }
   }
 
   if (
     board.accessLevel === AccessLevel.public_edit ||
     workspace.accessLevel === AccessLevel.public_edit
   ) {
-    return { canView: true, canEdit: true, canDelete: false };
+    return "EDITOR";
   } else if (
     board.accessLevel === AccessLevel.public_view ||
     workspace.accessLevel === AccessLevel.public_view
   ) {
-    return { canView: true, canEdit: false, canDelete: false };
+    return "VIEWER";
   } else {
-    return { canView: false, canEdit: false, canDelete: false };
+    return "NONE";
   }
 };

@@ -1,7 +1,6 @@
 "use client";
 
-import { useState } from "react";
-import { Workspace } from "@prisma/client";
+import { useTranslations } from "next-intl";
 
 import { cn } from "@/utils";
 
@@ -18,65 +17,61 @@ import { WorkspaceCard, useGetWorkspacesQuery } from "@/entities/workspace";
 import { RenameWorkspaceModal } from "@/features/rename-workspace";
 import { DeleteWorkspaceModal } from "@/features/delete-workspace";
 import { ChangeWorkspaceAccessModal } from "@/features/change-workspace-access";
+import { LoadingWorkspacesCarousel } from "./LoadingWorkspacesCarousel";
+import { ErrorWorkspacesCarousel } from "./ErrorWorkspacesCarousel";
+
+import { useWorkspacesCarousel } from "../model/useWorkspacesCarousel";
 
 interface WorkspacesCarouselProps {
   className?: string;
 }
 
 export function WorkspacesCarousel({ className }: WorkspacesCarouselProps) {
+  const t = useTranslations();
+
   const { data, isLoading, isError, error } = useGetWorkspacesQuery();
 
-  // Modal states
-  const [isRenameModalOpen, setIsRenameModalOpen] = useState<boolean>(false);
-  const [
-    isChangeWorkspaceAccessModalOpen,
-    setIsChangeWorkspaceAccessModalOpen,
-  ] = useState<boolean>(false);
-  const [isDeleteWorkspaceModalOpen, setIsDeleteWorkspaceModalOpen] =
-    useState<boolean>(false);
+  const {
+    selectedWorkspace,
+    isRenameModalOpen,
+    setIsRenameModalOpen,
+    handleChangeWorkspaceName,
+    isDeleteModalOpen,
+    setIsDeleteModalOpen,
+    handleDeleteWorkspace,
+    isChangeAccessModalOpen,
+    setIsChangeAccessModalOpen,
+    handleChangeWorkspaceAccess,
+  } = useWorkspacesCarousel();
 
-  const [selectedWorkspace, setSelectedWorkspace] = useState<Workspace | null>(
-    null,
-  );
+  if (isLoading) return <LoadingWorkspacesCarousel />;
 
-  const handleChangeWorkspaceName = (workspace: Workspace) => {
-    setSelectedWorkspace(workspace);
-    setIsRenameModalOpen(true);
-  };
-
-  const handleChangeWorkspaceAccess = (workspace: Workspace) => {
-    setSelectedWorkspace(workspace);
-    setIsChangeWorkspaceAccessModalOpen(true);
-  };
-
-  const handleWorkspaceDelete = (workspace: Workspace) => {
-    setSelectedWorkspace(workspace);
-    setIsDeleteWorkspaceModalOpen(true);
-  };
-
-  if (isLoading) return <div>Loading...</div>;
-
-  if (isError) return <div>{error.message}</div>;
+  if (isError) return <ErrorWorkspacesCarousel error={error} />;
 
   return (
     <>
       <Carousel opts={{ dragFree: true }} className={cn("", className)}>
-        <CarouselContent>
-          {data?.map(({ workspace, access }) => (
-            <CarouselItem
-              key={workspace.id}
-              className="basis-1/1 xs:basis-1/2 md:basis-1/3 lg:basis-1/3 xl:basis-1/4"
-            >
-              <WorkspaceCard
-                workspace={workspace}
-                access={access}
-                onEditWorkspaceName={handleChangeWorkspaceName}
-                onEditWorkspaceAccess={handleChangeWorkspaceAccess}
-                onDeleteWorkspace={handleWorkspaceDelete}
-              />
-            </CarouselItem>
-          ))}
-        </CarouselContent>
+        {data && data.length > 0 ? (
+          <CarouselContent>
+            {data.map(({ workspace, accessRole }) => (
+              <CarouselItem
+                key={workspace.id}
+                className="basis-1/1 xs:basis-1/2 md:basis-1/3 lg:basis-1/3 xl:basis-1/4"
+              >
+                <WorkspaceCard
+                  workspace={workspace}
+                  accessRole={accessRole}
+                  buttonText={t("workspace.view")}
+                  onEditWorkspaceName={handleChangeWorkspaceName}
+                  onEditWorkspaceAccess={handleChangeWorkspaceAccess}
+                  onDeleteWorkspace={handleDeleteWorkspace}
+                />
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+        ) : (
+          <div className="text-muted-foreground">{t("workspace.empty")}</div> // TODO add empty state design
+        )}
 
         <CarouselPrevious
           variant="secondary"
@@ -97,14 +92,14 @@ export function WorkspacesCarousel({ className }: WorkspacesCarouselProps) {
 
       <ChangeWorkspaceAccessModal
         workspace={selectedWorkspace}
-        open={isChangeWorkspaceAccessModalOpen}
-        onOpenChange={setIsChangeWorkspaceAccessModalOpen}
+        open={isChangeAccessModalOpen}
+        onOpenChange={setIsChangeAccessModalOpen}
       />
 
       <DeleteWorkspaceModal
         workspace={selectedWorkspace}
-        open={isDeleteWorkspaceModalOpen}
-        onOpenChange={setIsDeleteWorkspaceModalOpen}
+        open={isDeleteModalOpen}
+        onOpenChange={setIsDeleteModalOpen}
       />
     </>
   );

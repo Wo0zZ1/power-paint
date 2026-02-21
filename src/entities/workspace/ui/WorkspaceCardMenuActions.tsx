@@ -1,49 +1,54 @@
 "use client";
 
-import { Edit2Icon, Share2, Trash2 } from "lucide-react";
+import { PencilLine, Share2, Trash2 } from "lucide-react";
+import { useTranslations } from "next-intl";
 
-import { Access } from "@/shared/lib/auth";
+import { AccessRole } from "@/shared/constants";
 
 import { DropdownMenuGroup, DropdownMenuItem, Separator } from "@/shared/ui";
 
 interface WorkspaceCardMenuActionsProps {
-  access: Access;
+  accessRole: AccessRole;
   onEditWorkspaceName?: () => void;
   onEditWorkspaceAccess?: () => void;
   onDeleteWorkspace?: () => void;
 }
 
 export function WorkspaceCardMenuActions({
-  access,
+  accessRole,
   onEditWorkspaceName,
   onEditWorkspaceAccess,
   onDeleteWorkspace,
 }: WorkspaceCardMenuActionsProps) {
+  const t = useTranslations("workspace");
+
   return (
     <>
       <DropdownMenuGroup>
-        {access.canEdit && (
+        {AccessRole[accessRole] >= AccessRole.ADMIN && (
           <DropdownMenuItem onSelect={onEditWorkspaceName}>
-            <Edit2Icon />
-            Edit Name
+            <PencilLine />
+            {t("rename.action")}
           </DropdownMenuItem>
         )}
 
-        {access.canEdit && (
+        {AccessRole[accessRole] >= AccessRole.ADMIN && (
           <DropdownMenuItem onSelect={onEditWorkspaceAccess}>
             <Share2 />
-            Share
+            {t("access.action")}
           </DropdownMenuItem>
         )}
       </DropdownMenuGroup>
 
-      <Separator className="my-1" />
+      {AccessRole[accessRole] >= AccessRole.OWNER && (
+        <>
+          <Separator className="my-1" />
 
-      {access.canDelete && (
-        <DropdownMenuItem onSelect={onDeleteWorkspace} variant="destructive">
-          <Trash2 />
-          Delete
-        </DropdownMenuItem>
+          <DropdownMenuItem onSelect={onDeleteWorkspace} variant="destructive">
+            <Trash2 />
+            {t("delete.action")}
+          </DropdownMenuItem>
+        </>
       )}
     </>
   );

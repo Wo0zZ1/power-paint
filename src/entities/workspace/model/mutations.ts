@@ -23,10 +23,6 @@ export const useUpdateWorkspaceMutation = () => {
     onError: (error, variables) => {
       console.error("Error renaming workspace:", error, variables);
     },
-
-    onSettled: () => {
-      console.log("Rename workspace mutation settled");
-    },
   });
 };
 
@@ -46,10 +42,6 @@ export const useDeleteWorkspaceMutation = () => {
 
     onError: (error, variables) => {
       console.error("Error deleting workspace:", error, variables);
-    },
-
-    onSettled: () => {
-      console.log("Delete workspace mutation settled");
     },
   });
 };

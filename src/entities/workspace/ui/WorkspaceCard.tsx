@@ -1,7 +1,7 @@
 import { Workspace } from "@prisma/client";
 
 import { cn } from "@/utils";
-import { Access } from "@/shared/lib/auth";
+import { AccessRole } from "@/shared/constants";
 
 import { Card } from "@/shared/ui";
 
@@ -15,7 +15,8 @@ import preview1 from "../../../../public/assets/preview1.jpeg"; // TODO Remove t
 
 interface WorkspaceCardProps {
   workspace: Workspace;
-  access: Access;
+  accessRole: AccessRole;
+  buttonText: string;
   onEditWorkspaceName?: (workspace: Workspace) => void;
   onEditWorkspaceAccess?: (workspace: Workspace) => void;
   onDeleteWorkspace?: (workspace: Workspace) => void;
@@ -24,7 +25,8 @@ interface WorkspaceCardProps {
 
 export function WorkspaceCard({
   workspace,
-  access,
+  accessRole,
+  buttonText,
   onEditWorkspaceName,
   onEditWorkspaceAccess,
   onDeleteWorkspace,
@@ -36,18 +38,20 @@ export function WorkspaceCard({
     >
       <WorkspaceCardBadge type={workspace.accessLevel} />
 
-      <WorkspaceCardSettingsMenu
-        access={access}
-        onEditWorkspaceName={() => onEditWorkspaceName?.(workspace)}
-        onEditWorkspaceAccess={() => onEditWorkspaceAccess?.(workspace)}
-        onDeleteWorkspace={() => onDeleteWorkspace?.(workspace)}
-      />
+      {AccessRole[accessRole] >= AccessRole.ADMIN && (
+        <WorkspaceCardSettingsMenu
+          accessRole={accessRole}
+          onEditWorkspaceName={() => onEditWorkspaceName?.(workspace)}
+          onEditWorkspaceAccess={() => onEditWorkspaceAccess?.(workspace)}
+          onDeleteWorkspace={() => onDeleteWorkspace?.(workspace)}
+        />
+      )}
 
       <WorkspaceCardImage workspaceId={workspace.id} imageProps={preview1} />
 
       <WorkspaceCardHeader name={workspace.name} />
 
-      <WorkspaceCardFooter workspaceId={workspace.id} />
+      <WorkspaceCardFooter buttonText={buttonText} workspaceId={workspace.id} />
     </Card>
   );
 }

@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { getAccessToBoard, getSession } from "@/shared/lib/auth";
 import { prisma } from "@/shared/lib/prisma";
+import { AccessRole } from "@/shared/constants";
+import { getAccessToBoard, getSession } from "@/shared/lib/auth";
 
 export const GET = async (
   request: NextRequest,
@@ -18,13 +19,13 @@ export const GET = async (
 
   const session = await getSession();
 
-  const access = await getAccessToBoard(board, session?.user);
+  const accessRole = await getAccessToBoard(board, session?.user);
 
-  if (!access.canView)
+  if (AccessRole[accessRole] < AccessRole.VIEWER)
     return NextResponse.json(
       { error: "You do not have access to this board" },
       { status: 403 },
     );
 
-  return NextResponse.json({ board, access });
+  return NextResponse.json({ board, accessRole });
 };

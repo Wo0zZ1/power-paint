@@ -1,6 +1,7 @@
 "use client";
 
 import { SubmitEvent, useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import { Workspace } from "@prisma/client";
 
 import { cn } from "@/utils";
@@ -24,7 +25,7 @@ import {
 import { useUpdateWorkspaceMutation } from "@/entities/workspace";
 
 interface RenameWorkspaceModalProps {
-  workspace?: Workspace | null;
+  workspace?: Workspace;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   className?: string;
@@ -36,6 +37,8 @@ export function RenameWorkspaceModal({
   onOpenChange,
   className,
 }: RenameWorkspaceModalProps) {
+  const t = useTranslations();
+
   const updateWorkspaceMutation = useUpdateWorkspaceMutation();
 
   const [workspaceName, setWorkspaceName] = useState<string>("");
@@ -74,20 +77,22 @@ export function RenameWorkspaceModal({
       <DialogContent className={cn("", className)}>
         <form className="flex flex-col gap-4" onSubmit={handleRenameWorkspace}>
           <DialogHeader>
-            <DialogTitle>Edit Workspace Name</DialogTitle>
+            <DialogTitle>{t("workspace.rename.title")}</DialogTitle>
             <DialogDescription>
-              Enter a new name for this workspace.
+              {t("workspace.rename.description")}
             </DialogDescription>
           </DialogHeader>
 
           <FieldGroup>
             <Field>
-              <Label htmlFor="workspace-name">Workspace Name</Label>
+              <Label htmlFor="workspace-name">
+                {t("workspace.rename.inputLabel")}
+              </Label>
               <Input
                 autoComplete="off"
                 id="workspace-name"
                 name="workspace-name"
-                placeholder="Enter new workspace name"
+                placeholder={t("workspace.rename.inputPlaceholder")}
                 value={workspaceName}
                 onChange={(e) => setWorkspaceName(e.target.value)}
               />
@@ -96,7 +101,7 @@ export function RenameWorkspaceModal({
 
           <DialogFooter>
             <DialogClose asChild>
-              <Button variant="outline">Cancel</Button>
+              <Button variant="outline">{t("cancel")}</Button>
             </DialogClose>
 
             <Button
@@ -106,7 +111,9 @@ export function RenameWorkspaceModal({
               type="submit"
             >
               {isMutating && <Spinner />}
-              Save changes
+              {isMutating
+                ? t("workspace.rename.confirmation")
+                : t("workspace.rename.confirm")}
             </Button>
           </DialogFooter>
         </form>

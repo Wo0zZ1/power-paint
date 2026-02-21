@@ -9,7 +9,7 @@ interface LogoProps {
 
 export async function Logo(props: LogoProps) {
   return (
-    <Link className={cn(props.className)} href={ROUTES.ROOT}>
+    <Link className={cn(props.className)} href={ROUTES.DASHBOARD.ROOT}>
       <h1 className="text-3xl">PowerPaint</h1>
     </Link>
   );

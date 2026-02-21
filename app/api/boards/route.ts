@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { getSession, getAccessToBoard } from "@/shared/lib/auth";
 import { prisma } from "@/shared/lib/prisma";
+import { AccessRole } from "@/shared/constants";
+import { getSession, getAccessToBoard } from "@/shared/lib/auth";
 
 export const GET = async (request: NextRequest) => {
   const searchParams = request.nextUrl.searchParams;
@@ -16,14 +17,14 @@ export const GET = async (request: NextRequest) => {
 
   const boardsWithAccess = await Promise.all(
     boards.map(async (board) => {
-      const access = await getAccessToBoard(board, session?.user);
+      const accessRole = await getAccessToBoard(board, session?.user);
 
-      return { board, access };
+      return { board, accessRole };
     }),
   );
 
   const filteredBoardsWithAccess = boardsWithAccess.filter(
-    (b) => b.access.canView,
+    (b) => AccessRole[b.accessRole] >= AccessRole.VIEWER,
   );
 
   return NextResponse.json(filteredBoardsWithAccess);

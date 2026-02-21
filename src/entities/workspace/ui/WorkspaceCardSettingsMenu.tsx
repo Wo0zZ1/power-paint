@@ -1,8 +1,9 @@
 "use client";
 
 import { Settings } from "lucide-react";
+import { useTranslations } from "next-intl";
 
-import { Access } from "@/shared/lib/auth";
+import { AccessRole } from "@/shared/constants";
 
 import {
   DropdownMenuContent,
@@ -16,37 +17,39 @@ import {
 import { WorkspaceCardMenuActions } from "./WorkspaceCardMenuActions";
 
 interface WorkspaceCardSettingsMenuProps {
-  access: Access;
+  accessRole: AccessRole;
   onEditWorkspaceName?: () => void;
   onEditWorkspaceAccess?: () => void;
   onDeleteWorkspace?: () => void;
 }
 
 export function WorkspaceCardSettingsMenu({
-  access,
+  accessRole,
   onEditWorkspaceName,
   onEditWorkspaceAccess,
   onDeleteWorkspace,
 }: WorkspaceCardSettingsMenuProps) {
+  const t = useTranslations("workspace");
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button
           size="icon-sm"
           variant="secondary"
-          className="absolute z-100 top-4 right-4"
+          className="absolute z-10 top-4 right-4"
         >
           <Settings />
         </Button>
       </DropdownMenuTrigger>
 
       <DropdownMenuContent>
-        <DropdownMenuLabel>Workspace Actions</DropdownMenuLabel>
+        <DropdownMenuLabel>{t("settings")}</DropdownMenuLabel>
 
         <Separator className="my-1" />
 
         <WorkspaceCardMenuActions
-          access={access}
+          accessRole={accessRole}
           onEditWorkspaceName={onEditWorkspaceName}
           onEditWorkspaceAccess={onEditWorkspaceAccess}
           onDeleteWorkspace={onDeleteWorkspace}

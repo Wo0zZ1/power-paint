@@ -8,11 +8,13 @@ import { Button, CardFooter } from "@/shared/ui";
 interface WorkspaceCardFooterProps {
   className?: string;
   workspaceId: string;
+  buttonText: string;
 }
 
 export function WorkspaceCardFooter({
   className,
   workspaceId,
+  buttonText,
 }: WorkspaceCardFooterProps) {
   return (
     <CardFooter className={cn(className, "")}>
@@ -21,7 +23,7 @@ export function WorkspaceCardFooter({
         variant="secondary"
         className="w-full text-xs md:text-base"
       >
-        <Link href={ROUTES.WORKSPACE(workspaceId)}>View</Link>
+        <Link href={ROUTES.WORKSPACE(workspaceId)}>{buttonText}</Link>
       </Button>
     </CardFooter>
   );

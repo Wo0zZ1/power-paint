@@ -9,8 +9,6 @@ export default async function WorkspacePage({
 }) {
   const { uuid } = await params;
 
-  console.log("Workspace page", uuid);
-
   const workspace = await prisma.workspace.findFirst({
     where: { id: uuid },
   });

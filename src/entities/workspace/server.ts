@@ -1,1 +1,1 @@
-export { getWorkspacesQueryOptions } from "./model/server-queries";
+export { getWorkspacesQueryOption } from "./model/server-queries";

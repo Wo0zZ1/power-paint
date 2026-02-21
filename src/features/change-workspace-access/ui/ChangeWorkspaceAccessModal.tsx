@@ -1,7 +1,8 @@
 "use client";
 
-import { SubmitEvent, useEffect } from "react";
 import { Workspace } from "@prisma/client";
+import { useTranslations } from "next-intl";
+import { SubmitEvent, useEffect } from "react";
 
 import { cn } from "@/utils";
 
@@ -21,7 +22,7 @@ import {
 } from "@/shared/ui";
 
 interface ChangeWorkspaceAccessModalProps {
-  workspace?: Workspace | null;
+  workspace?: Workspace;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   className?: string;
@@ -34,6 +35,8 @@ export function ChangeWorkspaceAccessModal({
   onOpenChange,
   className,
 }: ChangeWorkspaceAccessModalProps) {
+  const t = useTranslations();
+
   useEffect(() => {}, [open, workspace]);
 
   const handleChangeWorkspaceAccess = (e: SubmitEvent<HTMLFormElement>) => {
@@ -51,9 +54,9 @@ export function ChangeWorkspaceAccessModal({
           onSubmit={handleChangeWorkspaceAccess}
         >
           <DialogHeader>
-            <DialogTitle>Edit Workspace Access</DialogTitle>
+            <DialogTitle>{t("workspace.access.title")}</DialogTitle>
             <DialogDescription>
-              Update the access settings for this workspace.
+              {t("workspace.access.description")}
             </DialogDescription>
           </DialogHeader>
 
@@ -64,16 +67,19 @@ export function ChangeWorkspaceAccessModal({
                 id="workspace-access"
                 name="workspace-access"
                 placeholder="Enter workspace access"
-                // defaultValue={defaultValue}
               />
             </Field>
           </FieldGroup>
 
           <DialogFooter>
             <DialogClose asChild>
-              <Button variant="outline">Cancel</Button>
+              <Button variant="outline">{t("cancel")}</Button>
             </DialogClose>
-            <Button type="submit">Save changes</Button>
+            <Button type="submit">
+              {false
+                ? t("workspace.access.confirmation")
+                : t("workspace.access.confirm")}
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>

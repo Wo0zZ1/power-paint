@@ -29,7 +29,7 @@ export function WorkspaceCardBadge({
   return (
     <Badge
       className={cn(
-        "select-auto absolute z-10 top-4 left-4 bg-accent-foreground/20",
+        "select-auto absolute z-10 top-4 left-4 text-white border-white/10 bg-accent/25 dark:bg-accent-foreground/20",
         className,
       )}
       variant="outline"

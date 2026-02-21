@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { getSession, getAccessToWorkspace } from "@/shared/lib/auth";
 import { prisma } from "@/shared/lib/prisma";
+import { AccessRole } from "@/shared/constants";
 
 export const GET = async (request: NextRequest) => {
   const searchParams = request.nextUrl.searchParams;
@@ -22,14 +23,14 @@ export const GET = async (request: NextRequest) => {
 
   const workspacesWithAccess = await Promise.all(
     workspaces.map(async (workspace) => {
-      const access = await getAccessToWorkspace(workspace, session?.user);
+      const accessRole = await getAccessToWorkspace(workspace, session?.user);
 
-      return { workspace, access };
+      return { workspace, accessRole };
     }),
   );
 
   const filteredWorkspacesWithAccess = workspacesWithAccess.filter(
-    (w) => w.access.canView,
+    (w) => AccessRole[w.accessRole] >= AccessRole.VIEWER,
   );
 
   return NextResponse.json(filteredWorkspacesWithAccess);

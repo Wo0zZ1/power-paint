@@ -1,7 +1,9 @@
 "use client";
 
-import { SubmitEvent, useEffect, useState } from "react";
 import { Workspace } from "@prisma/client";
+import { LucideFolder } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { SubmitEvent, useEffect, useState } from "react";
 
 import { cn } from "@/utils";
 
@@ -18,12 +20,17 @@ import {
   DialogContent,
   DialogDescription,
   Spinner,
+  Empty,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+  EmptyDescription,
 } from "@/shared/ui";
 
 import { useDeleteWorkspaceMutation } from "@/entities/workspace/model/mutations";
 
 interface DeleteWorkspaceModalProps {
-  workspace?: Workspace | null;
+  workspace?: Workspace;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   className?: string;
@@ -35,6 +42,8 @@ export function DeleteWorkspaceModal({
   onOpenChange,
   className,
 }: DeleteWorkspaceModalProps) {
+  const t = useTranslations("");
+
   const deleteWorkspaceMutation = useDeleteWorkspaceMutation();
 
   const [workspaceName, setWorkspaceName] = useState<string>("");
@@ -45,10 +54,10 @@ export function DeleteWorkspaceModal({
     if (open) setWorkspaceName("");
   }, [open, setWorkspaceName]);
 
+  if (!workspace) return null;
+
   const handleDeleteWorkspace = (e: SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    if (!workspace) return;
 
     setIsMutating(true);
 
@@ -64,29 +73,44 @@ export function DeleteWorkspaceModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className={cn("max-w-lg!", className)}>
+      <DialogContent className={cn("md:max-w-160", className)}>
         <form className="flex flex-col gap-4" onSubmit={handleDeleteWorkspace}>
           <DialogHeader>
-            <DialogTitle>Delete Workspace</DialogTitle>
+            <DialogTitle>{t("workspace.delete.title")}</DialogTitle>
             <DialogDescription>
-              Are you sure you want to delete this workspace?
+              {t("workspace.delete.description")}
             </DialogDescription>
           </DialogHeader>
 
-          <FieldGroup>
+          <FieldGroup className="flex-1 gap-4 justify-end">
+            <Empty className="py-1.5">
+              <EmptyHeader>
+                <EmptyMedia variant="icon">
+                  <LucideFolder />
+                </EmptyMedia>
+                <EmptyTitle className="uppercase font-bold text-destructive">
+                  {t("workspace.delete.warning")}
+                </EmptyTitle>
+                <EmptyDescription>
+                  {t("workspace.delete.warningDescription")}
+                </EmptyDescription>
+              </EmptyHeader>
+            </Empty>
+
             <Field className="gap-2">
               <label
-                className="leading-none font-medium cursor-text"
+                className="font-medium cursor-text"
                 htmlFor="workspace-name"
               >
-                To confirm, type &quot;<strong>{workspace?.name}</strong>&quot;
-                in the field below
+                {t("workspace.delete.inputLabel", {
+                  workspaceName: workspace.name,
+                })}
               </label>
               <Input
                 id="workspace-name"
                 name="workspace-name"
                 className="border-destructive"
-                placeholder="Enter workspace name"
+                placeholder={t("workspace.delete.inputPlaceholder")}
                 value={workspaceName}
                 onChange={(e) => setWorkspaceName(e.target.value)}
               />
@@ -95,16 +119,18 @@ export function DeleteWorkspaceModal({
 
           <DialogFooter>
             <DialogClose asChild>
-              <Button variant="outline">Cancel</Button>
+              <Button variant="outline">{t("cancel")}</Button>
             </DialogClose>
             <Button
-              disabled={workspaceName !== workspace?.name || isMutating}
+              disabled={workspaceName !== workspace.name || isMutating}
               className="transition-colors"
               variant="destructive"
               type="submit"
             >
               {isMutating && <Spinner />}
-              Delete Workspace
+              {isMutating
+                ? t("workspace.delete.confirmation")
+                : t("workspace.delete.confirm")}
             </Button>
           </DialogFooter>
         </form>

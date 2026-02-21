@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { getAccessToWorkspace, getSession } from "@/shared/lib/auth";
 import { prisma } from "@/shared/lib/prisma";
+import { AccessRole } from "@/shared/constants";
+import { getAccessToWorkspace, getSession } from "@/shared/lib/auth";
 
 export const GET = async (
   request: NextRequest,
@@ -21,15 +22,15 @@ export const GET = async (
 
   const session = await getSession();
 
-  const access = await getAccessToWorkspace(workspace, session?.user);
+  const accessRole = await getAccessToWorkspace(workspace, session?.user);
 
-  if (!access.canView)
+  if (AccessRole[accessRole] < AccessRole.VIEWER)
     return NextResponse.json(
       { error: "You do not have access to this workspace" },
       { status: 403 },
     );
 
-  return NextResponse.json({ workspace, access });
+  return NextResponse.json({ workspace, accessRole });
 };
 
 export const PATCH = async (
@@ -49,9 +50,9 @@ export const PATCH = async (
 
   const session = await getSession();
 
-  const access = await getAccessToWorkspace(workspace, session?.user);
+  const accessRole = await getAccessToWorkspace(workspace, session?.user);
 
-  if (!access.canEdit)
+  if (AccessRole[accessRole] < AccessRole.ADMIN)
     return NextResponse.json(
       { error: "You do not have permission to edit this workspace" },
       { status: 403 },
@@ -67,7 +68,7 @@ export const PATCH = async (
     },
   });
 
-  return NextResponse.json({ workspace: updatedWorkspace, access });
+  return NextResponse.json({ workspace: updatedWorkspace, accessRole });
 };
 
 export const DELETE = async (
@@ -85,9 +86,9 @@ export const DELETE = async (
 
   const session = await getSession();
 
-  const access = await getAccessToWorkspace(workspace, session?.user);
+  const accessRole = await getAccessToWorkspace(workspace, session?.user);
 
-  if (!access.canDelete)
+  if (AccessRole[accessRole] < AccessRole.OWNER)
     return NextResponse.json(
       { error: "You do not have permission to delete this workspace" },
       { status: 403 },
@@ -97,5 +98,5 @@ export const DELETE = async (
     where: { id: uuid },
   });
 
-  return NextResponse.json({ workspace: updatedWorkspace, access });
+  return NextResponse.json({ workspace: updatedWorkspace, accessRole });
 };
