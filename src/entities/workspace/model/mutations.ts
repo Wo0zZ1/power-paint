@@ -21,7 +21,7 @@ export const useUpdateWorkspaceMutation = () => {
     },
 
     onError: (error, variables) => {
-      console.error("Error renaming workspace:", error, variables);
+      console.error("Error updating workspace:", error, variables);
     },
   });
 };

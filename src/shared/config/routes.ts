@@ -3,11 +3,11 @@ export const ROUTES = {
   SETTINGS: "/settings", // TODO Remove this route
   PROFILE: (uuid?: string) => `/profile/${uuid}` as const,
   BOARD: (boardId: string) => `/board/${boardId}` as const,
-  WORKSPACE: (workspaceId: string) => `/workspace/${workspaceId}` as const,
   DASHBOARD: {
     ROOT: "/dashboard",
-    BOARDS: "/dashboard/boards",
-    WORKSPACES: "/dashboard/workspaces",
+    BOARDS: `/dashboard/boards`,
+    WORKSPACES: (workspaceId?: string) =>
+      `/dashboard/workspaces/${workspaceId}` as const,
   },
   LOGIN: "/login",
   SINGUP: "/signup",
