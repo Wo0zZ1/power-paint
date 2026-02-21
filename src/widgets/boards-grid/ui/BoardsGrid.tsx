@@ -54,7 +54,7 @@ export function BoardsGrid({ className }: BoardsGridProps) {
               key={board.id}
               board={board}
               accessRole={accessRole}
-              buttonText={t("board.view")}
+              buttonText={t("open")}
               onEditBoardName={handleChangeBoardName}
               onEditBoardAccess={handleChangeBoardAccess}
               onDeleteBoard={handleDeleteBoard}

@@ -28,9 +28,7 @@ export async function WorkspacesCarouselBlock() {
         <h3 className="text-2xl font-semibold">{t("workspace.plural")}</h3>
 
         <Button size="xs" variant="link" className="text-sm" asChild>
-          <Link href={ROUTES.DASHBOARD.WORKSPACES("")}>
-            {t("workspace.viewAll")}
-          </Link>
+          <Link href={ROUTES.DASHBOARD.WORKSPACES("")}>{t("viewAll")}</Link>
         </Button>
       </div>
 

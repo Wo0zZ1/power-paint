@@ -3,6 +3,9 @@
   "cancel": "Cancel",
   "error": "Error",
   "goBack": "Go Back",
+  "open": "Open",
+  "view": "View",
+  "viewAll": "View All",
   "auth": {
     "login": "Log In",
     "logout": "Log Out",
@@ -24,8 +27,6 @@
     "all": "All Workspaces",
     "empty": "No available workspaces",
     "settings": "Workspace Settings",
-    "view": "View",
-    "viewAll": "View All",
     "rename": {
       "action": "Rename",
       "title": "Rename Workspace",
@@ -59,8 +60,6 @@
     "all": "All Boards",
     "empty": "No available boards",
     "settings": "Board Settings",
-    "view": "View",
-    "viewAll": "View All",
     "rename": {
       "action": "Rename",
       "title": "Rename Board",
