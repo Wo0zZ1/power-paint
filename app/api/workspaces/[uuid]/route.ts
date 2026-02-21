@@ -61,8 +61,8 @@ export const PATCH = async (
   const updatedWorkspace = await prisma.workspace.update({
     where: { id: uuid },
     data: {
-      accessLevel: body.accessLevel,
       name: body.name,
+      accessLevel: body.accessLevel,
       ownerId: body.ownerId,
       type: body.type,
     },

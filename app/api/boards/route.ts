@@ -11,6 +11,9 @@ export const GET = async (request: NextRequest) => {
 
   const boards = await prisma.board.findMany({
     where: { ownerId: userId },
+    orderBy: {
+      updatedAt: "desc",
+    }
   });
 
   const session = await getSession();

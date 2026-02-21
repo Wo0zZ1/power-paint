@@ -53,5 +53,40 @@
       "confirm": "Delete",
       "confirmation": "Deleting"
     }
+  },
+  "board": {
+    "plural": "Boards",
+    "all": "All Boards",
+    "empty": "No available boards",
+    "settings": "Board Settings",
+    "view": "View",
+    "viewAll": "View All",
+    "rename": {
+      "action": "Rename",
+      "title": "Rename Board",
+      "description": "Are you sure you want to rename this board?",
+      "inputLabel": "Board Name",
+      "inputPlaceholder": "Enter new board name",
+      "confirm": "Save Changes",
+      "confirmation": "Saving Changes"
+    },
+    "access": {
+      "action": "Configure Access",
+      "title": "Configure Board Access",
+      "description": "Update the access settings for this board.",
+      "confirm": "Save Changes",
+      "confirmation": "Saving Changes"
+    },
+    "delete": {
+      "action": "Delete",
+      "title": "Delete Board",
+      "description": "Are you sure you want to delete this board?",
+      "warning": "Warning",
+      "warningDescription": "This action cannot be undone. All data associated with this board will be permanently deleted.",
+      "inputLabel": "To confirm, enter \"{boardName}\" in the field below:",
+      "inputPlaceholder": "Enter board name",
+      "confirm": "Delete",
+      "confirmation": "Deleting"
+    }
   }
 }
