@@ -4,7 +4,11 @@ import { prisma } from "@/shared/lib/prisma";
 import { AccessRole } from "@/shared/constants";
 import { getSession, getAccessToBoard } from "@/shared/lib/auth";
 
-export const GET = async (request: NextRequest) => {
+import type { BoardWithAccess } from "@/entities/board";
+
+export const GET = async (
+  request: NextRequest,
+): Promise<NextResponse<BoardWithAccess[]>> => {
   const searchParams = request.nextUrl.searchParams;
 
   const userId = searchParams.get("userId") || undefined;
@@ -13,7 +17,7 @@ export const GET = async (request: NextRequest) => {
     where: { ownerId: userId },
     orderBy: {
       updatedAt: "desc",
-    }
+    },
   });
 
   const session = await getSession();

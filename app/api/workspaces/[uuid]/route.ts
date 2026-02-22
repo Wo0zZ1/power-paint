@@ -1,13 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
+import { forbidden, notFound } from "next/navigation";
 
-import { prisma } from "@/shared/lib/prisma";
-import { AccessRole } from "@/shared/constants";
 import { getAccessToWorkspace, getSession } from "@/shared/lib/auth";
+import { AccessRole } from "@/shared/constants";
+import { prisma } from "@/shared/lib/prisma";
+import { WorkspaceWithAccess } from "@/entities/workspace";
 
 export const GET = async (
   request: NextRequest,
   { params }: { params: Promise<{ uuid: string }> },
-) => {
+): Promise<NextResponse<WorkspaceWithAccess>> => {
   const { uuid } = await params;
 
   const workspace = await prisma.workspace.findUnique({
@@ -17,18 +19,13 @@ export const GET = async (
     },
   });
 
-  if (!workspace)
-    return NextResponse.json({ error: "Workspace not found" }, { status: 404 });
+  if (!workspace) return notFound();
 
   const session = await getSession();
 
   const accessRole = await getAccessToWorkspace(workspace, session?.user);
 
-  if (AccessRole[accessRole] < AccessRole.VIEWER)
-    return NextResponse.json(
-      { error: "You do not have access to this workspace" },
-      { status: 403 },
-    );
+  if (AccessRole[accessRole] < AccessRole.VIEWER) forbidden();
 
   return NextResponse.json({ workspace, accessRole });
 };
@@ -36,7 +33,7 @@ export const GET = async (
 export const PATCH = async (
   request: NextRequest,
   { params }: { params: Promise<{ uuid: string }> },
-) => {
+): Promise<NextResponse<WorkspaceWithAccess>> => {
   const { uuid } = await params;
 
   const body = await request.json();
@@ -45,18 +42,13 @@ export const PATCH = async (
     where: { id: uuid },
   });
 
-  if (!workspace)
-    return NextResponse.json({ error: "Workspace not found" }, { status: 404 });
+  if (!workspace) notFound();
 
   const session = await getSession();
 
   const accessRole = await getAccessToWorkspace(workspace, session?.user);
 
-  if (AccessRole[accessRole] < AccessRole.ADMIN)
-    return NextResponse.json(
-      { error: "You do not have permission to edit this workspace" },
-      { status: 403 },
-    );
+  if (AccessRole[accessRole] < AccessRole.ADMIN) forbidden();
 
   const updatedWorkspace = await prisma.workspace.update({
     where: { id: uuid },
@@ -74,25 +66,20 @@ export const PATCH = async (
 export const DELETE = async (
   request: NextRequest,
   { params }: { params: Promise<{ uuid: string }> },
-) => {
+): Promise<NextResponse<WorkspaceWithAccess>> => {
   const { uuid } = await params;
 
   const workspace = await prisma.workspace.findUnique({
     where: { id: uuid },
   });
 
-  if (!workspace)
-    return NextResponse.json({ error: "Workspace not found" }, { status: 404 });
+  if (!workspace) notFound();
 
   const session = await getSession();
 
   const accessRole = await getAccessToWorkspace(workspace, session?.user);
 
-  if (AccessRole[accessRole] < AccessRole.OWNER)
-    return NextResponse.json(
-      { error: "You do not have permission to delete this workspace" },
-      { status: 403 },
-    );
+  if (AccessRole[accessRole] < AccessRole.OWNER) forbidden();
 
   const updatedWorkspace = await prisma.workspace.delete({
     where: { id: uuid },

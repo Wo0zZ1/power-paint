@@ -1,14 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
+import { unauthorized } from "next/navigation";
 import { AccessLevel } from "@prisma/client";
 import { z } from "zod";
 
 import { getSession, getAccessToWorkspace } from "@/shared/lib/auth";
-import { prisma } from "@/shared/lib/prisma";
 import { AccessRole } from "@/shared/constants";
+import { prisma } from "@/shared/lib/prisma";
+
+import { WorkspaceWithAccess } from "@/entities/workspace";
 
 import { createWorkspaceSchema } from "@/features/create-workspace";
-import { unauthorized } from "next/navigation";
-import { WorkspaceWithAccess } from "@/entities/workspace";
 
 export const GET = async (
   request: NextRequest,
@@ -53,7 +54,7 @@ export const POST = async (
 
   const session = await getSession();
 
-  if (!session) unauthorized();
+  if (!session) return unauthorized();
 
   const newWorkspace = await prisma.workspace.create({
     data: {

@@ -4,6 +4,25 @@ import { WorkspacesApi } from "./api";
 import { WORKSPACES_QUERY_KEY } from "./queries";
 import { WorkspaceWithAccess } from "./types";
 
+export const useCreateWorkspaceMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: WorkspacesApi.createOne,
+
+    onSuccess: (data) => {
+      queryClient.setQueryData(
+        [WORKSPACES_QUERY_KEY],
+        (oldData: WorkspaceWithAccess[]) => [data, ...oldData],
+      );
+    },
+
+    onError: (error, variables) => {
+      console.error("Error creating workspace:", error, variables);
+    },
+  });
+};
+
 export const useUpdateWorkspaceMutation = () => {
   const queryClient = useQueryClient();
 
