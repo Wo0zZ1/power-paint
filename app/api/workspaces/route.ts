@@ -1,10 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
+import { AccessLevel } from "@prisma/client";
+import { z } from "zod";
 
 import { getSession, getAccessToWorkspace } from "@/shared/lib/auth";
 import { prisma } from "@/shared/lib/prisma";
 import { AccessRole } from "@/shared/constants";
 
-export const GET = async (request: NextRequest) => {
+import { createWorkspaceSchema } from "@/features/create-workspace";
+import { unauthorized } from "next/navigation";
+import { WorkspaceWithAccess } from "@/entities/workspace";
+
+export const GET = async (
+  request: NextRequest,
+): Promise<NextResponse<WorkspaceWithAccess[]>> => {
   const searchParams = request.nextUrl.searchParams;
 
   const userId = searchParams.get("userId") || undefined;
@@ -34,4 +42,29 @@ export const GET = async (request: NextRequest) => {
   );
 
   return NextResponse.json(filteredWorkspacesWithAccess);
+};
+
+export const POST = async (
+  request: NextRequest,
+): Promise<NextResponse<WorkspaceWithAccess>> => {
+  const body = await request.json();
+
+  const { name } = z.parse(createWorkspaceSchema, body);
+
+  const session = await getSession();
+
+  if (!session) unauthorized();
+
+  const newWorkspace = await prisma.workspace.create({
+    data: {
+      name,
+      ownerId: session.user.id,
+      accessLevel: AccessLevel.private, // TODO make it configurable
+    },
+  });
+
+  return NextResponse.json({
+    workspace: newWorkspace,
+    accessRole: "OWNER",
+  });
 };
