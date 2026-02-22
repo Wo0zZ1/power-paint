@@ -3,6 +3,7 @@ import { Workspace } from "@prisma/client";
 import { BASE_API_URL, fetchInitWithCookies } from "@/shared/api";
 
 import { WorkspaceWithAccess } from "./types";
+import { CreateWorkspaceData } from "@/features/create-workspace";
 
 const url = BASE_API_URL() + "/workspaces";
 
@@ -13,7 +14,19 @@ const fetchWorkspaces = async (
 
   if (!response.ok) throw new Error("Failed to fetch workspaces");
 
-  return response.json();
+  return response.json() as unknown as WorkspaceWithAccess[];
+};
+
+const createWorkspace = async (workspace: CreateWorkspaceData) => {
+  const response = await fetch(url, {
+    ...fetchInitWithCookies(),
+    method: "POST",
+    body: JSON.stringify(workspace),
+  });
+
+  if (!response.ok) throw new Error("Failed to create workspace");
+
+  return response.json() as unknown as WorkspaceWithAccess;
 };
 
 const updateWorkspace = async (
@@ -27,7 +40,7 @@ const updateWorkspace = async (
 
   if (!response.ok) throw new Error("Failed to update workspace");
 
-  return response.json();
+  return response.json() as unknown as WorkspaceWithAccess;
 };
 
 const removeWorkspace = async (workspaceId: string) => {
@@ -38,11 +51,12 @@ const removeWorkspace = async (workspaceId: string) => {
 
   if (!response.ok) throw new Error("Failed to delete workspace");
 
-  return response.json();
+  return response.json() as unknown as WorkspaceWithAccess;
 };
 
 export const WorkspacesApi = {
   getAll: fetchWorkspaces,
+  createOne: createWorkspace,
   updateOne: updateWorkspace,
   removeOne: removeWorkspace,
 };

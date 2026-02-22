@@ -27,6 +27,15 @@
     "all": "All Workspaces",
     "empty": "No available workspaces",
     "settings": "Workspace Settings",
+    "create": {
+      "action": "Create",
+      "title": "Create New Workspace",
+      "description": "Enter the details for the new workspace.",
+      "inputLabel": "Workspace Name",
+      "inputPlaceholder": "Enter workspace name",
+      "confirm": "Create",
+      "confirmation": "Creating"
+    },
     "rename": {
       "action": "Rename",
       "title": "Rename Workspace",

@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
+import { notFound } from "next/navigation";
 
+import { getUserPublicInfo } from "@/shared/lib/utils";
 import { getSession } from "@/shared/lib/auth";
 import { prisma } from "@/shared/lib/prisma";
-import { getUserPublicInfo } from "@/shared/lib/utils";
 
 export const GET = async (
   request: NextRequest,
@@ -14,8 +15,7 @@ export const GET = async (
     where: { id: uuid },
   });
 
-  if (!user)
-    return NextResponse.json({ error: "User not found" }, { status: 404 });
+  if (!user) notFound();
 
   const session = await getSession();
 

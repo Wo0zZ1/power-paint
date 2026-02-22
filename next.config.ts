@@ -4,6 +4,9 @@ import createNextIntlPlugin from "next-intl/plugin";
 const nextConfig: NextConfig = {
   reactCompiler: true,
   typedRoutes: false,
+  experimental: {
+    authInterrupts: true,
+  },
   images: {
     remotePatterns: [
       {

@@ -5,9 +5,12 @@ import Link from "next/link";
 
 import { getQueryClient } from "@/shared/api";
 import { ROUTES } from "@/shared/config";
+
 import { Button } from "@/shared/ui";
 
 import { getWorkspacesQueryOption } from "@/entities/workspace/server";
+
+import { CreateWorkspaceButton } from "@/features/create-workspace";
 
 import { WorkspacesGrid } from "./WorkspacesGrid";
 
@@ -23,9 +26,10 @@ export async function WorkspacesGridBlock() {
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <div className="flex justify-between items-end mt-8 mb-4">
-        <h3 className="text-2xl font-semibold">{t("workspace.all")}</h3>
+      <div className="flex items-end mt-8 mb-4">
+        <h3 className="mr-auto text-2xl font-semibold">{t("workspace.all")}</h3>
 
+        <CreateWorkspaceButton size="sm" className="text-sm mr-4" />
         <Button size="xs" variant="link" className="text-sm" asChild>
           <Link href={ROUTES.DASHBOARD.ROOT}>{t("goBack")}</Link>
         </Button>
