@@ -22,3 +22,16 @@ export const getWorkspacesQueryOption = ({
     queryFn: () => WorkspacesApi.getAll({ userId, type, cookieString }),
   });
 };
+
+export const getWorkspaceQueryOption = ({
+  workspaceId,
+  cookieString,
+}: {
+  workspaceId: string;
+  cookieString: string;
+}) => {
+  return queryOptions({
+    queryKey: [WORKSPACES_QUERY_KEY, workspaceId],
+    queryFn: () => WorkspacesApi.getOne({ workspaceId, cookieString }),
+  });
+};

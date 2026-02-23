@@ -1,10 +1,7 @@
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
-import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
-import Link from "next/link";
 
 import { getQueryClient } from "@/shared/api";
-import { ROUTES } from "@/shared/config";
 
 import { Button } from "@/shared/ui";
 
@@ -17,14 +14,16 @@ import { CreateBoardButton } from "@/features/create-board";
 import { BoardsGrid } from "./BoardsGrid";
 
 interface BoardsGridBlockProps {
+  title: string;
   workspace: WorkspaceWithAccess;
+  link: React.ReactNode;
 }
 
 export async function BoardsGridBlock({
+  title,
+  link,
   workspace: { workspace },
 }: BoardsGridBlockProps) {
-  const t = await getTranslations();
-
   const queryClient = getQueryClient();
   const cookieStore = await cookies();
 
@@ -42,7 +41,7 @@ export async function BoardsGridBlock({
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       <div className="flex items-end mt-12 mb-4">
-        <h3 className="mr-auto text-2xl font-semibold">{t("board.all")}</h3>
+        <h3 className="mr-auto text-2xl font-semibold">{title}</h3>
 
         <CreateBoardButton
           workspace={workspace}
@@ -50,9 +49,7 @@ export async function BoardsGridBlock({
           className="text-sm mr-4"
         />
         <Button size="xs" variant="link" className="text-sm" asChild>
-          <Link scroll={false} href={ROUTES.DASHBOARD.ROOT}>
-            {t("goBack")}
-          </Link>
+          {link}
         </Button>
       </div>
 

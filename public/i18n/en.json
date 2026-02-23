@@ -67,6 +67,7 @@
   "board": {
     "plural": "Boards",
     "all": "All Boards",
+    "personal": "Personal Boards",
     "empty": "No available boards",
     "settings": "Board Settings",
     "create": {

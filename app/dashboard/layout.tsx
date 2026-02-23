@@ -17,7 +17,7 @@ export default async function DashboardLayout({
         <h1 className="text-4xl font-bold">{t("dashboard.title")}</h1>
       </Link>
 
-      <p className="font-mono text-md text-muted-foreground my-2">
+      <p className="font-mono text-md text-muted-foreground mt-2 mb-12">
         {t("dashboard.welcome")}
       </p>
       {children}

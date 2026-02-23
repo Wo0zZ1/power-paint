@@ -7,11 +7,9 @@ export const ROUTES = {
     ROOT: "/dashboard",
     WORKSPACES: `/dashboard/workspaces`,
     WORKSPACE: (workspaceId: string) =>
-      `/dashboard/workspace/${workspaceId}` as const,
+      `/dashboard/workspaces/${workspaceId}` as const,
     BOARDS: (workspaceId: string) =>
       `/dashboard/workspaces/${workspaceId}/boards` as const,
-    BOARD: (workspaceId: string, boardId: string) =>
-      `/dashboard/workspaces/${workspaceId}/boards/${boardId}` as const,
   },
   LOGIN: "/login",
   SINGUP: "/signup",

@@ -28,6 +28,23 @@ const fetchWorkspaces = async ({
   return response.json();
 };
 
+const fetchWorkspace = async ({
+  workspaceId,
+  cookieString,
+}: {
+  workspaceId: string;
+  cookieString?: string;
+}): Promise<WorkspaceWithAccess> => {
+  const response = await fetch(
+    `${url}/${workspaceId}`,
+    fetchInitWithCookies(cookieString),
+  );
+
+  if (!response.ok) throw new Error("Failed to fetch workspace");
+
+  return response.json();
+};
+
 const createWorkspace = async (workspace: CreateWorkspaceData) => {
   const response = await fetch(url, {
     ...fetchInitWithCookies(),
@@ -67,6 +84,7 @@ const removeWorkspace = async (workspaceId: string) => {
 
 export const WorkspacesApi = {
   getAll: fetchWorkspaces,
+  getOne: fetchWorkspace,
   createOne: createWorkspace,
   updateOne: updateWorkspace,
   removeOne: removeWorkspace,

@@ -1,6 +1,7 @@
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
+import { ReactNode } from "react";
 import Link from "next/link";
 
 import { getQueryClient } from "@/shared/api";
@@ -17,11 +18,15 @@ import { CreateBoardButton } from "@/features/create-board";
 import { BoardsCarousel } from "./BoardsCarousel";
 
 interface BoardsCarouselBlockProps {
+  title: string;
   workspace: WorkspaceWithAccess;
+  link: ReactNode;
 }
 
 export async function BoardsCarouselBlock({
   workspace: { workspace },
+  title,
+  link,
 }: BoardsCarouselBlockProps) {
   const t = await getTranslations();
 
@@ -43,9 +48,7 @@ export async function BoardsCarouselBlock({
     <HydrationBoundary state={dehydrate(queryClient)}>
       <div>
         <div className="flex items-end mt-12 mb-4">
-          <h3 className="mr-auto text-2xl font-semibold">
-            {t("board.plural")}
-          </h3>
+          <h3 className="mr-auto text-2xl font-semibold">{title}</h3>
 
           <CreateBoardButton
             workspace={workspace}
@@ -53,9 +56,7 @@ export async function BoardsCarouselBlock({
             className="text-sm mr-4"
           />
           <Button size="xs" variant="link" className="text-sm" asChild>
-            <Link href={ROUTES.DASHBOARD.BOARDS(workspace.id)}>
-              {t("viewAll")}
-            </Link>
+            {link}
           </Button>
         </div>
 

@@ -67,14 +67,17 @@
   "board": {
     "plural": "Доски",
     "all": "Все доски",
+    "personal": "Персональные доски",
     "empty": "Нет доступных досок",
     "settings": "Настройки доски",
     "create": {
       "action": "Создать",
       "title": "Создать новую доску",
       "description": "Введите данные новой доски.",
-      "inputLabel": "Название доски",
-      "inputPlaceholder": "Введите название доски",
+      "nameInputLabel": "Название доски",
+      "nameInputPlaceholder": "Введите название доски",
+      "workspaceInputLabel": "Рабочее пространство",
+      "workspaceInputPlaceholder": "Выберите рабочее пространство",
       "confirm": "Создать",
       "confirmation": "Создание"
     },

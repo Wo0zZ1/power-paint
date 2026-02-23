@@ -1,6 +1,8 @@
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
+import { getTranslations } from "next-intl/server";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
+import Link from "next/link";
 
 import { getSession } from "@/shared/lib/auth";
 import { getQueryClient } from "@/shared/api";
@@ -12,6 +14,8 @@ import { WorkspacesCarouselBlock } from "@/widgets/workspaces-carousel";
 import { BoardsCarouselBlock } from "@/widgets/boards-carousel";
 
 export async function DashboardPage() {
+  const t = await getTranslations();
+
   const session = await getSession();
 
   if (!session) redirect(ROUTES.LOGIN);
@@ -31,9 +35,22 @@ export async function DashboardPage() {
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       <div>
-        <WorkspacesCarouselBlock />
+        <WorkspacesCarouselBlock
+          title={t("workspace.plural")}
+          link={<Link href={ROUTES.DASHBOARD.WORKSPACES}>{t("viewAll")}</Link>}
+        />
 
-        <BoardsCarouselBlock workspace={personalWorkspace} />
+        <BoardsCarouselBlock
+          title={t("board.personal")}
+          link={
+            <Link
+              href={ROUTES.DASHBOARD.WORKSPACE(personalWorkspace.workspace.id)}
+            >
+              {t("viewAll")}
+            </Link>
+          }
+          workspace={personalWorkspace}
+        />
       </div>
     </HydrationBoundary>
   );

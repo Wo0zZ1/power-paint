@@ -1,10 +1,7 @@
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
-import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
-import Link from "next/link";
 
 import { getQueryClient } from "@/shared/api";
-import { ROUTES } from "@/shared/config";
 
 import { Button } from "@/shared/ui";
 
@@ -14,9 +11,15 @@ import { CreateWorkspaceButton } from "@/features/create-workspace";
 
 import { WorkspacesGrid } from "./WorkspacesGrid";
 
-export async function WorkspacesGridBlock() {
-  const t = await getTranslations();
+interface WorkspacesGridBlockProps {
+  title: string;
+  link: React.ReactNode;
+}
 
+export async function WorkspacesGridBlock({
+  title,
+  link,
+}: WorkspacesGridBlockProps) {
   const queryClient = getQueryClient();
   const cookieStore = await cookies();
 
@@ -30,11 +33,11 @@ export async function WorkspacesGridBlock() {
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       <div className="flex items-end mt-12 mb-4">
-        <h3 className="mr-auto text-2xl font-semibold">{t("workspace.all")}</h3>
+        <h3 className="mr-auto text-2xl font-semibold">{title}</h3>
 
         <CreateWorkspaceButton size="sm" className="text-sm mr-4" />
         <Button size="xs" variant="link" className="text-sm" asChild>
-          <Link href={ROUTES.DASHBOARD.ROOT}>{t("goBack")}</Link>
+          {link}
         </Button>
       </div>
 
