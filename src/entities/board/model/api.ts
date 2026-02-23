@@ -1,24 +1,50 @@
 import { Board } from "@prisma/client";
 
-import { BASE_API_URL, fetchInitWithCookies } from "@/shared/api";
+import { GET_BASE_API_URL, fetchInitWithCookies } from "@/shared/api";
 
 import { BoardWithAccess } from "./types";
+import { CreateBoardData } from "@/features/create-board";
 
-const url = BASE_API_URL() + "/boards";
+const url = GET_BASE_API_URL() + "/boards";
 
-const fetchBoards = async (
-  cookieString?: string,
-): Promise<BoardWithAccess[]> => {
-  const response = await fetch(url, fetchInitWithCookies(cookieString));
+const fetchBoards = async ({
+  cookieString,
+  userId,
+  workspaceId,
+}: {
+  cookieString?: string;
+  userId?: string;
+  workspaceId?: string;
+} = {}): Promise<BoardWithAccess[]> => {
+  let reqUrl = url + "?";
+
+  if (userId) reqUrl += `userId=${userId}&`;
+  if (workspaceId) reqUrl += `workspaceId=${workspaceId}&`;
+
+  const response = await fetch(reqUrl, fetchInitWithCookies(cookieString));
 
   if (!response.ok) throw new Error("Failed to fetch boards");
 
   return response.json();
 };
 
+const createBoard = async (
+  board: CreateBoardData,
+): Promise<BoardWithAccess> => {
+  const response = await fetch(url, {
+    ...fetchInitWithCookies(),
+    method: "POST",
+    body: JSON.stringify(board),
+  });
+
+  if (!response.ok) throw new Error("Failed to create board");
+
+  return response.json();
+};
+
 const updateBoard = async (
   board: Partial<Board> & Pick<Board, "id">,
-) => {
+): Promise<BoardWithAccess> => {
   const response = await fetch(`${url}/${board.id}`, {
     ...fetchInitWithCookies(),
     method: "PATCH",
@@ -30,7 +56,7 @@ const updateBoard = async (
   return response.json();
 };
 
-const removeBoard = async (boardId: string) => {
+const removeBoard = async (boardId: string): Promise<BoardWithAccess> => {
   const response = await fetch(`${url}/${boardId}`, {
     ...fetchInitWithCookies(),
     method: "DELETE",
@@ -43,6 +69,7 @@ const removeBoard = async (boardId: string) => {
 
 export const BoardsApi = {
   getAll: fetchBoards,
+  createOne: createBoard,
   updateOne: updateBoard,
   removeOne: removeBoard,
 };

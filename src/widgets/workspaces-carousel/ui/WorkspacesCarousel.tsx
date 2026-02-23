@@ -2,34 +2,30 @@
 
 import { useTranslations } from "next-intl";
 
-import { cn } from "@/utils";
-
 import {
   Carousel,
-  CarouselContent,
   CarouselItem,
-  CarouselPrevious,
   CarouselNext,
+  CarouselContent,
+  CarouselPrevious,
 } from "@/shared/ui";
 
 import { WorkspaceCard, useGetWorkspacesQuery } from "@/entities/workspace";
 
+import { ChangeWorkspaceAccessModal } from "@/features/change-workspace-access";
 import { RenameWorkspaceModal } from "@/features/rename-workspace";
 import { DeleteWorkspaceModal } from "@/features/delete-workspace";
-import { ChangeWorkspaceAccessModal } from "@/features/change-workspace-access";
+
 import { LoadingWorkspacesCarousel } from "./LoadingWorkspacesCarousel";
 import { ErrorWorkspacesCarousel } from "./ErrorWorkspacesCarousel";
-
 import { useWorkspacesCarousel } from "../model/useWorkspacesCarousel";
 
-interface WorkspacesCarouselProps {
-  className?: string;
-}
-
-export function WorkspacesCarousel({ className }: WorkspacesCarouselProps) {
+export function WorkspacesCarousel() {
   const t = useTranslations();
 
-  const { data, isLoading, isError, error } = useGetWorkspacesQuery();
+  const { data, isLoading, isError, error } = useGetWorkspacesQuery({
+    type: "team",
+  });
 
   const {
     selectedWorkspace,
@@ -50,8 +46,8 @@ export function WorkspacesCarousel({ className }: WorkspacesCarouselProps) {
 
   return (
     <>
-      <Carousel opts={{ dragFree: true }} className={cn("", className)}>
-        {data && data.length > 0 ? (
+      <Carousel opts={{ dragFree: true }}>
+        {data && data?.length > 0 ? (
           <CarouselContent>
             {data.map(({ workspace, accessRole }) => (
               <CarouselItem

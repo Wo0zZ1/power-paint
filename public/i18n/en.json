@@ -69,6 +69,17 @@
     "all": "All Boards",
     "empty": "No available boards",
     "settings": "Board Settings",
+    "create": {
+      "action": "Create",
+      "title": "Create New Board",
+      "description": "Enter the details for the new board.",
+      "nameInputLabel": "Board Name",
+      "nameInputPlaceholder": "Enter board name",
+      "workspaceInputLabel": "Workspace",
+      "workspaceInputPlaceholder": "Select a workspace",
+      "confirm": "Create",
+      "confirmation": "Creating"
+    },
     "rename": {
       "action": "Rename",
       "title": "Rename Board",

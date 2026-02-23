@@ -2,8 +2,6 @@
 
 import { useTranslations } from "next-intl";
 
-import { cn } from "@/utils";
-
 import {
   Carousel,
   CarouselContent,
@@ -13,23 +11,29 @@ import {
 } from "@/shared/ui";
 
 import { BoardCard, useGetBoardsQuery } from "@/entities/board";
+import { WorkspaceWithBoards } from "@/entities/workspace";
 
-import { RenameBoardModal } from "@/features/rename-board";
-import { DeleteBoardModal } from "@/features/delete-board";
 import { ChangeBoardAccessModal } from "@/features/change-board-access";
+import { DeleteBoardModal } from "@/features/delete-board";
+import { RenameBoardModal } from "@/features/rename-board";
+
+import { useBoardsCarousel } from "../model/useBoardsCarousel";
 import { LoadingBoardsCarousel } from "./LoadingBoardsCarousel";
 import { ErrorBoardsCarousel } from "./ErrorBoardsCarousel";
 
-import { useBoardsCarousel } from "../model/useBoardsCarousel";
-
 interface BoardsCarouselProps {
-  className?: string;
+  workspace: WorkspaceWithBoards;
 }
 
-export function BoardsCarousel({ className }: BoardsCarouselProps) {
+export function BoardsCarousel({ workspace }: BoardsCarouselProps) {
   const t = useTranslations();
 
-  const { data, isLoading, isError, error } = useGetBoardsQuery();
+  const {
+    data: boards,
+    isLoading,
+    isError,
+    error,
+  } = useGetBoardsQuery({ workspaceId: workspace.id });
 
   const {
     selectedBoard,
@@ -50,10 +54,10 @@ export function BoardsCarousel({ className }: BoardsCarouselProps) {
 
   return (
     <>
-      <Carousel opts={{ dragFree: true }} className={cn("", className)}>
-        {data && data.length > 0 ? (
+      <Carousel opts={{ dragFree: true }}>
+        {boards && boards.length > 0 ? (
           <CarouselContent>
-            {data.map(({ board, accessRole }) => (
+            {boards.map(({ board, accessRole }) => (
               <CarouselItem
                 key={board.id}
                 className="basis-1/1 xs:basis-1/2 md:basis-1/3 lg:basis-1/3 xl:basis-1/4"

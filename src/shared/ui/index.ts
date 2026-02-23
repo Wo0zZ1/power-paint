@@ -13,3 +13,4 @@ export * from "./label";
 export * from "./input";
 export * from "./spinner";
 export * from "./empty";
+export * from "./select";

@@ -10,5 +10,5 @@ export async function BoardsPage() {
 
   if (!session) redirect(ROUTES.LOGIN);
 
-  return <BoardsGridBlock />;
+  return <BoardsGridBlock type="all" />;
 }

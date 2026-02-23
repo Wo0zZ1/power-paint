@@ -23,9 +23,7 @@ export function WorkspaceCardFooter({
         variant="secondary"
         className="w-full text-xs md:text-base"
       >
-        <Link href={ROUTES.DASHBOARD.WORKSPACES(workspaceId)}>
-          {buttonText}
-        </Link>
+        <Link href={ROUTES.DASHBOARD.WORKSPACE(workspaceId)}>{buttonText}</Link>
       </Button>
     </CardFooter>
   );
