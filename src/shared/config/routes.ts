@@ -5,9 +5,13 @@ export const ROUTES = {
   BOARD: (boardId: string) => `/board/${boardId}` as const,
   DASHBOARD: {
     ROOT: "/dashboard",
-    BOARDS: `/dashboard/boards`,
-    WORKSPACES: (workspaceId?: string) =>
-      `/dashboard/workspaces/${workspaceId}` as const,
+    WORKSPACES: `/dashboard/workspaces`,
+    WORKSPACE: (workspaceId: string) =>
+      `/dashboard/workspace/${workspaceId}` as const,
+    BOARDS: (workspaceId: string) =>
+      `/dashboard/workspaces/${workspaceId}/boards` as const,
+    BOARD: (workspaceId: string, boardId: string) =>
+      `/dashboard/workspaces/${workspaceId}/boards/${boardId}` as const,
   },
   LOGIN: "/login",
   SINGUP: "/signup",

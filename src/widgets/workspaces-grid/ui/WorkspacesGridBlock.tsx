@@ -21,12 +21,15 @@ export async function WorkspacesGridBlock() {
   const cookieStore = await cookies();
 
   await queryClient.prefetchQuery(
-    getWorkspacesQueryOption(cookieStore.toString()),
+    getWorkspacesQueryOption({
+      cookieString: cookieStore.toString(),
+      type: "team",
+    }),
   );
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <div className="flex items-end mt-8 mb-4">
+      <div className="flex items-end mt-12 mb-4">
         <h3 className="mr-auto text-2xl font-semibold">{t("workspace.all")}</h3>
 
         <CreateWorkspaceButton size="sm" className="text-sm mr-4" />

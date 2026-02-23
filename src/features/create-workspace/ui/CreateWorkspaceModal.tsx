@@ -3,6 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
+import { useEffect } from "react";
 
 import { cn } from "@/utils";
 
@@ -23,11 +24,11 @@ import {
 } from "@/shared/ui";
 
 import { useCreateWorkspaceMutation } from "@/entities/workspace";
+
 import {
   CreateWorkspaceFormData,
   createWorkspaceFormSchema,
 } from "../model/schemas";
-import { useEffect } from "react";
 
 interface CreateWorkspaceModalProps {
   open: boolean;

@@ -17,7 +17,7 @@ export function WorkspaceCardImage({
 }: WorkspaceCardImageProps) {
   return (
     <div className={cn(className, "")}>
-      <Link href={ROUTES.DASHBOARD.WORKSPACES(workspaceId)}>
+      <Link href={ROUTES.DASHBOARD.WORKSPACE(workspaceId)}>
         <Image
           className="relative aspect-video"
           alt="Workspace preview image"

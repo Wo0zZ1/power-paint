@@ -1,9 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { forbidden, notFound } from "next/navigation";
+import { WorkspaceType } from "@prisma/client";
 
 import { getAccessToWorkspace, getSession } from "@/shared/lib/auth";
 import { AccessRole } from "@/shared/constants";
 import { prisma } from "@/shared/lib/prisma";
+
 import { WorkspaceWithAccess } from "@/entities/workspace";
 
 export const GET = async (
@@ -14,9 +16,7 @@ export const GET = async (
 
   const workspace = await prisma.workspace.findUnique({
     where: { id: uuid },
-    include: {
-      boards: true,
-    },
+    include: { boards: true },
   });
 
   if (!workspace) return notFound();
@@ -44,6 +44,8 @@ export const PATCH = async (
 
   if (!workspace) notFound();
 
+  if (workspace.type === WorkspaceType.personal) forbidden();
+
   const session = await getSession();
 
   const accessRole = await getAccessToWorkspace(workspace, session?.user);
@@ -58,6 +60,7 @@ export const PATCH = async (
       ownerId: body.ownerId,
       type: body.type,
     },
+    include: { boards: true },
   });
 
   return NextResponse.json({ workspace: updatedWorkspace, accessRole });
@@ -75,6 +78,8 @@ export const DELETE = async (
 
   if (!workspace) notFound();
 
+  if (workspace.type === WorkspaceType.personal) forbidden();
+
   const session = await getSession();
 
   const accessRole = await getAccessToWorkspace(workspace, session?.user);
@@ -83,6 +88,7 @@ export const DELETE = async (
 
   const updatedWorkspace = await prisma.workspace.delete({
     where: { id: uuid },
+    include: { boards: true },
   });
 
   return NextResponse.json({ workspace: updatedWorkspace, accessRole });

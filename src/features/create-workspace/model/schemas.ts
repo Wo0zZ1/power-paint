@@ -12,7 +12,6 @@ export type CreateWorkspaceFormData = z.infer<typeof createWorkspaceFormSchema>;
 
 export const createWorkspaceSchema = createWorkspaceFormSchema.and(
   z.object({
-    ownerId: z.uuid().optional(),
     accessLevel: z.enum(AccessLevel).optional(),
   }),
 );

@@ -2,26 +2,22 @@
 
 import { useTranslations } from "next-intl";
 
-import { cn } from "@/utils";
-
 import { useGetWorkspacesQuery, WorkspaceCard } from "@/entities/workspace";
 
-import { RenameWorkspaceModal } from "@/features/rename-workspace";
 import { ChangeWorkspaceAccessModal } from "@/features/change-workspace-access";
+import { RenameWorkspaceModal } from "@/features/rename-workspace";
 import { DeleteWorkspaceModal } from "@/features/delete-workspace";
 
 import { useWorkspacesGrid } from "../model/useWorkspacesGrid";
 import { LoadingWorkspaceGrid } from "./LoadingWorkspacesGrid";
 import { ErrorWorkspaceGrid } from "./ErrorWorkspacesGrid";
 
-interface WorkspacesGridProps {
-  className?: string;
-}
-
-export function WorkspacesGrid({ className }: WorkspacesGridProps) {
+export function WorkspacesGrid() {
   const t = useTranslations();
 
-  const { data, isLoading, isError, error } = useGetWorkspacesQuery();
+  const { data, isLoading, isError, error } = useGetWorkspacesQuery({
+    type: "team",
+  });
 
   const {
     selectedWorkspace,
@@ -42,12 +38,7 @@ export function WorkspacesGrid({ className }: WorkspacesGridProps) {
 
   return (
     <>
-      <div
-        className={cn(
-          "grid grid-cols-1 gap-4 xs:grid-cols-2 md:grid-cols-3 xl:grid-cols-4",
-          className,
-        )}
-      >
+      <div className="grid grid-cols-1 gap-4 xs:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
         {data && data.length > 0 ? (
           data.map(({ workspace, accessRole }) => (
             <WorkspaceCard

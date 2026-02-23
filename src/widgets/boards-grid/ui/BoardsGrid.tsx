@@ -5,9 +5,10 @@ import { useTranslations } from "next-intl";
 import { cn } from "@/utils";
 
 import { useGetBoardsQuery, BoardCard } from "@/entities/board";
+import { WorkspaceWithBoards } from "@/entities/workspace";
 
-import { RenameBoardModal } from "@/features/rename-board";
 import { ChangeBoardAccessModal } from "@/features/change-board-access";
+import { RenameBoardModal } from "@/features/rename-board";
 import { DeleteBoardModal } from "@/features/delete-board";
 
 import { useBoardsGrid } from "../model/useBoardsGrid";
@@ -15,13 +16,20 @@ import { LoadingBoardGrid } from "./LoadingBoardsGrid";
 import { ErrorBoardGrid } from "./ErrorBoardsGrid";
 
 interface BoardsGridProps {
-  className?: string;
+  workspace: WorkspaceWithBoards;
 }
 
-export function BoardsGrid({ className }: BoardsGridProps) {
+export function BoardsGrid({ workspace }: BoardsGridProps) {
   const t = useTranslations();
 
-  const { data, isLoading, isError, error } = useGetBoardsQuery();
+  const {
+    data: boards,
+    isLoading,
+    isError,
+    error,
+  } = useGetBoardsQuery({
+    workspaceId: workspace.id,
+  });
 
   const {
     selectedBoard,
@@ -45,11 +53,10 @@ export function BoardsGrid({ className }: BoardsGridProps) {
       <div
         className={cn(
           "grid grid-cols-1 gap-4 xs:grid-cols-2 md:grid-cols-3 xl:grid-cols-4",
-          className,
         )}
       >
-        {data && data.length > 0 ? (
-          data.map(({ board, accessRole }) => (
+        {boards && boards.length > 0 ? (
+          boards.map(({ board, accessRole }) => (
             <BoardCard
               key={board.id}
               board={board}

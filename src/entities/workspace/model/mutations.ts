@@ -1,8 +1,8 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { WorkspacesApi } from "./api";
-import { WORKSPACES_QUERY_KEY } from "./queries";
 import { WorkspaceWithAccess } from "./types";
+import { WORKSPACES_QUERY_KEY } from "./queries";
 
 export const useCreateWorkspaceMutation = () => {
   const queryClient = useQueryClient();
@@ -12,7 +12,7 @@ export const useCreateWorkspaceMutation = () => {
 
     onSuccess: (data) => {
       queryClient.setQueryData(
-        [WORKSPACES_QUERY_KEY],
+        [WORKSPACES_QUERY_KEY, "team", {}],
         (oldData: WorkspaceWithAccess[]) => [data, ...oldData],
       );
     },
@@ -31,7 +31,7 @@ export const useUpdateWorkspaceMutation = () => {
 
     onSuccess: (data) => {
       queryClient.setQueryData(
-        [WORKSPACES_QUERY_KEY],
+        [WORKSPACES_QUERY_KEY, "team", {}],
         (oldData: WorkspaceWithAccess[]) => [
           data,
           ...oldData.filter((w) => w.workspace.id !== data.workspace.id),
@@ -53,7 +53,7 @@ export const useDeleteWorkspaceMutation = () => {
 
     onSuccess: (_, workspaceId) => {
       queryClient.setQueryData(
-        [WORKSPACES_QUERY_KEY],
+        [WORKSPACES_QUERY_KEY, "team", {}],
         (oldData: WorkspaceWithAccess[]) =>
           oldData.filter((w) => w.workspace.id !== workspaceId),
       );

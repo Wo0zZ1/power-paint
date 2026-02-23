@@ -1,20 +1,28 @@
 import { NextRequest, NextResponse } from "next/server";
+import { unauthorized } from "next/navigation";
+import { z } from "zod";
 
-import { prisma } from "@/shared/lib/prisma";
-import { AccessRole } from "@/shared/constants";
 import { getSession, getAccessToBoard } from "@/shared/lib/auth";
+import { AccessRole } from "@/shared/constants";
+import { prisma } from "@/shared/lib/prisma";
 
-import type { BoardWithAccess } from "@/entities/board";
+import { BoardWithAccess } from "@/entities/board";
+
+import { createBoardSchema } from "@/features/create-board";
 
 export const GET = async (
   request: NextRequest,
 ): Promise<NextResponse<BoardWithAccess[]>> => {
   const searchParams = request.nextUrl.searchParams;
 
-  const userId = searchParams.get("userId") || undefined;
+  const userId = searchParams.get("userId") ?? undefined;
+  const workspaceId = searchParams.get("workspaceId") ?? undefined;
 
   const boards = await prisma.board.findMany({
-    where: { ownerId: userId },
+    where: {
+      ownerId: userId,
+      workspaceId: workspaceId,
+    },
     orderBy: {
       updatedAt: "desc",
     },
@@ -35,4 +43,34 @@ export const GET = async (
   );
 
   return NextResponse.json(filteredBoardsWithAccess);
+};
+
+export const POST = async (
+  request: NextRequest,
+): Promise<NextResponse<BoardWithAccess>> => {
+  const body = await request.json();
+
+  const { name, workspaceId, accessLevel, backgroundColor } = z.parse(
+    createBoardSchema,
+    body,
+  );
+
+  const session = await getSession();
+
+  if (!session) return unauthorized();
+
+  const newBoard = await prisma.board.create({
+    data: {
+      name,
+      workspaceId,
+      accessLevel,
+      backgroundColor,
+      ownerId: session.user.id,
+    },
+  });
+
+  return NextResponse.json({
+    board: newBoard,
+    accessRole: "OWNER",
+  });
 };

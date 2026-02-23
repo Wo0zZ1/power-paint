@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { unauthorized } from "next/navigation";
-import { AccessLevel } from "@prisma/client";
+import { WorkspaceType } from "@prisma/client";
 import { z } from "zod";
 
 import { getSession, getAccessToWorkspace } from "@/shared/lib/auth";
@@ -17,15 +17,13 @@ export const GET = async (
   const searchParams = request.nextUrl.searchParams;
 
   const userId = searchParams.get("userId") || undefined;
+  const type =
+    (searchParams.get("type") as WorkspaceType | undefined) || undefined;
 
   const workspaces = await prisma.workspace.findMany({
-    where: { ownerId: userId },
-    include: {
-      boards: true,
-    },
-    orderBy: {
-      updatedAt: "desc",
-    },
+    where: { ownerId: userId, type },
+    include: { boards: true },
+    orderBy: { updatedAt: "desc" },
   });
 
   const session = await getSession();
@@ -50,7 +48,7 @@ export const POST = async (
 ): Promise<NextResponse<WorkspaceWithAccess>> => {
   const body = await request.json();
 
-  const { name } = z.parse(createWorkspaceSchema, body);
+  const { name, accessLevel } = z.parse(createWorkspaceSchema, body);
 
   const session = await getSession();
 
@@ -59,9 +57,10 @@ export const POST = async (
   const newWorkspace = await prisma.workspace.create({
     data: {
       name,
+      accessLevel,
       ownerId: session.user.id,
-      accessLevel: AccessLevel.private, // TODO make it configurable
     },
+    include: { boards: true },
   });
 
   return NextResponse.json({
