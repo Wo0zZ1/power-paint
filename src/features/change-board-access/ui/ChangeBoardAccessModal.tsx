@@ -1,10 +1,9 @@
 "use client";
 
-import { Board } from "@prisma/client";
+import type { Board } from "@prisma/client";
 import { useTranslations } from "next-intl";
-import { SubmitEvent, useEffect } from "react";
-
-import { cn } from "@/utils";
+import type { SubmitEvent} from "react";
+import { useEffect } from "react";
 
 import {
   Field,
@@ -20,6 +19,8 @@ import {
   DialogContent,
   DialogDescription,
 } from "@/shared/ui";
+import { cn } from "@/utils";
+
 
 interface ChangeBoardAccessModalProps {
   board?: Board;

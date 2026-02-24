@@ -1,5 +1,6 @@
 import { WorkspaceType } from "@prisma/client/client";
-import { useGetWorkspacesQuery } from "./queries";
+
+import type { useGetWorkspacesQuery } from "./queries";
 
 export const getPersonalWorkspace = (
   workspacesData: Awaited<ReturnType<typeof useGetWorkspacesQuery>>["data"],

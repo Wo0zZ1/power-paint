@@ -1,7 +1,7 @@
 import Link from "next/link";
 
-import { cn } from "@/utils";
 import { ROUTES } from "@/shared/config";
+import { cn } from "@/utils";
 
 interface LogoProps {
   className?: string;

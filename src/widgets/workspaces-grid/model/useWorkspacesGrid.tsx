@@ -1,9 +1,9 @@
+import type { Workspace } from "@prisma/client";
 import { useState } from "react";
-import { Workspace } from "@prisma/client";
 
-import { useRenameWorkspace } from "@/features/rename-workspace";
 import { useChangeWorkspaceAccess } from "@/features/change-workspace-access";
 import { useDeleteWorkspace } from "@/features/delete-workspace";
+import { useRenameWorkspace } from "@/features/rename-workspace";
 
 export const useWorkspacesGrid = () => {
   const [selectedWorkspace, setSelectedWorkspace] = useState<Workspace>();

@@ -1,14 +1,12 @@
-import { NextRequest, NextResponse } from "next/server";
 import { unauthorized } from "next/navigation";
+import type { NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 import { z } from "zod";
 
-import { getSession, getAccessToBoard } from "@/shared/lib/auth";
+import { createBoardSchema, type BoardWithAccess } from "@/entities/board";
 import { AccessRole } from "@/shared/constants";
+import { getSession, getAccessToBoard } from "@/shared/lib/auth";
 import { prisma } from "@/shared/lib/prisma";
-
-import { BoardWithAccess } from "@/entities/board";
-
-import { createBoardSchema } from "@/features/create-board";
 
 export const GET = async (
   request: NextRequest,

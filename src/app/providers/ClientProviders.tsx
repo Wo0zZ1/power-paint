@@ -1,10 +1,10 @@
 "use client";
 
-import { SessionProvider } from "next-auth/react";
 import type { Session } from "next-auth";
+import { SessionProvider } from "next-auth/react";
 
-import { TooltipProvider } from "@/shared/ui/tooltip";
 import { useTheme } from "@/features/theme-switcher";
+import { TooltipProvider } from "@/shared/ui/tooltip";
 
 interface ClientProvidersProps {
   children: React.ReactNode;

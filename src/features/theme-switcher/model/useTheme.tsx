@@ -2,9 +2,10 @@ import "client-only";
 
 import { useLayoutEffect } from "react";
 
-import { useLocalStorage } from "@/lib/hooks";
+import { useLocalStorage } from "@/shared/lib/hooks";
 
-import { DEFAULT_THEME, THEME_STORAGE_KEY, Theme } from "./config";
+import type { Theme } from "./config";
+import { DEFAULT_THEME, THEME_STORAGE_KEY } from "./config";
 import { getSystemTheme } from "./getSystemTheme";
 
 export const useTheme = () => {

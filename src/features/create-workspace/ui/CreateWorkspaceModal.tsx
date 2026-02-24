@@ -2,11 +2,14 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
-import { useForm } from "react-hook-form";
 import { useEffect } from "react";
+import { useForm } from "react-hook-form";
 
-import { cn } from "@/utils";
-
+import type { CreateWorkspaceFormData } from "@/entities/workspace";
+import {
+  createWorkspaceFormSchema,
+  useCreateWorkspaceMutation,
+} from "@/entities/workspace";
 import {
   DialogContent,
   DialogHeader,
@@ -22,13 +25,7 @@ import {
   Dialog,
   Label,
 } from "@/shared/ui";
-
-import { useCreateWorkspaceMutation } from "@/entities/workspace";
-
-import {
-  CreateWorkspaceFormData,
-  createWorkspaceFormSchema,
-} from "../model/schemas";
+import { cn } from "@/utils";
 
 interface CreateWorkspaceModalProps {
   open: boolean;

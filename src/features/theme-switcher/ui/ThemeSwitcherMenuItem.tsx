@@ -1,11 +1,13 @@
 "use client";
 
-import { cn } from "@/utils";
+import { useTranslations } from "next-intl";
 
 import { DropdownMenuItem } from "@/shared/ui";
+import { cn } from "@/utils";
+
 
 import { ThemeSwitcher } from "./ThemeSwitcher";
-import { useTranslations } from "next-intl";
+
 
 interface ThemeSwitcherMenuItemProps {
   className?: string;

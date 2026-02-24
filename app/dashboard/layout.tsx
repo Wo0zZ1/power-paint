@@ -1,6 +1,6 @@
-import { getTranslations } from "next-intl/server";
-import { ReactNode } from "react";
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
+import type { ReactNode } from "react";
 
 import { ROUTES } from "@/shared/config";
 

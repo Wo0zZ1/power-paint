@@ -1,9 +1,10 @@
-import { NextRequest, NextResponse } from "next/server";
 import { notFound } from "next/navigation";
+import type { NextRequest} from "next/server";
+import { NextResponse } from "next/server";
 
-import { getUserPublicInfo } from "@/shared/lib/utils";
 import { getSession } from "@/shared/lib/auth";
 import { prisma } from "@/shared/lib/prisma";
+import { getUserPublicInfo } from "@/shared/lib/utils";
 
 export const GET = async (
   request: NextRequest,

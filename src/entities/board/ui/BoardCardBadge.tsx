@@ -1,7 +1,7 @@
+import type { AccessRole } from "@/shared/constants";
+import { Badge } from "@/shared/ui";
 import { cn, getBadgeContentByAccessRole } from "@/utils";
 
-import { Badge } from "@/shared/ui";
-import { AccessRole } from "@/shared/constants";
 
 interface BoardCardBadgeProps {
   className?: string;

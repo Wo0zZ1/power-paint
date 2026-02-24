@@ -1,12 +1,10 @@
-import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
 import Link from "next/link";
-
-import { getQueryClient } from "@/shared/api";
-import { ROUTES } from "@/shared/config";
+import { getTranslations } from "next-intl/server";
 
 import { getWorkspaceQueryOption } from "@/entities/workspace/server";
-
+import { getQueryClient } from "@/shared/api";
+import { ROUTES } from "@/shared/config";
 import { BoardsGridBlock } from "@/widgets/boards-grid";
 
 interface WorkspacePageProps {

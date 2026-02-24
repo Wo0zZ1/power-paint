@@ -1,10 +1,9 @@
 "use client";
 
-import { Workspace } from "@prisma/client";
+import type { Workspace } from "@prisma/client";
 import { useTranslations } from "next-intl";
-import { SubmitEvent, useEffect } from "react";
-
-import { cn } from "@/utils";
+import type { SubmitEvent} from "react";
+import { useEffect } from "react";
 
 import {
   Field,
@@ -20,6 +19,8 @@ import {
   DialogContent,
   DialogDescription,
 } from "@/shared/ui";
+import { cn } from "@/utils";
+
 
 interface ChangeWorkspaceAccessModalProps {
   workspace?: Workspace;

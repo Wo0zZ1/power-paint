@@ -1,12 +1,12 @@
 "use client";
 
-import { Workspace } from "@prisma/client";
+import type { Workspace } from "@prisma/client";
 import { LucideFolder } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { SubmitEvent, useEffect, useState } from "react";
+import type { SubmitEvent} from "react";
+import { useEffect, useState } from "react";
 
-import { cn } from "@/utils";
-
+import { useDeleteWorkspaceMutation } from "@/entities/workspace/model/mutations";
 import {
   Field,
   Input,
@@ -26,8 +26,9 @@ import {
   EmptyTitle,
   EmptyDescription,
 } from "@/shared/ui";
+import { cn } from "@/utils";
 
-import { useDeleteWorkspaceMutation } from "@/entities/workspace/model/mutations";
+
 
 interface DeleteWorkspaceModalProps {
   workspace?: Workspace;

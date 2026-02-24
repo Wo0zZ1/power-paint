@@ -1,19 +1,13 @@
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
-import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
-import { ReactNode } from "react";
-import Link from "next/link";
+import type { ReactNode } from "react";
 
-import { getQueryClient } from "@/shared/api";
-import { ROUTES } from "@/shared/config";
-
-import { Button } from "@/shared/ui";
-
-import { getWorkspacesQueryOption } from "@/entities/workspace/server";
 import { getBoardsQueryOption } from "@/entities/board/server";
-import { WorkspaceWithAccess } from "@/entities/workspace";
-
+import type { WorkspaceWithAccess } from "@/entities/workspace";
+import { getWorkspacesQueryOption } from "@/entities/workspace/server";
 import { CreateBoardButton } from "@/features/create-board";
+import { getQueryClient } from "@/shared/api";
+import { Button } from "@/shared/ui";
 
 import { BoardsCarousel } from "./BoardsCarousel";
 
@@ -28,8 +22,6 @@ export async function BoardsCarouselBlock({
   title,
   link,
 }: BoardsCarouselBlockProps) {
-  const t = await getTranslations();
-
   const queryClient = getQueryClient();
   const cookieStore = await cookies();
 

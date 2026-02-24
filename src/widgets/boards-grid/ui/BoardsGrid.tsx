@@ -2,18 +2,17 @@
 
 import { useTranslations } from "next-intl";
 
+import { useGetBoardsQuery, BoardCard } from "@/entities/board";
+import type { WorkspaceWithBoards } from "@/entities/workspace";
+import { ChangeBoardAccessModal } from "@/features/change-board-access";
+import { DeleteBoardModal } from "@/features/delete-board";
+import { RenameBoardModal } from "@/features/rename-board";
 import { cn } from "@/utils";
 
-import { useGetBoardsQuery, BoardCard } from "@/entities/board";
-import { WorkspaceWithBoards } from "@/entities/workspace";
-
-import { ChangeBoardAccessModal } from "@/features/change-board-access";
-import { RenameBoardModal } from "@/features/rename-board";
-import { DeleteBoardModal } from "@/features/delete-board";
-
 import { useBoardsGrid } from "../model/useBoardsGrid";
-import { LoadingBoardGrid } from "./LoadingBoardsGrid";
+
 import { ErrorBoardGrid } from "./ErrorBoardsGrid";
+import { LoadingBoardGrid } from "./LoadingBoardsGrid";
 
 interface BoardsGridProps {
   workspace: WorkspaceWithBoards;

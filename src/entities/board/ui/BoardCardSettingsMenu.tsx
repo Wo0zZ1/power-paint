@@ -3,8 +3,7 @@
 import { Settings } from "lucide-react";
 import { useTranslations } from "next-intl";
 
-import { AccessRole } from "@/shared/constants";
-
+import type { AccessRole } from "@/shared/constants";
 import {
   DropdownMenuContent,
   DropdownMenuLabel,

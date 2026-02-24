@@ -1,17 +1,18 @@
-import { Board } from "@prisma/client";
+import type { Board } from "@prisma/client";
 
-import { cn } from "@/utils";
 import { AccessRole } from "@/shared/constants";
-
 import { Card } from "@/shared/ui";
+import { cn } from "@/utils";
 
-import { BoardCardBadge } from "./BoardCardBadge";
-import { BoardCardImage } from "./BoardCardImage";
-import { BoardCardHeader } from "./BoardCardHeader";
-import { BoardCardFooter } from "./BoardCardFooter";
-import { BoardCardSettingsMenu } from "./BoardCardSettingsMenu";
 
 import preview1 from "../../../../public/assets/preview1.jpeg"; // TODO Remove this hardcoded preview image
+
+import { BoardCardBadge } from "./BoardCardBadge";
+import { BoardCardFooter } from "./BoardCardFooter";
+import { BoardCardHeader } from "./BoardCardHeader";
+import { BoardCardImage } from "./BoardCardImage";
+import { BoardCardSettingsMenu } from "./BoardCardSettingsMenu";
+
 
 interface BoardCardProps {
   board: Board;

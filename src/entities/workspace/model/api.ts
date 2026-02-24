@@ -1,10 +1,9 @@
-import { Workspace, WorkspaceType } from "@prisma/client";
+import type { Workspace, WorkspaceType } from "@prisma/client";
 
 import { GET_BASE_API_URL, fetchInitWithCookies } from "@/shared/api";
 
-import { CreateWorkspaceData } from "@/features/create-workspace";
-
-import { WorkspaceWithAccess } from "./types";
+import type { CreateWorkspaceData } from "./schemas";
+import type { WorkspaceWithAccess } from "./types";
 
 export const url = GET_BASE_API_URL() + "/workspaces";
 

@@ -1,11 +1,11 @@
-import { NextRequest, NextResponse } from "next/server";
 import { notFound, forbidden } from "next/navigation";
+import type { NextRequest} from "next/server";
+import { NextResponse } from "next/server";
 
-import { prisma } from "@/shared/lib/prisma";
+import type { BoardWithAccess } from "@/entities/board";
 import { AccessRole } from "@/shared/constants";
 import { getAccessToBoard, getSession } from "@/shared/lib/auth";
-
-import { BoardWithAccess } from "@/entities/board";
+import { prisma } from "@/shared/lib/prisma";
 
 export const GET = async (
   request: NextRequest,

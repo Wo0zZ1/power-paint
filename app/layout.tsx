@@ -6,15 +6,13 @@ import {
   QueryProvider,
   ServerProviders,
 } from "@/app/providers";
-
-import { Header } from "@/widgets/header";
-
 import { ThemeScript } from "@/features/theme-switcher/ui/ThemeScript";
+import { getSession } from "@/shared/lib/auth";
+import { Header } from "@/widgets/header";
 
 import { geistMono, geistSans, interSans } from "./fonts";
 
 import "./globals.css";
-import { getSession } from "@/shared/lib/auth";
 
 export const metadata: Metadata = {
   title: {

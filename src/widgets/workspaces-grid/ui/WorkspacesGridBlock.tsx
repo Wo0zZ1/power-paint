@@ -1,13 +1,10 @@
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { cookies } from "next/headers";
 
-import { getQueryClient } from "@/shared/api";
-
-import { Button } from "@/shared/ui";
-
 import { getWorkspacesQueryOption } from "@/entities/workspace/server";
-
 import { CreateWorkspaceButton } from "@/features/create-workspace";
+import { getQueryClient } from "@/shared/api";
+import { Button } from "@/shared/ui";
 
 import { WorkspacesGrid } from "./WorkspacesGrid";
 

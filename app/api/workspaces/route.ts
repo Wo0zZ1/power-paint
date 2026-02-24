@@ -1,15 +1,16 @@
-import { NextRequest, NextResponse } from "next/server";
+import type { WorkspaceType } from "@prisma/client";
 import { unauthorized } from "next/navigation";
-import { WorkspaceType } from "@prisma/client";
+import type { NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 import { z } from "zod";
 
-import { getSession, getAccessToWorkspace } from "@/shared/lib/auth";
+import {
+  createWorkspaceSchema,
+  type WorkspaceWithAccess,
+} from "@/entities/workspace";
 import { AccessRole } from "@/shared/constants";
+import { getSession, getAccessToWorkspace } from "@/shared/lib/auth";
 import { prisma } from "@/shared/lib/prisma";
-
-import { WorkspaceWithAccess } from "@/entities/workspace";
-
-import { createWorkspaceSchema } from "@/features/create-workspace";
 
 export const GET = async (
   request: NextRequest,

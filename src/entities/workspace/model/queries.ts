@@ -1,9 +1,9 @@
+import type { WorkspaceType } from "@prisma/client";
 import { useQuery } from "@tanstack/react-query";
-import { WorkspaceType } from "@prisma/client";
+
+import { WORKSPACES_QUERY_KEY } from "@/shared/constants";
 
 import { WorkspacesApi } from "./api";
-
-export const WORKSPACES_QUERY_KEY = "workspaces";
 
 export const useGetWorkspacesQuery = ({
   userId,

@@ -2,7 +2,7 @@ import { Sun, Moon, Monitor } from "lucide-react";
 
 import { Button } from "@/shared/ui";
 
-import { Theme } from "../model/config";
+import type { Theme } from "../model/config";
 
 interface ThemeButtonProps {
   className?: string;
