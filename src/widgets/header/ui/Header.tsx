@@ -15,7 +15,7 @@ export async function Header(props: HeaderProps) {
     <header
       className={cn(
         props.className,
-        "sticky top-0 z-50 h-18 w-full bg-background",
+        "sticky shrink-0 top-0 z-50 h-18 w-full bg-background",
       )}
     >
       <div className="flex container mx-auto h-full px-4 items-center justify-between">

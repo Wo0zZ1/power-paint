@@ -1,5 +1,58 @@
-import { DashboardPage } from "@/app/pages/dashboard";
+import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
+import { cookies } from "next/headers";
+import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 
-export default async function Dashboard() {
-  return <DashboardPage />;
+import { getWorkspacesQueryOption } from "@/entities/workspace/server";
+import { getQueryClient } from "@/shared/api";
+import { ROUTES } from "@/shared/config";
+import { Button } from "@/shared/ui";
+import { BoardsCarouselBlock } from "@/widgets/boards-carousel";
+import { WorkspacesCarouselBlock } from "@/widgets/workspaces-carousel";
+
+export default async function DashboardPage() {
+  const t = await getTranslations();
+
+  const cookieStore = await cookies();
+  const queryClient = getQueryClient();
+
+  const personalWorkspace = (
+    await queryClient.fetchQuery(
+      getWorkspacesQueryOption({
+        cookieString: cookieStore.toString(),
+        type: "personal",
+      }),
+    )
+  )[0];
+
+  return (
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <div>
+        <WorkspacesCarouselBlock
+          title={t("workspace.plural")}
+          action={
+            <Button size="xs" variant="link" className="text-sm" asChild>
+              <Link href={ROUTES.DASHBOARD.WORKSPACES}>{t("viewAll")}</Link>
+            </Button>
+          }
+        />
+
+        <BoardsCarouselBlock
+          title={t("board.personal")}
+          action={
+            <Button variant="link" size="xs" className="text-sm" asChild>
+              <Link
+                href={ROUTES.DASHBOARD.WORKSPACE(
+                  personalWorkspace.workspace.id,
+                )}
+              >
+                {t("viewAll")}
+              </Link>
+            </Button>
+          }
+          workspace={personalWorkspace}
+        />
+      </div>
+    </HydrationBoundary>
+  );
 }

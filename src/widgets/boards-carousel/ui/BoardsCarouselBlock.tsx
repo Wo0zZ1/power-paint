@@ -7,20 +7,19 @@ import type { WorkspaceWithAccess } from "@/entities/workspace";
 import { getWorkspacesQueryOption } from "@/entities/workspace/server";
 import { CreateBoardButton } from "@/features/create-board";
 import { getQueryClient } from "@/shared/api";
-import { Button } from "@/shared/ui";
 
 import { BoardsCarousel } from "./BoardsCarousel";
 
 interface BoardsCarouselBlockProps {
   title: string;
   workspace: WorkspaceWithAccess;
-  link: ReactNode;
+  action?: ReactNode;
 }
 
 export async function BoardsCarouselBlock({
   workspace: { workspace },
   title,
-  link,
+  action,
 }: BoardsCarouselBlockProps) {
   const queryClient = getQueryClient();
   const cookieStore = await cookies();
@@ -40,16 +39,15 @@ export async function BoardsCarouselBlock({
     <HydrationBoundary state={dehydrate(queryClient)}>
       <div>
         <div className="flex items-end mt-12 mb-4">
-          <h3 className="mr-auto text-2xl font-semibold">{title}</h3>
+          <h2 className="mr-auto text-2xl font-semibold">{title}</h2>
 
           <CreateBoardButton
             workspace={workspace}
             size="sm"
             className="text-sm mr-4"
           />
-          <Button size="xs" variant="link" className="text-sm" asChild>
-            {link}
-          </Button>
+
+          {action}
         </div>
 
         <BoardsCarousel workspace={workspace} />
