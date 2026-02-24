@@ -2,9 +2,9 @@ import { Suspense } from "react";
 
 import { cn } from "@/utils";
 
-import { Logo } from "./logo";
 import { HeaderActions } from "./HeaderActions";
 import { LoadingAvatar } from "./LoadingAvatar";
+import { Logo } from "./logo";
 
 interface HeaderProps {
   className?: string;

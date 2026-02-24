@@ -1,4 +1,5 @@
-import { AccessLevel, Workspace } from "@prisma/client";
+import type { Workspace } from "@prisma/client";
+import { AccessLevel } from "@prisma/client";
 import { z } from "zod";
 
 const uuidSchema = z.uuid("Invalid workspace ID format");
@@ -32,5 +33,3 @@ export const createBoardSchema = getCreateBoardFormSchema([]).and(
       .optional(),
   }),
 );
-
-export type CreateBoardData = z.infer<typeof createBoardSchema>;

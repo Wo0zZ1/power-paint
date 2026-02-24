@@ -1,8 +1,12 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { cn } from "@/utils";
 
+import type { BoardWithAccess } from "@/entities/board";
+import { BoardCard } from "@/entities/board";
+import { ChangeBoardAccessModal } from "@/features/change-board-access";
+import { DeleteBoardModal } from "@/features/delete-board";
+import { RenameBoardModal } from "@/features/rename-board";
 import {
   Carousel,
   CarouselContent,
@@ -10,12 +14,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/shared/ui";
-
-import { BoardCard, BoardWithAccess } from "@/entities/board";
-
-import { ChangeBoardAccessModal } from "@/features/change-board-access";
-import { DeleteBoardModal } from "@/features/delete-board";
-import { RenameBoardModal } from "@/features/rename-board";
+import { cn } from "@/utils";
 
 import { useBoardsCarousel } from "../model/useBoardsCarousel";
 

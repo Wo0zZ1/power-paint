@@ -3,6 +3,9 @@
 import { EllipsisVertical } from "lucide-react";
 import { useTranslations } from "next-intl";
 
+
+import { LanguageSwitcherMenuItem } from "@/features/language-switcher";
+import { ThemeSwitcherMenuItem } from "@/features/theme-switcher";
 import {
   Button,
   DropdownMenu,
@@ -11,9 +14,6 @@ import {
   DropdownMenuLabel,
   Separator,
 } from "@/shared/ui";
-
-import { LanguageSwitcherMenuItem } from "@/features/language-switcher";
-import { ThemeSwitcherMenuItem } from "@/features/theme-switcher";
 
 import { SettingsTooltip } from "./SettingsTooltip";
 

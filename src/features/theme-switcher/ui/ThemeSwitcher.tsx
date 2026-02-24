@@ -1,11 +1,11 @@
 "use client";
 
-import { ButtonGroup } from "@/shared/ui";
-
 import { cn } from "@/shared/lib/utils";
+import { ButtonGroup } from "@/shared/ui";
 
 import { THEMES } from "../model/config";
 import { useTheme } from "../model/useTheme";
+
 import { ThemeButton } from "./ThemeButton";
 
 interface ThemeSwitcherProps {

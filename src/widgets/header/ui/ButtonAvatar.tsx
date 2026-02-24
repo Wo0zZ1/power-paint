@@ -1,6 +1,6 @@
+import { Avatar, AvatarBadge, AvatarFallback, AvatarImage } from "@/shared/ui";
 import { cn } from "@/utils";
 
-import { Avatar, AvatarBadge, AvatarFallback, AvatarImage } from "@/shared/ui";
 
 type ButtonAvatarProps = {
   className?: string;

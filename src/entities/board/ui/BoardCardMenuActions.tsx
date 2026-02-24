@@ -4,7 +4,6 @@ import { PencilLine, Share2, Trash2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 import { AccessRole } from "@/shared/constants";
-
 import { DropdownMenuGroup, DropdownMenuItem, Separator } from "@/shared/ui";
 
 interface BoardCardMenuActionsProps {

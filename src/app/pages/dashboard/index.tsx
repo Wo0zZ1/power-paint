@@ -1,17 +1,15 @@
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
-import { getTranslations } from "next-intl/server";
-import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import Link from "next/link";
-
-import { getSession } from "@/shared/lib/auth";
-import { getQueryClient } from "@/shared/api";
-import { ROUTES } from "@/shared/config";
+import { redirect } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 
 import { getWorkspacesQueryOption } from "@/entities/workspace/server";
-
-import { WorkspacesCarouselBlock } from "@/widgets/workspaces-carousel";
+import { getQueryClient } from "@/shared/api";
+import { ROUTES } from "@/shared/config";
+import { getSession } from "@/shared/lib/auth";
 import { BoardsCarouselBlock } from "@/widgets/boards-carousel";
+import { WorkspacesCarouselBlock } from "@/widgets/workspaces-carousel";
 
 export async function DashboardPage() {
   const t = await getTranslations();

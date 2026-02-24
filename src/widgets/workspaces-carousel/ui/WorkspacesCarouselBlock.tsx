@@ -1,15 +1,11 @@
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
-import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
-import { ReactNode } from "react";
-
-import { getQueryClient } from "@/shared/api";
-
-import { Button } from "@/shared/ui";
+import type { ReactNode } from "react";
 
 import { getWorkspacesQueryOption } from "@/entities/workspace/server";
-
 import { CreateWorkspaceButton } from "@/features/create-workspace";
+import { getQueryClient } from "@/shared/api";
+import { Button } from "@/shared/ui";
 
 import { WorkspacesCarousel } from "./WorkspacesCarousel";
 
@@ -22,8 +18,6 @@ export async function WorkspacesCarouselBlock({
   title,
   link,
 }: WorkspacesCarouselBlockProps) {
-  const t = await getTranslations();
-
   const queryClient = getQueryClient();
   const cookieStore = await cookies();
 

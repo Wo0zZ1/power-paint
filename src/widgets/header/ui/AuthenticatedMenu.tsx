@@ -1,11 +1,14 @@
 "use client";
 
-import type { Session } from "next-auth";
 import { LogOut } from "lucide-react";
+import type { Session } from "next-auth";
 import { signOut } from "next-auth/react";
 import { useTranslations } from "next-intl";
 
+import { LanguageSwitcherMenuItem } from "@/features/language-switcher";
+import { ThemeSwitcherMenuItem } from "@/features/theme-switcher";
 import { ROUTES } from "@/shared/config";
+import { shortenEmail } from "@/shared/lib/utils";
 import {
   DropdownMenuTrigger,
   DropdownMenuContent,
@@ -17,11 +20,7 @@ import {
   Separator,
 } from "@/shared/ui";
 
-import { LanguageSwitcherMenuItem } from "@/features/language-switcher";
-import { ThemeSwitcherMenuItem } from "@/features/theme-switcher";
-
 import { ButtonAvatar } from "./ButtonAvatar";
-import { shortenEmail } from "@/shared/lib/utils";
 
 interface AuthenticatedMenuProps {
   session: Session;

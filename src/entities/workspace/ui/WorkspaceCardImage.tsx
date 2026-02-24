@@ -1,8 +1,9 @@
-import Image, { StaticImageData } from "next/image";
-
-import { cn } from "@/utils";
-import { ROUTES } from "@/shared/config";
+import type { StaticImageData } from "next/image";
+import Image from "next/image";
 import Link from "next/link";
+
+import { ROUTES } from "@/shared/config";
+import { cn } from "@/utils";
 
 interface WorkspaceCardImageProps {
   className?: string;

@@ -1,4 +1,4 @@
-import { Theme } from "./config";
+import type { Theme } from "./config";
 
 export const getSystemTheme = (): Exclude<Theme, "system"> => {
   return window.matchMedia("(prefers-color-scheme: dark)").matches

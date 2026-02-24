@@ -1,6 +1,6 @@
+import { CardHeader, CardTitle } from "@/shared/ui";
 import { cn } from "@/utils";
 
-import { CardHeader, CardTitle } from "@/shared/ui";
 
 interface WorkspaceCardHeaderProps {
   className?: string;

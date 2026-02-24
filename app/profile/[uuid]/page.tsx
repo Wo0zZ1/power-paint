@@ -1,6 +1,7 @@
-import { cn } from "@/utils";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
+
+import { cn } from "@/utils";
 
 export default async function ProfilePage({
   params,

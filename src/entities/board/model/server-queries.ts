@@ -1,7 +1,8 @@
 import { queryOptions } from "@tanstack/react-query";
 
+import { BOARDS_QUERY_KEY } from "@/shared/constants";
+
 import { BoardsApi } from "./api";
-import { BOARDS_QUERY_KEY } from "./queries";
 
 export const getBoardsQueryOption = ({
   userId,

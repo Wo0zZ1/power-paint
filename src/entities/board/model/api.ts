@@ -1,9 +1,9 @@
-import { Board } from "@prisma/client";
+import type { Board } from "@prisma/client";
 
 import { GET_BASE_API_URL, fetchInitWithCookies } from "@/shared/api";
 
-import { BoardWithAccess } from "./types";
-import { CreateBoardData } from "@/features/create-board";
+import type { CreateBoardFormData } from "./schemas";
+import type { BoardWithAccess } from "./types";
 
 const url = GET_BASE_API_URL() + "/boards";
 
@@ -29,7 +29,7 @@ const fetchBoards = async ({
 };
 
 const createBoard = async (
-  board: CreateBoardData,
+  board: CreateBoardFormData,
 ): Promise<BoardWithAccess> => {
   const response = await fetch(url, {
     ...fetchInitWithCookies(),

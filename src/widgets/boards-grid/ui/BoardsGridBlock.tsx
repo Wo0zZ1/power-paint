@@ -1,15 +1,14 @@
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { cookies } from "next/headers";
 
-import { getQueryClient } from "@/shared/api";
 
-import { Button } from "@/shared/ui";
 
-import { getWorkspacesQueryOption } from "@/entities/workspace/server";
 import { getBoardsQueryOption } from "@/entities/board/server";
-import { WorkspaceWithAccess } from "@/entities/workspace";
-
+import type { WorkspaceWithAccess } from "@/entities/workspace";
+import { getWorkspacesQueryOption } from "@/entities/workspace/server";
 import { CreateBoardButton } from "@/features/create-board";
+import { getQueryClient } from "@/shared/api";
+import { Button } from "@/shared/ui";
 
 import { BoardsGrid } from "./BoardsGrid";
 

@@ -1,17 +1,18 @@
-import { Workspace } from "@prisma/client";
+import type { Workspace } from "@prisma/client";
 
-import { cn } from "@/utils";
 import { AccessRole } from "@/shared/constants";
-
 import { Card } from "@/shared/ui";
+import { cn } from "@/utils";
 
-import { WorkspaceCardBadge } from "./WorkspaceCardBadge";
-import { WorkspaceCardImage } from "./WorkspaceCardImage";
-import { WorkspaceCardHeader } from "./WorkspaceCardHeader";
-import { WorkspaceCardFooter } from "./WorkspaceCardFooter";
-import { WorkspaceCardSettingsMenu } from "./WorkspaceCardSettingsMenu";
 
 import preview1 from "../../../../public/assets/preview1.jpeg"; // TODO Remove this hardcoded preview image
+
+import { WorkspaceCardBadge } from "./WorkspaceCardBadge";
+import { WorkspaceCardFooter } from "./WorkspaceCardFooter";
+import { WorkspaceCardHeader } from "./WorkspaceCardHeader";
+import { WorkspaceCardImage } from "./WorkspaceCardImage";
+import { WorkspaceCardSettingsMenu } from "./WorkspaceCardSettingsMenu";
+
 
 interface WorkspaceCardProps {
   workspace: Workspace;

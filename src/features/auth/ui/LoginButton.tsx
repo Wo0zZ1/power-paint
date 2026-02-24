@@ -1,12 +1,12 @@
 "use client";
 
-import { useTranslations } from "next-intl";
-import { signIn } from "next-auth/react";
 import { LogIn } from "lucide-react";
+import { signIn } from "next-auth/react";
+import { useTranslations } from "next-intl";
 
-import { cn } from "@/utils";
-import { Button } from "@/shared/ui";
 import { ROUTES } from "@/shared/config";
+import { Button } from "@/shared/ui";
+import { cn } from "@/utils";
 
 interface LoginButtonProps {
   className?: string;

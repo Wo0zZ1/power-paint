@@ -1,13 +1,14 @@
 "use client";
 
+import type { Workspace } from "@prisma/client";
 import type { VariantProps } from "class-variance-authority";
 import { useTranslations } from "next-intl";
-import { Workspace } from "@prisma/client";
 import { useState } from "react";
 
+import type { buttonVariants} from "@/shared/ui";
+import { Button } from "@/shared/ui";
 import { cn } from "@/utils";
 
-import { buttonVariants, Button } from "@/shared/ui";
 
 import { CreateBoardModal } from "./CreateBoardModal";
 

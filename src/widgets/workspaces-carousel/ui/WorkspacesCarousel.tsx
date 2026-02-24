@@ -2,6 +2,10 @@
 
 import { useTranslations } from "next-intl";
 
+import { WorkspaceCard, useGetWorkspacesQuery } from "@/entities/workspace";
+import { ChangeWorkspaceAccessModal } from "@/features/change-workspace-access";
+import { DeleteWorkspaceModal } from "@/features/delete-workspace";
+import { RenameWorkspaceModal } from "@/features/rename-workspace";
 import {
   Carousel,
   CarouselItem,
@@ -10,15 +14,10 @@ import {
   CarouselPrevious,
 } from "@/shared/ui";
 
-import { WorkspaceCard, useGetWorkspacesQuery } from "@/entities/workspace";
-
-import { ChangeWorkspaceAccessModal } from "@/features/change-workspace-access";
-import { RenameWorkspaceModal } from "@/features/rename-workspace";
-import { DeleteWorkspaceModal } from "@/features/delete-workspace";
-
-import { LoadingWorkspacesCarousel } from "./LoadingWorkspacesCarousel";
-import { ErrorWorkspacesCarousel } from "./ErrorWorkspacesCarousel";
 import { useWorkspacesCarousel } from "../model/useWorkspacesCarousel";
+
+import { ErrorWorkspacesCarousel } from "./ErrorWorkspacesCarousel";
+import { LoadingWorkspacesCarousel } from "./LoadingWorkspacesCarousel";
 
 export function WorkspacesCarousel() {
   const t = useTranslations();

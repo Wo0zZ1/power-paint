@@ -1,4 +1,4 @@
-import { Board } from "@prisma/client";
+import type { Board } from "@prisma/client";
 import { useState } from "react";
 
 type setSelectedBoardFn = (board: Board) => void;

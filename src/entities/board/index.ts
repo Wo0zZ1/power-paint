@@ -8,3 +8,6 @@ export {
   useUpdateBoardMutation,
   useDeleteBoardMutation,
 } from "./model/mutations";
+
+export type { CreateBoardFormData } from "./model/schemas";
+export { createBoardSchema, getCreateBoardFormSchema } from "./model/schemas";

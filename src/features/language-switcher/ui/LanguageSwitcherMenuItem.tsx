@@ -8,9 +8,10 @@ import {
   DropdownMenuSubContent,
 } from "@/shared/ui";
 
+import { changeLocaleAction } from "../models/changeLocaleAction";
+
 import { LanguageList } from "./LanguageList";
 import { LanguageTrigger } from "./LanguageTrigger";
-import { changeLocaleAction } from "../models/changeLocaleAction";
 
 export function LanguageSwitcherMenuItem() {
   const locale = useLocale();

@@ -1,4 +1,4 @@
-import { Workspace } from "@prisma/client";
+import type { Workspace } from "@prisma/client";
 import { useState } from "react";
 
 type setSelectedWorkspaceFn = (workspace: Workspace) => void;

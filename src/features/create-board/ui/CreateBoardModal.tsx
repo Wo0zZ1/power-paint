@@ -1,13 +1,17 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Controller, useForm } from "react-hook-form";
-import { useCallback, useEffect } from "react";
+import type { Workspace } from "@prisma/client";
 import { useTranslations } from "next-intl";
-import { Workspace } from "@prisma/client";
+import { useCallback, useEffect } from "react";
+import { Controller, useForm } from "react-hook-form";
 
-import { cn } from "@/utils";
-
+import type { CreateBoardFormData } from "@/entities/board";
+import {
+  getCreateBoardFormSchema,
+  useCreateBoardMutation,
+} from "@/entities/board";
+import { useGetWorkspacesQuery } from "@/entities/workspace";
 import {
   DialogContent,
   DialogHeader,
@@ -28,14 +32,7 @@ import {
   SelectContent,
   SelectItem,
 } from "@/shared/ui";
-
-import { useGetWorkspacesQuery } from "@/entities/workspace";
-import { useCreateBoardMutation } from "@/entities/board";
-
-import {
-  CreateBoardFormData,
-  getCreateBoardFormSchema,
-} from "../model/schemas";
+import { cn } from "@/utils";
 
 interface CreateBoardModalProps {
   open: boolean;

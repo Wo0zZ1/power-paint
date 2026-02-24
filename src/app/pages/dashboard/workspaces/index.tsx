@@ -1,11 +1,11 @@
-import { redirect } from "next/navigation";
 import Link from "next/link";
-
-import { getSession } from "@/shared/lib/auth";
-import { ROUTES } from "@/shared/config";
-
-import { WorkspacesGridBlock } from "@/widgets/workspaces-grid";
+import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
+
+import { ROUTES } from "@/shared/config";
+import { getSession } from "@/shared/lib/auth";
+import { WorkspacesGridBlock } from "@/widgets/workspaces-grid";
+
 
 export async function WorkspacesPage() {
   const t = await getTranslations();

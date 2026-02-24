@@ -1,11 +1,11 @@
 "use client";
 
-import { SubmitEvent, useEffect, useState } from "react";
+import type { Board } from "@prisma/client";
 import { useTranslations } from "next-intl";
-import { Board } from "@prisma/client";
+import type { SubmitEvent} from "react";
+import { useEffect, useState } from "react";
 
-import { cn } from "@/utils";
-
+import { useUpdateBoardMutation } from "@/entities/board";
 import {
   Label,
   Field,
@@ -21,8 +21,9 @@ import {
   DialogDescription,
   Spinner,
 } from "@/shared/ui";
+import { cn } from "@/utils";
 
-import { useUpdateBoardMutation } from "@/entities/board";
+
 
 interface RenameBoardModalProps {
   board?: Board;

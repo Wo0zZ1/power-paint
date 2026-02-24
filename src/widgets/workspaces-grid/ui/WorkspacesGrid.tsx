@@ -3,14 +3,14 @@
 import { useTranslations } from "next-intl";
 
 import { useGetWorkspacesQuery, WorkspaceCard } from "@/entities/workspace";
-
 import { ChangeWorkspaceAccessModal } from "@/features/change-workspace-access";
-import { RenameWorkspaceModal } from "@/features/rename-workspace";
 import { DeleteWorkspaceModal } from "@/features/delete-workspace";
+import { RenameWorkspaceModal } from "@/features/rename-workspace";
 
 import { useWorkspacesGrid } from "../model/useWorkspacesGrid";
-import { LoadingWorkspaceGrid } from "./LoadingWorkspacesGrid";
+
 import { ErrorWorkspaceGrid } from "./ErrorWorkspacesGrid";
+import { LoadingWorkspaceGrid } from "./LoadingWorkspacesGrid";
 
 export function WorkspacesGrid() {
   const t = useTranslations();
