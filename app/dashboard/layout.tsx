@@ -1,8 +1,10 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import type { ReactNode } from "react";
 
 import { ROUTES } from "@/shared/config";
+import { getSession } from "@/shared/lib/auth";
 
 export default async function DashboardLayout({
   children,
@@ -11,8 +13,12 @@ export default async function DashboardLayout({
 }) {
   const t = await getTranslations();
 
+  const session = await getSession();
+
+  if (!session) redirect(ROUTES.LOGIN);
+
   return (
-    <div className="container mx-auto mt-8 px-4">
+    <div className="flex flex-col grow container mx-auto mt-8 px-4">
       <Link href={ROUTES.DASHBOARD.ROOT}>
         <h1 className="text-4xl font-bold">{t("dashboard.title")}</h1>
       </Link>

@@ -37,6 +37,10 @@
     "all": "All Workspaces",
     "empty": "No available workspaces",
     "settings": "Workspace Settings",
+    "notFound": {
+      "title": "Workspace not found",
+      "description": "The workspace you are looking for does not exist or is inaccessible."
+    },
     "create": {
       "action": "Create",
       "title": "Create New Workspace",

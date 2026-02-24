@@ -11,12 +11,12 @@ import { WorkspacesCarousel } from "./WorkspacesCarousel";
 
 interface WorkspacesCarouselBlockProps {
   title: string;
-  link: ReactNode;
+  action: ReactNode;
 }
 
 export async function WorkspacesCarouselBlock({
   title,
-  link,
+  action,
 }: WorkspacesCarouselBlockProps) {
   const queryClient = getQueryClient();
   const cookieStore = await cookies();
@@ -32,12 +32,10 @@ export async function WorkspacesCarouselBlock({
     <HydrationBoundary state={dehydrate(queryClient)}>
       <div>
         <div className="flex items-end mt-12 mb-4">
-          <h3 className="mr-auto text-2xl font-semibold">{title}</h3>
+          <h2 className="mr-auto text-2xl font-semibold">{title}</h2>
 
           <CreateWorkspaceButton size="sm" className="text-sm mr-4" />
-          <Button size="xs" variant="link" className="text-sm" asChild>
-            {link}
-          </Button>
+            {action}
         </div>
 
         <WorkspacesCarousel />

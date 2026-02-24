@@ -1,11 +1,34 @@
-import { BoardsPage } from "@/app/pages/dashboard/workspaces/workspace/boards";
+import { cookies } from "next/headers";
+import { getTranslations } from "next-intl/server";
 
-export default async function Boards({
+import { getWorkspaceQueryOption } from "@/entities/workspace/server";
+import { getQueryClient } from "@/shared/api";
+import { GoBackButton } from "@/shared/ui";
+import { BoardsGridBlock } from "@/widgets/boards-grid";
+
+export default async function BoardsPage({
   params,
 }: {
   params: Promise<{ uuid: string }>;
 }) {
+  const t = await getTranslations();
   const { uuid } = await params;
 
-  return <BoardsPage uuid={uuid} />;
+  const cookieStore = await cookies();
+  const queryClient = getQueryClient();
+
+  const workspaceWithAccess = await queryClient.fetchQuery(
+    getWorkspaceQueryOption({
+      workspaceId: uuid,
+      cookieString: cookieStore.toString(),
+    }),
+  );
+
+  return (
+    <BoardsGridBlock
+      title={t("board.all")}
+      workspace={workspaceWithAccess}
+      action={<GoBackButton variant="link" size="xs" className="text-sm" />}
+    />
+  );
 }

@@ -4,18 +4,17 @@ import { cookies } from "next/headers";
 import { getWorkspacesQueryOption } from "@/entities/workspace/server";
 import { CreateWorkspaceButton } from "@/features/create-workspace";
 import { getQueryClient } from "@/shared/api";
-import { Button } from "@/shared/ui";
 
 import { WorkspacesGrid } from "./WorkspacesGrid";
 
 interface WorkspacesGridBlockProps {
   title: string;
-  link: React.ReactNode;
+  action?: React.ReactNode;
 }
 
 export async function WorkspacesGridBlock({
   title,
-  link,
+  action,
 }: WorkspacesGridBlockProps) {
   const queryClient = getQueryClient();
   const cookieStore = await cookies();
@@ -30,12 +29,10 @@ export async function WorkspacesGridBlock({
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       <div className="flex items-end mt-12 mb-4">
-        <h3 className="mr-auto text-2xl font-semibold">{title}</h3>
+        <h2 className="mr-auto text-2xl font-semibold">{title}</h2>
 
         <CreateWorkspaceButton size="sm" className="text-sm mr-4" />
-        <Button size="xs" variant="link" className="text-sm" asChild>
-          {link}
-        </Button>
+        {action}
       </div>
 
       <WorkspacesGrid />

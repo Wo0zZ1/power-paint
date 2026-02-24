@@ -32,19 +32,19 @@ export default async function RootLayout({
 
   return (
     <html
-      className={`${geistSans.variable} ${geistMono.variable} ${interSans.variable} antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${interSans.variable} antialiased h-full`}
       lang={locale}
       suppressHydrationWarning
     >
       <head>
         <ThemeScript />
       </head>
-      <body>
+      <body className="flex flex-col h-full">
         <ServerProviders>
           <QueryProvider>
             <ClientProviders session={session}>
               <Header />
-              {children}
+              <div className="grow flex flex-col">{children}</div>
             </ClientProviders>
           </QueryProvider>
         </ServerProviders>

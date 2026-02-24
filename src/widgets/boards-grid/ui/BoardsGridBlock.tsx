@@ -1,26 +1,23 @@
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { cookies } from "next/headers";
 
-
-
 import { getBoardsQueryOption } from "@/entities/board/server";
 import type { WorkspaceWithAccess } from "@/entities/workspace";
 import { getWorkspacesQueryOption } from "@/entities/workspace/server";
 import { CreateBoardButton } from "@/features/create-board";
 import { getQueryClient } from "@/shared/api";
-import { Button } from "@/shared/ui";
 
 import { BoardsGrid } from "./BoardsGrid";
 
 interface BoardsGridBlockProps {
   title: string;
   workspace: WorkspaceWithAccess;
-  link: React.ReactNode;
+  action?: React.ReactNode;
 }
 
 export async function BoardsGridBlock({
   title,
-  link,
+  action,
   workspace: { workspace },
 }: BoardsGridBlockProps) {
   const queryClient = getQueryClient();
@@ -40,16 +37,14 @@ export async function BoardsGridBlock({
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       <div className="flex items-end mt-12 mb-4">
-        <h3 className="mr-auto text-2xl font-semibold">{title}</h3>
+        <h2 className="mr-auto text-2xl font-semibold">{title}</h2>
 
         <CreateBoardButton
           workspace={workspace}
           size="sm"
           className="text-sm mr-4"
         />
-        <Button size="xs" variant="link" className="text-sm" asChild>
-          {link}
-        </Button>
+        {action}
       </div>
 
       <BoardsGrid workspace={workspace} />
