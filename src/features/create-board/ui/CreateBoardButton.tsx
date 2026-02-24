@@ -34,7 +34,7 @@ export function CreateBoardButton({
         className={cn("", className)}
         onClick={() => setIsModalOpen(true)}
       >
-        {t("board.create.action")}
+        {t("create")}
       </Button>
 
       <CreateBoardModal

@@ -31,7 +31,7 @@ export function CreateWorkspaceButton({
         className={cn("", className)}
         onClick={() => setIsModalOpen(true)}
       >
-        {t("workspace.create.action")}
+        {t("create")}
       </Button>
 
       <CreateWorkspaceModal open={isModalOpen} onOpenChange={setIsModalOpen} />

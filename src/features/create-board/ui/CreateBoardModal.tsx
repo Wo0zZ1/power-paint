@@ -179,9 +179,7 @@ export function CreateBoardModal({
               type="submit"
             >
               {isSubmitting && <Spinner />}
-              {isSubmitting
-                ? t("board.create.confirmation")
-                : t("board.create.confirm")}
+              {isSubmitting ? t("creating") : t("create")}
             </Button>
           </DialogFooter>
         </form>
