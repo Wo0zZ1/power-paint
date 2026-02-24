@@ -107,9 +107,7 @@ export function CreateWorkspaceModal({
               type="submit"
             >
               {isSubmitting && <Spinner />}
-              {isSubmitting
-                ? t("workspace.create.confirmation")
-                : t("workspace.create.confirm")}
+              {isSubmitting ? t("creating") : t("create")}
             </Button>
           </DialogFooter>
         </form>

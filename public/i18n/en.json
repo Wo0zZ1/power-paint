@@ -6,6 +6,16 @@
   "open": "Open",
   "view": "View",
   "viewAll": "View All",
+  "create": "Create",
+  "creating": "Creating",
+  "update": "Update",
+  "updating": "Updating",
+  "save": "Save",
+  "saving": "Saving",
+  "saveChanges": "Save Changes",
+  "savingChanges": "Saving Changes",
+  "delete": "Delete",
+  "deleting": "Deleting",
   "auth": {
     "login": "Log In",
     "logout": "Log Out",
@@ -32,25 +42,19 @@
       "title": "Create New Workspace",
       "description": "Enter the details for the new workspace.",
       "inputLabel": "Workspace Name",
-      "inputPlaceholder": "Enter workspace name",
-      "confirm": "Create",
-      "confirmation": "Creating"
+      "inputPlaceholder": "Enter workspace name"
     },
     "rename": {
       "action": "Rename",
       "title": "Rename Workspace",
       "description": "Are you sure you want to rename this workspace?",
       "inputLabel": "Workspace Name",
-      "inputPlaceholder": "Enter new workspace name",
-      "confirm": "Save Changes",
-      "confirmation": "Saving Changes"
+      "inputPlaceholder": "Enter new workspace name"
     },
     "access": {
       "action": "Configure Access",
       "title": "Configure Workspace Access",
-      "description": "Update the access settings for this workspace.",
-      "confirm": "Save Changes",
-      "confirmation": "Saving Changes"
+      "description": "Update the access settings for this workspace."
     },
     "delete": {
       "action": "Delete",
@@ -59,9 +63,7 @@
       "warning": "Warning",
       "warningDescription": "This action cannot be undone. All data associated with this workspace will be permanently deleted.",
       "inputLabel": "To confirm, enter \"{workspaceName}\" in the field below:",
-      "inputPlaceholder": "Enter workspace name",
-      "confirm": "Delete",
-      "confirmation": "Deleting"
+      "inputPlaceholder": "Enter workspace name"
     }
   },
   "board": {
@@ -77,25 +79,19 @@
       "nameInputLabel": "Board Name",
       "nameInputPlaceholder": "Enter board name",
       "workspaceInputLabel": "Workspace",
-      "workspaceInputPlaceholder": "Select a workspace",
-      "confirm": "Create",
-      "confirmation": "Creating"
+      "workspaceInputPlaceholder": "Select a workspace"
     },
     "rename": {
       "action": "Rename",
       "title": "Rename Board",
       "description": "Are you sure you want to rename this board?",
       "inputLabel": "Board Name",
-      "inputPlaceholder": "Enter new board name",
-      "confirm": "Save Changes",
-      "confirmation": "Saving Changes"
+      "inputPlaceholder": "Enter new board name"
     },
     "access": {
       "action": "Configure Access",
       "title": "Configure Board Access",
-      "description": "Update the access settings for this board.",
-      "confirm": "Save Changes",
-      "confirmation": "Saving Changes"
+      "description": "Update the access settings for this board."
     },
     "delete": {
       "action": "Delete",
@@ -104,9 +100,7 @@
       "warning": "Warning",
       "warningDescription": "This action cannot be undone. All data associated with this board will be permanently deleted.",
       "inputLabel": "To confirm, enter \"{boardName}\" in the field below:",
-      "inputPlaceholder": "Enter board name",
-      "confirm": "Delete",
-      "confirmation": "Deleting"
+      "inputPlaceholder": "Enter board name"
     }
   }
 }
