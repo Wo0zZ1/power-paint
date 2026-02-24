@@ -36,7 +36,7 @@ export function WorkspaceCard({
     <Card
       className={cn("select-text relative h-full overflow-hidden", className)}
     >
-      <WorkspaceCardBadge type={workspace.accessLevel} />
+      <WorkspaceCardBadge accessRole={accessRole} />
 
       {AccessRole[accessRole] >= AccessRole.ADMIN && (
         <WorkspaceCardSettingsMenu

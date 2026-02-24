@@ -29,3 +29,20 @@ export function getUserPublicInfo(
     created_at: user.created_at,
   };
 }
+
+export const getBadgeContentByAccessRole = (accessRole: string) => {
+  switch (accessRole) {
+    case "OWNER":
+      return "Owner";
+    case "ADMIN":
+      return "Admin";
+    case "EDITOR":
+      return "Editor";
+    case "VIEWER":
+      return "Viewer";
+    case "NONE":
+      return "None";
+    default:
+      return "Unknown";
+  }
+};

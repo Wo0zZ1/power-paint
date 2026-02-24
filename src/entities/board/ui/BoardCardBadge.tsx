@@ -1,31 +1,16 @@
-import { cn } from "@/utils";
+import { cn, getBadgeContentByAccessRole } from "@/utils";
 
 import { Badge } from "@/shared/ui";
-import { AccessLevel } from "@prisma/client";
+import { AccessRole } from "@/shared/constants";
 
 interface BoardCardBadgeProps {
   className?: string;
-  type: AccessLevel | null;
+  accessRole: AccessRole;
 }
 
-const getBadgeContent = (type: AccessLevel | null) => {
-  switch (type) {
-    case AccessLevel.private:
-      return "Private";
-    case AccessLevel.public_view:
-      return "Public";
-    case AccessLevel.public_edit:
-      return "Public (edit)";
-    case null:
-    default:
-      return "Unknown";
-  }
-};
+export function BoardCardBadge({ className, accessRole }: BoardCardBadgeProps) {
+  if (accessRole === "NONE") return null;
 
-export function BoardCardBadge({
-  className,
-  type,
-}: BoardCardBadgeProps) {
   return (
     <Badge
       className={cn(
@@ -34,7 +19,7 @@ export function BoardCardBadge({
       )}
       variant="outline"
     >
-      {getBadgeContent(type)}
+      {getBadgeContentByAccessRole(accessRole)}
     </Badge>
   );
 }

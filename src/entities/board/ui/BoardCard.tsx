@@ -36,7 +36,7 @@ export function BoardCard({
     <Card
       className={cn("select-text relative h-full overflow-hidden", className)}
     >
-      <BoardCardBadge type={board.accessLevel} />
+      <BoardCardBadge accessRole={accessRole} />
 
       {AccessRole[accessRole] >= AccessRole.ADMIN && (
         <BoardCardSettingsMenu
