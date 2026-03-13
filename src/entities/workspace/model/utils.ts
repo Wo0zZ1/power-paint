@@ -1,4 +1,4 @@
-import { WorkspaceType } from "@prisma/client/client";
+import { WorkspaceType } from "@prisma/client";
 
 import type { useGetWorkspacesQuery } from "./queries";
 

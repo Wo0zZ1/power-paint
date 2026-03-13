@@ -76,6 +76,10 @@
     "personal": "Personal Boards",
     "empty": "No available boards",
     "settings": "Board Settings",
+    "notFound": {
+      "title": "Board not found",
+      "description": "The board you are looking for does not exist or is inaccessible."
+    },
     "create": {
       "action": "Create",
       "title": "Create New Board",

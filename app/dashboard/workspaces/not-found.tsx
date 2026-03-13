@@ -11,7 +11,7 @@ import {
 } from "@/shared/ui";
 import { GoBackButton } from "@/shared/ui/goBackButton";
 
-export default async function NotFound() {
+export default async function NotFoundPage() {
   const t = await getTranslations();
 
   return (

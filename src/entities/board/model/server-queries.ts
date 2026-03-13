@@ -18,3 +18,16 @@ export const getBoardsQueryOption = ({
     queryFn: () => BoardsApi.getAll({ userId, workspaceId, cookieString }),
   });
 };
+
+export const getBoardQueryOption = ({
+  boardId,
+  cookieString,
+}: {
+  boardId: string;
+  cookieString: string;
+}) => {
+  return queryOptions({
+    queryKey: [BOARDS_QUERY_KEY, `board-${boardId}`],
+    queryFn: () => BoardsApi.getOne({ boardId, cookieString }),
+  });
+};

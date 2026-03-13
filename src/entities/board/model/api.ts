@@ -28,6 +28,22 @@ const fetchBoards = async ({
   return response.json();
 };
 
+const fetchBoard = async ({
+  cookieString,
+  boardId,
+}: {
+  cookieString?: string;
+  boardId: string;
+}): Promise<BoardWithAccess> => {
+  const reqUrl = `${url}/${boardId}?`;
+
+  const response = await fetch(reqUrl, fetchInitWithCookies(cookieString));
+
+  if (!response.ok) throw new Error("Failed to fetch boards");
+
+  return response.json();
+};
+
 const createBoard = async (
   board: CreateBoardFormData,
 ): Promise<BoardWithAccess> => {
@@ -69,6 +85,7 @@ const removeBoard = async (boardId: string): Promise<BoardWithAccess> => {
 
 export const BoardsApi = {
   getAll: fetchBoards,
+  getOne: fetchBoard,
   createOne: createBoard,
   updateOne: updateBoard,
   removeOne: removeBoard,

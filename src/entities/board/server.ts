@@ -1,1 +1,4 @@
-export { getBoardsQueryOption } from "./model/server-queries";
+export {
+  getBoardsQueryOption,
+  getBoardQueryOption,
+} from "./model/server-queries";

@@ -1,0 +1,155 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id            String    @id @default(uuid())
+  name          String
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  role          Role      @default(User)
+
+  board_members    BoardMember[]
+  workspace_member WorkspaceMember[]
+
+  boards_created   Board[]
+  workspaces_owned Workspace[]
+
+  sessions Session[]
+  accounts Account[]
+
+  updated_at DateTime @updatedAt
+  created_at DateTime @default(now())
+
+  @@map("user")
+}
+
+model Session {
+  id           String   @id @default(uuid())
+  sessionToken String   @unique @map("session_token")
+  userId       String   @map("user_id")
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("session")
+}
+
+model Account {
+  id                       String  @id @default(uuid())
+  userId                   String  @map("user_id")
+  type                     String
+  provider                 String
+  providerAccountId        String  @map("provider_account_id")
+  access_token             String? @db.Text
+  refresh_token            String? @db.Text
+  refresh_token_expires_in Int?
+  expires_at               Int?
+  token_type               String?
+  scope                    String?
+  id_token                 String? @db.Text
+  session_state            String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("account")
+}
+
+model Workspace {
+  id          String        @id @default(uuid())
+  name        String
+  ownerId     String        @map("owner_id")
+  type        WorkspaceType @default(team)
+  accessLevel AccessLevel?  @default(private) @map("access_level")
+
+  updatedAt DateTime @updatedAt @map("updated_at")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  owner   User              @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  boards  Board[]
+  members WorkspaceMember[]
+
+  @@map("workspace")
+}
+
+model Board {
+  id              String        @id @default(uuid())
+  name            String
+  workspaceId     String        @map("workspace_id")
+  ownerId         String        @map("owner_id")
+  backgroundColor String        @default("#FFFFFF") @map("background_color")
+  accessLevel     AccessLevel?  @default(private) @map("access_level")
+  content         BoardContent?
+
+  updatedAt DateTime @updatedAt @map("updated_at")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  owner     User      @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  workspace Workspace @relation(fields: [workspaceId], references: [id])
+
+  members BoardMember[]
+
+  @@map("board")
+}
+
+model BoardMember {
+  boardId String     @map("board_id")
+  userId  String     @map("user_id")
+  role    MemberRole
+
+  board Board @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([boardId, userId])
+  @@map("board_member")
+}
+
+model BoardContent {
+  boardId String @id @map("board_id")
+  data    Json
+  board   Board  @relation(fields: [boardId], references: [id], onDelete: Cascade)
+
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("board_content")
+}
+
+model WorkspaceMember {
+  workspaceId String     @map("workspace_id")
+  userId      String     @map("user_id")
+  role        MemberRole
+
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  @@id([workspaceId, userId])
+  @@map("workspace_member")
+}
+
+enum Role {
+  User
+  Admin
+}
+
+enum AccessLevel {
+  private
+  public_view
+  public_edit
+}
+
+enum MemberRole {
+  viewer
+  editor
+  admin
+}
+
+enum WorkspaceType {
+  personal
+  team
+}
