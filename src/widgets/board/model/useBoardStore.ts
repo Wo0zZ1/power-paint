@@ -22,7 +22,7 @@ interface BoardState {
   setTool: (tool: Tool) => void;
 
   // ── Модификаторы (зажатые клавиши) ──
-  modifiers: { space: boolean; ctrl: boolean };
+  modifiers: { space: boolean; ctrl: boolean; shift: boolean };
 
   // ── Viewport ──
   viewport: Viewport;
@@ -58,7 +58,7 @@ export const useBoardStore = create<BoardState>((set, get) => ({
 
   tool: "hand",
 
-  modifiers: { space: false, ctrl: false },
+  modifiers: { space: false, ctrl: false, shift: false },
 
   viewport: {
     x: 0,

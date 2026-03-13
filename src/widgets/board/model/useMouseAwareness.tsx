@@ -1,27 +1,28 @@
-import type { MouseEvent, RefObject } from "react";
+import type { MouseEvent } from "react";
 import { useCallback } from "react";
 
 import { useBoardStore } from "./useBoardStore";
+import { screenToCanvas } from "./viewport/utils";
 
-export const useMouseAwareness = (
-  boardRef: RefObject<HTMLDivElement | null>,
-) => {
-  const handleMouseMove = useCallback(
-    (e: MouseEvent<HTMLDivElement>) => {
-      const rect = boardRef.current?.getBoundingClientRect();
-      if (!rect) return;
+export const useMouseAwareness = () => {
+  const handleCursorMove = useCallback((e: MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
 
-      useBoardStore.getState().provider?.setAwarenessField("cursor", {
-        x: e.clientX - rect.left,
-        y: e.clientY - rect.top,
-      });
-    },
-    [boardRef],
-  );
+    const { viewport } = useBoardStore.getState();
 
-  const handleMouseLeave = useCallback(() => {
+    const screenX = e.clientX - rect.left;
+    const screenY = e.clientY - rect.top;
+    const [canvasX, canvasY] = screenToCanvas(screenX, screenY, viewport);
+
+    useBoardStore.getState().provider?.setAwarenessField("cursor", {
+      x: canvasX,
+      y: canvasY,
+    });
+  }, []);
+
+  const handleCursorLeave = useCallback(() => {
     useBoardStore.getState().provider?.setAwarenessField("cursor", null);
   }, []);
 
-  return { handleMouseMove, handleMouseLeave };
+  return { handleCursorMove, handleCursorLeave };
 };

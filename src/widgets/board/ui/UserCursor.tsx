@@ -1,8 +1,6 @@
 "use client";
 
-import type { Layer } from "konva/lib/Layer";
 import { useTranslations } from "next-intl";
-import type { RefObject } from "react";
 import { useMemo } from "react";
 import { Group, Path, Rect, Text } from "react-konva";
 
@@ -16,10 +14,9 @@ import type { AwarenessState } from "../model/types";
 
 interface UserCursorProps {
   state: AwarenessState;
-  canvasRef: RefObject<Layer | null>;
 }
 
-export function UserCursor({ state, canvasRef }: UserCursorProps) {
+export function UserCursor({ state }: UserCursorProps) {
   const t = useTranslations("guestNameParts");
 
   const { name, color, guest } = state.user;
@@ -48,16 +45,16 @@ export function UserCursor({ state, canvasRef }: UserCursorProps) {
           shadowColor="#0006"
           shadowBlur={6}
           cornerRadius={[0, 14, 14, 14]}
-          width={getBackgroundSizeForCursor(userName, canvasRef)}
+          width={getBackgroundSizeForCursor(userName)}
           height={30}
         />
         <Text
-          fill={getContrastingTextColor(color)}
           align="center"
           text={userName}
           fontSize={12}
           listening={false}
-          width={getBackgroundSizeForCursor(userName, canvasRef)}
+          fill={getContrastingTextColor(color)}
+          width={getBackgroundSizeForCursor(userName)}
           lineHeight={30 / 12}
         />
       </Group>

@@ -1,3 +1,4 @@
+import type { KonvaEventObject } from "konva/lib/Node";
 import { useCallback, useRef } from "react";
 
 import { useBoardStore } from "../useBoardStore";
@@ -21,22 +22,19 @@ export const useViewport = () => {
   const rafRef = useRef<number | null>(null);
   const panStartRef = useRef({ x: 0, y: 0 });
 
-  const handleZoom = useCallback(
-    (mouseScreenX: number, mouseScreenY: number, deltaY: number) => {
-      const scaleBy = deltaY < 0 ? 1.1 : 0.9;
-      const viewport = useBoardStore.getState().viewport;
+  const handleZoom = useCallback((e: KonvaEventObject<WheelEvent>) => {
+    const scaleBy = e.evt.deltaY < 0 ? 1.1 : 0.9;
+    const viewport = useBoardStore.getState().viewport;
 
-      const newViewport = zoomTowardsMouse(
-        mouseScreenX,
-        mouseScreenY,
-        viewport,
-        scaleBy,
-      );
+    const newViewport = zoomTowardsMouse(
+      e.evt.clientX,
+      e.evt.clientY,
+      viewport,
+      scaleBy,
+    );
 
-      useBoardStore.getState().updateViewport(newViewport);
-    },
-    [],
-  );
+    useBoardStore.getState().updateViewport(newViewport);
+  }, []);
 
   const applyPan = useCallback((x: number, y: number) => {
     const deltaX = x - panStartRef.current.x;

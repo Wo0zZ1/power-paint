@@ -1,7 +1,5 @@
 import type { User } from "@prisma/client";
 import { clsx, type ClassValue } from "clsx";
-import type { Layer } from "konva/lib/Layer";
-import type { RefObject } from "react";
 import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
@@ -94,13 +92,13 @@ export const getContrastingTextColor = (bgColor: string): string => {
   return "#ffffff";
 };
 
-export const getBackgroundSizeForCursor = (
-  text: string,
-  canvasRef: RefObject<Layer | null>,
-): number => {
-  if (!canvasRef.current) return 0;
+export const getBackgroundSizeForCursor = (text: string): number => {
+  // Создаем временный canvas context для измерения текста
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d")!;
 
-  const textWidth = canvasRef.current.getContext().measureText(text).width;
+  ctx.font = "12px sans-serif";
+  const textWidth = ctx.measureText(text).width;
 
   return textWidth + 30;
 };

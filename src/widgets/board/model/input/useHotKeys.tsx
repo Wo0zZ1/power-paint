@@ -30,6 +30,12 @@ export const useHotKeys = (enabled: boolean = true) => {
         });
         return;
       }
+      if (e.key === "Shift") {
+        useBoardStore.setState({
+          modifiers: { ...useBoardStore.getState().modifiers, shift: true },
+        });
+        return;
+      }
 
       if (isInput()) return;
 
@@ -83,10 +89,17 @@ export const useHotKeys = (enabled: boolean = true) => {
           modifiers: { ...useBoardStore.getState().modifiers, ctrl: false },
         });
       }
+      if (e.key === "Shift") {
+        useBoardStore.setState({
+          modifiers: { ...useBoardStore.getState().modifiers, shift: false },
+        });
+      }
     };
 
     const handleBlur = () => {
-      useBoardStore.setState({ modifiers: { space: false, ctrl: false } });
+      useBoardStore.setState({
+        modifiers: { space: false, ctrl: false, shift: false },
+      });
     };
 
     window.addEventListener("keydown", handleKeyDown);
@@ -97,7 +110,9 @@ export const useHotKeys = (enabled: boolean = true) => {
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
       window.removeEventListener("blur", handleBlur);
-      useBoardStore.setState({ modifiers: { space: false, ctrl: false } });
+      useBoardStore.setState({
+        modifiers: { space: false, ctrl: false, shift: false },
+      });
     };
   }, [enabled]);
 };

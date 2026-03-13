@@ -16,7 +16,9 @@ export const useBoardSize = ({ boardRef }: useBoardSizeProps) => {
       const { width, height } = entry.contentRect;
       setStageSize({ width: width - 2, height: height - 2 });
     });
+
     observer.observe(container);
+
     return () => observer.disconnect();
   }, [boardRef]);
 

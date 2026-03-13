@@ -1,6 +1,8 @@
+import type Konva from "konva";
 import { useCallback, useRef } from "react";
 
 import { useBoardStore } from "./useBoardStore";
+import { shouldPan } from "./viewport/useViewport";
 
 export const useDragElements = () => {
   const rafRef = useRef<number | null>(null);
@@ -47,8 +49,10 @@ export const useDragElements = () => {
   }, [onWindowMouseMove]);
 
   const startDrag = useCallback(
-    (screenX: number, screenY: number) => {
-      dragStartRef.current = { x: screenX, y: screenY };
+    (e: Konva.KonvaEventObject<MouseEvent>) => {
+      if (shouldPan(e.evt.button)) return;
+
+      dragStartRef.current = { x: e.evt.clientX, y: e.evt.clientY };
 
       window.addEventListener("mousemove", onWindowMouseMove);
       window.addEventListener("mouseup", onWindowMouseUp);

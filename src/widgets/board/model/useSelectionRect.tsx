@@ -97,12 +97,10 @@ export const useSelectionRect = ({ rectRef }: UseSelectionRectProps) => {
 
       const shape = stage.getIntersection({ x: canvasX, y: canvasY });
       if (shape) {
-        const stage = rectRef.current.getStage();
-        if (!stage) return;
-        const transformer = stage.findOne<Konva.Transformer>("#transformer");
-        if (!transformer) return;
+        const stage = rectRef.current.getStage()!;
+        const transformer = stage.findOne<Konva.Transformer>("#transformer")!;
 
-        if (transformer.children?.some((child) => child.id() === shape.id()))
+        if (transformer.children.some((child) => child.id() === shape.id()))
           return;
         const selected = useBoardStore.getState().selectedIds.has(shape.id());
 
