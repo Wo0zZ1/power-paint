@@ -129,5 +129,7 @@ export const isElementFullyInsideRect = (
     case "stroke":
       const points = getStrokePoints(element);
       return points.every((point) => isPointInsideRect(selectionRect, point));
+    default:
+      return false;
   }
 };

@@ -36,7 +36,7 @@ async function main() {
 
   const user1_personal_board = user1.workspaces_owned[0];
 
-  const user1_workspaces = await prisma.workspace.createMany({
+  await prisma.workspace.createMany({
     data: [
       {
         ownerId: user1.id,
@@ -59,7 +59,7 @@ async function main() {
     ],
   });
 
-  const user1_private_boards = await prisma.board.createMany({
+  await prisma.board.createMany({
     data: [
       {
         ownerId: user1.id,
@@ -82,7 +82,7 @@ async function main() {
     ],
   });
 
-  const user2 = await prisma.user.create({
+  await prisma.user.create({
     data: {
       name: "Алексей",
       email: "alexey@example.com",

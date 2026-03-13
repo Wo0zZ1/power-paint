@@ -5,7 +5,6 @@ import type { ReactNode } from "react";
 import { getWorkspacesQueryOption } from "@/entities/workspace/server";
 import { CreateWorkspaceButton } from "@/features/create-workspace";
 import { getQueryClient } from "@/shared/api";
-import { Button } from "@/shared/ui";
 
 import { WorkspacesCarousel } from "./WorkspacesCarousel";
 
@@ -35,7 +34,7 @@ export async function WorkspacesCarouselBlock({
           <h2 className="mr-auto text-2xl font-semibold">{title}</h2>
 
           <CreateWorkspaceButton size="sm" className="text-sm mr-4" />
-            {action}
+          {action}
         </div>
 
         <WorkspacesCarousel />

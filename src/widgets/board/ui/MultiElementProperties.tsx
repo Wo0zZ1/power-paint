@@ -14,16 +14,16 @@ export function MultiElementProperties({ ids }: { ids: Set<string> }) {
   const updateElements = useBoardStore((s) => s.updateElements);
   const removeSelectedElements = useBoardStore((s) => s.removeSelectedElements);
 
-  const handleScaleChange = useCallback(
-    (axis: "scaleX" | "scaleY", value: number) => {
-      const updates = new Map<string, Partial<ElementType>>();
-      ids.forEach((id) => {
-        updates.set(id, { [axis]: value } as Partial<ElementType>);
-      });
-      updateElements(updates);
-    },
-    [ids, updateElements],
-  );
+  // const handleScaleChange = useCallback(
+  //   (axis: "scaleX" | "scaleY", value: number) => {
+  //     const updates = new Map<string, Partial<ElementType>>();
+  //     ids.forEach((id) => {
+  //       updates.set(id, { [axis]: value } as Partial<ElementType>);
+  //     });
+  //     updateElements(updates);
+  //   },
+  //   [ids, updateElements],
+  // );
 
   const handleRotationChange = useCallback(
     (value: number) => {
