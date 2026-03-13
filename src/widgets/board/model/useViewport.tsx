@@ -7,22 +7,96 @@ import { zoomTowardsMouse } from "../lib/viewport";
 import { useBoardStore } from "./useBoardStore";
 
 /**
- * Определяет, должен ли текущий mousedown начать pan.
+ * Определяет, должен ли текущий mousedown начать pan (для pointer-событий).
  */
-export function shouldPan(button: number): boolean {
+export function shouldPan(e: PointerEvent): boolean {
   const { tool, modifiers } = useBoardStore.getState();
 
-  if (button === 1) return true;
+  if (e.button === 1) return true;
   if (tool === "hand") return true;
-  if (modifiers.space && button === 0) return true;
+  if (modifiers.space && e.button === 0) return true;
 
   return false;
 }
 
 export const useViewport = () => {
   const panStartRef = useRef({ x: 0, y: 0 });
+  const pinchRef = useRef<{ dist: number; midX: number; midY: number } | null>(
+    null,
+  );
+
+  const stopListeners = useRef(() => {});
+
+  // ── Pure core ──
+
+  const beginPan = useCallback((clientX: number, clientY: number) => {
+    panStartRef.current = { x: clientX, y: clientY };
+  }, []);
+
+  const movePan = useCallback((clientX: number, clientY: number) => {
+    const dx = clientX - panStartRef.current.x;
+    const dy = clientY - panStartRef.current.y;
+
+    const viewport = useBoardStore.getState().viewport;
+    useBoardStore.getState().updateViewport({
+      x: viewport.x + dx,
+      y: viewport.y + dy,
+    });
+
+    panStartRef.current = { x: clientX, y: clientY };
+  }, []);
+
+  const startPinch = useCallback(
+    (t0x: number, t0y: number, t1x: number, t1y: number) => {
+      const dist = Math.hypot(t1x - t0x, t1y - t0y);
+      const midX = (t0x + t1x) / 2;
+      const midY = (t0y + t1y) / 2;
+      pinchRef.current = { dist, midX, midY };
+    },
+    [],
+  );
+
+  const movePinch = useCallback(
+    (t0x: number, t0y: number, t1x: number, t1y: number) => {
+      const dist = Math.hypot(t1x - t0x, t1y - t0y);
+      const midX = (t0x + t1x) / 2;
+      const midY = (t0y + t1y) / 2;
+
+      if (!pinchRef.current) {
+        pinchRef.current = { dist, midX, midY };
+        return;
+      }
+
+      const prev = pinchRef.current;
+      const viewport = useBoardStore.getState().viewport;
+
+      const scaleBy = dist / prev.dist;
+      const zoomed = zoomTowardsMouse(midX, midY, viewport, scaleBy);
+
+      const dx = midX - prev.midX;
+      const dy = midY - prev.midY;
+
+      useBoardStore.getState().updateViewport({
+        x: zoomed.x + dx,
+        y: zoomed.y + dy,
+        scale: zoomed.scale,
+      });
+
+      pinchRef.current = { dist, midX, midY };
+    },
+    [],
+  );
+
+  const endPinch = useCallback(() => {
+    pinchRef.current = null;
+  }, []);
+
+  // ── Wheel ──
 
   const handleZoom = useCallback((e: KonvaEventObject<WheelEvent>) => {
+    if (e.evt.cancelable) e.evt.preventDefault();
+    e.evt.stopPropagation();
+
     const scaleBy = e.evt.deltaY < 0 ? 1.1 : 0.9;
     const viewport = useBoardStore.getState().viewport;
 
@@ -39,42 +113,93 @@ export const useViewport = () => {
     useBoardStore.getState().updateViewport(newViewport);
   }, []);
 
-  const onWindowMouseMove = useThrottledCallback((e: MouseEvent) => {
-    const deltaX = e.clientX - panStartRef.current.x;
-    const deltaY = e.clientY - panStartRef.current.y;
+  // ── Pointer (mouse/pen — touch фильтруется) ──
 
-    const viewport = useBoardStore.getState().viewport;
-    useBoardStore.getState().updateViewport({
-      x: viewport.x + deltaX,
-      y: viewport.y + deltaY,
-    });
+  const onPointerMove = useThrottledCallback(
+    (e: PointerEvent) => {
+      movePan(e.clientX, e.clientY);
+    },
+    [movePan],
+  );
 
-    panStartRef.current = { x: e.clientX, y: e.clientY };
+  const onPointerUp = useCallback(() => {
+    stopListeners.current();
   }, []);
 
-  const onWindowMouseUp = useCallback(() => {
-    window.removeEventListener("mousemove", onWindowMouseMove);
-  }, [onWindowMouseMove]);
+  const startPointerPan = useCallback(
+    (e: KonvaEventObject<PointerEvent>) => {
+      if (e.evt.pointerType === "touch") return;
 
-  const startPan = useCallback(
-    (screenX: number, screenY: number) => {
-      panStartRef.current = { x: screenX, y: screenY };
+      e.evt.preventDefault();
+      e.evt.stopPropagation();
 
-      window.addEventListener("mousemove", onWindowMouseMove);
-      window.addEventListener("mouseup", onWindowMouseUp);
+      beginPan(e.evt.clientX, e.evt.clientY);
+
+      window.addEventListener("pointermove", onPointerMove);
+      window.addEventListener("pointerup", onPointerUp);
+
+      stopListeners.current = () => {
+        window.removeEventListener("pointermove", onPointerMove);
+        window.removeEventListener("pointerup", onPointerUp);
+      };
     },
-    [onWindowMouseMove, onWindowMouseUp],
+    [beginPan, onPointerMove, onPointerUp],
+  );
+
+  // ── Touch ──
+
+  const onTouchPanMove = useThrottledCallback(
+    (e: TouchEvent) => {
+      if (e.touches.length === 1)
+        return movePan(e.touches[0].clientX, e.touches[0].clientY);
+
+      movePinch(
+        e.touches[0].clientX,
+        e.touches[0].clientY,
+        e.touches[1].clientX,
+        e.touches[1].clientY,
+      );
+    },
+    [movePan],
+  );
+
+  const onTouchPanEnd = useCallback(
+    (e: TouchEvent) => {
+      if (e.touches.length === 0) return stopListeners.current();
+
+      if (e.touches.length === 1)
+        beginPan(e.touches[0].clientX, e.touches[0].clientY);
+    },
+    [beginPan],
+  );
+
+  const startTouchPan = useCallback(
+    (e: KonvaEventObject<TouchEvent>) => {
+      if (e.evt.touches.length === 1) {
+        beginPan(e.evt.touches[0].clientX, e.evt.touches[0].clientY);
+      } else if (e.evt.touches.length > 1) {
+        startPinch(
+          e.evt.touches[0].clientX,
+          e.evt.touches[0].clientY,
+          e.evt.touches[1].clientX,
+          e.evt.touches[1].clientY,
+        );
+      }
+
+      window.addEventListener("touchmove", onTouchPanMove);
+      window.addEventListener("touchend", onTouchPanEnd);
+
+      stopListeners.current = () => {
+        window.removeEventListener("touchmove", onTouchPanMove);
+        window.removeEventListener("touchend", onTouchPanEnd);
+      };
+    },
+    [beginPan, startPinch, onTouchPanMove, onTouchPanEnd],
   );
 
   useEffect(() => {
-    return () => {
-      window.removeEventListener("mousemove", onWindowMouseMove);
-      window.removeEventListener("mouseup", onWindowMouseUp);
-    };
-  }, [onWindowMouseMove, onWindowMouseUp]);
+    return () => stopListeners.current();
+  }, []);
 
-  return {
-    handleZoom,
-    startPan,
-  };
+  return { handleZoom, startPointerPan, startTouchPan, movePinch, endPinch };
 };

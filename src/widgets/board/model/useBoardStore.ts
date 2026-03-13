@@ -74,7 +74,7 @@ export const useBoardStore = create<BoardState>((set, get) => ({
   globals: { backgroundColor: "#ffffff" },
   remoteCursors: new Map(),
 
-  tool: "hand",
+  tool: "select",
 
   modifiers: { space: false, ctrl: false, shift: false },
 

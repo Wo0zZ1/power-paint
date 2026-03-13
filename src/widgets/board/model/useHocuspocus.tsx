@@ -15,6 +15,8 @@ interface UseHocuspocusProps {
   user: AwarenessUser;
 }
 
+export const DEFAULT_CAPTURE_TIMEOUT = 300;
+
 export const useHocuspocus = ({ boardId, user }: UseHocuspocusProps) => {
   useEffect(() => {
     const provider = new HocuspocusProvider({
@@ -52,7 +54,7 @@ export const useHocuspocus = ({ boardId, user }: UseHocuspocusProps) => {
 
     // ── Undo / Redo ──
     const undoManager = new UndoManager([yElements, yGlobals], {
-      captureTimeout: 300,
+      captureTimeout: DEFAULT_CAPTURE_TIMEOUT,
     });
 
     const updateUndoRedoState = () => {

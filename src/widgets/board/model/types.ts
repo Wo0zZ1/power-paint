@@ -20,7 +20,14 @@ export type RectElementType = {
   height: number;
 } & BaseElementType;
 
-export type ElementType = CircleElementType | RectElementType;
+export type StrokeElementType = {
+  type: "stroke";
+  points: number[]; // плоский массив [x1, y1, x2, y2, ...]
+  color: string;
+  strokeWidth: number;
+} & BaseElementType;
+
+export type ElementType = CircleElementType | RectElementType | StrokeElementType;
 
 // ─── Viewport ────────────────────────────────────────────────────────
 

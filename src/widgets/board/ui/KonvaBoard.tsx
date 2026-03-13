@@ -9,6 +9,7 @@ import { useShallow } from "zustand/react/shallow";
 import type { AwarenessUser } from "../model/types";
 import { useBoardSize } from "../model/useBoardSize";
 import { useBoardStore } from "../model/useBoardStore";
+import { useDrawing } from "../model/useDrawing";
 import { useHocuspocus } from "../model/useHocuspocus";
 import { useHotKeys } from "../model/useHotKeys";
 import { useMouseAwareness } from "../model/useMouseAwareness";
@@ -28,7 +29,6 @@ interface KonvaBoardProps {
 
 export function KonvaBoard({ user, boardId }: KonvaBoardProps) {
   const boardRef = useRef<HTMLDivElement>(null);
-  const stageRef = useRef<Konva.Stage>(null);
   const selectionRectRef = useRef<Konva.Rect>(null);
 
   const globals = useBoardStore(useShallow((s) => s.globals));
@@ -39,34 +39,67 @@ export function KonvaBoard({ user, boardId }: KonvaBoardProps) {
 
   const { stageSize } = useBoardSize({ boardRef });
 
-  const { handleZoom, startPan } = useViewport();
-  const { handleCursorMove, handleCursorLeave } = useMouseAwareness();
-  const { startSelecting } = useSelectionRect({ rectRef: selectionRectRef });
+  const { handleCursorMove, handleTouchCursorMove, handleCursorLeave } =
+    useMouseAwareness();
 
-  const handleMouseDown = useCallback(
-    (e: Konva.KonvaEventObject<MouseEvent>) => {
-      if (shouldPan(e.evt.button)) {
-        startPan(e.evt.clientX, e.evt.clientY);
-        return;
-      }
+  const { handleZoom, startPointerPan, startTouchPan } = useViewport();
 
-      if (e.evt.button === 0) startSelecting(e);
+  const { startPointerDraw, startTouchDraw } = useDrawing();
+
+  const { startPointerSelect, startTouchSelect } = useSelectionRect({
+    rectRef: selectionRectRef,
+  });
+
+  const handlePointerDown = useCallback(
+    (e: Konva.KonvaEventObject<PointerEvent>) => {
+      if (e.evt.pointerType === "touch") return;
+
+      if (shouldPan(e.evt)) return startPointerPan(e);
+
+      if (e.evt.button !== 0) return;
+
+      const { tool, clearSelection } = useBoardStore.getState();
+
+      if (tool === "select") return startPointerSelect(e);
+
+      clearSelection();
+
+      if (tool === "draw") return startPointerDraw(e);
     },
-    [startPan, startSelecting],
+    [startPointerPan, startPointerSelect, startPointerDraw],
+  );
+
+  const handleTouchStart = useCallback(
+    (e: Konva.KonvaEventObject<TouchEvent>) => {
+      if (e.evt.cancelable) e.evt.preventDefault();
+
+      const { tool, clearSelection } = useBoardStore.getState();
+
+      if (tool === "hand" || e.evt.touches.length >= 2) return startTouchPan(e);
+
+      if (e.evt.touches.length > 1) return;
+
+      if (tool === "select") return startTouchSelect(e);
+
+      clearSelection();
+
+      if (tool === "draw") return startTouchDraw(e);
+    },
+    [startTouchPan, startTouchSelect, startTouchDraw],
   );
 
   return (
-    <div className="w-full h-full pl-3.75 mr-3.75 rounded-lg overflow-clip">
+    <div className="w-full h-full min-w-0 min-h-0 px-3.75 rounded-lg overflow-hidden">
       <div
         ref={boardRef}
-        onMouseMove={handleCursorMove}
-        onMouseLeave={handleCursorLeave}
-        className="w-full h-full relative"
+        onPointerMove={handleCursorMove}
+        onTouchMove={handleTouchCursorMove}
+        onPointerLeave={handleCursorLeave}
+        className="w-full h-full min-w-0 min-h-0 relative select-none overflow-hidden touch-none"
       >
         <Toolbar className="absolute flex gap-2 z-10" user={user} />
 
         <Stage
-          ref={stageRef}
           className="border border-muted"
           style={{ backgroundColor: globals.backgroundColor }}
           width={stageSize.width}
@@ -76,7 +109,8 @@ export function KonvaBoard({ user, boardId }: KonvaBoardProps) {
           scaleX={viewport.scale}
           scaleY={viewport.scale}
           onWheel={handleZoom}
-          onMouseDown={handleMouseDown}
+          onPointerDown={handlePointerDown}
+          onTouchStart={handleTouchStart}
         >
           <Layer>
             <LayerContent />

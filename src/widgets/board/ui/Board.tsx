@@ -36,8 +36,8 @@ export async function Board({ className, boardId }: BoardProps) {
   } satisfies AwarenessUser;
 
   return (
-    <div className={cn(className, "grow")}>
-      <div className="w-full h-full">
+    <div className={cn(className, "grow min-w-0 min-h-0 overflow-hidden")}>
+      <div className="w-full h-full min-w-0 min-h-0">
         <KonvaBoard boardId={boardId} user={user} />
       </div>
     </div>

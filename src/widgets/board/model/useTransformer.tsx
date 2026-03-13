@@ -9,8 +9,8 @@ import { shouldPan } from "./useViewport";
 
 export const useTransformer = () => {
   const handleTransformStart = useCallback(
-    (e: KonvaEventObject<MouseEvent, Node<NodeConfig>>) => {
-      if (shouldPan(e.evt.button)) {
+    (e: KonvaEventObject<PointerEvent, Node<NodeConfig>>) => {
+      if (shouldPan(e.evt)) {
         e.evt.stopPropagation();
         e.evt.preventDefault();
 

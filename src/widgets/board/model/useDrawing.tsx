@@ -1,0 +1,210 @@
+import type { KonvaEventObject } from "konva/lib/Node";
+import { useCallback, useEffect, useRef } from "react";
+
+import { generateId } from "../lib/generateId";
+import { useThrottledCallback } from "../lib/useThrottledCallback";
+import { screenToCanvas } from "../lib/viewport";
+
+import type { StrokeElementType } from "./types";
+import { useBoardStore } from "./useBoardStore";
+import { DEFAULT_CAPTURE_TIMEOUT } from "./useHocuspocus";
+
+export const useDrawing = () => {
+  const strokeIdRef = useRef<string | null>(null);
+  const originRef = useRef({ x: 0, y: 0 });
+  const pointsRef = useRef<number[]>([]);
+
+  const stopListeners = useRef(() => {});
+
+  // ── Pure core ──
+
+  const beginDraw = useCallback((layerX: number, layerY: number) => {
+    const { viewport, undoManager } = useBoardStore.getState();
+
+    if (undoManager) {
+      undoManager.stopCapturing();
+      undoManager.captureTimeout = Number.MAX_SAFE_INTEGER;
+    }
+
+    const [cx, cy] = screenToCanvas(layerX, layerY, viewport);
+
+    const id = generateId();
+    strokeIdRef.current = id;
+    originRef.current = { x: cx, y: cy };
+    pointsRef.current = [0, 0];
+
+    const stroke: StrokeElementType = {
+      id,
+      type: "stroke",
+      x: cx,
+      y: cy,
+      points: [0, 0],
+      color: "#000000",
+      strokeWidth: 3,
+      scaleX: 1,
+      scaleY: 1,
+      rotation: 0,
+    };
+
+    useBoardStore.getState().addElement(stroke);
+  }, []);
+
+  const moveDraw = useCallback((layerX: number, layerY: number) => {
+    if (!strokeIdRef.current) return;
+
+    const viewport = useBoardStore.getState().viewport;
+    const [cx, cy] = screenToCanvas(layerX, layerY, viewport);
+
+    pointsRef.current.push(cx - originRef.current.x, cy - originRef.current.y);
+
+    useBoardStore.getState().updateElement(strokeIdRef.current, {
+      points: [...pointsRef.current],
+    } as Partial<StrokeElementType>);
+  }, []);
+
+  const endDraw = useCallback(() => {
+    if (!strokeIdRef.current) return;
+
+    const { undoManager } = useBoardStore.getState();
+    const points = pointsRef.current;
+
+    if (points.length < 4) {
+      useBoardStore.getState().removeElement(strokeIdRef.current);
+      strokeIdRef.current = null;
+      if (undoManager) {
+        undoManager.captureTimeout = DEFAULT_CAPTURE_TIMEOUT;
+        undoManager.stopCapturing();
+      }
+      return;
+    }
+
+    const xs = points.filter((_, i) => i % 2 === 0);
+    const ys = points.filter((_, i) => i % 2 === 1);
+    const minX = Math.min(...xs);
+    const minY = Math.min(...ys);
+
+    const normalizedPoints = points.map((v, i) =>
+      i % 2 === 0 ? v - minX : v - minY,
+    );
+
+    useBoardStore.getState().updateElement(strokeIdRef.current, {
+      x: originRef.current.x + minX,
+      y: originRef.current.y + minY,
+      points: normalizedPoints,
+    } as Partial<StrokeElementType>);
+
+    strokeIdRef.current = null;
+
+    if (undoManager) {
+      undoManager.captureTimeout = DEFAULT_CAPTURE_TIMEOUT;
+      undoManager.stopCapturing();
+    }
+  }, []);
+
+  const cancelDraw = useCallback(() => {
+    if (!strokeIdRef.current) return;
+
+    useBoardStore.getState().removeElement(strokeIdRef.current);
+    strokeIdRef.current = null;
+
+    const { undoManager } = useBoardStore.getState();
+    if (undoManager) {
+      undoManager.captureTimeout = DEFAULT_CAPTURE_TIMEOUT;
+      undoManager.stopCapturing();
+    }
+  }, []);
+
+  // ── Pointer ──
+
+  const onPointerMove = useThrottledCallback(
+    (e: PointerEvent) => {
+      moveDraw(e.layerX, e.layerY);
+    },
+    [moveDraw],
+  );
+
+  const onPointerUp = useCallback(() => {
+    endDraw();
+    stopListeners.current();
+  }, [endDraw]);
+
+  const startPointerDraw = useCallback(
+    (e: KonvaEventObject<PointerEvent>) => {
+      if (e.evt.pointerType === "touch") return;
+
+      beginDraw(e.evt.layerX, e.evt.layerY);
+
+      window.addEventListener("pointermove", onPointerMove);
+      window.addEventListener("pointerup", onPointerUp);
+
+      stopListeners.current = () => {
+        window.removeEventListener("pointermove", onPointerMove);
+        window.removeEventListener("pointerup", onPointerUp);
+      };
+    },
+    [beginDraw, onPointerMove, onPointerUp],
+  );
+
+  // ── Touch ──
+
+  const containerRectRef = useRef<DOMRect | null>(null);
+
+  const onTouchDrawMove = useThrottledCallback(
+    (e: TouchEvent) => {
+      if (e.touches.length >= 2) {
+        cancelDraw();
+        stopListeners.current();
+        return;
+      }
+      const touch = e.touches[0];
+      if (!touch || !containerRectRef.current) return;
+      moveDraw(
+        touch.clientX - containerRectRef.current.left,
+        touch.clientY - containerRectRef.current.top,
+      );
+    },
+    [moveDraw, cancelDraw],
+  );
+
+  const onTouchDrawEnd = useCallback(() => {
+    endDraw();
+    stopListeners.current();
+  }, [endDraw]);
+
+  const startTouchDraw = useCallback(
+    (e: KonvaEventObject<TouchEvent>) => {
+      const touch = e.evt.touches[0];
+      if (!touch) return;
+      const stage = e.target.getStage();
+      if (!stage) return;
+      const rect = stage.container().getBoundingClientRect();
+      containerRectRef.current = rect;
+
+      beginDraw(touch.clientX - rect.left, touch.clientY - rect.top);
+
+      window.addEventListener("touchmove", onTouchDrawMove);
+      window.addEventListener("touchend", onTouchDrawEnd);
+
+      stopListeners.current = () => {
+        window.removeEventListener("touchmove", onTouchDrawMove);
+        window.removeEventListener("touchend", onTouchDrawEnd);
+      };
+    },
+    [beginDraw, onTouchDrawMove, onTouchDrawEnd],
+  );
+
+  useEffect(() => {
+    return () => {
+      stopListeners.current();
+      if (strokeIdRef.current) {
+        const { undoManager } = useBoardStore.getState();
+        if (undoManager) {
+          undoManager.captureTimeout = DEFAULT_CAPTURE_TIMEOUT;
+          undoManager.stopCapturing();
+        }
+      }
+    };
+  }, []);
+
+  return { startPointerDraw, startTouchDraw };
+};

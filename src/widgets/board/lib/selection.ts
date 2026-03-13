@@ -2,6 +2,7 @@ import type {
   CircleElementType,
   ElementType,
   RectElementType,
+  StrokeElementType,
 } from "../model/types";
 
 type Rectangle = {
@@ -95,15 +96,38 @@ const getEllipseContourPoints = (element: CircleElementType): Point[] => {
   });
 };
 
+const getStrokePoints = (element: StrokeElementType): Point[] => {
+  const angleRad = degToRad(element.rotation);
+  const points: Point[] = [];
+
+  for (let i = 0; i < element.points.length; i += 2) {
+    const localPoint: Point = {
+      x: element.points[i] * element.scaleX,
+      y: element.points[i + 1] * element.scaleY,
+    };
+    const rotated = rotatePoint(localPoint, angleRad);
+    points.push({
+      x: element.x + rotated.x,
+      y: element.y + rotated.y,
+    });
+  }
+
+  return points;
+};
+
 export const isElementFullyInsideRect = (
   selectionRect: Rectangle,
   element: ElementType,
 ): boolean => {
-  if (element.type === "rect") {
-    const corners = getRectCornerPoints(element);
-    return corners.every((point) => isPointInsideRect(selectionRect, point));
+  switch (element.type) {
+    case "rect":
+      const corners = getRectCornerPoints(element);
+      return corners.every((point) => isPointInsideRect(selectionRect, point));
+    case "circle":
+      const contour = getEllipseContourPoints(element);
+      return contour.every((point) => isPointInsideRect(selectionRect, point));
+    case "stroke":
+      const points = getStrokePoints(element);
+      return points.every((point) => isPointInsideRect(selectionRect, point));
   }
-
-  const contour = getEllipseContourPoints(element);
-  return contour.every((point) => isPointInsideRect(selectionRect, point));
 };

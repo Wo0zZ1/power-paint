@@ -9,13 +9,19 @@ import { shouldPan } from "./useViewport";
 export const useDragElements = () => {
   const dragStartRef = useRef({ x: 0, y: 0 });
 
-  const onWindowMouseMove = useThrottledCallback((e: MouseEvent) => {
-    const elements = useBoardStore.getState().elements;
-    const selectedIds = useBoardStore.getState().selectedIds;
+  const stopListeners = useRef(() => {});
 
-    const scale = useBoardStore.getState().viewport.scale;
-    const deltaX = (e.clientX - dragStartRef.current.x) / scale;
-    const deltaY = (e.clientY - dragStartRef.current.y) / scale;
+  // ── Pure core ──
+
+  const beginDrag = useCallback((clientX: number, clientY: number) => {
+    dragStartRef.current = { x: clientX, y: clientY };
+  }, []);
+
+  const moveDrag = useCallback((clientX: number, clientY: number) => {
+    const { elements, selectedIds, viewport } = useBoardStore.getState();
+
+    const deltaX = (clientX - dragStartRef.current.x) / viewport.scale;
+    const deltaY = (clientY - dragStartRef.current.y) / viewport.scale;
 
     const updates = new Map<string, { x: number; y: number }>();
     selectedIds.forEach((id) => {
@@ -26,31 +32,80 @@ export const useDragElements = () => {
 
     useBoardStore.getState().updateElements(updates);
 
-    dragStartRef.current = { x: e.clientX, y: e.clientY };
+    dragStartRef.current = { x: clientX, y: clientY };
   }, []);
 
-  const onWindowMouseUp = useCallback(() => {
-    window.removeEventListener("mousemove", onWindowMouseMove);
-  }, [onWindowMouseMove]);
+  // ── Pointer (mouse/pen — touch фильтруется) ──
 
-  const startDrag = useCallback(
-    (e: Konva.KonvaEventObject<MouseEvent>) => {
-      if (shouldPan(e.evt.button)) return;
-
-      dragStartRef.current = { x: e.evt.clientX, y: e.evt.clientY };
-
-      window.addEventListener("mousemove", onWindowMouseMove);
-      window.addEventListener("mouseup", onWindowMouseUp);
+  const onPointerMove = useThrottledCallback(
+    (e: PointerEvent) => {
+      moveDrag(e.clientX, e.clientY);
     },
-    [onWindowMouseMove, onWindowMouseUp],
+    [moveDrag],
+  );
+
+  const onPointerUp = useCallback(() => {
+    stopListeners.current();
+  }, []);
+
+  const startPointerDrag = useCallback(
+    (e: Konva.KonvaEventObject<PointerEvent>) => {
+      if (e.evt.pointerType === "touch") return;
+      if (shouldPan(e.evt)) return;
+
+      beginDrag(e.evt.clientX, e.evt.clientY);
+
+      window.addEventListener("pointermove", onPointerMove);
+      window.addEventListener("pointerup", onPointerUp);
+
+      stopListeners.current = () => {
+        window.removeEventListener("pointermove", onPointerMove);
+        window.removeEventListener("pointerup", onPointerUp);
+      };
+    },
+    [beginDrag, onPointerMove, onPointerUp],
+  );
+
+  // ── Touch ──
+
+  const onTouchDragMove = useThrottledCallback(
+    (e: TouchEvent) => {
+      if (e.touches.length >= 2) {
+        stopListeners.current();
+        return;
+      }
+
+      const touch = e.touches[0];
+      if (touch) moveDrag(touch.clientX, touch.clientY);
+    },
+    [moveDrag],
+  );
+
+  const onTouchDragEnd = useCallback(() => {
+    stopListeners.current();
+  }, []);
+
+  const startTouchDrag = useCallback(
+    (e: Konva.KonvaEventObject<TouchEvent>) => {
+      const touch = e.evt.touches[0];
+      if (!touch) return;
+
+      beginDrag(touch.clientX, touch.clientY);
+
+      window.addEventListener("touchmove", onTouchDragMove);
+      window.addEventListener("touchend", onTouchDragEnd);
+
+      stopListeners.current = () => {
+        window.removeEventListener("touchmove", onTouchDragMove);
+        window.removeEventListener("touchend", onTouchDragEnd);
+      };
+    },
+    [beginDrag, onTouchDragMove, onTouchDragEnd],
   );
 
   useEffect(() => {
-    return () => {
-      window.removeEventListener("mousemove", onWindowMouseMove);
-      window.removeEventListener("mouseup", onWindowMouseUp);
-    };
-  }, [onWindowMouseMove, onWindowMouseUp]);
+    return () => stopListeners.current();
+  }, []);
 
-  return { startDrag };
+  return { startPointerDrag, startTouchDrag };
 };

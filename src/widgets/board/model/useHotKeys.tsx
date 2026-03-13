@@ -18,19 +18,14 @@ export const useHotKeys = () => {
         useBoardStore.setState({
           modifiers: { ...useBoardStore.getState().modifiers, space: true },
         });
-        return;
-      }
-      if (e.key === "Control") {
+      } else if (e.key === "Control") {
         useBoardStore.setState({
           modifiers: { ...useBoardStore.getState().modifiers, ctrl: true },
         });
-        return;
-      }
-      if (e.key === "Shift") {
+      } else if (e.key === "Shift") {
         useBoardStore.setState({
           modifiers: { ...useBoardStore.getState().modifiers, shift: true },
         });
-        return;
       }
 
       if (isInput()) return;
@@ -112,12 +107,12 @@ export const useHotKeys = () => {
       });
     };
 
-    window.addEventListener("keypress", handleKeyDown);
+    window.addEventListener("keydown", handleKeyDown);
     window.addEventListener("keyup", handleKeyUp);
     window.addEventListener("blur", handleBlur);
 
     return () => {
-      window.removeEventListener("keypress", handleKeyDown);
+      window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
       window.removeEventListener("blur", handleBlur);
 

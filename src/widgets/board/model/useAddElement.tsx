@@ -1,5 +1,7 @@
 import { useCallback } from "react";
 
+import { generateId } from "../lib/generateId";
+
 import type { CircleElementType, RectElementType } from "./types";
 import { useBoardStore } from "./useBoardStore";
 
@@ -8,7 +10,7 @@ export const useAddElement = () => {
 
   const addRect = useCallback(() => {
     addElement({
-      id: crypto.randomUUID(),
+      id: generateId(),
       type: "rect",
       x: 50 + Math.random() * 200,
       y: 50 + Math.random() * 200,
@@ -22,7 +24,7 @@ export const useAddElement = () => {
 
   const addCircle = useCallback(() => {
     addElement({
-      id: crypto.randomUUID(),
+      id: generateId(),
       type: "circle",
       x: 50 + Math.random() * 200,
       y: 50 + Math.random() * 200,
