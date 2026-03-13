@@ -1,7 +1,6 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { useMemo } from "react";
 import { Group, Path, Rect, Text } from "react-konva";
 
 import {
@@ -20,12 +19,7 @@ export function UserCursor({ state }: UserCursorProps) {
   const t = useTranslations("guestNameParts");
 
   const { name, color, guest } = state.user;
-
-  const userName = useMemo(
-    () => getParsedUsername(name, guest, t),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [t, guest, name.join("")],
-  );
+  const userName = getParsedUsername(name, guest, t);
 
   if (!state.cursor) return null; // пользователь вне холста
 

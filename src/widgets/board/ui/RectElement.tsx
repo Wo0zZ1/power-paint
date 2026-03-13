@@ -1,7 +1,7 @@
 import type { ComponentProps } from "react";
 import { Rect } from "react-konva";
 
-import type { RectElementType } from "../model/element/types";
+import type { RectElementType } from "../model/types";
 
 type RectElementProps = {
   element: RectElementType;

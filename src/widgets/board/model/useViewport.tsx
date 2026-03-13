@@ -1,9 +1,10 @@
 import type { KonvaEventObject } from "konva/lib/Node";
-import { useCallback, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 
-import { useBoardStore } from "../useBoardStore";
+import { useThrottledCallback } from "../lib/useThrottledCallback";
+import { zoomTowardsMouse } from "../lib/viewport";
 
-import { zoomTowardsMouse } from "./utils";
+import { useBoardStore } from "./useBoardStore";
 
 /**
  * Определяет, должен ли текущий mousedown начать pan.
@@ -19,16 +20,16 @@ export function shouldPan(button: number): boolean {
 }
 
 export const useViewport = () => {
-  const rafRef = useRef<number | null>(null);
   const panStartRef = useRef({ x: 0, y: 0 });
 
   const handleZoom = useCallback((e: KonvaEventObject<WheelEvent>) => {
     const scaleBy = e.evt.deltaY < 0 ? 1.1 : 0.9;
     const viewport = useBoardStore.getState().viewport;
 
-    const stage = e.target.getStage()!;
-    const container = stage.container();
+    const stage = e.target.getStage();
+    if (!stage) return;
 
+    const container = stage.container();
     const rect = container.getBoundingClientRect();
     const mouseX = e.evt.clientX - rect.left;
     const mouseY = e.evt.clientY - rect.top;
@@ -38,26 +39,20 @@ export const useViewport = () => {
     useBoardStore.getState().updateViewport(newViewport);
   }, []);
 
-  const onWindowMouseMove = useCallback((e: MouseEvent) => {
-    if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
+  const onWindowMouseMove = useThrottledCallback((e: MouseEvent) => {
+    const deltaX = e.clientX - panStartRef.current.x;
+    const deltaY = e.clientY - panStartRef.current.y;
 
-    rafRef.current = requestAnimationFrame(() => {
-      const deltaX = e.clientX - panStartRef.current.x;
-      const deltaY = e.clientY - panStartRef.current.y;
-
-      const viewport = useBoardStore.getState().viewport;
-      useBoardStore.getState().updateViewport({
-        x: viewport.x + deltaX,
-        y: viewport.y + deltaY,
-      });
-
-      panStartRef.current = { x: e.clientX, y: e.clientY };
+    const viewport = useBoardStore.getState().viewport;
+    useBoardStore.getState().updateViewport({
+      x: viewport.x + deltaX,
+      y: viewport.y + deltaY,
     });
+
+    panStartRef.current = { x: e.clientX, y: e.clientY };
   }, []);
 
   const onWindowMouseUp = useCallback(() => {
-    if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
-
     window.removeEventListener("mousemove", onWindowMouseMove);
   }, [onWindowMouseMove]);
 
@@ -70,6 +65,13 @@ export const useViewport = () => {
     },
     [onWindowMouseMove, onWindowMouseUp],
   );
+
+  useEffect(() => {
+    return () => {
+      window.removeEventListener("mousemove", onWindowMouseMove);
+      window.removeEventListener("mouseup", onWindowMouseUp);
+    };
+  }, [onWindowMouseMove, onWindowMouseUp]);
 
   return {
     handleZoom,

@@ -2,9 +2,13 @@ import type { HocuspocusProvider } from "@hocuspocus/provider";
 import type * as Y from "yjs";
 import { create } from "zustand";
 
-import type { ElementType } from "./element/types";
-import type { GlobalsState, RemoteCursorsMap, Tool } from "./types";
-import type { Viewport } from "./viewport/types";
+import type {
+  ElementType,
+  GlobalsState,
+  RemoteCursorsMap,
+  Tool,
+  Viewport,
+} from "./types";
 
 interface BoardState {
   // ── Yjs-ссылки (устанавливаются один раз при подключении) ──
@@ -35,12 +39,13 @@ interface BoardState {
   pureSelect: (id: string) => void;
   toggleSelect: (id: string) => void;
   deselect: (id: string) => void;
-  selectMany: (ids: string[]) => void;
+  pureSelectMany: (ids: Set<string>) => void;
   clearSelection: () => void;
 
   // ── Действия (пишут в Yjs → observe обновит React-state) ──
   addElement: (el: ElementType) => void;
   updateElement: (id: string, changes: Partial<ElementType>) => void;
+  updateElements: (updates: Map<string, Partial<ElementType>>) => void;
   removeElement: (id: string) => void;
   removeSelectedElements: () => void;
   setGlobal: (key: string, value: unknown) => void;
@@ -67,13 +72,16 @@ export const useBoardStore = create<BoardState>((set, get) => ({
   },
 
   selectedIds: new Set(),
+
   select: (id) =>
     set((state) => {
       const newSelectedIds = new Set(state.selectedIds);
       newSelectedIds.add(id);
       return { selectedIds: newSelectedIds };
     }),
+
   pureSelect: (id) => set({ selectedIds: new Set([id]) }),
+
   toggleSelect: (id) => {
     set((state) => {
       const newSelectedIds = new Set(state.selectedIds);
@@ -83,18 +91,23 @@ export const useBoardStore = create<BoardState>((set, get) => ({
       return { selectedIds: newSelectedIds };
     });
   },
+
   deselect: (id) =>
     set((state) => {
       const newSelectedIds = new Set(state.selectedIds);
       newSelectedIds.delete(id);
       return { selectedIds: newSelectedIds };
     }),
-  selectMany: (ids) => set({ selectedIds: new Set(ids) }),
+
+  pureSelectMany: (ids) => set({ selectedIds: new Set(ids) }),
+
   clearSelection: () => set({ selectedIds: new Set() }),
 
   setTool: (tool) => set({ tool }),
+
   updateViewport: (updates) =>
     set((state) => ({ viewport: { ...state.viewport, ...updates } })),
+
   resetViewport: () => set({ viewport: { x: 0, y: 0, scale: 1 } }),
 
   addElement: (el) => {
@@ -108,6 +121,19 @@ export const useBoardStore = create<BoardState>((set, get) => ({
     yElements!.set(id, { ...current, ...changes } as ElementType);
   },
 
+  updateElements: (updates) => {
+    const yElements = get().yElements;
+    if (!yElements) return;
+
+    yElements.doc?.transact(() => {
+      updates.forEach((changes, id) => {
+        const current = yElements.get(id);
+        if (!current) return;
+        yElements.set(id, { ...current, ...changes } as ElementType);
+      });
+    });
+  },
+
   removeElement: (id) => {
     get().yElements?.delete(id);
     get().deselect(id);
@@ -117,7 +143,9 @@ export const useBoardStore = create<BoardState>((set, get) => ({
     const { selectedIds, yElements } = get();
     if (!yElements || selectedIds.size === 0) return;
 
-    selectedIds.forEach((id) => yElements.delete(id));
+    yElements.doc?.transact(() => {
+      selectedIds.forEach((id) => yElements.delete(id));
+    });
 
     set({ selectedIds: new Set() });
   },

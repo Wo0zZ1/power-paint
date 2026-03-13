@@ -1,5 +1,8 @@
 "use client";
 
+import { useMemo } from "react";
+import { useShallow } from "zustand/react/shallow";
+
 import { useBoardStore } from "../model/useBoardStore";
 import { useDragElements } from "../model/useDrag";
 
@@ -7,14 +10,16 @@ import { CircleElement } from "./CircleElement";
 import { RectElement } from "./RectElement";
 
 export function LayerContent() {
-  const elements = useBoardStore((s) => s.elements);
-  const selectedIds = useBoardStore((s) => s.selectedIds);
+  const elements = useBoardStore(useShallow((s) => s.elements));
+  const selectedIds = useBoardStore(useShallow((s) => s.selectedIds));
 
   const { startDrag } = useDragElements();
 
+  const elementsList = useMemo(() => Array.from(elements.values()), [elements]);
+
   return (
     <>
-      {Array.from(elements.values()).map((el) => {
+      {elementsList.map((el) => {
         const commonProps = {
           isSelected: selectedIds.has(el.id),
           onMouseDown: startDrag,

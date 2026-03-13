@@ -1,43 +1,35 @@
 import type Konva from "konva";
-import { useCallback, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
+
+import { useThrottledCallback } from "../lib/useThrottledCallback";
 
 import { useBoardStore } from "./useBoardStore";
-import { shouldPan } from "./viewport/useViewport";
+import { shouldPan } from "./useViewport";
 
 export const useDragElements = () => {
-  const rafRef = useRef<number | null>(null);
   const dragStartRef = useRef({ x: 0, y: 0 });
 
-  const onWindowMouseMove = useCallback((e: MouseEvent) => {
-    if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
+  const onWindowMouseMove = useThrottledCallback((e: MouseEvent) => {
+    const elements = useBoardStore.getState().elements;
+    const selectedIds = useBoardStore.getState().selectedIds;
 
-    rafRef.current = requestAnimationFrame(() => {
-      rafRef.current = null;
+    const scale = useBoardStore.getState().viewport.scale;
+    const deltaX = (e.clientX - dragStartRef.current.x) / scale;
+    const deltaY = (e.clientY - dragStartRef.current.y) / scale;
 
-      const elements = useBoardStore.getState().elements;
-      const selectedIds = useBoardStore.getState().selectedIds;
-
-      const scale = useBoardStore.getState().viewport.scale;
-      const deltaX = (e.clientX - dragStartRef.current.x) / scale;
-      const deltaY = (e.clientY - dragStartRef.current.y) / scale;
-
-      selectedIds.forEach((id) => {
-        const element = elements.get(id);
-        if (!element) return;
-
-        useBoardStore.getState().updateElement(id, {
-          x: element.x + deltaX,
-          y: element.y + deltaY,
-        });
-      });
-
-      dragStartRef.current = { x: e.clientX, y: e.clientY };
+    const updates = new Map<string, { x: number; y: number }>();
+    selectedIds.forEach((id) => {
+      const element = elements.get(id);
+      if (!element) return;
+      updates.set(id, { x: element.x + deltaX, y: element.y + deltaY });
     });
+
+    useBoardStore.getState().updateElements(updates);
+
+    dragStartRef.current = { x: e.clientX, y: e.clientY };
   }, []);
 
   const onWindowMouseUp = useCallback(() => {
-    if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
-
     window.removeEventListener("mousemove", onWindowMouseMove);
   }, [onWindowMouseMove]);
 
@@ -52,6 +44,13 @@ export const useDragElements = () => {
     },
     [onWindowMouseMove, onWindowMouseUp],
   );
+
+  useEffect(() => {
+    return () => {
+      window.removeEventListener("mousemove", onWindowMouseMove);
+      window.removeEventListener("mouseup", onWindowMouseUp);
+    };
+  }, [onWindowMouseMove, onWindowMouseUp]);
 
   return { startDrag };
 };

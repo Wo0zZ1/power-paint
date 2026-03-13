@@ -1,8 +1,12 @@
 import { HocuspocusProvider } from "@hocuspocus/provider";
 import { useEffect } from "react";
 
-import type { ElementType } from "./element/types";
-import type { AwarenessState, AwarenessUser, RemoteCursorsMap } from "./types";
+import type {
+  AwarenessState,
+  AwarenessUser,
+  ElementType,
+  RemoteCursorsMap,
+} from "./types";
 import { useBoardStore } from "./useBoardStore";
 
 interface UseHocuspocusProps {

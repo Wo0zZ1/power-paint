@@ -4,15 +4,16 @@ import type { Board } from "@prisma/client";
 import type Konva from "konva";
 import { useCallback, useRef } from "react";
 import { Layer, Stage } from "react-konva";
+import { useShallow } from "zustand/react/shallow";
 
-import { useHotKeys } from "../model/input/useHotKeys";
 import type { AwarenessUser } from "../model/types";
 import { useBoardSize } from "../model/useBoardSize";
 import { useBoardStore } from "../model/useBoardStore";
 import { useHocuspocus } from "../model/useHocuspocus";
+import { useHotKeys } from "../model/useHotKeys";
 import { useMouseAwareness } from "../model/useMouseAwareness";
 import { useSelectionRect } from "../model/useSelectionRect";
-import { shouldPan, useViewport } from "../model/viewport/useViewport";
+import { shouldPan, useViewport } from "../model/useViewport";
 
 import { LayerContent } from "./LayerContent";
 import { SelectionRect } from "./SelectionRect";
@@ -30,8 +31,8 @@ export function KonvaBoard({ user, boardId }: KonvaBoardProps) {
   const stageRef = useRef<Konva.Stage>(null);
   const selectionRectRef = useRef<Konva.Rect>(null);
 
-  const globals = useBoardStore((s) => s.globals);
-  const viewport = useBoardStore((s) => s.viewport);
+  const globals = useBoardStore(useShallow((s) => s.globals));
+  const viewport = useBoardStore(useShallow((s) => s.viewport));
 
   useHotKeys();
   useHocuspocus({ boardId, user });

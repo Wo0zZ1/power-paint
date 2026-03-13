@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 
-import type { CircleElementType, RectElementType } from "./element/types";
+import type { CircleElementType, RectElementType } from "./types";
 import { useBoardStore } from "./useBoardStore";
 
 export const useAddElement = () => {

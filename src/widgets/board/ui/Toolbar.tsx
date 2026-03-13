@@ -1,7 +1,8 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { useCallback, useMemo, type ChangeEvent } from "react";
+import { useCallback, type ChangeEvent } from "react";
+import { useShallow } from "zustand/react/shallow";
 
 import { getParsedUsername } from "@/shared/lib/utils";
 
@@ -18,15 +19,10 @@ interface ToolbarProps {
 export function Toolbar({ className, user }: ToolbarProps) {
   const t = useTranslations("guestNameParts");
 
-  const globals = useBoardStore((s) => s.globals);
+  const globals = useBoardStore(useShallow((s) => s.globals));
 
   const { guest, name, color } = user;
-
-  const userName = useMemo(
-    () => getParsedUsername(name, guest, t),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [t, guest, name.join("")],
-  );
+  const userName = getParsedUsername(name, guest, t);
 
   const { addRect, addCircle } = useAddElement();
 
@@ -42,7 +38,9 @@ export function Toolbar({ className, user }: ToolbarProps) {
   return (
     <div className={className}>
       <button
-        onClick={addRect}
+        onClick={() => {
+          for (let _ = 0; _ < 100; _++) addRect();
+        }}
         className="px-3 py-1 bg-blue-500 text-white rounded text-sm"
       >
         Create Rectangle

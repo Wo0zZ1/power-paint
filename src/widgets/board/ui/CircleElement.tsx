@@ -1,7 +1,7 @@
 import type { ComponentProps } from "react";
 import { Circle } from "react-konva";
 
-import type { CircleElementType } from "../model/element/types";
+import type { CircleElementType } from "../model/types";
 
 type CircleElementProps = {
   element: CircleElementType;

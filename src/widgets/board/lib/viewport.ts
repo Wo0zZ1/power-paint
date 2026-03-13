@@ -1,4 +1,4 @@
-import type { Viewport } from "./types";
+import type { Viewport } from "../model/types";
 
 export const screenToCanvas = (
   screenX: number,

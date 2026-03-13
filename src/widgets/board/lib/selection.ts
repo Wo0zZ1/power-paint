@@ -2,7 +2,7 @@ import type {
   CircleElementType,
   ElementType,
   RectElementType,
-} from "../element/types";
+} from "../model/types";
 
 type Rectangle = {
   x: number;
@@ -106,19 +106,4 @@ export const isElementFullyInsideRect = (
 
   const contour = getEllipseContourPoints(element);
   return contour.every((point) => isPointInsideRect(selectionRect, point));
-};
-
-/**
- * Returns true when rect2 is fully contained inside rect1.
- */
-export const checkRectangleOverlap = (rect1: Rectangle, rect2: Rectangle) => {
-  const selection = normalizeRect(rect1);
-  const target = normalizeRect(rect2);
-
-  return (
-    target.x >= selection.x &&
-    target.y >= selection.y &&
-    target.x + target.width <= selection.x + selection.width &&
-    target.y + target.height <= selection.y + selection.height
-  );
 };

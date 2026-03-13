@@ -1,13 +1,13 @@
 import type { KonvaEventObject, Node, NodeConfig } from "konva/lib/Node";
 import type { Transformer } from "konva/lib/shapes/Transformer";
-import { useCallback, useRef } from "react";
+import { useCallback } from "react";
+
+import { useThrottledCallback } from "../lib/useThrottledCallback";
 
 import { useBoardStore } from "./useBoardStore";
-import { shouldPan } from "./viewport/useViewport";
+import { shouldPan } from "./useViewport";
 
 export const useTransformer = () => {
-  const rafRef = useRef<number | null>(null);
-
   const handleTransformStart = useCallback(
     (e: KonvaEventObject<MouseEvent, Node<NodeConfig>>) => {
       if (shouldPan(e.evt.button)) {
@@ -22,29 +22,18 @@ export const useTransformer = () => {
     [],
   );
 
-  const applyTransform = useCallback((transformer: Transformer) => {
-    const { elements, updateElement } = useBoardStore.getState();
-
-    transformer.nodes().forEach((node) => {
-      const id = node.id();
-      const element = elements.get(id);
-      if (!element) return;
-
-      updateElement(id, node.getAttrs());
-    });
-
-    rafRef.current = null;
-  }, []);
-
-  const handleTransform = useCallback(
+  const handleTransform = useThrottledCallback(
     (e: KonvaEventObject<PointerEvent, Node<NodeConfig>>) => {
-      if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
-
       const transformer = e.currentTarget as unknown as Transformer;
 
-      rafRef.current = requestAnimationFrame(() => applyTransform(transformer));
+      const updates = new Map<string, Record<string, unknown>>();
+      transformer.nodes().forEach((node) => {
+        updates.set(node.id(), node.getAttrs());
+      });
+
+      useBoardStore.getState().updateElements(updates);
     },
-    [applyTransform],
+    [],
   );
 
   return { handleTransformStart, handleTransform };

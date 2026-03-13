@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 
-import { useBoardStore } from "../useBoardStore";
+import { useBoardStore } from "./useBoardStore";
 
 export const useHotKeys = (enabled: boolean = true) => {
   useEffect(() => {

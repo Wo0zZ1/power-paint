@@ -1,35 +1,42 @@
 import type Konva from "konva";
 import type { Vector2d } from "konva/lib/types";
 import type { RefObject } from "react";
-import { useCallback, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 
-import { isElementFullyInsideRect } from "./selection/utils";
+import { isElementFullyInsideRect } from "../lib/selection";
+import { useThrottledCallback } from "../lib/useThrottledCallback";
+import { screenToCanvas } from "../lib/viewport";
+
 import { useBoardStore } from "./useBoardStore";
-import { screenToCanvas } from "./viewport/utils";
 
 interface UseSelectionRectProps {
   rectRef: RefObject<Konva.Rect | null>;
 }
 
 export const useSelectionRect = ({ rectRef }: UseSelectionRectProps) => {
-  const rafRef = useRef<number | null>(null);
   const startRef = useRef<Vector2d | null>(null);
 
   const removeSelection = useCallback(() => {
     startRef.current = null;
-    if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
     if (!rectRef.current) return;
 
     rectRef.current.visible(false);
     rectRef.current.getLayer()?.batchDraw();
   }, [rectRef]);
 
-  const applySelection = useCallback(
-    (globalX: number, globalY: number, shiftKey: boolean) => {
+  const onWindowMouseMove = useThrottledCallback(
+    (e: MouseEvent) => {
       if (!startRef.current || !rectRef.current) return;
+
+      const [globalX, globalY] = screenToCanvas(
+        e.layerX,
+        e.layerY,
+        useBoardStore.getState().viewport,
+      );
 
       const width = globalX - startRef.current.x;
       const height = globalY - startRef.current.y;
+
       const selectionRect = {
         x: startRef.current.x,
         y: startRef.current.y,
@@ -42,34 +49,22 @@ export const useSelectionRect = ({ rectRef }: UseSelectionRectProps) => {
       rectRef.current.getLayer()?.batchDraw();
 
       const elements = useBoardStore.getState().elements;
+      const selectedIds = new Set(useBoardStore.getState().selectedIds);
 
       elements.forEach((element, id) => {
         const isSelected = isElementFullyInsideRect(selectionRect, element);
         if (isSelected) {
           useBoardStore.getState().select(id);
-        } else if (!shiftKey) {
+          selectedIds.add(id);
+        } else if (!e.shiftKey) {
           useBoardStore.getState().deselect(id);
+          selectedIds.delete(id);
         }
       });
+
+      useBoardStore.getState().pureSelectMany(selectedIds);
     },
     [rectRef],
-  );
-
-  const onWindowMouseMove = useCallback(
-    (e: MouseEvent) => {
-      if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
-
-      const [globalX, globalY] = screenToCanvas(
-        e.layerX,
-        e.layerY,
-        useBoardStore.getState().viewport,
-      );
-
-      rafRef.current = requestAnimationFrame(() =>
-        applySelection(globalX, globalY, e.shiftKey),
-      );
-    },
-    [applySelection],
   );
 
   const onWindowMouseUp = useCallback(() => {
@@ -93,15 +88,17 @@ export const useSelectionRect = ({ rectRef }: UseSelectionRectProps) => {
 
       startRef.current = { x, y };
 
-      const stage = rectRef.current.getStage()!;
+      const stage = rectRef.current.getStage();
+      if (!stage) return;
 
       const shape = stage.getIntersection({ x: canvasX, y: canvasY });
       if (shape) {
-        const stage = rectRef.current.getStage()!;
-        const transformer = stage.findOne<Konva.Transformer>("#transformer")!;
+        const transformer = stage.findOne<Konva.Transformer>("#transformer");
 
-        if (transformer.children.some((child) => child.id() === shape.id()))
+        // Если клик на элементе transformer, игнорируем
+        if (transformer?.children.some((child) => child.id() === shape.id()))
           return;
+
         const selected = useBoardStore.getState().selectedIds.has(shape.id());
 
         if (e.evt.shiftKey) useBoardStore.getState().toggleSelect(shape.id());
@@ -116,6 +113,13 @@ export const useSelectionRect = ({ rectRef }: UseSelectionRectProps) => {
     },
     [rectRef, onWindowMouseMove, onWindowMouseUp],
   );
+
+  useEffect(() => {
+    return () => {
+      window.removeEventListener("mousemove", onWindowMouseMove);
+      window.removeEventListener("mouseup", onWindowMouseUp);
+    };
+  }, [onWindowMouseMove, onWindowMouseUp]);
 
   return { startSelecting };
 };

@@ -3,13 +3,14 @@
 import type Konva from "konva";
 import { useEffect, useRef } from "react";
 import { Transformer } from "react-konva";
+import { useShallow } from "zustand/react/shallow";
 
 import { useBoardStore } from "../model/useBoardStore";
 import { useTransformer } from "../model/useTransformer";
 
 export function TransformerTool() {
   const transformerRef = useRef<Konva.Transformer>(null);
-  const selectedIds = useBoardStore((s) => s.selectedIds);
+  const selectedIds = useBoardStore(useShallow((s) => s.selectedIds));
   const shiftPressed = useBoardStore((s) => s.modifiers.shift);
 
   const { handleTransformStart, handleTransform } = useTransformer();
@@ -24,7 +25,8 @@ export function TransformerTool() {
   useEffect(() => {
     if (!transformerRef.current) return;
 
-    const layer = transformerRef.current.getLayer()!;
+    const layer = transformerRef.current.getLayer();
+    if (!layer) return;
 
     const nodes = Array.from(selectedIds)
       .map((id) => layer.findOne(`#${id}`))
