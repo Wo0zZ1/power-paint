@@ -15,6 +15,13 @@ interface BoardState {
   provider: HocuspocusProvider | null;
   yElements: Y.Map<ElementType> | null;
   yGlobals: Y.Map<unknown> | null;
+  undoManager: Y.UndoManager | null;
+
+  // ── Undo / Redo ──
+  canUndo: boolean;
+  canRedo: boolean;
+  undo: () => void;
+  redo: () => void;
 
   // ── React-состояние (обновляется через Yjs observe) ──
   elements: Map<string, ElementType>;
@@ -56,6 +63,12 @@ export const useBoardStore = create<BoardState>((set, get) => ({
   provider: null,
   yElements: null,
   yGlobals: null,
+  undoManager: null,
+
+  canUndo: false,
+  canRedo: false,
+  undo: () => get().undoManager?.undo(),
+  redo: () => get().undoManager?.redo(),
 
   elements: new Map(),
   globals: { backgroundColor: "#ffffff" },
@@ -159,6 +172,9 @@ export const useBoardStore = create<BoardState>((set, get) => ({
       provider: null,
       yElements: null,
       yGlobals: null,
+      undoManager: null,
+      canUndo: false,
+      canRedo: false,
       elements: new Map(),
       globals: { backgroundColor: "#ffffff" },
       remoteCursors: new Map(),

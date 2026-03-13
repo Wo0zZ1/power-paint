@@ -2,10 +2,8 @@ import { useEffect } from "react";
 
 import { useBoardStore } from "./useBoardStore";
 
-export const useHotKeys = (enabled: boolean = true) => {
+export const useHotKeys = () => {
   useEffect(() => {
-    if (!enabled) return;
-
     const isInput = () => {
       const el = document.activeElement;
       return (
@@ -14,9 +12,7 @@ export const useHotKeys = (enabled: boolean = true) => {
     };
 
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.repeat) return;
-
-      // Модификаторы — отслеживаем всегда (даже в input)
+      // Модификаторы - отслеживаем всегда (даже в input)
       if (e.key === " ") {
         e.preventDefault();
         useBoardStore.setState({
@@ -39,10 +35,24 @@ export const useHotKeys = (enabled: boolean = true) => {
 
       if (isInput()) return;
 
-      const { setTool, resetViewport, removeSelectedElements } =
+      const { setTool, resetViewport, removeSelectedElements, undo, redo } =
         useBoardStore.getState();
 
       switch (e.code) {
+        // Undo / Redo
+        case "KeyZ":
+          if (e.ctrlKey || e.metaKey) {
+            e.preventDefault();
+            if (e.shiftKey) redo();
+            else undo();
+          }
+          break;
+        case "KeyY":
+          if (e.ctrlKey || e.metaKey) {
+            e.preventDefault();
+            redo();
+          }
+          break;
         // Удаление выделенных элементов
         case "Delete":
         case "Backspace":
@@ -102,17 +112,16 @@ export const useHotKeys = (enabled: boolean = true) => {
       });
     };
 
-    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("keypress", handleKeyDown);
     window.addEventListener("keyup", handleKeyUp);
     window.addEventListener("blur", handleBlur);
 
     return () => {
-      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("keypress", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
       window.removeEventListener("blur", handleBlur);
-      useBoardStore.setState({
-        modifiers: { space: false, ctrl: false, shift: false },
-      });
+
+      handleBlur();
     };
-  }, [enabled]);
+  }, []);
 };
