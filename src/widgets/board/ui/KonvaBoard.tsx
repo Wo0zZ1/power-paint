@@ -33,10 +33,10 @@ export function KonvaBoard({ user, boardId }: KonvaBoardProps) {
   const globals = useBoardStore((s) => s.globals);
   const viewport = useBoardStore((s) => s.viewport);
 
-  const { stageSize } = useBoardSize({ boardRef });
-
   useHotKeys();
   useHocuspocus({ boardId, user });
+
+  const { stageSize } = useBoardSize({ boardRef });
 
   const { handleZoom, startPan } = useViewport();
   const { handleCursorMove, handleCursorLeave } = useMouseAwareness();

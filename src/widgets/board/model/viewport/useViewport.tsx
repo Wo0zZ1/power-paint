@@ -26,39 +26,34 @@ export const useViewport = () => {
     const scaleBy = e.evt.deltaY < 0 ? 1.1 : 0.9;
     const viewport = useBoardStore.getState().viewport;
 
-    const newViewport = zoomTowardsMouse(
-      e.evt.clientX,
-      e.evt.clientY,
-      viewport,
-      scaleBy,
-    );
+    const stage = e.target.getStage()!;
+    const container = stage.container();
+
+    const rect = container.getBoundingClientRect();
+    const mouseX = e.evt.clientX - rect.left;
+    const mouseY = e.evt.clientY - rect.top;
+
+    const newViewport = zoomTowardsMouse(mouseX, mouseY, viewport, scaleBy);
 
     useBoardStore.getState().updateViewport(newViewport);
   }, []);
 
-  const applyPan = useCallback((x: number, y: number) => {
-    const deltaX = x - panStartRef.current.x;
-    const deltaY = y - panStartRef.current.y;
+  const onWindowMouseMove = useCallback((e: MouseEvent) => {
+    if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
 
-    const viewport = useBoardStore.getState().viewport;
-    useBoardStore.getState().updateViewport({
-      x: viewport.x + deltaX,
-      y: viewport.y + deltaY,
+    rafRef.current = requestAnimationFrame(() => {
+      const deltaX = e.clientX - panStartRef.current.x;
+      const deltaY = e.clientY - panStartRef.current.y;
+
+      const viewport = useBoardStore.getState().viewport;
+      useBoardStore.getState().updateViewport({
+        x: viewport.x + deltaX,
+        y: viewport.y + deltaY,
+      });
+
+      panStartRef.current = { x: e.clientX, y: e.clientY };
     });
-
-    panStartRef.current = { x, y };
   }, []);
-
-  const onWindowMouseMove = useCallback(
-    (e: MouseEvent) => {
-      if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
-
-      rafRef.current = requestAnimationFrame(() =>
-        applyPan(e.clientX, e.clientY),
-      );
-    },
-    [applyPan],
-  );
 
   const onWindowMouseUp = useCallback(() => {
     if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);

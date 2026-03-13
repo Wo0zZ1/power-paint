@@ -29,10 +29,12 @@ export function zoomTowardsMouse(
   scaleBy: number,
 ): Viewport {
   const newScale = Math.max(0.1, Math.min(5, oldViewport.scale * scaleBy));
+  
+  const actualScaleBy = newScale / oldViewport.scale;
 
   return {
-    x: mouseScreenX * (1 - scaleBy) + oldViewport.x * scaleBy,
-    y: mouseScreenY * (1 - scaleBy) + oldViewport.y * scaleBy,
+    x: mouseScreenX * (1 - actualScaleBy) + oldViewport.x * actualScaleBy,
+    y: mouseScreenY * (1 - actualScaleBy) + oldViewport.y * actualScaleBy,
     scale: newScale,
   };
 }
