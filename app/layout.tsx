@@ -1,11 +1,7 @@
 import type { Metadata } from "next";
-import { getLocale } from "next-intl/server";
+import { getLocale, getMessages, getTimeZone } from "next-intl/server";
 
-import {
-  ClientProviders,
-  QueryProvider,
-  ServerProviders,
-} from "@/app/providers";
+import { ClientProviders, QueryProvider } from "@/app/providers";
 import { ThemeScript } from "@/features/theme-switcher/ui/ThemeScript";
 import { getSession } from "@/shared/lib/auth";
 import { Header } from "@/widgets/header";
@@ -28,7 +24,9 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const locale = await getLocale();
+  const messages = await getMessages({ locale });
   const session = await getSession();
+  const timeZone = await getTimeZone();
 
   return (
     <html
@@ -40,14 +38,17 @@ export default async function RootLayout({
         <ThemeScript />
       </head>
       <body className="flex flex-col h-full">
-        <ServerProviders>
-          <QueryProvider>
-            <ClientProviders session={session}>
-              <Header />
-              <div className="grow flex flex-col">{children}</div>
-            </ClientProviders>
-          </QueryProvider>
-        </ServerProviders>
+        <QueryProvider>
+          <ClientProviders
+            locale={locale}
+            messages={messages}
+            session={session}
+            timeZone={timeZone}
+          >
+            <Header />
+            <div className="grow flex flex-col">{children}</div>
+          </ClientProviders>
+        </QueryProvider>
       </body>
     </html>
   );

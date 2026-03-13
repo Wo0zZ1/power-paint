@@ -1,20 +1,24 @@
 "use client";
 
-import type { RemoteCursorsMap } from "../model/types";
+import type { Layer } from "konva/lib/Layer";
+import type { RefObject } from "react";
+
+import { useBoardStore } from "../model/useBoardStore";
 
 import { UserCursor } from "./UserCursor";
 
 interface UserCursorsProps {
-  remoteCursors?: RemoteCursorsMap;
+  canvasRef: RefObject<Layer | null>;
 }
 
-export function UserCursors({ remoteCursors }: UserCursorsProps) {
+export function UserCursors({ canvasRef }: UserCursorsProps) {
+  const remoteCursors = useBoardStore((s) => s.remoteCursors);
+
   return (
     <>
-      {remoteCursors &&
-        Array.from(remoteCursors.entries()).map(([clientId, state]) => (
-          <UserCursor key={clientId} state={state} />
-        ))}
+      {Array.from(remoteCursors.entries()).map(([clientId, state]) => (
+        <UserCursor key={clientId} state={state} canvasRef={canvasRef} />
+      ))}
     </>
   );
 }

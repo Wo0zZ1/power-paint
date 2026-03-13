@@ -1,18 +1,36 @@
 "use client";
 
+import type { Layer } from "konva/lib/Layer";
+import { useTranslations } from "next-intl";
+import type { RefObject } from "react";
+import { useMemo } from "react";
 import { Group, Path, Rect, Text } from "react-konva";
 
-import type { AwarenessState } from "./KonvaBoard";
+import {
+  getBackgroundSizeForCursor,
+  getContrastingTextColor,
+  getParsedUsername,
+} from "@/shared/lib/utils";
+
+import type { AwarenessState } from "../model/types";
 
 interface UserCursorProps {
   state: AwarenessState;
+  canvasRef: RefObject<Layer | null>;
 }
 
-export function UserCursor({ state }: UserCursorProps) {
-  if (!state.cursor) return null; // пользователь вне холста
+export function UserCursor({ state, canvasRef }: UserCursorProps) {
+  const t = useTranslations("guestNameParts");
 
-  const color = state.user.color;
-  const name = state.user.name;
+  const { name, color, guest } = state.user;
+
+  const userName = useMemo(
+    () => getParsedUsername(name, guest, t),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [t, guest, name.join("")],
+  );
+
+  if (!state.cursor) return null; // пользователь вне холста
 
   return (
     <Group x={state.cursor.x - 4} y={state.cursor.y - 4}>
@@ -30,16 +48,16 @@ export function UserCursor({ state }: UserCursorProps) {
           shadowColor="#0006"
           shadowBlur={6}
           cornerRadius={[0, 14, 14, 14]}
-          width={name.length * 8 + 20} // TODO handle with calculations
+          width={getBackgroundSizeForCursor(userName, canvasRef)}
           height={30}
         />
         <Text
-          fill="#fff" // TODO change color based on background brightness
+          fill={getContrastingTextColor(color)}
           align="center"
-          text={name}
+          text={userName}
           fontSize={12}
           listening={false}
-          width={name.length * 8 + 20}
+          width={getBackgroundSizeForCursor(userName, canvasRef)}
           lineHeight={30 / 12}
         />
       </Group>

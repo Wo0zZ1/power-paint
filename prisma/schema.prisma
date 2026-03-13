@@ -7,12 +7,13 @@ datasource db {
 }
 
 model User {
-  id            String    @id @default(uuid())
-  name          String
-  email         String    @unique
-  emailVerified DateTime?
-  image         String?
-  role          Role      @default(User)
+  id             String    @id @default(uuid())
+  name           String
+  email          String    @unique
+  emailVerified  DateTime?
+  image          String?
+  preferredColor String    @default(dbgenerated("'#' || lpad(to_hex((random() * (2^24))::int), 6, '0')")) @map("preferred_color")
+  role           Role      @default(User)
 
   board_members    BoardMember[]
   workspace_member WorkspaceMember[]
@@ -79,13 +80,12 @@ model Workspace {
 }
 
 model Board {
-  id              String        @id @default(uuid())
-  name            String
-  workspaceId     String        @map("workspace_id")
-  ownerId         String        @map("owner_id")
-  backgroundColor String        @default("#FFFFFF") @map("background_color")
-  accessLevel     AccessLevel?  @default(private) @map("access_level")
-  content         BoardContent?
+  id          String        @id @default(uuid())
+  name        String
+  workspaceId String        @map("workspace_id")
+  ownerId     String        @map("owner_id")
+  accessLevel AccessLevel?  @default(private) @map("access_level")
+  content     BoardContent?
 
   updatedAt DateTime @updatedAt @map("updated_at")
   createdAt DateTime @default(now()) @map("created_at")

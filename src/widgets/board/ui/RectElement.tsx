@@ -1,16 +1,18 @@
-"use client";
-
-import type { KonvaEventObject, Node, NodeConfig } from "konva/lib/Node";
+import type { ComponentProps } from "react";
 import { Rect } from "react-konva";
 
-import type { RectElement } from "../model/types";
+import type { RectElementType } from "../model/element/types";
 
-interface RectElementProps {
-  element: RectElement;
-  onDragMove: (e: KonvaEventObject<DragEvent, Node<NodeConfig>>) => void;
-}
+type RectElementProps = {
+  element: RectElementType;
+  isSelected?: boolean;
+} & ComponentProps<typeof Rect>;
 
-export function RectElement({ element, onDragMove }: RectElementProps) {
+export function RectElement({
+  element,
+  isSelected,
+  ...props
+}: RectElementProps) {
   return (
     <Rect
       id={element.id}
@@ -18,9 +20,14 @@ export function RectElement({ element, onDragMove }: RectElementProps) {
       y={element.y}
       width={element.width}
       height={element.height}
+      scaleX={element.scaleX}
+      scaleY={element.scaleY}
+      rotation={element.rotation}
+      //
       fill="lightblue"
-      draggable
-      onDragMove={onDragMove}
+      stroke={isSelected ? "blue" : undefined}
+      strokeWidth={isSelected ? 2 : 0}
+      {...props}
     />
   );
 }

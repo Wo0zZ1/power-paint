@@ -1,36 +1,25 @@
-// ─── Типы ───────────────────────────────────────────────────────────────────
+// ─── Глобальные настройки доски ──────────────────────────────────────
 
-export type BaseElement = {
-  id: string;
-  x: number;
-  y: number;
-};
-
-export type CircleElement = {
-  type: "circle";
-  radius: number;
-} & BaseElement;
-
-export type RectElement = {
-  type: "rect";
-  width: number;
-  height: number;
-} & BaseElement;
-
-export type Element = CircleElement | RectElement;
-
-// ─── DB ──────────────────────────────────────────────────────────────
-
-export type BoardData = {
+export type GlobalsState = {
   backgroundColor: string;
 };
 
-export type BoardDataMap = Map<number, BoardData>;
+// ─── Типы инструментов ───────────────────────────────────────────────
 
-// ─── Awareness ──────────────────────────────────────────────────────────────
+export type Tool =
+  | "select"
+  | "hand"
+  | "rect"
+  | "circle"
+  | "draw"
+  | "eraser"
+  | "text";
+
+// ─── Awareness ───────────────────────────────────────────────────────
 
 export type AwarenessUser = {
-  name: string;
+  guest: boolean;
+  name: string[];
   color: string;
 };
 

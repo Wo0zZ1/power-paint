@@ -1,5 +1,7 @@
 import type { User } from "@prisma/client";
 import { clsx, type ClassValue } from "clsx";
+import type { Layer } from "konva/lib/Layer";
+import type { RefObject } from "react";
 import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
@@ -50,10 +52,55 @@ export const getBadgeContentByAccessRole = (accessRole: string) => {
 export const generateRandomColor = () =>
   `hsl(${Math.floor(Math.random() * 360)}, 70%, 45%)`;
 
-export const generateRandomUsername = () => {
+export const getParsedUsername = (
+  name: string[],
+  guest: boolean,
+  t: (key: string) => string,
+): string => {
+  return (guest ? name.map((part) => t(part)) : name).join(" ");
+};
+
+export const generateRandomUsername = (): [string, string] => {
   const adjectives = ["Swift", "Silent", "Brave", "Clever", "Mighty"];
-  const animals = ["Lion", "Eagle", "Shark", "Wolf", "Panther"];
+  const animals = ["Lion", "Eagle", "Wolf", "Tiger", "Bear"];
+
   const adjective = adjectives[Math.floor(Math.random() * adjectives.length)];
   const animal = animals[Math.floor(Math.random() * animals.length)];
-  return `${adjective}${animal}`;
-}
+
+  return [adjective, animal];
+};
+
+export const getContrastingTextColor = (bgColor: string): string => {
+  const hslMatch = bgColor.match(/hsl\((\d+),\s*(\d+)%,\s*(\d+)%\)/);
+  const rgbMatch = bgColor.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
+
+  if (hslMatch) {
+    const l = parseInt(hslMatch[3]);
+
+    return l > 50 ? "#000000" : "#ffffff";
+  }
+
+  if (rgbMatch) {
+    const r = parseInt(rgbMatch[1]);
+    const g = parseInt(rgbMatch[2]);
+    const b = parseInt(rgbMatch[3]);
+
+    // Calculate brightness using the YIQ formula
+    const yiq = (r * 299 + g * 587 + b * 114) / 1000;
+    return yiq >= 128 ? "#000000" : "#ffffff";
+  }
+
+  // Default value
+  return "#ffffff";
+};
+
+export const getBackgroundSizeForCursor = (
+  text: string,
+  canvasRef: RefObject<Layer | null>,
+): number => {
+  if (!canvasRef.current) return 0;
+
+  const textWidth = canvasRef.current.getContext().measureText(text).width;
+
+  return textWidth + 30;
+};

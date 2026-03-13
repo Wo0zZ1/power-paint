@@ -1,61 +1,60 @@
-import type { KonvaEventObject, Node, NodeConfig } from "konva/lib/Node";
-import { useCallback, useEffect, useRef, type RefObject } from "react";
-import type { Array } from "yjs";
+import { useCallback, useRef } from "react";
 
-import type { Element } from "./types";
+import { useBoardStore } from "./useBoardStore";
 
-interface UseDragProps {
-  elementsRef: RefObject<Array<Element> | null>;
-}
-
-type PendingDrag = { id: string; x: number; y: number };
-
-export const useDrag = ({ elementsRef }: UseDragProps) => {
+export const useDragElements = () => {
   const rafRef = useRef<number | null>(null);
-  const pendingDragRef = useRef<PendingDrag | null>(null);
+  const dragStartRef = useRef({ x: 0, y: 0 });
 
-  const applyDrag = useCallback(() => {
+  const applyDrag = useCallback((x: number, y: number) => {
     rafRef.current = null;
 
-    const pending = pendingDragRef.current;
-    if (!pending) return;
-    pendingDragRef.current = null;
+    const elements = useBoardStore.getState().elements;
+    const selectedIds = useBoardStore.getState().selectedIds;
 
-    const yElements = elementsRef.current;
-    if (!yElements) return;
+    const scale = useBoardStore.getState().viewport.scale;
+    const deltaX = (x - dragStartRef.current.x) / scale;
+    const deltaY = (y - dragStartRef.current.y) / scale;
 
-    const arr = yElements.toArray();
-    const index = arr.findIndex((el) => el.id === pending.id);
-    if (index === -1) return;
+    selectedIds.forEach((id) => {
+      const element = elements.get(id);
+      if (!element) return;
 
-    yElements.doc?.transact(() => {
-      yElements.delete(index);
-      yElements.insert(index, [{ ...arr[index], x: pending.x, y: pending.y }]);
+      useBoardStore.getState().updateElement(id, {
+        x: element.x + deltaX,
+        y: element.y + deltaY,
+      });
     });
-  }, [rafRef, elementsRef]);
 
-  const handleDrag = useCallback(
-    (e: KonvaEventObject<DragEvent, Node<NodeConfig>>) => {
-      pendingDragRef.current = {
-        id: e.target.attrs.id,
-        x: e.target.x(),
-        y: e.target.y(),
-      };
+    dragStartRef.current = { x, y };
+  }, []);
 
-      if (rafRef.current === null)
-        rafRef.current = requestAnimationFrame(applyDrag);
+  const onWindowMouseMove = useCallback(
+    (e: MouseEvent) => {
+      if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
+
+      rafRef.current = requestAnimationFrame(() =>
+        applyDrag(e.clientX, e.clientY),
+      );
     },
-    [applyDrag, rafRef],
+    [applyDrag],
   );
 
-  useEffect(() => {
-    return () => {
-      if (rafRef.current !== null) {
-        cancelAnimationFrame(rafRef.current);
-        rafRef.current = null;
-      }
-    };
-  }, [rafRef]);
+  const onWindowMouseUp = useCallback(() => {
+    if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
 
-  return { handleDrag };
+    window.removeEventListener("mousemove", onWindowMouseMove);
+  }, [onWindowMouseMove]);
+
+  const startDrag = useCallback(
+    (screenX: number, screenY: number) => {
+      dragStartRef.current = { x: screenX, y: screenY };
+
+      window.addEventListener("mousemove", onWindowMouseMove);
+      window.addEventListener("mouseup", onWindowMouseUp);
+    },
+    [onWindowMouseMove, onWindowMouseUp],
+  );
+
+  return { startDrag };
 };

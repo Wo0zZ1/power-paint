@@ -1,25 +1,32 @@
-"use client";
-
-import type { KonvaEventObject, Node, NodeConfig } from "konva/lib/Node";
+import type { ComponentProps } from "react";
 import { Circle } from "react-konva";
 
-import type { CircleElement } from "../model/types";
+import type { CircleElementType } from "../model/element/types";
 
-interface CircleElementProps {
-  element: CircleElement;
-  onDragMove: (e: KonvaEventObject<DragEvent, Node<NodeConfig>>) => void;
-}
+type CircleElementProps = {
+  element: CircleElementType;
+  isSelected?: boolean;
+} & ComponentProps<typeof Circle>;
 
-export function CircleElement({ element, onDragMove }: CircleElementProps) {
+export function CircleElement({
+  element,
+  isSelected,
+  ...props
+}: CircleElementProps) {
   return (
     <Circle
       id={element.id}
       x={element.x}
       y={element.y}
-      radius={element.radius!}
+      radius={element.radius}
+      scaleX={element.scaleX}
+      scaleY={element.scaleY}
+      rotation={element.rotation}
+      //
       fill="lightpink"
-      draggable
-      onDragMove={onDragMove}
+      stroke={isSelected ? "blue" : undefined}
+      strokeWidth={isSelected ? 2 : 0}
+      {...props}
     />
   );
 }

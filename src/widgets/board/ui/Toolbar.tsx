@@ -1,43 +1,43 @@
 "use client";
 
-import type { Board } from "@prisma/client";
-import {
-  useCallback,
-  useEffect,
-  useRef,
-  type ChangeEvent,
-  type RefObject,
-} from "react";
-import type * as Y from "yjs";
+import { useTranslations } from "next-intl";
+import { useCallback, useMemo, type ChangeEvent } from "react";
 
-import type { AwarenessUser, Element } from "../model/types";
+import { getParsedUsername } from "@/shared/lib/utils";
+
+import type { AwarenessUser } from "../model/types";
 import { useAddElement } from "../model/useAddElement";
-import { useGlobals } from "../model/useGlobals";
+import { useBoardStore } from "../model/useBoardStore";
+import { useSetGlobal } from "../model/useSetGlobal";
 
 interface ToolbarProps {
   className?: string;
-  elementsRef: RefObject<Y.Array<Element> | null>;
-  globals?: { backgroundColor: string };
-  globalsRef: RefObject<Y.Map<unknown> | null>;
   user: AwarenessUser;
-  boardId: Board["id"];
 }
 
-export function Toolbar({
-  className,
-  elementsRef,
-  globals,
-  globalsRef,
-  user,
-  boardId,
-}: ToolbarProps) {
-  const { addRect, addCircle } = useAddElement({ elementsRef });
+export function Toolbar({ className, user }: ToolbarProps) {
+  const t = useTranslations("guestNameParts");
 
-  const { setGlobal } = useGlobals("backgroundColor", globalsRef);
+  const globals = useBoardStore((s) => s.globals);
 
-  const handleColorChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setGlobal(e.target.value);
-  };
+  const { guest, name, color } = user;
+
+  const userName = useMemo(
+    () => getParsedUsername(name, guest, t),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [t, guest, name.join("")],
+  );
+
+  const { addRect, addCircle } = useAddElement();
+
+  const setBackgroundColor = useSetGlobal("backgroundColor");
+
+  const handleColorChange = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      setBackgroundColor(e.target.value);
+    },
+    [setBackgroundColor],
+  );
 
   return (
     <div className={className}>
@@ -54,13 +54,13 @@ export function Toolbar({
         Create Circle
       </button>
       <span className="px-3 py-1 bg-black rounded text-sm">
-        Вы: <strong style={{ color: user.color }}>{user.name}</strong>
+        Вы: <strong style={{ color }}>{userName}</strong>
       </span>
       <div className="flex gap-1 p-0.5 bg-black rounded text-sm">
         <p>Current background color: </p>
         <input
           type="color"
-          defaultValue={globals?.backgroundColor}
+          value={globals.backgroundColor}
           className="w-6 h-6 border-none cursor-pointer"
           onChange={handleColorChange}
         />

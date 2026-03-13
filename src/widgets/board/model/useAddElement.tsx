@@ -1,38 +1,37 @@
-import type { RefObject } from "react";
 import { useCallback } from "react";
-import type { Array } from "yjs";
 
-import type { Element } from "./types";
+import type { CircleElementType, RectElementType } from "./element/types";
+import { useBoardStore } from "./useBoardStore";
 
-interface useAddElementProps {
-  elementsRef: RefObject<Array<Element> | null>;
-}
+export const useAddElement = () => {
+  const addElement = useBoardStore((s) => s.addElement);
 
-export const useAddElement = ({ elementsRef }: useAddElementProps) => {
   const addRect = useCallback(() => {
-    elementsRef.current?.push([
-      {
-        id: crypto.randomUUID(),
-        type: "rect",
-        x: 50 + Math.random() * 300,
-        y: 50 + Math.random() * 200,
-        width: 100,
-        height: 80,
-      },
-    ]);
-  }, [elementsRef]);
+    addElement({
+      id: crypto.randomUUID(),
+      type: "rect",
+      x: 50 + Math.random() * 200,
+      y: 50 + Math.random() * 200,
+      width: 100,
+      height: 100,
+      rotation: 0,
+      scaleX: 1,
+      scaleY: 1,
+    } satisfies RectElementType);
+  }, [addElement]);
 
   const addCircle = useCallback(() => {
-    elementsRef.current?.push([
-      {
-        id: crypto.randomUUID(),
-        type: "circle",
-        x: 50 + Math.random() * 300,
-        y: 50 + Math.random() * 200,
-        radius: 50,
-      },
-    ]);
-  }, [elementsRef]);
+    addElement({
+      id: crypto.randomUUID(),
+      type: "circle",
+      x: 50 + Math.random() * 200,
+      y: 50 + Math.random() * 200,
+      radius: 50,
+      rotation: 0,
+      scaleX: 1,
+      scaleY: 1,
+    } satisfies CircleElementType);
+  }, [addElement]);
 
   return { addRect, addCircle };
 };

@@ -1,32 +1,27 @@
-import type { HocuspocusProvider } from "@hocuspocus/provider";
 import type { MouseEvent, RefObject } from "react";
 import { useCallback } from "react";
 
-interface useMouseAwarenessProps {
-  boardRef: RefObject<HTMLDivElement | null>;
-  providerRef: RefObject<HocuspocusProvider | null>;
-}
+import { useBoardStore } from "./useBoardStore";
 
-export const useMouseAwareness = ({
-  boardRef,
-  providerRef,
-}: useMouseAwarenessProps) => {
+export const useMouseAwareness = (
+  boardRef: RefObject<HTMLDivElement | null>,
+) => {
   const handleMouseMove = useCallback(
     (e: MouseEvent<HTMLDivElement>) => {
       const rect = boardRef.current?.getBoundingClientRect();
       if (!rect) return;
 
-      providerRef.current?.setAwarenessField("cursor", {
+      useBoardStore.getState().provider?.setAwarenessField("cursor", {
         x: e.clientX - rect.left,
         y: e.clientY - rect.top,
       });
     },
-    [boardRef, providerRef],
+    [boardRef],
   );
 
   const handleMouseLeave = useCallback(() => {
-    providerRef.current?.setAwarenessField("cursor", null);
-  }, [providerRef]);
+    useBoardStore.getState().provider?.setAwarenessField("cursor", null);
+  }, []);
 
   return { handleMouseMove, handleMouseLeave };
 };

@@ -1,13 +1,38 @@
-// const PRIVATE_ROUTES = ["/dashboard"];
+import { cookies } from "next/headers";
+import { NextResponse } from "next/server";
 
-export function proxy() {
-  // const response = NextResponse.next();
-  // const session = getSession();
-  // if (!session && PRIVATE_ROUTES.some((route) => request.url.includes(route)))
-  //   redirect(ROUTES.LOGIN);
-  // return response;
+import { getSession } from "@/shared/lib/auth";
+import {
+  generateRandomUsername,
+  generateRandomColor,
+} from "@/shared/lib/utils";
+import type { IGuestUserCookie } from "@/shared/types";
+
+export async function proxy() {
+  const response = NextResponse.next();
+
+  const cookieState = await cookies();
+  const session = await getSession();
+
+  if (!session) {
+    const guestUser = cookieState.get("guest-user")?.value;
+
+    if (!guestUser) {
+      const guestUserCookie = {
+        name: generateRandomUsername(),
+        color: generateRandomColor(),
+      } satisfies IGuestUserCookie;
+
+      response.cookies.set(
+        "guest-user",
+        Buffer.from(JSON.stringify(guestUserCookie)).toString("base64"),
+      );
+    }
+  }
+
+  return response;
 }
 
 export const config = {
-  matcher: ["/((?!api|_next/static|_next/image|.*\\.png$).*)"],
+  matcher: ["/board/:path*"],
 };

@@ -73,6 +73,7 @@ export const AUTH_CONFIG = {
       session.user.emailVerified = user.emailVerified;
       session.user.name = user.name;
       session.user.image = user.image ?? null;
+      session.user.preferredColor = user.preferredColor;
       session.user.role = user.role;
 
       return session;
@@ -130,6 +131,7 @@ export const AUTH_CONFIG = {
   secret: process.env.NEXTAUTH_SECRET,
 } satisfies NextAuthOptions;
 
+// TODO move to separate .d.ts file
 declare module "next-auth" {
   interface Session {
     user: {
@@ -138,6 +140,7 @@ declare module "next-auth" {
       email: string;
       emailVerified: Date | null;
       image: string | null;
+      preferredColor: string;
       role: Role;
     } & DefaultSession["user"];
   }
@@ -153,5 +156,12 @@ declare module "next-auth" {
 
   interface Profile {
     email_verified?: Date | boolean;
+  }
+}
+
+// TODO move to separate .d.ts file
+declare module "next-auth/adapters" {
+  interface AdapterUser {
+    preferredColor: string;
   }
 }

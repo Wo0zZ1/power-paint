@@ -1,0 +1,124 @@
+import type {
+  CircleElementType,
+  ElementType,
+  RectElementType,
+} from "../element/types";
+
+type Rectangle = {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+};
+
+type Point = {
+  x: number;
+  y: number;
+};
+
+const ELLIPSE_SAMPLES = 48;
+const EPSILON = 0.001;
+
+const normalizeRect = (rect: Rectangle): Rectangle => {
+  const right = rect.x + rect.width;
+  const bottom = rect.y + rect.height;
+
+  return {
+    x: Math.min(rect.x, right),
+    y: Math.min(rect.y, bottom),
+    width: Math.abs(rect.width),
+    height: Math.abs(rect.height),
+  };
+};
+
+const degToRad = (deg: number) => (deg * Math.PI) / 180;
+
+const rotatePoint = (point: Point, angleRad: number): Point => {
+  const cos = Math.cos(angleRad);
+  const sin = Math.sin(angleRad);
+
+  return {
+    x: point.x * cos - point.y * sin,
+    y: point.x * sin + point.y * cos,
+  };
+};
+
+const isPointInsideRect = (rect: Rectangle, point: Point): boolean => {
+  const normalizedRect = normalizeRect(rect);
+
+  return (
+    point.x >= normalizedRect.x - EPSILON &&
+    point.x <= normalizedRect.x + normalizedRect.width + EPSILON &&
+    point.y >= normalizedRect.y - EPSILON &&
+    point.y <= normalizedRect.y + normalizedRect.height + EPSILON
+  );
+};
+
+const getRectCornerPoints = (element: RectElementType): Point[] => {
+  const width = element.width * element.scaleX;
+  const height = element.height * element.scaleY;
+  const angleRad = degToRad(element.rotation);
+
+  const corners: Point[] = [
+    { x: 0, y: 0 },
+    { x: width, y: 0 },
+    { x: width, y: height },
+    { x: 0, y: height },
+  ];
+
+  return corners.map((corner) => {
+    const rotated = rotatePoint(corner, angleRad);
+    return {
+      x: element.x + rotated.x,
+      y: element.y + rotated.y,
+    };
+  });
+};
+
+const getEllipseContourPoints = (element: CircleElementType): Point[] => {
+  const angleRad = degToRad(element.rotation);
+  const rx = element.radius * element.scaleX;
+  const ry = element.radius * element.scaleY;
+
+  return Array.from({ length: ELLIPSE_SAMPLES }, (_, i) => {
+    const t = (i / ELLIPSE_SAMPLES) * Math.PI * 2;
+    const localPoint: Point = {
+      x: Math.cos(t) * rx,
+      y: Math.sin(t) * ry,
+    };
+    const rotated = rotatePoint(localPoint, angleRad);
+
+    return {
+      x: element.x + rotated.x,
+      y: element.y + rotated.y,
+    };
+  });
+};
+
+export const isElementFullyInsideRect = (
+  selectionRect: Rectangle,
+  element: ElementType,
+): boolean => {
+  if (element.type === "rect") {
+    const corners = getRectCornerPoints(element);
+    return corners.every((point) => isPointInsideRect(selectionRect, point));
+  }
+
+  const contour = getEllipseContourPoints(element);
+  return contour.every((point) => isPointInsideRect(selectionRect, point));
+};
+
+/**
+ * Returns true when rect2 is fully contained inside rect1.
+ */
+export const checkRectangleOverlap = (rect1: Rectangle, rect2: Rectangle) => {
+  const selection = normalizeRect(rect1);
+  const target = normalizeRect(rect2);
+
+  return (
+    target.x >= selection.x &&
+    target.y >= selection.y &&
+    target.x + target.width <= selection.x + selection.width &&
+    target.y + target.height <= selection.y + selection.height
+  );
+};

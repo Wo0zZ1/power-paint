@@ -78,8 +78,6 @@ export function CreateBoardModal({
 
   const handleCreateBoard = useCallback(
     async (data: CreateBoardFormData) => {
-      console.log(data);
-
       await createBoardMutation.mutateAsync(data);
       onOpenChange(false);
     },

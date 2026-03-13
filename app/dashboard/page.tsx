@@ -16,43 +16,47 @@ export default async function DashboardPage() {
   const cookieStore = await cookies();
   const queryClient = getQueryClient();
 
-  const personalWorkspace = (
-    await queryClient.fetchQuery(
-      getWorkspacesQueryOption({
-        cookieString: cookieStore.toString(),
-        type: "personal",
-      }),
-    )
-  )[0];
+  try {
+    const personalWorkspace = (
+      await queryClient.fetchQuery(
+        getWorkspacesQueryOption({
+          cookieString: cookieStore.toString(),
+          type: "personal",
+        }),
+      )
+    )[0];
 
-  return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
-      <div>
-        <WorkspacesCarouselBlock
-          title={t("workspace.plural")}
-          action={
-            <Button size="xs" variant="link" className="text-sm" asChild>
-              <Link href={ROUTES.DASHBOARD.WORKSPACES}>{t("viewAll")}</Link>
-            </Button>
-          }
-        />
+    return (
+      <HydrationBoundary state={dehydrate(queryClient)}>
+        <div>
+          <WorkspacesCarouselBlock
+            title={t("workspace.plural")}
+            action={
+              <Button size="xs" variant="link" className="text-sm" asChild>
+                <Link href={ROUTES.DASHBOARD.WORKSPACES}>{t("viewAll")}</Link>
+              </Button>
+            }
+          />
 
-        <BoardsCarouselBlock
-          title={t("board.personal")}
-          action={
-            <Button variant="link" size="xs" className="text-sm" asChild>
-              <Link
-                href={ROUTES.DASHBOARD.WORKSPACE(
-                  personalWorkspace.workspace.id,
-                )}
-              >
-                {t("viewAll")}
-              </Link>
-            </Button>
-          }
-          workspace={personalWorkspace}
-        />
-      </div>
-    </HydrationBoundary>
-  );
+          <BoardsCarouselBlock
+            title={t("board.personal")}
+            action={
+              <Button variant="link" size="xs" className="text-sm" asChild>
+                <Link
+                  href={ROUTES.DASHBOARD.WORKSPACE(
+                    personalWorkspace.workspace.id,
+                  )}
+                >
+                  {t("viewAll")}
+                </Link>
+              </Button>
+            }
+            workspace={personalWorkspace}
+          />
+        </div>
+      </HydrationBoundary>
+    );
+  } catch {
+    throw new Error("Failed to fetch personal workspace");
+  }
 }

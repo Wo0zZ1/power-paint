@@ -18,7 +18,7 @@ export const useBoardSize = ({ boardRef }: useBoardSizeProps) => {
     });
     observer.observe(container);
     return () => observer.disconnect();
-  }, []);
+  }, [boardRef]);
 
   return { stageSize };
 };

@@ -112,5 +112,18 @@
       "inputLabel": "To confirm, enter \"{boardName}\" in the field below:",
       "inputPlaceholder": "Enter board name"
     }
+  },
+  "guestNameParts": {
+    "Swift": "Swift",
+    "Silent": "Silent",
+    "Brave": "Brave",
+    "Clever": "Clever",
+    "Mighty": "Mighty",
+
+    "Lion": "Lion",
+    "Eagle": "Eagle",
+    "Wolf": "Wolf",
+    "Tiger": "Tiger",
+    "Bear": "Bear"
   }
 }

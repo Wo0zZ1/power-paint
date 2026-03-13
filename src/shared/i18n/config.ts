@@ -1,3 +1,5 @@
+import type { IntlError } from "next-intl";
+
 export const LOCALES = {
   en: { code: "en", name: "English", nativeName: "English", enabled: true },
   ru: { code: "ru", name: "Russian", nativeName: "Русский", enabled: true },
@@ -18,3 +20,9 @@ export const isLocaleSupported = (
 ): code is SupportedLocaleCode => {
   return code in LOCALES;
 };
+
+export const getMessageFallback = (e: {
+  error: IntlError;
+  key: string;
+  namespace?: string;
+}) => e.key.split(".").at(-1)!;

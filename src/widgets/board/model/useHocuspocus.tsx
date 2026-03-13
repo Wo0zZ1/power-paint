@@ -1,89 +1,68 @@
 import { HocuspocusProvider } from "@hocuspocus/provider";
-import { useEffect, useRef, useState } from "react";
-import type * as Y from "yjs";
+import { useEffect } from "react";
 
-import type {
-  AwarenessState,
-  AwarenessUser,
-  BoardData,
-  Element,
-  RemoteCursorsMap,
-} from "./types";
+import type { ElementType } from "./element/types";
+import type { AwarenessState, AwarenessUser, RemoteCursorsMap } from "./types";
+import { useBoardStore } from "./useBoardStore";
 
-interface useHocuspocusProps {
+interface UseHocuspocusProps {
   boardId: string;
   user: AwarenessUser;
 }
 
-export const useHocuspocus = ({ boardId, user }: useHocuspocusProps) => {
-  const providerRef = useRef<HocuspocusProvider | null>(null);
-  const elementsRef = useRef<Y.Array<Element> | null>(null);
-  const globalsRef = useRef<Y.Map<unknown> | null>(null);
-
-  const [elements, setElements] = useState<Element[]>();
-  const [globals, setGlobals] = useState<BoardData>();
-  const [remoteCursors, setRemoteCursors] = useState<RemoteCursorsMap>();
-
+export const useHocuspocus = ({ boardId, user }: UseHocuspocusProps) => {
   useEffect(() => {
     const provider = new HocuspocusProvider({
-      url: "ws://localhost:1234",
+      url: process.env.NEXT_PUBLIC_WS_URL!,
       name: boardId,
     });
-    providerRef.current = provider;
 
     const ydoc = provider.document;
-    const yElements = ydoc.getArray<Element>("elements");
+    const yElements = ydoc.getMap<ElementType>("elements");
     const yGlobals = ydoc.getMap("globals");
 
-    elementsRef.current = yElements;
-    globalsRef.current = yGlobals;
+    // Сохраняем Yjs-ссылки в стор
+    useBoardStore.setState({ provider, yElements, yGlobals });
 
-    const onElementsChange = () => setElements(yElements.toArray());
+    // ── Синхронизация элементов ──
+    const onElementsChange = () => {
+      useBoardStore.setState({ elements: new Map(yElements) });
+    };
     yElements.observe(onElementsChange);
     onElementsChange();
 
+    // ── Синхронизация глобальных настроек ──
     const onGlobalsChange = () => {
-      const bgColor = yGlobals.get("backgroundColor") as string | undefined;
-      setGlobals({ backgroundColor: bgColor || "#fff" });
+      const bg = yGlobals.get("backgroundColor") as string | undefined;
+      useBoardStore.setState({
+        globals: { backgroundColor: bg || "#ffffff" },
+      });
     };
     yGlobals.observe(onGlobalsChange);
     onGlobalsChange();
 
-    // ── Awareness: сообщаем остальным, кто мы
-
+    // ── Awareness: сообщаем остальным, кто мы ──
     provider.setAwarenessField("user", user);
     provider.setAwarenessField("cursor", null);
 
     const onAwarenessChange = () => {
       const states = provider.awareness?.getStates();
 
-      // Убираем себя — нам незачем видеть собственный курсор
       const others = new Map() as RemoteCursorsMap;
       states?.forEach((state, clientId) => {
         if (clientId !== provider.awareness?.clientID)
           others.set(clientId, state as AwarenessState);
       });
-      setRemoteCursors(others);
+      useBoardStore.setState({ remoteCursors: others });
     };
-
     provider.awareness?.on("change", onAwarenessChange);
 
     return () => {
       yElements.unobserve(onElementsChange);
+      yGlobals.unobserve(onGlobalsChange);
       provider.awareness?.off("change", onAwarenessChange);
-
       provider.destroy();
-      providerRef.current = null;
+      useBoardStore.getState().reset();
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [boardId]);
-
-  return {
-    providerRef,
-    elements,
-    elementsRef,
-    globals,
-    globalsRef,
-    remoteCursors,
-  };
+  }, [boardId, user]);
 };

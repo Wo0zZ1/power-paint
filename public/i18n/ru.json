@@ -112,5 +112,18 @@
       "inputLabel": "Для подтверждения введите \"{boardName}\" в поле ниже:",
       "inputPlaceholder": "Введите название доски"
     }
+  },
+  "guestNameParts": {
+    "Swift": "Быстрый",
+    "Silent": "Тихий",
+    "Brave": "Храбрый",
+    "Clever": "Умный",
+    "Mighty": "Могущественный",
+
+    "Lion": "Лев",
+    "Eagle": "Орел",
+    "Wolf": "Волк",
+    "Tiger": "Тигр",
+    "Bear": "Медведь"
   }
 }
