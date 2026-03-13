@@ -2,7 +2,7 @@
 
 import type { Workspace } from "@prisma/client";
 import { useTranslations } from "next-intl";
-import type { SubmitEvent} from "react";
+import type { SubmitEvent } from "react";
 import { useEffect, useState } from "react";
 
 import { useUpdateWorkspaceMutation } from "@/entities/workspace";
@@ -22,8 +22,6 @@ import {
   Spinner,
 } from "@/shared/ui";
 import { cn } from "@/utils";
-
-
 
 interface RenameWorkspaceModalProps {
   workspace?: Workspace;
@@ -112,9 +110,7 @@ export function RenameWorkspaceModal({
               type="submit"
             >
               {isMutating && <Spinner />}
-              {isMutating
-                ? t("workspace.rename.confirmation")
-                : t("workspace.rename.confirm")}
+              {isMutating ? t("renaming") : t("rename")}
             </Button>
           </DialogFooter>
         </form>

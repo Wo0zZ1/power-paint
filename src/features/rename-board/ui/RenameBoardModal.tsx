@@ -2,7 +2,7 @@
 
 import type { Board } from "@prisma/client";
 import { useTranslations } from "next-intl";
-import type { SubmitEvent} from "react";
+import type { SubmitEvent } from "react";
 import { useEffect, useState } from "react";
 
 import { useUpdateBoardMutation } from "@/entities/board";
@@ -22,8 +22,6 @@ import {
   Spinner,
 } from "@/shared/ui";
 import { cn } from "@/utils";
-
-
 
 interface RenameBoardModalProps {
   board?: Board;
@@ -110,9 +108,7 @@ export function RenameBoardModal({
               type="submit"
             >
               {isMutating && <Spinner />}
-              {isMutating
-                ? t("board.rename.confirmation")
-                : t("board.rename.confirm")}
+              {isMutating ? t("renaming") : t("rename")}
             </Button>
           </DialogFooter>
         </form>

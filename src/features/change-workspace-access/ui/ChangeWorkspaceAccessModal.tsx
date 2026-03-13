@@ -2,7 +2,7 @@
 
 import type { Workspace } from "@prisma/client";
 import { useTranslations } from "next-intl";
-import type { SubmitEvent} from "react";
+import type { SubmitEvent } from "react";
 import { useEffect } from "react";
 
 import {
@@ -20,7 +20,6 @@ import {
   DialogDescription,
 } from "@/shared/ui";
 import { cn } from "@/utils";
-
 
 interface ChangeWorkspaceAccessModalProps {
   workspace?: Workspace;
@@ -77,9 +76,7 @@ export function ChangeWorkspaceAccessModal({
               <Button variant="outline">{t("cancel")}</Button>
             </DialogClose>
             <Button type="submit">
-              {false
-                ? t("workspace.access.confirmation")
-                : t("workspace.access.confirm")}
+              {false ? t("savingChanges") : t("saveChanges")}
             </Button>
           </DialogFooter>
         </form>

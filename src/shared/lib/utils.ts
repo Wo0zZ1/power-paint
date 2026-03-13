@@ -46,3 +46,14 @@ export const getBadgeContentByAccessRole = (accessRole: string) => {
       return "Unknown";
   }
 };
+
+export const generateRandomColor = () =>
+  `hsl(${Math.floor(Math.random() * 360)}, 70%, 45%)`;
+
+export const generateRandomUsername = () => {
+  const adjectives = ["Swift", "Silent", "Brave", "Clever", "Mighty"];
+  const animals = ["Lion", "Eagle", "Shark", "Wolf", "Panther"];
+  const adjective = adjectives[Math.floor(Math.random() * adjectives.length)];
+  const animal = animals[Math.floor(Math.random() * animals.length)];
+  return `${adjective}${animal}`;
+}

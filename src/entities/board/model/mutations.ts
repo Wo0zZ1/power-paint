@@ -36,11 +36,8 @@ export const useUpdateBoardMutation = () => {
 
     onSuccess: (data) => {
       queryClient.setQueryData(
-        [BOARDS_QUERY_KEY, `workspace-${data.board.workspaceId}`, {}],
-        (oldData: BoardWithAccess[]) => [
-          data,
-          ...oldData.filter((w) => w.board.id !== data.board.id),
-        ],
+        [BOARDS_QUERY_KEY, `board-${data.board.id}`],
+        () => data,
       );
 
       queryClient.invalidateQueries({

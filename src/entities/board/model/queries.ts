@@ -16,3 +16,10 @@ export const useGetBoardsQuery = ({
     queryFn: () => BoardsApi.getAll({ userId, workspaceId }),
   });
 };
+
+export const useGetBoardQuery = ({ boardId }: { boardId: string }) => {
+  return useQuery({
+    queryKey: [BOARDS_QUERY_KEY, `board-${boardId}`],
+    queryFn: () => BoardsApi.getOne({ boardId }),
+  });
+};

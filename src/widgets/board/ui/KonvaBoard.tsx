@@ -1,143 +1,78 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { Stage, Layer, Rect, Circle } from "react-konva";
-import { WebsocketProvider } from "y-websocket";
-import * as Y from "yjs";
+import type { Board } from "@prisma/client";
+import { useRef } from "react";
+import { Layer, Stage } from "react-konva";
 
-type ElementType = {
-  id: string;
-  type: "rect" | "circle";
-  x: number;
-  y: number;
-  width?: number;
-  height?: number;
-  radius?: number;
-};
+import type { AwarenessUser } from "../model/types";
+import { useBoardSize } from "../model/useBoardSize";
+import { useDrag } from "../model/useDrag";
+import { useHocuspocus } from "../model/useHocuspocus";
+import { useMouseAwareness } from "../model/useMouseAwareness";
+
+import { LayerContent } from "./LayerContent";
+import { Toolbar } from "./Toolbar";
+import { UserCursors } from "./UserCursors";
 
 interface KonvaBoardProps {
-  boardId: string;
+  user: AwarenessUser;
+  boardId: Board["id"];
 }
 
-export function KonvaBoard({ boardId }: KonvaBoardProps) {
-  const [elements, setElements] = useState<ElementType[]>([]);
-  const ydocRef = useRef<Y.Doc>(undefined);
+export function KonvaBoard({ user, boardId }: KonvaBoardProps) {
   const boardRef = useRef<HTMLDivElement>(null);
-  const elementsRef = useRef<Y.Array<ElementType>>(undefined);
 
-  useEffect(() => {
-    const ydoc = new Y.Doc();
-    ydocRef.current = ydoc;
+  const { stageSize } = useBoardSize({ boardRef });
 
-    const provider = new WebsocketProvider(
-      "ws://localhost:1234",
-      boardId,
-      ydoc,
-    );
+  const {
+    providerRef,
+    elementsRef,
+    elements,
+    globalsRef,
+    globals,
+    remoteCursors,
+  } = useHocuspocus({
+    boardId,
+    user,
+  });
 
-    const yElements = ydoc.getArray<ElementType>("elements");
-    elementsRef.current = yElements;
+  const { handleMouseMove, handleMouseLeave } = useMouseAwareness({
+    boardRef,
+    providerRef,
+  });
 
-    // Подписка на изменения массива
-    yElements.observe(() => {
-      setElements(yElements.toArray());
-    });
-
-    return () => {
-      provider.disconnect();
-      ydoc.destroy();
-    };
-  }, [boardId]);
-
-  const addRect = () => {
-    const yElements = elementsRef.current;
-    if (!yElements) return;
-    yElements.push([
-      {
-        id: crypto.randomUUID(),
-        type: "rect",
-        x: 50 + Math.random() * 200,
-        y: 50 + Math.random() * 200,
-        width: 100,
-        height: 80,
-      },
-    ]);
-  };
-
-  const addCircle = () => {
-    const yElements = elementsRef.current;
-    if (!yElements) return;
-    yElements.push([
-      {
-        id: crypto.randomUUID(),
-        type: "circle",
-        x: 50 + Math.random() * 200,
-        y: 50 + Math.random() * 200,
-        radius: 50,
-      },
-    ]);
-  };
-
-  const handleDrag = (id: string, x: number, y: number) => {
-    const yElements = elementsRef.current;
-    if (!yElements) return;
-
-    const arr = yElements.toArray();
-    const index = arr.findIndex((el) => el.id === id);
-    if (index === -1) return;
-
-    yElements.delete(index);
-    yElements.insert(index, [{ ...arr[index], x, y }]);
-  };
+  const { handleDrag } = useDrag({ elementsRef });
 
   return (
-    <div ref={boardRef} className="w-full h-full">
-      <button onClick={addRect}>Add Rectangle</button>
-      <button onClick={addCircle}>Add Circle</button>
-
-      <Stage
-        height={500}
-        width={500}
-        // className="w-full h-full"
-        style={{ border: "1px solid black" }}
+    <div className="w-full h-full pl-3.75 mr-3.75 rounded-lg overflow-clip">
+      <div
+        ref={boardRef}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+        className="w-full h-full relative"
       >
-        <Layer>
-          {elements.map((el) => {
-            if (el.type === "rect") {
-              return (
-                <Rect
-                  key={el.id}
-                  x={el.x}
-                  y={el.y}
-                  width={el.width!}
-                  height={el.height!}
-                  fill="lightblue"
-                  draggable
-                  onDragMove={(e) =>
-                    handleDrag(el.id, e.target.x(), e.target.y())
-                  }
-                />
-              );
-            }
-            if (el.type === "circle") {
-              return (
-                <Circle
-                  key={el.id}
-                  x={el.x}
-                  y={el.y}
-                  radius={el.radius!}
-                  fill="pink"
-                  draggable
-                  onDragMove={(e) =>
-                    handleDrag(el.id, e.target.x(), e.target.y())
-                  }
-                />
-              );
-            }
-            return null;
-          })}
-        </Layer>
-      </Stage>
+        <Toolbar
+          className="absolute flex gap-2 z-10"
+          elementsRef={elementsRef}
+          user={user}
+          boardId={boardId}
+          globals={globals}
+          globalsRef={globalsRef}
+        />
+
+        <Stage
+          className="border border-muted "
+          style={{ backgroundColor: globals?.backgroundColor }}
+          width={stageSize.width}
+          height={stageSize.height}
+        >
+          <Layer>
+            <LayerContent elements={elements} handleDrag={handleDrag} />
+
+            <UserCursors remoteCursors={remoteCursors} />
+          </Layer>
+        </Stage>
+      </div>
     </div>
   );
 }
