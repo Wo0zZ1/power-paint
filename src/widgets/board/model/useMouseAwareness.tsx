@@ -26,7 +26,6 @@ export const useMouseAwareness = () => {
       if (e.pointerType === "touch") return;
       updateCursor(e.nativeEvent.layerX, e.nativeEvent.layerY);
     },
-    [],
   );
 
   const handleTouchCursorMove = useThrottledCallback(
@@ -35,7 +34,7 @@ export const useMouseAwareness = () => {
         hideCursor();
         return;
       }
-      
+
       const touch = e.touches[0];
       if (!touch) return;
 
@@ -43,7 +42,6 @@ export const useMouseAwareness = () => {
 
       updateCursor(touch.clientX - rect.left, touch.clientY - rect.top);
     },
-    [],
   );
 
   const handleCursorLeave = useCallback(() => {

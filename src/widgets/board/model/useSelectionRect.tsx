@@ -111,12 +111,9 @@ export const useSelectionRect = ({ rectRef }: UseSelectionRectProps) => {
 
   // ── Pointer (mouse/pen — touch фильтруется) ──
 
-  const onPointerMove = useThrottledCallback(
-    (e: PointerEvent) => {
-      moveSelect(e.layerX, e.layerY, e.shiftKey);
-    },
-    [moveSelect],
-  );
+  const onPointerMove = useThrottledCallback((e: PointerEvent) => {
+    moveSelect(e.layerX, e.layerY, e.shiftKey);
+  });
 
   const onPointerUp = useCallback(() => {
     endSelect();
@@ -153,25 +150,22 @@ export const useSelectionRect = ({ rectRef }: UseSelectionRectProps) => {
 
   const containerRectRef = useRef<DOMRect | null>(null);
 
-  const onTouchSelectMove = useThrottledCallback(
-    (e: TouchEvent) => {
-      if (e.touches.length >= 2) {
-        endSelect();
-        stopListeners.current();
-        return;
-      }
+  const onTouchSelectMove = useThrottledCallback((e: TouchEvent) => {
+    if (e.touches.length >= 2) {
+      endSelect();
+      stopListeners.current();
+      return;
+    }
 
-      const touch = e.touches[0];
-      if (!touch || !containerRectRef.current) return;
+    const touch = e.touches[0];
+    if (!touch || !containerRectRef.current) return;
 
-      moveSelect(
-        touch.clientX - containerRectRef.current.left,
-        touch.clientY - containerRectRef.current.top,
-        false,
-      );
-    },
-    [moveSelect, endSelect],
-  );
+    moveSelect(
+      touch.clientX - containerRectRef.current.left,
+      touch.clientY - containerRectRef.current.top,
+      false,
+    );
+  });
 
   const onTouchSelectEnd = useCallback(() => {
     endSelect();

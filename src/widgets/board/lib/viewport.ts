@@ -1,3 +1,5 @@
+import { MAX_ZOOM, MIN_ZOOM } from "@/shared/config";
+
 import type { Viewport } from "../model/types";
 
 export const screenToCanvas = (
@@ -28,8 +30,11 @@ export function zoomTowardsMouse(
   oldViewport: Viewport,
   scaleBy: number,
 ): Viewport {
-  const newScale = Math.max(0.1, Math.min(5, oldViewport.scale * scaleBy));
-  
+  const newScale = Math.max(
+    MIN_ZOOM,
+    Math.min(MAX_ZOOM, oldViewport.scale * scaleBy),
+  );
+
   const actualScaleBy = newScale / oldViewport.scale;
 
   return {

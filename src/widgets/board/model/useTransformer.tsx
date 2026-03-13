@@ -28,12 +28,13 @@ export const useTransformer = () => {
 
       const updates = new Map<string, Record<string, unknown>>();
       transformer.nodes().forEach((node) => {
-        updates.set(node.id(), node.getAttrs());
+        const attrs = node.getAttrs();
+
+        updates.set(node.id(), attrs);
       });
 
       useBoardStore.getState().updateElements(updates);
     },
-    [],
   );
 
   return { handleTransformStart, handleTransform };

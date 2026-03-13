@@ -1,11 +1,11 @@
 import type { KonvaEventObject } from "konva/lib/Node";
 import { useCallback, useEffect, useRef } from "react";
 
-import { generateId } from "../lib/generateId";
 import { useThrottledCallback } from "../lib/useThrottledCallback";
+import { generateId } from "../lib/utils";
 import { screenToCanvas } from "../lib/viewport";
 
-import type { StrokeElementType } from "./types";
+import { createStroke, type StrokeElementType } from "./types";
 import { useBoardStore } from "./useBoardStore";
 import { DEFAULT_CAPTURE_TIMEOUT } from "./useHocuspocus";
 
@@ -33,18 +33,7 @@ export const useDrawing = () => {
     originRef.current = { x: cx, y: cy };
     pointsRef.current = [0, 0];
 
-    const stroke: StrokeElementType = {
-      id,
-      type: "stroke",
-      x: cx,
-      y: cy,
-      points: [0, 0],
-      color: "#000000",
-      strokeWidth: 3,
-      scaleX: 1,
-      scaleY: 1,
-      rotation: 0,
-    };
+    const stroke = createStroke({ x: cx, y: cy, points: [0, 0], id });
 
     useBoardStore.getState().addElement(stroke);
   }, []);
@@ -116,12 +105,9 @@ export const useDrawing = () => {
 
   // ── Pointer ──
 
-  const onPointerMove = useThrottledCallback(
-    (e: PointerEvent) => {
-      moveDraw(e.layerX, e.layerY);
-    },
-    [moveDraw],
-  );
+  const onPointerMove = useThrottledCallback((e: PointerEvent) => {
+    moveDraw(e.layerX, e.layerY);
+  });
 
   const onPointerUp = useCallback(() => {
     endDraw();
@@ -149,22 +135,19 @@ export const useDrawing = () => {
 
   const containerRectRef = useRef<DOMRect | null>(null);
 
-  const onTouchDrawMove = useThrottledCallback(
-    (e: TouchEvent) => {
-      if (e.touches.length >= 2) {
-        cancelDraw();
-        stopListeners.current();
-        return;
-      }
-      const touch = e.touches[0];
-      if (!touch || !containerRectRef.current) return;
-      moveDraw(
-        touch.clientX - containerRectRef.current.left,
-        touch.clientY - containerRectRef.current.top,
-      );
-    },
-    [moveDraw, cancelDraw],
-  );
+  const onTouchDrawMove = useThrottledCallback((e: TouchEvent) => {
+    if (e.touches.length >= 2) {
+      cancelDraw();
+      stopListeners.current();
+      return;
+    }
+    const touch = e.touches[0];
+    if (!touch || !containerRectRef.current) return;
+    moveDraw(
+      touch.clientX - containerRectRef.current.left,
+      touch.clientY - containerRectRef.current.top,
+    );
+  });
 
   const onTouchDrawEnd = useCallback(() => {
     endDraw();

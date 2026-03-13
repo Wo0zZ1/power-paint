@@ -9,6 +9,9 @@ import type { AwarenessUser } from "../model/types";
 
 import { KonvaBoard } from "./KonvaBoard";
 
+export const revalidate = 0;
+export const dyanamic = "force-dynamic";
+
 interface BoardProps {
   className?: string;
   boardId: Board["id"];

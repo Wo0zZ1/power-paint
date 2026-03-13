@@ -115,12 +115,9 @@ export const useViewport = () => {
 
   // ── Pointer (mouse/pen — touch фильтруется) ──
 
-  const onPointerMove = useThrottledCallback(
-    (e: PointerEvent) => {
-      movePan(e.clientX, e.clientY);
-    },
-    [movePan],
-  );
+  const onPointerMove = useThrottledCallback((e: PointerEvent) => {
+    movePan(e.clientX, e.clientY);
+  });
 
   const onPointerUp = useCallback(() => {
     stopListeners.current();
@@ -148,20 +145,17 @@ export const useViewport = () => {
 
   // ── Touch ──
 
-  const onTouchPanMove = useThrottledCallback(
-    (e: TouchEvent) => {
-      if (e.touches.length === 1)
-        return movePan(e.touches[0].clientX, e.touches[0].clientY);
+  const onTouchPanMove = useThrottledCallback((e: TouchEvent) => {
+    if (e.touches.length === 1)
+      return movePan(e.touches[0].clientX, e.touches[0].clientY);
 
-      movePinch(
-        e.touches[0].clientX,
-        e.touches[0].clientY,
-        e.touches[1].clientX,
-        e.touches[1].clientY,
-      );
-    },
-    [movePan],
-  );
+    movePinch(
+      e.touches[0].clientX,
+      e.touches[0].clientY,
+      e.touches[1].clientX,
+      e.touches[1].clientY,
+    );
+  });
 
   const onTouchPanEnd = useCallback(
     (e: TouchEvent) => {

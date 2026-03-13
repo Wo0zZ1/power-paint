@@ -18,6 +18,7 @@
   "renaming": "Renaming",
   "delete": "Delete",
   "deleting": "Deleting",
+
   "auth": {
     "login": "Log In",
     "logout": "Log Out",
@@ -125,5 +126,53 @@
     "Wolf": "Wolf",
     "Tiger": "Tiger",
     "Bear": "Bear"
+  },
+  "toolbar": {
+    "tools": {
+      "select": "Select",
+      "hand": "Hand",
+      "rect": "Rectangle",
+      "circle": "Circle",
+      "draw": "Draw",
+      "eraser": "Eraser",
+      "text": "Text"
+    },
+    "zoom": {
+      "in": "Zoom In",
+      "out": "Zoom Out",
+      "reset": "Reset Zoom"
+    },
+    "history": {
+      "undo": "Undo",
+      "redo": "Redo"
+    },
+    "sidebar": {
+      "backgroundColor": "Canvas Background",
+      "hexCode": "Hex code",
+      "position": "Position",
+      "size": "Size",
+      "rotation": "Rotation",
+      "reset": "Reset",
+      "appearance": "Appearance",
+      "opacity": "Opacity",
+      "fill": "Fill",
+      "fill_none": "None",
+      "fill_solid": "Solid",
+      "fill_gradient": "Gradient",
+      "gradient_linear": "Linear",
+      "gradient_radial": "Radial",
+      "gradient_angle": "Gradient Angle",
+      "stroke": "Stroke",
+      "stroke_solid": "Solid",
+      "stroke_dashed": "Dashed",
+      "stroke_dash_dotted": "Dash-Dotted",
+
+      "multipleSelected": "{count} elements selected",
+
+      "addRect": "Add Rectangle",
+      "addCircle": "Add Circle",
+
+      "delete": "Delete Selected"
+    }
   }
 }

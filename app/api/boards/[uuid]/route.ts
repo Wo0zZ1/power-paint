@@ -1,5 +1,5 @@
 import { notFound, forbidden } from "next/navigation";
-import type { NextRequest} from "next/server";
+import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
 import type { BoardWithAccess } from "@/entities/board";
@@ -54,7 +54,6 @@ export const PATCH = async (
       name: body.name,
       workspaceId: body.workspaceId,
       ownerId: body.ownerId,
-      backgroundColor: body.backgroundColor,
       accessLevel: body.accessLevel,
       content: body.content,
     },

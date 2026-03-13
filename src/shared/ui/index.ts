@@ -15,3 +15,7 @@ export * from "./spinner";
 export * from "./empty";
 export * from "./select";
 export * from "./goBackButton";
+export * from "./kbd";
+export * from "./input-group";
+export * from "./textarea";
+export * from "./slider";

@@ -37,12 +37,9 @@ export const useDragElements = () => {
 
   // ── Pointer (mouse/pen — touch фильтруется) ──
 
-  const onPointerMove = useThrottledCallback(
-    (e: PointerEvent) => {
-      moveDrag(e.clientX, e.clientY);
-    },
-    [moveDrag],
-  );
+  const onPointerMove = useThrottledCallback((e: PointerEvent) => {
+    moveDrag(e.clientX, e.clientY);
+  });
 
   const onPointerUp = useCallback(() => {
     stopListeners.current();
@@ -68,18 +65,15 @@ export const useDragElements = () => {
 
   // ── Touch ──
 
-  const onTouchDragMove = useThrottledCallback(
-    (e: TouchEvent) => {
-      if (e.touches.length >= 2) {
-        stopListeners.current();
-        return;
-      }
+  const onTouchDragMove = useThrottledCallback((e: TouchEvent) => {
+    if (e.touches.length >= 2) {
+      stopListeners.current();
+      return;
+    }
 
-      const touch = e.touches[0];
-      if (touch) moveDrag(touch.clientX, touch.clientY);
-    },
-    [moveDrag],
-  );
+    const touch = e.touches[0];
+    if (touch) moveDrag(touch.clientX, touch.clientY);
+  });
 
   const onTouchDragEnd = useCallback(() => {
     stopListeners.current();

@@ -2,9 +2,12 @@
 
 import type { Board } from "@prisma/client";
 import type Konva from "konva";
-import { useCallback, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { Layer, Stage } from "react-konva";
 import { useShallow } from "zustand/react/shallow";
+
+import { useTheme, getSystemTheme } from "@/features/theme-switcher";
+import { hexToHsl, invertHslColor } from "@/shared/lib/utils";
 
 import type { AwarenessUser } from "../model/types";
 import { useBoardSize } from "../model/useBoardSize";
@@ -16,11 +19,14 @@ import { useMouseAwareness } from "../model/useMouseAwareness";
 import { useSelectionRect } from "../model/useSelectionRect";
 import { shouldPan, useViewport } from "../model/useViewport";
 
+import { BottomToolbar } from "./BottomToolbar";
 import { LayerContent } from "./LayerContent";
+import { LeftSidebar } from "./LeftSidebar";
 import { SelectionRect } from "./SelectionRect";
-import { Toolbar } from "./Toolbar";
 import { TransformerTool } from "./TransformerTool";
+import { UndoRedoControls } from "./UndoRedoControls";
 import { UserCursors } from "./UserCursors";
+import { ZoomControls } from "./ZoomControls";
 
 interface KonvaBoardProps {
   user: AwarenessUser;
@@ -29,10 +35,13 @@ interface KonvaBoardProps {
 
 export function KonvaBoard({ user, boardId }: KonvaBoardProps) {
   const boardRef = useRef<HTMLDivElement>(null);
+  const stageRef = useRef<Konva.Stage>(null);
   const selectionRectRef = useRef<Konva.Rect>(null);
 
   const globals = useBoardStore(useShallow((s) => s.globals));
   const viewport = useBoardStore(useShallow((s) => s.viewport));
+
+  const { themePreference } = useTheme();
 
   useHotKeys();
   useHocuspocus({ boardId, user });
@@ -88,6 +97,26 @@ export function KonvaBoard({ user, boardId }: KonvaBoardProps) {
     [startTouchPan, startTouchSelect, startTouchDraw],
   );
 
+  useEffect(() => {
+    if (!stageRef.current) return;
+
+    const resolvedTheme =
+      themePreference === "system" ? getSystemTheme() : themePreference;
+
+    try {
+      const hslBackgroundColor = hexToHsl(globals.backgroundColor);
+
+      const backgroundColor =
+        resolvedTheme === "dark"
+          ? invertHslColor(hslBackgroundColor)
+          : hslBackgroundColor;
+
+      stageRef.current.container().style.backgroundColor = backgroundColor;
+    } catch (error) {
+      console.error("Failed to set background color:", error);
+    }
+  }, [themePreference, globals.backgroundColor]);
+
   return (
     <div className="w-full h-full min-w-0 min-h-0 px-3.75 rounded-lg overflow-hidden">
       <div
@@ -97,11 +126,23 @@ export function KonvaBoard({ user, boardId }: KonvaBoardProps) {
         onPointerLeave={handleCursorLeave}
         className="w-full h-full min-w-0 min-h-0 relative select-none overflow-hidden touch-none"
       >
-        <Toolbar className="absolute flex gap-2 z-10" user={user} />
+        <div className="absolute inset-5 pointer-events-none z-10">
+          <div className="pointer-events-auto">
+            <LeftSidebar className="absolute top-0 left-0 z-10" />
+            <BottomToolbar className="absolute bottom-0 left-1/2 -translate-x-1/2" />
+
+            <div className="absolute bottom-0 left-0 flex gap-4">
+              <ZoomControls />
+              <UndoRedoControls />
+            </div>
+          </div>
+        </div>
+
+        <div className="absolute bottom-3 left-3 z-10 flex gap-4"></div>
 
         <Stage
+          ref={stageRef}
           className="border border-muted"
-          style={{ backgroundColor: globals.backgroundColor }}
           width={stageSize.width}
           height={stageSize.height}
           x={viewport.x}

@@ -13,7 +13,7 @@ interface ThemeSwitcherProps {
 }
 
 export function ThemeSwitcher(props: ThemeSwitcherProps) {
-  const { theme, setTheme } = useTheme();
+  const { themePreference, setThemePreference } = useTheme();
 
   return (
     <ButtonGroup className={cn(props.className)}>
@@ -21,8 +21,8 @@ export function ThemeSwitcher(props: ThemeSwitcherProps) {
         <ThemeButton
           key={themeOption}
           theme={themeOption}
-          active={theme === themeOption}
-          onClick={() => setTheme(themeOption)}
+          active={themePreference === themeOption}
+          onClick={() => setThemePreference(themeOption)}
         />
       ))}
     </ButtonGroup>

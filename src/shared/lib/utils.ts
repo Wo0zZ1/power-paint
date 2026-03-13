@@ -102,3 +102,95 @@ export const getBackgroundSizeForCursor = (text: string): number => {
 
   return textWidth + 30;
 };
+
+export const invertHslColor = (hsl: string): string => {
+  const hslMatch = hsl.match(/hsl\((\d+),\s*(\d+)%,\s*(\d+)%\)/);
+
+  if (!hslMatch) throw new Error("Invalid HSL color format");
+
+  const h = parseInt(hslMatch[1]);
+  const s = parseInt(hslMatch[2]);
+  const l = 100 - parseInt(hslMatch[3]);
+
+  return `hsl(${h}, ${s}%, ${l}%)`;
+};
+
+export const invertHexColor = (hex: string): string => {
+  const hsl = hexToHsl(hex);
+  return invertHslColor(hsl);
+};
+
+export const hexToRgb = (hex: string): string => {
+  const match = hex.match(/^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i);
+  if (!match) throw new Error("Invalid hex color format");
+
+  return `rgb(${parseInt(match[1], 16)}, ${parseInt(match[2], 16)}, ${parseInt(match[3], 16)})`;
+};
+
+export const rgbToHex = (rgb: string): string => {
+  const match = rgb.match(/\d+/g);
+
+  if (!match) throw new Error("Invalid RGB color format");
+
+  const [r, g, b] = match.map(Number);
+
+  const toHex = (n: number) => n.toString(16).padStart(2, "0");
+  return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+};
+
+export const rgbToHsl = (rgb: string): string => {
+  const match = rgb.match(/\d+/g);
+
+  if (!match) throw new Error("Invalid RGB color format");
+
+  let [r, g, b] = match.map(Number);
+
+  r /= 255;
+  g /= 255;
+  b /= 255;
+
+  const max = Math.max(r, g, b);
+  const min = Math.min(r, g, b);
+  const l = (max + min) / 2;
+  let h, s;
+
+  if (max == min) {
+    h = s = 0;
+  } else {
+    const d = max - min;
+    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+    switch (max) {
+      case r:
+        h = (g - b) / d + (g < b ? 6 : 0);
+        break;
+      case g:
+        h = (b - r) / d + 2;
+        break;
+      case b:
+      default:
+        h = (r - g) / d + 4;
+        break;
+    }
+    h /= 6;
+  }
+  return `hsl(${Math.round(h * 360)}, ${Math.round(s * 100)}%, ${Math.round(l * 100)}%)`;
+};
+
+export const hexToHsl = (hex: string): string => {
+  const rgbColor = hexToRgb(hex);
+  return rgbToHsl(rgbColor);
+};
+
+export const normalizeHexColor = (hex: string): string => {
+  if (!hex.startsWith("#")) hex = `#${hex}`;
+
+  if (hex.length === 4)
+    hex = `#${hex[1]}${hex[1]}${hex[2]}${hex[2]}${hex[3]}${hex[3]}`;
+
+  return hex;
+};
+
+export const hexValueToInputValue = (value: string) => value.slice(1);
+
+export const degToRad = (deg: number) => (deg * Math.PI) / 180;
+export const radToDeg = (rad: number) => (rad * 180) / Math.PI;

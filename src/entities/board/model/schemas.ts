@@ -27,9 +27,5 @@ export const createBoardSchema = getCreateBoardFormSchema([]).and(
   z.object({
     accessLevel: z.enum(AccessLevel).optional(),
     workspaceId: uuidSchema,
-    backgroundColor: z
-      .string()
-      .regex(/^#[0-9A-F]{6}$/i, "Invalid hex color")
-      .optional(),
   }),
 );

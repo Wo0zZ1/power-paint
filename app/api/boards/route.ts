@@ -48,10 +48,7 @@ export const POST = async (
 ): Promise<NextResponse<BoardWithAccess>> => {
   const body = await request.json();
 
-  const { name, workspaceId, accessLevel, backgroundColor } = z.parse(
-    createBoardSchema,
-    body,
-  );
+  const { name, workspaceId, accessLevel } = z.parse(createBoardSchema, body);
 
   const session = await getSession();
 
@@ -62,7 +59,6 @@ export const POST = async (
       name,
       workspaceId,
       accessLevel,
-      backgroundColor,
       ownerId: session.user.id,
     },
   });

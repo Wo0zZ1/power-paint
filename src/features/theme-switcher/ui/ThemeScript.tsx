@@ -1,4 +1,4 @@
-import { THEME_STORAGE_KEY } from "../model/config";
+import { THEME_PREFERENCE_STORAGE_KEY } from "../model/config";
 
 /**
  * Инлайн скрипт для установки темы до гидратации React
@@ -7,7 +7,7 @@ import { THEME_STORAGE_KEY } from "../model/config";
 export function ThemeScript() {
   const themeScript = `
     try {
-      const theme = JSON.parse(localStorage.getItem('${THEME_STORAGE_KEY}'));
+      const theme = JSON.parse(localStorage.getItem('${THEME_PREFERENCE_STORAGE_KEY}'));
 
       if (theme === "dark" || theme === "light")
         document.documentElement.classList.add(theme);

@@ -18,6 +18,7 @@
   "renaming": "Переименование",
   "delete": "Удалить",
   "deleting": "Удаление",
+
   "auth": {
     "login": "Войти",
     "logout": "Выйти",
@@ -125,5 +126,53 @@
     "Wolf": "Волк",
     "Tiger": "Тигр",
     "Bear": "Медведь"
+  },
+  "toolbar": {
+    "tools": {
+      "select": "Выбор",
+      "hand": "Рука",
+      "rect": "Прямоугольник",
+      "circle": "Круг",
+      "draw": "Рисование",
+      "eraser": "Ластик",
+      "text": "Текст"
+    },
+    "zoom": {
+      "in": "Приблизить",
+      "out": "Отдалить",
+      "reset": "Сбросить масштаб"
+    },
+    "history": {
+      "undo": "Отменить",
+      "redo": "Повторить"
+    },
+    "sidebar": {
+      "backgroundColor": "Фон холста",
+      "hexCode": "Hex код",
+      "position": "Положение",
+      "size": "Размер",
+      "rotation": "Поворот",
+      "reset": "Сброс",
+      "appearance": "Внешний вид",
+      "opacity": "Непрозрачность",
+      "fill": "Заливка",
+      "fill_none": "Нет",
+      "fill_solid": "Сплошной",
+      "fill_gradient": "Градиент",
+      "gradient_linear": "Линейный",
+      "gradient_radial": "Радиальный",
+      "gradient_angle": "Угол градиента",
+      "stroke": "Обводка",
+      "stroke_solid": "Сплошная",
+      "stroke_dashed": "Пунктирная",
+      "stroke_dash_dotted": "Штрихпунктир",
+
+      "multipleSelected": "Выбрано элементов: {count}",
+
+      "addRect": "Прямоугольник",
+      "addCircle": "Круг",
+
+      "delete": "Удалить выделенное"
+    }
   }
 }

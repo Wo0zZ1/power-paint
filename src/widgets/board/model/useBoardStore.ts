@@ -51,7 +51,10 @@ interface BoardState {
 
   // ── Действия (пишут в Yjs → observe обновит React-state) ──
   addElement: (el: ElementType) => void;
-  updateElement: (id: string, changes: Partial<ElementType>) => void;
+  updateElement: <T extends Partial<ElementType>>(
+    id: string,
+    changes: Partial<T>,
+  ) => void;
   updateElements: (updates: Map<string, Partial<ElementType>>) => void;
   removeElement: (id: string) => void;
   removeSelectedElements: () => void;
@@ -71,7 +74,7 @@ export const useBoardStore = create<BoardState>((set, get) => ({
   redo: () => get().undoManager?.redo(),
 
   elements: new Map(),
-  globals: { backgroundColor: "#ffffff" },
+  globals: { backgroundColor: "#f8f9fa" },
   remoteCursors: new Map(),
 
   tool: "select",
@@ -121,7 +124,10 @@ export const useBoardStore = create<BoardState>((set, get) => ({
   updateViewport: (updates) =>
     set((state) => ({ viewport: { ...state.viewport, ...updates } })),
 
-  resetViewport: () => set({ viewport: { x: 0, y: 0, scale: 1 } }),
+  resetViewport: () => {
+    const viewport = get().viewport;
+    set({ viewport: { ...viewport, scale: 1 } });
+  },
 
   addElement: (el) => {
     get().yElements?.set(el.id, el);
@@ -131,7 +137,7 @@ export const useBoardStore = create<BoardState>((set, get) => ({
     const yElements = get().yElements;
     const current = yElements?.get(id);
     if (!current) return;
-    yElements!.set(id, { ...current, ...changes } as ElementType);
+    yElements!.set(id, { ...current, ...changes });
   },
 
   updateElements: (updates) => {
