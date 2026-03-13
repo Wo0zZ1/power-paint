@@ -4,14 +4,14 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build:full": "yarn build:prisma && yarn build:next",
+    "build": "yarn build:prisma && yarn build:next",
     "build:next": "next build",
     "build:prisma": "yarn prisma:generate && yarn prisma:push && yarn prisma:seed",
     "start": "next start",
     "prisma:migrate": "prisma migrate dev",
     "prisma:generate": "prisma generate",
     "prisma:seed": "prisma db seed",
-    "prisma:push": "prisma db push",
+    "prisma:push": "prisma db push --accept-data-loss",
     "prisma:studio": "prisma studio",
     "lint": "eslint"
   },
