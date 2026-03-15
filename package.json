@@ -1,0 +1,32 @@
+{
+	"name": "power-paint-socket",
+	"author": {
+		"name": "Max",
+		"email": "Mper06@mail.ru"
+	},
+	"version": "1.0.0",
+	"main": "server.ts",
+	"scripts": {
+		"build": "node node_modules/typescript/bin/tsc -p tsconfig.json",
+		"start": "node node_modules/ts-node/dist/bin.js src/server.ts",
+		"dev": "node node_modules/ts-node/dist/bin.js src/server.ts"
+	},
+	"license": "MIT",
+	"dependencies": {
+		"@hocuspocus/extension-database": "^3.4.4",
+		"@hocuspocus/extension-logger": "^3.4.4",
+		"@hocuspocus/extension-sqlite": "^3.4.4",
+		"@hocuspocus/server": "^3.4.4",
+		"dotenv": "^17.3.1",
+		"pg": "^8.16.3",
+		"y-protocols": "^1.0.6",
+		"yjs": "^13.6.29"
+	},
+	"devDependencies": {
+		"@types/node": "^22.0.0",
+		"@types/pg": "^8.15.6",
+		"@types/ws": "^8.18.1",
+		"ts-node": "^10.9.2",
+		"typescript": "^5.9.3"
+	}
+}
