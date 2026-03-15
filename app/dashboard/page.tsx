@@ -38,25 +38,28 @@ export default async function DashboardPage() {
             }
           />
 
-          <BoardsCarouselBlock
-            title={t("board.personal")}
-            action={
-              <Button variant="link" size="xs" className="text-sm" asChild>
-                <Link
-                  href={ROUTES.DASHBOARD.WORKSPACE(
-                    personalWorkspace.workspace.id,
-                  )}
-                >
-                  {t("viewAll")}
-                </Link>
-              </Button>
-            }
-            workspace={personalWorkspace}
-          />
+          {personalWorkspace && (
+            <BoardsCarouselBlock
+              title={t("board.personal")}
+              action={
+                <Button variant="link" size="xs" className="text-sm" asChild>
+                  <Link
+                    href={ROUTES.DASHBOARD.WORKSPACE(
+                      personalWorkspace.workspace.id,
+                    )}
+                  >
+                    {t("viewAll")}
+                  </Link>
+                </Button>
+              }
+              workspace={personalWorkspace}
+            />
+          )}
         </div>
       </HydrationBoundary>
     );
-  } catch {
+  } catch (err) {
+    console.error("Dashboard error details:", err);
     throw new Error("Failed to fetch personal workspace");
   }
 }
