@@ -105,8 +105,14 @@ export const useDrawing = () => {
 
   // ── Pointer ──
 
+  const containerRectRef = useRef<DOMRect | null>(null);
+
   const onPointerMove = useThrottledCallback((e: PointerEvent) => {
-    moveDraw(e.layerX, e.layerY);
+    if (!containerRectRef.current) return;
+    moveDraw(
+      e.clientX - containerRectRef.current.left,
+      e.clientY - containerRectRef.current.top
+    );
   });
 
   const onPointerUp = useCallback(() => {
@@ -118,7 +124,13 @@ export const useDrawing = () => {
     (e: KonvaEventObject<PointerEvent>) => {
       if (e.evt.pointerType === "touch") return;
 
-      beginDraw(e.evt.layerX, e.evt.layerY);
+      const stage = e.target.getStage();
+      if (!stage) return;
+
+      const rect = stage.container().getBoundingClientRect();
+      containerRectRef.current = rect;
+
+      beginDraw(e.evt.clientX - rect.left, e.evt.clientY - rect.top);
 
       window.addEventListener("pointermove", onPointerMove);
       window.addEventListener("pointerup", onPointerUp);
@@ -132,8 +144,6 @@ export const useDrawing = () => {
   );
 
   // ── Touch ──
-
-  const containerRectRef = useRef<DOMRect | null>(null);
 
   const onTouchDrawMove = useThrottledCallback((e: TouchEvent) => {
     if (e.touches.length >= 2) {

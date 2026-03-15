@@ -111,8 +111,15 @@ export const useSelectionRect = ({ rectRef }: UseSelectionRectProps) => {
 
   // ── Pointer (mouse/pen — touch фильтруется) ──
 
+  const containerRectRef = useRef<DOMRect | null>(null);
+
   const onPointerMove = useThrottledCallback((e: PointerEvent) => {
-    moveSelect(e.layerX, e.layerY, e.shiftKey);
+    if (!containerRectRef.current) return;
+    moveSelect(
+      e.clientX - containerRectRef.current.left,
+      e.clientY - containerRectRef.current.top,
+      e.shiftKey
+    );
   });
 
   const onPointerUp = useCallback(() => {
@@ -127,9 +134,12 @@ export const useSelectionRect = ({ rectRef }: UseSelectionRectProps) => {
       const stage = rectRef.current?.getStage();
       if (!stage) return;
 
+      const rect = stage.container().getBoundingClientRect();
+      containerRectRef.current = rect;
+
       const result = beginSelect(
-        e.evt.layerX,
-        e.evt.layerY,
+        e.evt.clientX - rect.left,
+        e.evt.clientY - rect.top,
         stage,
         e.evt.shiftKey,
       );
@@ -147,8 +157,6 @@ export const useSelectionRect = ({ rectRef }: UseSelectionRectProps) => {
   );
 
   // ── Touch ──
-
-  const containerRectRef = useRef<DOMRect | null>(null);
 
   const onTouchSelectMove = useThrottledCallback((e: TouchEvent) => {
     if (e.touches.length >= 2) {

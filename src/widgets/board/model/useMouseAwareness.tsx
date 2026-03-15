@@ -21,14 +21,22 @@ const hideCursor = () => {
 };
 
 export const useMouseAwareness = () => {
-  const handleCursorMove = useThrottledCallback(
-    (e: PointerEvent<HTMLDivElement>) => {
-      if (e.pointerType === "touch") return;
-      updateCursor(e.nativeEvent.layerX, e.nativeEvent.layerY);
+  const throttledUpdate = useThrottledCallback(
+    (clientX: number, clientY: number, rectLeft: number, rectTop: number) => {
+      updateCursor(clientX - rectLeft, clientY - rectTop);
     },
   );
 
-  const handleTouchCursorMove = useThrottledCallback(
+  const handleCursorMove = useCallback(
+    (e: PointerEvent<HTMLDivElement>) => {
+      if (e.pointerType === "touch") return;
+      const rect = e.currentTarget.getBoundingClientRect();
+      throttledUpdate(e.clientX, e.clientY, rect.left, rect.top);
+    },
+    [throttledUpdate],
+  );
+
+  const handleTouchCursorMove = useCallback(
     (e: TouchEvent<HTMLDivElement>) => {
       if (e.touches.length >= 2) {
         hideCursor();
@@ -38,10 +46,10 @@ export const useMouseAwareness = () => {
       const touch = e.touches[0];
       if (!touch) return;
 
-      const rect = (e.target as HTMLElement).getBoundingClientRect();
-
-      updateCursor(touch.clientX - rect.left, touch.clientY - rect.top);
+      const rect = e.currentTarget.getBoundingClientRect();
+      throttledUpdate(touch.clientX, touch.clientY, rect.left, rect.top);
     },
+    [throttledUpdate],
   );
 
   const handleCursorLeave = useCallback(() => {
