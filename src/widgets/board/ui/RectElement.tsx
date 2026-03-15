@@ -2,8 +2,8 @@ import type { Vector2d } from "konva/lib/types";
 import type { ComponentProps } from "react";
 import { Rect } from "react-konva";
 
-import { getSystemTheme, useTheme } from "@/features/theme-switcher";
-import { degToRad, invertHexColor } from "@/shared/lib/utils";
+import { useInvertableColor } from "@/shared/lib/hooks";
+import { degToRad } from "@/shared/lib/utils";
 
 import { getDash, getFillPriority } from "../lib/utils";
 import type { RectElementType } from "../model/types";
@@ -50,9 +50,9 @@ export function RectElement({ element, ...props }: RectElementProps) {
     y: centerPoint.y - maxProjection * Math.sin(angle),
   };
 
-  const { themePreference } = useTheme();
-  const resolvedTheme =
-    themePreference === "system" ? getSystemTheme() : themePreference;
+  const { activeColor: fillColor1 } = useInvertableColor(element.fillColor1);
+  const { activeColor: fillColor2 } = useInvertableColor(element.fillColor2);
+  const { activeColor: strokeColor } = useInvertableColor(element.strokeColor);
 
   return (
     <Rect
@@ -66,48 +66,22 @@ export function RectElement({ element, ...props }: RectElementProps) {
       rotation={element.rotation}
       opacity={element.opacity}
       // Fill
-      fill={
-        resolvedTheme === "dark"
-          ? invertHexColor(element.fillColor1)
-          : element.fillColor1
-      }
+      fill={fillColor1}
       fillPriority={fillPriority}
       fillEnabled={!!element.fillType}
       fillLinearGradientStartPoint={startPoint}
       fillLinearGradientEndPoint={endPoint}
-      fillLinearGradientColorStops={[
-        0,
-        resolvedTheme === "dark"
-          ? invertHexColor(element.fillColor1)
-          : element.fillColor1,
-        1,
-        resolvedTheme === "dark"
-          ? invertHexColor(element.fillColor2)
-          : element.fillColor2,
-      ]}
+      fillLinearGradientColorStops={[0, fillColor1, 1, fillColor2]}
       fillRadialGradientStartPoint={centerPoint}
       fillRadialGradientEndPoint={centerPoint}
       fillRadialGradientStartRadius={0}
       fillRadialGradientEndRadius={Math.sqrt(
         (element.width / 2) ** 2 + (element.height / 2) ** 2,
       )}
-      fillRadialGradientColorStops={[
-        0,
-        resolvedTheme === "dark"
-          ? invertHexColor(element.fillColor1)
-          : element.fillColor1,
-        1,
-        resolvedTheme === "dark"
-          ? invertHexColor(element.fillColor2)
-          : element.fillColor2,
-      ]}
+      fillRadialGradientColorStops={[0, fillColor1, 1, fillColor2]}
       // Stroke
       fillAfterStrokeEnabled={true}
-      stroke={
-        resolvedTheme === "dark"
-          ? invertHexColor(element.strokeColor)
-          : element.strokeColor
-      }
+      stroke={strokeColor}
       strokeWidth={element.strokeWidth}
       dash={dash}
       // Others

@@ -1,8 +1,7 @@
 import type { ComponentProps } from "react";
 import { Line } from "react-konva";
 
-import { useTheme, getSystemTheme } from "@/features/theme-switcher";
-import { invertHexColor } from "@/shared/lib/utils";
+import { useInvertableColor } from "@/shared/lib/hooks";
 
 import { getDash } from "../lib/utils";
 import type { StrokeElementType } from "../model/types";
@@ -15,9 +14,7 @@ type StrokeElementProps = {
 export function StrokeElement({ element, ...props }: StrokeElementProps) {
   const dash = getDash(element.strokeType);
 
-  const { themePreference } = useTheme();
-  const resolvedTheme =
-    themePreference === "system" ? getSystemTheme() : themePreference;
+  const { activeColor: strokeColor } = useInvertableColor(element.strokeColor);
 
   return (
     <Line
@@ -36,11 +33,7 @@ export function StrokeElement({ element, ...props }: StrokeElementProps) {
       dash={dash}
       hitStrokeWidth={16}
       strokeScaleEnabled={true}
-      stroke={
-        resolvedTheme === "dark"
-          ? invertHexColor(element.strokeColor)
-          : element.strokeColor
-      }
+      stroke={strokeColor}
       strokeWidth={element.strokeWidth}
       {...props}
     />

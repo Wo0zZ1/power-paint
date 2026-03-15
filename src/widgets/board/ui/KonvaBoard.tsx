@@ -2,12 +2,11 @@
 
 import type { Board } from "@prisma/client";
 import type Konva from "konva";
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import { Layer, Stage } from "react-konva";
 import { useShallow } from "zustand/react/shallow";
 
-import { useTheme, getSystemTheme } from "@/features/theme-switcher";
-import { invertHexColor } from "@/shared/lib/utils";
+import { useInvertableColor } from "@/shared/lib/hooks";
 
 import type { AwarenessUser } from "../model/types";
 import { useBoardInteraction } from "../model/useBoardInteraction";
@@ -33,13 +32,10 @@ interface KonvaBoardProps {
 
 export function KonvaBoard({ user, boardId }: KonvaBoardProps) {
   const boardRef = useRef<HTMLDivElement>(null);
-  const stageRef = useRef<Konva.Stage>(null);
   const selectionRectRef = useRef<Konva.Rect>(null);
 
   const globals = useBoardStore(useShallow((s) => s.globals));
   const viewport = useBoardStore(useShallow((s) => s.viewport));
-
-  const { themePreference } = useTheme();
 
   useHotKeys();
   useHocuspocus({ boardId, user });
@@ -52,19 +48,7 @@ export function KonvaBoard({ user, boardId }: KonvaBoardProps) {
   const { handlePointerDown, handleTouchStart, handleZoom } =
     useBoardInteraction({ selectionRectRef });
 
-  useEffect(() => {
-    if (!stageRef.current) return;
-
-    const resolvedTheme =
-      themePreference === "system" ? getSystemTheme() : themePreference;
-
-    const backgroundColor =
-      resolvedTheme === "dark"
-        ? invertHexColor(globals.backgroundColor)
-        : globals.backgroundColor;
-
-    stageRef.current.container().style.backgroundColor = backgroundColor;
-  }, [themePreference, globals.backgroundColor]);
+  const { activeColor } = useInvertableColor(globals.backgroundColor, true);
 
   return (
     <div className="w-full h-full min-w-0 min-h-0 px-3.75 rounded-lg overflow-hidden">
@@ -90,7 +74,7 @@ export function KonvaBoard({ user, boardId }: KonvaBoardProps) {
         <div className="absolute bottom-3 left-3 z-10 flex gap-4"></div>
 
         <Stage
-          ref={stageRef}
+          style={{ backgroundColor: activeColor }}
           className="border border-muted"
           width={stageSize.width}
           height={stageSize.height}

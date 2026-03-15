@@ -1,4 +1,4 @@
-import { THEME_PREFERENCE_STORAGE_KEY } from "../model/config";
+import { THEME_PREFERENCE_STORAGE_KEY } from "@/shared/lib/theme";
 
 /**
  * Инлайн скрипт для установки темы до гидратации React

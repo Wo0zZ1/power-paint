@@ -4,8 +4,8 @@ import type { Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
 import { NextIntlClientProvider } from "next-intl";
 
-import { useTheme } from "@/features/theme-switcher";
 import { getMessageFallback } from "@/shared/i18n";
+import { useTheme } from "@/shared/lib/theme";
 import { TooltipProvider } from "@/shared/ui/tooltip";
 
 interface ClientProvidersProps {

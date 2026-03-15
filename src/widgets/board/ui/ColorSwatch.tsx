@@ -1,9 +1,7 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-
-import { getSystemTheme, useTheme } from "@/features/theme-switcher";
-import { cn, invertHexColor } from "@/utils";
+import { useInvertableColor } from "@/shared/lib/hooks";
+import { cn } from "@/utils";
 
 interface ColorSwatchProps {
   className?: string;
@@ -16,20 +14,14 @@ export function ColorSwatch({
   color,
   invertable = false,
 }: ColorSwatchProps) {
-  const elRef = useRef<HTMLDivElement>(null);
-  const { themePreference } = useTheme();
+  const { activeColor, isLoading } = useInvertableColor(color, invertable);
 
-  useEffect(() => {
-    if (!elRef.current) return;
+  if (isLoading) return null;
 
-    const resolvedTheme =
-      themePreference === "system" ? getSystemTheme() : themePreference;
-
-    const targetColor =
-      invertable && resolvedTheme === "dark" ? invertHexColor(color) : color;
-
-    elRef.current.style.backgroundColor = targetColor;
-  }, [themePreference, color, invertable]);
-
-  return <div className={cn("aspect-square", className)} ref={elRef} />;
+  return (
+    <div
+      className={cn("aspect-square", className)}
+      style={{ backgroundColor: activeColor }}
+    />
+  );
 }

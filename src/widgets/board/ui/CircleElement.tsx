@@ -2,11 +2,8 @@ import type { Vector2d } from "konva/lib/types";
 import type { ComponentProps } from "react";
 import { Circle } from "react-konva";
 
-import { useTheme, getSystemTheme } from "@/features/theme-switcher";
-import {
-  degToRad,
-  invertHexColor,
-} from "@/shared/lib/utils";
+import { useInvertableColor } from "@/shared/lib/hooks";
+import { degToRad } from "@/shared/lib/utils";
 
 import { getDash, getFillPriority } from "../lib/utils";
 import type { CircleElementType } from "../model/types";
@@ -37,9 +34,9 @@ export function CircleElement({ element, ...props }: CircleElementProps) {
   } else if (fillPriority === "radial-gradient") {
   }
 
-  const { themePreference } = useTheme();
-  const resolvedTheme =
-    themePreference === "system" ? getSystemTheme() : themePreference;
+  const { activeColor: fillColor1 } = useInvertableColor(element.fillColor1);
+  const { activeColor: fillColor2 } = useInvertableColor(element.fillColor2);
+  const { activeColor: strokeColor } = useInvertableColor(element.strokeColor);
 
   return (
     <Circle
@@ -52,44 +49,18 @@ export function CircleElement({ element, ...props }: CircleElementProps) {
       rotation={element.rotation}
       opacity={element.opacity}
       // Fill
-      fill={
-        resolvedTheme === "dark"
-          ? invertHexColor(element.fillColor1)
-          : element.fillColor1
-      }
+      fill={fillColor1}
       fillPriority={fillPriority}
       fillEnabled={!!element.fillType}
       fillRadialGradientStartRadius={0}
       fillRadialGradientEndRadius={element.radius}
       fillLinearGradientStartPoint={startPoint}
       fillLinearGradientEndPoint={endPoint}
-      fillLinearGradientColorStops={[
-        0,
-        resolvedTheme === "dark"
-          ? invertHexColor(element.fillColor1)
-          : element.fillColor1,
-        1,
-        resolvedTheme === "dark"
-          ? invertHexColor(element.fillColor2)
-          : element.fillColor2,
-      ]}
-      fillRadialGradientColorStops={[
-        0,
-        resolvedTheme === "dark"
-          ? invertHexColor(element.fillColor1)
-          : element.fillColor1,
-        1,
-        resolvedTheme === "dark"
-          ? invertHexColor(element.fillColor2)
-          : element.fillColor2,
-      ]}
+      fillLinearGradientColorStops={[0, fillColor1, 1, fillColor2]}
+      fillRadialGradientColorStops={[0, fillColor1, 1, fillColor2]}
       // Stroke
       fillAfterStrokeEnabled={true}
-      stroke={
-        resolvedTheme === "dark"
-          ? invertHexColor(element.strokeColor)
-          : element.strokeColor
-      }
+      stroke={strokeColor}
       strokeWidth={element.strokeWidth}
       dash={dash}
       // Others

@@ -1,4 +1,4 @@
-import "client-only";
+"use client";
 
 import { useLayoutEffect } from "react";
 
