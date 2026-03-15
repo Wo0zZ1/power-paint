@@ -2,22 +2,20 @@
 
 import type { Board } from "@prisma/client";
 import type Konva from "konva";
-import { useCallback, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { Layer, Stage } from "react-konva";
 import { useShallow } from "zustand/react/shallow";
 
 import { useTheme, getSystemTheme } from "@/features/theme-switcher";
-import { hexToHsl, invertHslColor } from "@/shared/lib/utils";
+import { invertHexColor } from "@/shared/lib/utils";
 
 import type { AwarenessUser } from "../model/types";
+import { useBoardInteraction } from "../model/useBoardInteraction";
 import { useBoardSize } from "../model/useBoardSize";
 import { useBoardStore } from "../model/useBoardStore";
-import { useDrawing } from "../model/useDrawing";
 import { useHocuspocus } from "../model/useHocuspocus";
 import { useHotKeys } from "../model/useHotKeys";
 import { useMouseAwareness } from "../model/useMouseAwareness";
-import { useSelectionRect } from "../model/useSelectionRect";
-import { shouldPan, useViewport } from "../model/useViewport";
 
 import { BottomToolbar } from "./BottomToolbar";
 import { LayerContent } from "./LayerContent";
@@ -51,51 +49,8 @@ export function KonvaBoard({ user, boardId }: KonvaBoardProps) {
   const { handleCursorMove, handleTouchCursorMove, handleCursorLeave } =
     useMouseAwareness();
 
-  const { handleZoom, startPointerPan, startTouchPan } = useViewport();
-
-  const { startPointerDraw, startTouchDraw } = useDrawing();
-
-  const { startPointerSelect, startTouchSelect } = useSelectionRect({
-    rectRef: selectionRectRef,
-  });
-
-  const handlePointerDown = useCallback(
-    (e: Konva.KonvaEventObject<PointerEvent>) => {
-      if (e.evt.pointerType === "touch") return;
-
-      if (shouldPan(e.evt)) return startPointerPan(e);
-
-      if (e.evt.button !== 0) return;
-
-      const { tool, clearSelection } = useBoardStore.getState();
-
-      if (tool === "select") return startPointerSelect(e);
-
-      clearSelection();
-
-      if (tool === "draw") return startPointerDraw(e);
-    },
-    [startPointerPan, startPointerSelect, startPointerDraw],
-  );
-
-  const handleTouchStart = useCallback(
-    (e: Konva.KonvaEventObject<TouchEvent>) => {
-      if (e.evt.cancelable) e.evt.preventDefault();
-
-      const { tool, clearSelection } = useBoardStore.getState();
-
-      if (tool === "hand" || e.evt.touches.length >= 2) return startTouchPan(e);
-
-      if (e.evt.touches.length > 1) return;
-
-      if (tool === "select") return startTouchSelect(e);
-
-      clearSelection();
-
-      if (tool === "draw") return startTouchDraw(e);
-    },
-    [startTouchPan, startTouchSelect, startTouchDraw],
-  );
+  const { handlePointerDown, handleTouchStart, handleZoom } =
+    useBoardInteraction({ selectionRectRef });
 
   useEffect(() => {
     if (!stageRef.current) return;
@@ -103,18 +58,12 @@ export function KonvaBoard({ user, boardId }: KonvaBoardProps) {
     const resolvedTheme =
       themePreference === "system" ? getSystemTheme() : themePreference;
 
-    try {
-      const hslBackgroundColor = hexToHsl(globals.backgroundColor);
+    const backgroundColor =
+      resolvedTheme === "dark"
+        ? invertHexColor(globals.backgroundColor)
+        : globals.backgroundColor;
 
-      const backgroundColor =
-        resolvedTheme === "dark"
-          ? invertHslColor(hslBackgroundColor)
-          : hslBackgroundColor;
-
-      stageRef.current.container().style.backgroundColor = backgroundColor;
-    } catch (error) {
-      console.error("Failed to set background color:", error);
-    }
+    stageRef.current.container().style.backgroundColor = backgroundColor;
   }, [themePreference, globals.backgroundColor]);
 
   return (

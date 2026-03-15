@@ -1,64 +1,20 @@
 "use client";
 
-import { SquarePlus, CirclePlus } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useMemo } from "react";
 import { useShallow } from "zustand/react/shallow";
 
 import { cn } from "@/shared/lib/utils";
 import {
-  Button,
   Separator,
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
 } from "@/shared/ui";
 
-import { useAddElement } from "../model/useAddElement";
 import { useBoardStore } from "../model/useBoardStore";
 
 import { BackgroundSection } from "./BackgroundSection";
 import { MultiElementProperties } from "./MultiElementProperties";
 import { SidebarBlock } from "./SidebarBlock";
 import { SingleElementProperties } from "./SingleElementProperties";
-
-function AddElementsSection() {
-  const t = useTranslations("toolbar.sidebar");
-  const { addRect, addCircle } = useAddElement();
-
-  return (
-    <div className="flex gap-1.5">
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Button
-            variant="outline"
-            size="sm"
-            className="flex-1"
-            onClick={addRect}
-          >
-            <SquarePlus className="size-4" />
-            {t("addRect")}
-          </Button>
-        </TooltipTrigger>
-        <TooltipContent side="bottom">{t("addRect")}</TooltipContent>
-      </Tooltip>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Button
-            variant="outline"
-            size="sm"
-            className="flex-1"
-            onClick={addCircle}
-          >
-            <CirclePlus className="size-4" />
-            {t("addCircle")}
-          </Button>
-        </TooltipTrigger>
-        <TooltipContent side="bottom">{t("addCircle")}</TooltipContent>
-      </Tooltip>
-    </div>
-  );
-}
 
 export interface LeftSidebarProps {
   className?: string;
@@ -86,9 +42,6 @@ export function LeftSidebar({ className }: LeftSidebarProps) {
       <SidebarBlock title={t("backgroundColor")}>
         <BackgroundSection />
       </SidebarBlock>
-
-      <Separator />
-      <AddElementsSection />
 
       {selectedElement && (
         <>
