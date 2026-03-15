@@ -29,7 +29,7 @@ export function BackgroundColorButton({
       )}
       {...props}
     >
-      <ColorSwatch color={color} />
+      <ColorSwatch color={color} invertable />
     </button>
   );
 }

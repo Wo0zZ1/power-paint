@@ -33,7 +33,6 @@ export function ColorField({
   preview = false,
 }: ColorFieldProps) {
   const colorPickerRef = useRef<HTMLInputElement>(null);
-
   const {
     inputValue,
     setInputValue,
@@ -62,7 +61,11 @@ export function ColorField({
       <InputGroup className={className}>
         <InputGroupAddon align="inline-start">
           {preview && (
-            <ColorSwatch className="size-5 rounded-sm" color={value} />
+            <ColorSwatch
+              className="size-5 rounded-sm"
+              color={value}
+              invertable
+            />
           )}
           <Hash className="size-3.5" />
         </InputGroupAddon>
