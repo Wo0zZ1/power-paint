@@ -155,6 +155,8 @@
       "reset": "Reset",
       "appearance": "Appearance",
       "opacity": "Opacity",
+      "text": "Text",
+      "font": "Font",
       "fill": "Fill",
       "fill_none": "None",
       "fill_solid": "Solid",

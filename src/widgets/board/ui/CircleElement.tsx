@@ -1,6 +1,6 @@
 import type { Vector2d } from "konva/lib/types";
 import type { ComponentProps } from "react";
-import { Circle } from "react-konva";
+import { Ellipse } from "react-konva";
 
 import { useInvertableColor } from "@/shared/lib/hooks";
 import { degToRad } from "@/shared/lib/utils";
@@ -11,25 +11,25 @@ import type { CircleElementType } from "../model/types";
 type CircleElementProps = {
   element: CircleElementType;
   isSelected?: boolean;
-} & ComponentProps<typeof Circle>;
+} & Omit<ComponentProps<typeof Ellipse>, "radiusX" | "radiusY">;
 
 export function CircleElement({ element, ...props }: CircleElementProps) {
   const fillPriority = getFillPriority(element.fillType, element.gradientType);
   const dash = getDash(element.strokeType);
 
-  // Вычисляем точки градиента для круга
+  // Вычисляем точки градиента
   let startPoint: Vector2d | undefined;
   let endPoint: Vector2d | undefined;
 
   if (fillPriority === "linear-gradient") {
     const angle = degToRad(element.fillAngle);
     startPoint = {
-      x: -element.radius * Math.cos(angle),
-      y: element.radius * Math.sin(angle),
+      x: -(element.width / 2) * Math.cos(angle),
+      y: (element.height / 2) * Math.sin(angle),
     };
     endPoint = {
-      x: element.radius * Math.cos(angle),
-      y: -element.radius * Math.sin(angle),
+      x: (element.width / 2) * Math.cos(angle),
+      y: -(element.height / 2) * Math.sin(angle),
     };
   } else if (fillPriority === "radial-gradient") {
   }
@@ -39,13 +39,18 @@ export function CircleElement({ element, ...props }: CircleElementProps) {
   const { activeColor: strokeColor } = useInvertableColor(element.strokeColor);
 
   return (
-    <Circle
+    <Ellipse
       id={element.id}
       x={element.x}
       y={element.y}
-      radius={element.radius}
-      scaleX={element.scaleX}
-      scaleY={element.scaleY}
+      width={element.width}
+      height={element.height}
+      radiusX={element.width / 2}
+      radiusY={element.height / 2}
+      offset={{
+        x: -(element.width / 2),
+        y: -(element.height / 2),
+      }}
       rotation={element.rotation}
       opacity={element.opacity}
       // Fill
@@ -53,7 +58,7 @@ export function CircleElement({ element, ...props }: CircleElementProps) {
       fillPriority={fillPriority}
       fillEnabled={!!element.fillType}
       fillRadialGradientStartRadius={0}
-      fillRadialGradientEndRadius={element.radius}
+      fillRadialGradientEndRadius={Math.max(element.width, element.height) / 2}
       fillLinearGradientStartPoint={startPoint}
       fillLinearGradientEndPoint={endPoint}
       fillLinearGradientColorStops={[0, fillColor1, 1, fillColor2]}

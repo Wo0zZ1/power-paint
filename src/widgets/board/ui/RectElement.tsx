@@ -61,8 +61,6 @@ export function RectElement({ element, ...props }: RectElementProps) {
       y={element.y}
       width={element.width}
       height={element.height}
-      scaleX={element.scaleX}
-      scaleY={element.scaleY}
       rotation={element.rotation}
       opacity={element.opacity}
       // Fill

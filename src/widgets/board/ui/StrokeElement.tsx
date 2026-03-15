@@ -22,8 +22,6 @@ export function StrokeElement({ element, ...props }: StrokeElementProps) {
       x={element.x}
       y={element.y}
       points={element.points}
-      scaleX={element.scaleX}
-      scaleY={element.scaleY}
       rotation={element.rotation}
       opacity={element.opacity}
       lineCap="round"

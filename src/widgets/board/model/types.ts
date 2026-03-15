@@ -6,8 +6,6 @@ export type BaseElementType = {
   id: string;
   x: number;
   y: number;
-  scaleX: number;
-  scaleY: number;
   rotation: number;
   opacity: number;
 };
@@ -31,20 +29,24 @@ export interface IStrokable {
   strokeType: StrokeType;
 }
 
+export interface ISizable {
+  width: number;
+  height: number;
+}
+
 export type CircleElementType = {
   type: "circle";
-  radius: number;
 } & BaseElementType &
   IFillable &
-  IStrokable;
+  IStrokable &
+  ISizable;
 
 export type RectElementType = {
   type: "rect";
-  width: number;
-  height: number;
 } & BaseElementType &
   IFillable &
-  IStrokable;
+  IStrokable &
+  ISizable;
 
 export type StrokeElementType = {
   type: "stroke";
@@ -63,9 +65,9 @@ export type TextElementType = {
   fontFamily: string;
   align: TextAlign;
   verticalAlign: VerticalAlign;
-  width: number;
   color: string;
-} & BaseElementType;
+} & BaseElementType &
+  ISizable;
 // & IStrokable;
 
 export type ElementType =
@@ -80,8 +82,6 @@ const baseDefaults = (): BaseElementType => ({
   id: generateId(),
   x: 0,
   y: 0,
-  scaleX: 1,
-  scaleY: 1,
   rotation: 0,
   opacity: 1,
 });
@@ -90,7 +90,8 @@ export const createCircle = (
   overrides: Partial<Omit<CircleElementType, "type">> = {},
 ): CircleElementType => ({
   ...baseDefaults(),
-  radius: 50,
+  width: 100,
+  height: 100,
   fillType: "color",
   gradientType: "linear",
   fillColor1: "#000000",
@@ -144,6 +145,7 @@ export const createText = (
   verticalAlign: "top",
   color: "#000000",
   width: 60,
+  height: 20,
   ...overrides,
   type: "text",
 });
@@ -161,6 +163,9 @@ export const isStroke = (el: ElementType): el is StrokeElementType =>
 
 export const isText = (el: ElementType): el is TextElementType =>
   el.type === "text";
+
+export const hasSize = <T extends ElementType>(el: T): el is T & ISizable =>
+  isRect(el) || isText(el) || isCircle(el);
 
 export const isFillable = <T extends ElementType>(el: T): el is IFillable & T =>
   isRect(el) || isCircle(el);

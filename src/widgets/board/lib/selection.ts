@@ -57,8 +57,8 @@ const isPointInsideRect = (rect: Rectangle, point: Point): boolean => {
 };
 
 const getRectCornerPoints = (element: RectElementType): Point[] => {
-  const width = element.width * element.scaleX;
-  const height = element.height * element.scaleY;
+  const width = element.width;
+  const height = element.height;
   const angleRad = degToRad(element.rotation);
 
   const corners: Point[] = [
@@ -79,14 +79,17 @@ const getRectCornerPoints = (element: RectElementType): Point[] => {
 
 const getEllipseContourPoints = (element: CircleElementType): Point[] => {
   const angleRad = degToRad(element.rotation);
-  const rx = element.radius * element.scaleX;
-  const ry = element.radius * element.scaleY;
+  const rx = element.width / 2;
+  const ry = element.height / 2;
+
+  const cx = element.width / 2;
+  const cy = element.height / 2;
 
   return Array.from({ length: ELLIPSE_SAMPLES }, (_, i) => {
     const t = (i / ELLIPSE_SAMPLES) * Math.PI * 2;
     const localPoint: Point = {
-      x: Math.cos(t) * rx,
-      y: Math.sin(t) * ry,
+      x: cx + Math.cos(t) * rx,
+      y: cy + Math.sin(t) * ry,
     };
     const rotated = rotatePoint(localPoint, angleRad);
 
@@ -103,8 +106,8 @@ const getStrokePoints = (element: StrokeElementType): Point[] => {
 
   for (let i = 0; i < element.points.length; i += 2) {
     const localPoint: Point = {
-      x: element.points[i] * element.scaleX,
-      y: element.points[i + 1] * element.scaleY,
+      x: element.points[i],
+      y: element.points[i + 1],
     };
     const rotated = rotatePoint(localPoint, angleRad);
     points.push({
@@ -117,12 +120,9 @@ const getStrokePoints = (element: StrokeElementType): Point[] => {
 };
 
 const getTextCornerPoints = (element: TextElementType): Point[] => {
-  const width = element.width * element.scaleX;
-  // Грубая оценка высоты текста, т.к. точная зависит от рендеринга шрифта и автопереносов
-  const lines = element.text.split("\n").length;
-  const estimatedHeight = Math.max(element.fontSize * 1.2 * lines, element.fontSize);
-  const height = estimatedHeight * element.scaleY;
-  
+  const width = element.width;
+  const height = element.height;
+
   const angleRad = degToRad(element.rotation);
 
   const corners: Point[] = [
@@ -157,7 +157,9 @@ export const isElementFullyInsideRect = (
       return points.every((point) => isPointInsideRect(selectionRect, point));
     case "text":
       const textCorners = getTextCornerPoints(element);
-      return textCorners.every((point) => isPointInsideRect(selectionRect, point));
+      return textCorners.every((point) =>
+        isPointInsideRect(selectionRect, point),
+      );
     default:
       return false;
   }

@@ -1,17 +1,31 @@
 "use client";
 
-import { RotateCcw, RotateCw } from "lucide-react";
+import {
+  AlignCenter,
+  AlignJustify,
+  AlignLeft,
+  AlignRight,
+  RotateCcw,
+  RotateCw,
+} from "lucide-react";
 import { useTranslations } from "next-intl";
 
+import { FONT_OPTIONS } from "@/shared/constants";
 import { Button, ButtonGroup, Label, Slider } from "@/shared/ui";
 
 import { useThrottledCallback } from "../lib/useThrottledCallback";
-import type { ElementType } from "../model/types";
-import { isCircle, isFillable, isRect, isStrokable } from "../model/types";
+import {
+  hasSize,
+  isFillable,
+  isStrokable,
+  isText,
+  type ElementType,
+} from "../model/types";
 import { useBoardStore } from "../model/useBoardStore";
 
 import { ColorField } from "./ColorField";
 import { NumberField } from "./NumberField";
+import { SelectField } from "./SelectField";
 import { SidebarBlock } from "./SidebarBlock";
 
 interface SingleElementPropertiesProps {
@@ -49,33 +63,23 @@ export function SingleElementProperties({
       </SidebarBlock>
 
       <SidebarBlock title={t("size")}>
-        {isRect(element) && (
+        {hasSize(element) && (
           <div className="flex items-center gap-2">
             <NumberField
               label="w"
               min={1}
-              value={element.width * Math.abs(element.scaleX)}
-              onChange={(v) =>
-                update({
-                  scaleX: v / element.width,
-                })
-              }
+              value={element.width}
+              onChange={(v) => {
+                update({ width: Math.max(1, v) });
+              }}
             />
             <NumberField
               label="h"
               min={1}
-              value={element.height * Math.abs(element.scaleY)}
-              onChange={(v) => update({ scaleY: v / element.height })}
-            />
-          </div>
-        )}
-
-        {isCircle(element) && (
-          <div className="flex items-center gap-2">
-            <NumberField
-              label={"r"}
-              value={element.radius}
-              onChange={(v) => update({ radius: v })}
+              value={element.height}
+              onChange={(v) => {
+                update({ height: Math.max(1, v) });
+              }}
             />
           </div>
         )}
@@ -298,6 +302,100 @@ export function SingleElementProperties({
               </Button>
             </div>
           )}
+        </SidebarBlock>
+      )}
+
+      {isText(element) && (
+        <SidebarBlock title={t("text")}>
+          <SelectField
+            label={t("font")}
+            value={element.fontFamily}
+            onChange={(v) => update({ fontFamily: v })}
+            placeholder="Font"
+            options={FONT_OPTIONS}
+          />
+
+          <div className="flex items-center gap-2">
+            <NumberField
+              label="Size"
+              min={8}
+              max={200}
+              value={element.fontSize}
+              onChange={(v) => update({ fontSize: v })}
+              className="w-full max-w-32"
+            />
+            <ColorField
+              preview
+              value={element.color}
+              onChange={(v) => update({ color: v })}
+              className="w-min"
+            />
+          </div>
+
+          <div className="flex items-center gap-2 *:[button]:flex-1">
+            <Button
+              size="sm"
+              variant={element.align === "left" ? "default" : "outline"}
+              onClick={() => update({ align: "left" })}
+              style={{ borderWidth: 1 }}
+            >
+              <AlignLeft className="size-4" />
+            </Button>
+            <Button
+              size="sm"
+              variant={element.align === "center" ? "default" : "outline"}
+              onClick={() => update({ align: "center" })}
+              style={{ borderWidth: 1 }}
+            >
+              <AlignCenter className="size-4" />
+            </Button>
+            <Button
+              size="sm"
+              variant={element.align === "right" ? "default" : "outline"}
+              onClick={() => update({ align: "right" })}
+              style={{ borderWidth: 1 }}
+            >
+              <AlignRight className="size-4" />
+            </Button>
+            <Button
+              size="sm"
+              variant={element.align === "justify" ? "default" : "outline"}
+              onClick={() => update({ align: "justify" })}
+              style={{ borderWidth: 1 }}
+            >
+              <AlignJustify className="size-4" />
+            </Button>
+          </div>
+          <div className="flex items-center gap-2 *:[button]:flex-1">
+            <Button
+              size="sm"
+              variant={element.verticalAlign === "top" ? "default" : "outline"}
+              onClick={() => update({ verticalAlign: "top" })}
+              style={{ borderWidth: 1 }}
+            >
+              Top
+            </Button>
+            <Button
+              size="sm"
+              variant={
+                element.verticalAlign === "middle" ? "default" : "outline"
+              }
+              onClick={() => update({ verticalAlign: "middle" })}
+              style={{ borderWidth: 1 }}
+            >
+              Middle
+            </Button>
+            <Button
+              size="sm"
+              variant={
+                element.verticalAlign === "bottom" ? "default" : "outline"
+              }
+              onClick={() => update({ verticalAlign: "bottom" })}
+              style={{ borderWidth: 1 }}
+            >
+              Bottom
+            </Button>
+          </div>
         </SidebarBlock>
       )}
     </>

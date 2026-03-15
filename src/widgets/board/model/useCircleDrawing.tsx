@@ -29,7 +29,7 @@ export const useCircleDrawing = () => {
     shapeIdRef.current = id;
     originRef.current = { x: cx, y: cy };
 
-    const shape = createCircle({ id, x: cx, y: cy, radius: 0 });
+    const shape = createCircle({ id, x: cx, y: cy, width: 0, height: 0 });
 
     useBoardStore.getState().addElement(shape);
   }, []);
@@ -43,28 +43,23 @@ export const useCircleDrawing = () => {
 
       const origin = originRef.current;
 
-      let radiusX = Math.abs(cx - origin.x) / 2;
-      let radiusY = Math.abs(cy - origin.y) / 2;
-
-      const radius = Math.max(radiusX, radiusY);
+      let width = Math.abs(cx - origin.x);
+      let height = Math.abs(cy - origin.y);
 
       if (shiftKey) {
-        radiusX = radius;
-        radiusY = radius;
+        const max = Math.max(width, height);
+        width = max;
+        height = max;
       }
-
-      const scaleX = shiftKey ? 1 : radiusX / radius;
-      const scaleY = shiftKey ? 1 : radiusY / radius;
 
       const minX = Math.min(cx, origin.x);
       const minY = Math.min(cy, origin.y);
 
       useBoardStore.getState().updateElement(shapeIdRef.current, {
-        x: minX + radiusX,
-        y: minY + radiusY,
-        scaleX,
-        scaleY,
-        radius,
+        x: minX,
+        y: minY,
+        width,
+        height,
       });
     },
     [],

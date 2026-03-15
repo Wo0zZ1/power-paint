@@ -16,23 +16,16 @@ export function TransformerTool() {
 
   const { handleTransformStart, handleTransform } = useTransformer();
 
+  const elements = useBoardStore(useShallow((s) => s.elements));
+  const isTextSelected =
+    elements.get(Array.from(selectedIds)[0])?.type === "text";
+
   const keepRatio = selectedIds.size > 1 || shiftPressed;
 
-  const elements = useBoardStore(useShallow((s) => s.elements));
-
   let enabledAnchors: string[] | undefined = undefined;
-  let isTextSelected = false;
 
-  if (selectedIds.size === 1) {
-    const id = Array.from(selectedIds)[0];
-    const el = elements.get(id);
-    if (el?.type === "text") {
-      isTextSelected = true;
-      enabledAnchors = ["middle-left", "middle-right"];
-    }
-  } else if (selectedIds.size > 1) {
+  if (selectedIds.size > 1)
     enabledAnchors = ["top-left", "top-right", "bottom-left", "bottom-right"];
-  }
 
   useEffect(() => {
     if (!transformerRef.current) return;

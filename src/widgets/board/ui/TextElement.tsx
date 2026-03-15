@@ -29,14 +29,14 @@ export function TextElement({ element, ...props }: TextElementProps) {
   const handleTextareaRef = (el: HTMLTextAreaElement | null) => {
     if (el) {
       el.setSelectionRange(0, el.value.length);
-      el.style.height = "auto";
-      el.style.height = el.scrollHeight + "px";
+      el.style.height = Math.max(element.height, el.scrollHeight) + "px";
     }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     e.target.style.height = "auto";
-    e.target.style.height = e.target.scrollHeight + "px";
+    e.target.style.height =
+      Math.max(element.height, e.target.scrollHeight) + "px";
     const textValue = e.target.value;
     updateElement(element.id, { text: textValue });
   };
@@ -57,8 +57,7 @@ export function TextElement({ element, ...props }: TextElementProps) {
         x={element.x}
         y={element.y}
         width={element.width}
-        scaleX={element.scaleX}
-        scaleY={element.scaleY}
+        height={element.height}
         rotation={element.rotation}
         opacity={isEditing ? 0 : element.opacity}
         text={element.text}
@@ -82,9 +81,7 @@ export function TextElement({ element, ...props }: TextElementProps) {
         <Html
           groupProps={{
             x: element.x,
-            y: element.y + 1,
-            scaleX: element.scaleX,
-            scaleY: element.scaleY,
+            y: element.y,
             rotation: element.rotation,
           }}
         >
@@ -95,15 +92,13 @@ export function TextElement({ element, ...props }: TextElementProps) {
             onBlur={handleBlur}
             onKeyDown={handleKeyDown}
             autoFocus
-            className="resize-none outline-none border-none p-0 m-0 overflow-hidden bg-transparent leading-[1.2] whitespace-pre-wrap wrap-break-word"
+            className="resize-none outline-none my-auto border-none p-0 m-0 overflow-hidden bg-transparent leading-[1.2] whitespace-pre-wrap wrap-break-word"
             style={{
               color: activeColor,
               width: element.width,
-              minHeight: `${element.fontSize * 1.5}px`,
               fontSize: `${element.fontSize}px`,
               fontFamily: element.fontFamily,
               textAlign: element.align,
-              verticalAlign: element.verticalAlign,
             }}
           />
         </Html>

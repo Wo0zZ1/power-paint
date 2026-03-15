@@ -33,22 +33,27 @@ export const useTransformer = () => {
 
         const scaleX = node.scaleX();
         const scaleY = node.scaleY();
-        const signX = Math.sign(scaleX) || 1;
-        const signY = Math.sign(scaleY) || 1;
 
         if (el?.type === "rect") {
           node.setAttrs({
             width: Math.max(1, node.width() * Math.abs(scaleX)),
             height: Math.max(1, node.height() * Math.abs(scaleY)),
-            scaleX: signX,
-            scaleY: signY,
+            scaleX: 1,
+            scaleY: 1,
           });
         } else if (el?.type === "circle") {
-          const maxScale = Math.max(Math.abs(scaleX), Math.abs(scaleY));
+          const newWidth = Math.max(1, node.width() * Math.abs(scaleX));
+          const newHeight = Math.max(1, node.height() * Math.abs(scaleY));
+
           node.setAttrs({
-            radius: Math.max(1, (node.getAttr("radius") || 0) * maxScale),
-            scaleX: signX,
-            scaleY: signY,
+            width: newWidth,
+            height: newHeight,
+            radiusX: newWidth / 2,
+            radiusY: newHeight / 2,
+            offsetX: -(newWidth / 2),
+            offsetY: -(newHeight / 2),
+            scaleX: 1,
+            scaleY: 1,
           });
         } else if (el?.type === "stroke") {
           const oldPoints = node.getAttr("points") as number[];
@@ -59,20 +64,21 @@ export const useTransformer = () => {
           });
           node.setAttrs({
             points: newPoints,
-            scaleX: signX,
-            scaleY: signY,
+            scaleX: 1,
+            scaleY: 1,
           });
         } else if (el?.type === "text") {
           const newWidth = Math.max(30, node.width() * Math.abs(scaleX));
+          const newHeight = Math.max(10, node.height() * Math.abs(scaleY));
           node.setAttrs({
             width: newWidth,
-            scaleX: signX,
-            scaleY: signY,
+            height: newHeight,
+            scaleX: 1,
+            scaleY: 1,
           });
         }
 
-        const attrs = node.getAttrs();
-        updates.set(node.id(), attrs);
+        updates.set(node.id(), node.getAttrs());
       });
 
       useBoardStore.getState().updateElements(updates);
