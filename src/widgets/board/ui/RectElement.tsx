@@ -80,6 +80,7 @@ export function RectElement({ element, ...props }: RectElementProps) {
       )}
       fillRadialGradientColorStops={[0, fillColor1, 1, fillColor2]}
       // Stroke
+      strokeScaleEnabled={true}
       fillAfterStrokeEnabled={true}
       stroke={strokeColor}
       strokeWidth={element.strokeWidth}

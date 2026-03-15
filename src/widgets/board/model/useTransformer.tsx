@@ -25,15 +25,58 @@ export const useTransformer = () => {
   const handleTransform = useThrottledCallback(
     (e: KonvaEventObject<PointerEvent, Node<NodeConfig>>) => {
       const transformer = e.currentTarget as unknown as Transformer;
+      const elements = useBoardStore.getState().elements;
 
       const updates = new Map<string, Record<string, unknown>>();
       transformer.nodes().forEach((node) => {
-        const attrs = node.getAttrs();
+        const el = elements.get(node.id());
 
+        const scaleX = node.scaleX();
+        const scaleY = node.scaleY();
+        const signX = Math.sign(scaleX) || 1;
+        const signY = Math.sign(scaleY) || 1;
+
+        if (el?.type === "rect") {
+          node.setAttrs({
+            width: Math.max(1, node.width() * Math.abs(scaleX)),
+            height: Math.max(1, node.height() * Math.abs(scaleY)),
+            scaleX: signX,
+            scaleY: signY,
+          });
+        } else if (el?.type === "circle") {
+          const maxScale = Math.max(Math.abs(scaleX), Math.abs(scaleY));
+          node.setAttrs({
+            radius: Math.max(1, (node.getAttr("radius") || 0) * maxScale),
+            scaleX: signX,
+            scaleY: signY,
+          });
+        } else if (el?.type === "stroke") {
+          const oldPoints = node.getAttr("points") as number[];
+          const newPoints = oldPoints.map((val, i) => {
+            return i % 2 === 0
+              ? val * Math.abs(scaleX)
+              : val * Math.abs(scaleY);
+          });
+          node.setAttrs({
+            points: newPoints,
+            scaleX: signX,
+            scaleY: signY,
+          });
+        } else if (el?.type === "text") {
+          const newWidth = Math.max(30, node.width() * Math.abs(scaleX));
+          node.setAttrs({
+            width: newWidth,
+            scaleX: signX,
+            scaleY: signY,
+          });
+        }
+
+        const attrs = node.getAttrs();
         updates.set(node.id(), attrs);
       });
 
       useBoardStore.getState().updateElements(updates);
+      transformer.forceUpdate();
     },
   );
 

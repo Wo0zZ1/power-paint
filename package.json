@@ -37,6 +37,7 @@
     "react-dom": "19.2.3",
     "react-hook-form": "^7.71.2",
     "react-konva": "^19.2.2",
+    "react-konva-utils": "^2.0.0",
     "tailwind-merge": "^3.4.0",
     "tsx": "^4.21.0",
     "y-websocket": "^3.0.0",

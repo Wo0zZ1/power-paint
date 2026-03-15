@@ -59,6 +59,7 @@ export function CircleElement({ element, ...props }: CircleElementProps) {
       fillLinearGradientColorStops={[0, fillColor1, 1, fillColor2]}
       fillRadialGradientColorStops={[0, fillColor1, 1, fillColor2]}
       // Stroke
+      strokeScaleEnabled={false}
       fillAfterStrokeEnabled={true}
       stroke={strokeColor}
       strokeWidth={element.strokeWidth}

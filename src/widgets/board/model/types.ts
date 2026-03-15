@@ -9,7 +9,6 @@ export type BaseElementType = {
   scaleX: number;
   scaleY: number;
   rotation: number;
-  // strokeColor: string;
   opacity: number;
 };
 
@@ -53,10 +52,18 @@ export type StrokeElementType = {
 } & BaseElementType &
   IStrokable;
 
+export type TextAlign = "left" | "center" | "right" | "justify";
+
+export type VerticalAlign = "top" | "middle" | "bottom";
+
 export type TextElementType = {
   type: "text";
   text: string;
   fontSize: number;
+  fontFamily: string;
+  align: TextAlign;
+  verticalAlign: VerticalAlign;
+  width: number;
   color: string;
 } & BaseElementType;
 // & IStrokable;
@@ -89,7 +96,7 @@ export const createCircle = (
   fillColor1: "#000000",
   fillColor2: "#000000",
   fillAngle: 0,
-  strokeColor: "#ffffff",
+  strokeColor: "#000000",
   strokeWidth: 0,
   strokeType: "solid",
   ...overrides,
@@ -107,7 +114,7 @@ export const createRect = (
   fillColor1: "#000000",
   fillColor2: "#000000",
   fillAngle: 0,
-  strokeColor: "#ffffff",
+  strokeColor: "#000000",
   strokeWidth: 0,
   strokeType: "solid",
   ...overrides,
@@ -132,7 +139,11 @@ export const createText = (
   ...baseDefaults(),
   text: "",
   fontSize: 16,
+  fontFamily: "Arial, sans-serif",
+  align: "left",
+  verticalAlign: "top",
   color: "#000000",
+  width: 60,
   ...overrides,
   type: "text",
 });

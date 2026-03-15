@@ -41,14 +41,13 @@ export function KonvaBoard({ user, boardId }: KonvaBoardProps) {
   useHocuspocus({ boardId, user });
 
   const { stageSize } = useBoardSize({ boardRef });
+  const { activeColor } = useInvertableColor(globals.backgroundColor, true);
 
   const { handleCursorMove, handleTouchCursorMove, handleCursorLeave } =
     useMouseAwareness();
 
   const { handlePointerDown, handleTouchStart, handleZoom } =
     useBoardInteraction({ selectionRectRef });
-
-  const { activeColor } = useInvertableColor(globals.backgroundColor, true);
 
   return (
     <div className="w-full h-full min-w-0 min-h-0 px-3.75 rounded-lg overflow-hidden">

@@ -3,6 +3,7 @@ import type {
   ElementType,
   RectElementType,
   StrokeElementType,
+  TextElementType,
 } from "../model/types";
 
 type Rectangle = {
@@ -115,6 +116,31 @@ const getStrokePoints = (element: StrokeElementType): Point[] => {
   return points;
 };
 
+const getTextCornerPoints = (element: TextElementType): Point[] => {
+  const width = element.width * element.scaleX;
+  // Грубая оценка высоты текста, т.к. точная зависит от рендеринга шрифта и автопереносов
+  const lines = element.text.split("\n").length;
+  const estimatedHeight = Math.max(element.fontSize * 1.2 * lines, element.fontSize);
+  const height = estimatedHeight * element.scaleY;
+  
+  const angleRad = degToRad(element.rotation);
+
+  const corners: Point[] = [
+    { x: 0, y: 0 },
+    { x: width, y: 0 },
+    { x: width, y: height },
+    { x: 0, y: height },
+  ];
+
+  return corners.map((corner) => {
+    const rotated = rotatePoint(corner, angleRad);
+    return {
+      x: element.x + rotated.x,
+      y: element.y + rotated.y,
+    };
+  });
+};
+
 export const isElementFullyInsideRect = (
   selectionRect: Rectangle,
   element: ElementType,
@@ -129,6 +155,9 @@ export const isElementFullyInsideRect = (
     case "stroke":
       const points = getStrokePoints(element);
       return points.every((point) => isPointInsideRect(selectionRect, point));
+    case "text":
+      const textCorners = getTextCornerPoints(element);
+      return textCorners.every((point) => isPointInsideRect(selectionRect, point));
     default:
       return false;
   }

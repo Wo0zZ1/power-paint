@@ -238,7 +238,7 @@ export function SingleElementProperties({
           <div className="flex items-center gap-2">
             <NumberField
               label="w"
-              min={0}
+              min={element.type === "stroke" ? 1 : 0}
               max={100}
               value={element.strokeWidth}
               onChange={(v) => update({ strokeWidth: v })}

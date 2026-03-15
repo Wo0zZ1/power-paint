@@ -10,6 +10,7 @@ import { useDragElements } from "../model/useDrag";
 import { CircleElement } from "./CircleElement";
 import { RectElement } from "./RectElement";
 import { StrokeElement } from "./StrokeElement";
+import { TextElement } from "./TextElement";
 
 export function LayerContent() {
   const elements = useBoardStore(useShallow((s) => s.elements));
@@ -35,6 +36,8 @@ export function LayerContent() {
             return <CircleElement key={el.id} {...commonProps} element={el} />;
           case "stroke":
             return <StrokeElement key={el.id} {...commonProps} element={el} />;
+          case "text":
+            return <TextElement key={el.id} {...commonProps} element={el} />;
           default:
             return null;
         }

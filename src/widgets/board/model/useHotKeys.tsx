@@ -14,7 +14,7 @@ export const useHotKeys = () => {
     const handleKeyDown = (e: KeyboardEvent) => {
       // Модификаторы - отслеживаем всегда (даже в input)
       if (e.key === " ") {
-        e.preventDefault();
+        if (!isInput()) e.preventDefault();
         useBoardStore.setState({
           modifiers: { ...useBoardStore.getState().modifiers, space: true },
         });

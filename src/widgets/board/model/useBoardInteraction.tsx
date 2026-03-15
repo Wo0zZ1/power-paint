@@ -2,9 +2,11 @@ import type Konva from "konva";
 import { useCallback, type RefObject } from "react";
 
 import { useBoardStore } from "./useBoardStore";
+import { useCircleDrawing } from "./useCircleDrawing";
 import { useDrawing } from "./useDrawing";
+import { useRectDrawing } from "./useRectDrawing";
 import { useSelectionRect } from "./useSelectionRect";
-import { useShapeDrawing } from "./useShapeDrawing";
+import { useTextDrawing } from "./useTextDrawing";
 import { shouldPan, useViewport } from "./useViewport";
 
 interface UseBoardInteractionProps {
@@ -16,12 +18,9 @@ export const useBoardInteraction = ({
 }: UseBoardInteractionProps) => {
   const { handleZoom, startPointerPan, startTouchPan } = useViewport();
   const { startPointerDraw, startTouchDraw } = useDrawing();
-  const {
-    startPointerRectDraw,
-    startPointerCircleDraw,
-    startTouchRectDraw,
-    startTouchCircleDraw,
-  } = useShapeDrawing();
+  const { startPointerRectDraw, startTouchRectDraw } = useRectDrawing();
+  const { startPointerCircleDraw, startTouchCircleDraw } = useCircleDrawing();
+  const { startPointerTextDraw, startTouchTextDraw } = useTextDrawing();
   const { startPointerSelect, startTouchSelect } = useSelectionRect({
     rectRef: selectionRectRef,
   });
@@ -43,6 +42,7 @@ export const useBoardInteraction = ({
       if (tool === "draw") return startPointerDraw(e);
       if (tool === "rect") return startPointerRectDraw(e);
       if (tool === "circle") return startPointerCircleDraw(e);
+      if (tool === "text") return startPointerTextDraw(e);
     },
     [
       startPointerPan,
@@ -50,6 +50,7 @@ export const useBoardInteraction = ({
       startPointerDraw,
       startPointerRectDraw,
       startPointerCircleDraw,
+      startPointerTextDraw,
     ],
   );
 
@@ -70,6 +71,7 @@ export const useBoardInteraction = ({
       if (tool === "draw") return startTouchDraw(e);
       if (tool === "rect") return startTouchRectDraw(e);
       if (tool === "circle") return startTouchCircleDraw(e);
+      if (tool === "text") return startTouchTextDraw(e);
     },
     [
       startTouchPan,
@@ -77,6 +79,7 @@ export const useBoardInteraction = ({
       startTouchDraw,
       startTouchRectDraw,
       startTouchCircleDraw,
+      startTouchTextDraw,
     ],
   );
 

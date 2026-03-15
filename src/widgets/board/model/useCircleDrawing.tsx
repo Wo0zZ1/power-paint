@@ -5,69 +5,56 @@ import { useThrottledCallback } from "../lib/useThrottledCallback";
 import { generateId } from "../lib/utils";
 import { screenToCanvas } from "../lib/viewport";
 
-import { createCircle, createRect } from "./types";
+import { createCircle } from "./types";
 import { useBoardStore } from "./useBoardStore";
 import { DEFAULT_CAPTURE_TIMEOUT } from "./useHocuspocus";
 
-export const useShapeDrawing = () => {
+export const useCircleDrawing = () => {
   const shapeIdRef = useRef<string | null>(null);
   const originRef = useRef({ x: 0, y: 0 });
-  const typeRef = useRef<"rect" | "circle">("rect");
 
   const stopListeners = useRef(() => {});
 
-  // ── Pure core ──
+  const beginDraw = useCallback((layerX: number, layerY: number) => {
+    const { viewport, undoManager } = useBoardStore.getState();
 
-  const beginDraw = useCallback(
-    (layerX: number, layerY: number, type: "rect" | "circle") => {
-      const { viewport, undoManager } = useBoardStore.getState();
+    if (undoManager) {
+      undoManager.stopCapturing();
+      undoManager.captureTimeout = Number.MAX_SAFE_INTEGER;
+    }
 
-      if (undoManager) {
-        undoManager.stopCapturing();
-        undoManager.captureTimeout = Number.MAX_SAFE_INTEGER;
-      }
-
-      const [cx, cy] = screenToCanvas(layerX, layerY, viewport);
-
-      const id = generateId();
-      shapeIdRef.current = id;
-      originRef.current = { x: cx, y: cy };
-      typeRef.current = type;
-
-      const shape =
-        type === "rect"
-          ? createRect({ id, x: cx, y: cy, width: 0, height: 0 })
-          : createCircle({ id, x: cx, y: cy, radius: 0 });
-
-      useBoardStore.getState().addElement(shape);
-    },
-    [],
-  );
-
-  const moveDraw = useCallback((layerX: number, layerY: number) => {
-    if (!shapeIdRef.current) return;
-
-    const viewport = useBoardStore.getState().viewport;
     const [cx, cy] = screenToCanvas(layerX, layerY, viewport);
 
-    const origin = originRef.current;
+    const id = generateId();
+    shapeIdRef.current = id;
+    originRef.current = { x: cx, y: cy };
 
-    if (typeRef.current === "rect") {
-      const minX = Math.min(cx, origin.x);
-      const minY = Math.min(cy, origin.y);
-      const width = Math.abs(cx - origin.x);
-      const height = Math.abs(cy - origin.y);
+    const shape = createCircle({ id, x: cx, y: cy, radius: 0 });
 
-      useBoardStore.getState().updateElement(shapeIdRef.current, {
-        x: minX,
-        y: minY,
-        width,
-        height,
-      });
-    } else if (typeRef.current === "circle") {
-      const radiusX = Math.abs(cx - origin.x) / 2;
-      const radiusY = Math.abs(cy - origin.y) / 2;
+    useBoardStore.getState().addElement(shape);
+  }, []);
+
+  const moveDraw = useCallback(
+    (layerX: number, layerY: number, shiftKey: boolean) => {
+      if (!shapeIdRef.current) return;
+
+      const viewport = useBoardStore.getState().viewport;
+      const [cx, cy] = screenToCanvas(layerX, layerY, viewport);
+
+      const origin = originRef.current;
+
+      let radiusX = Math.abs(cx - origin.x) / 2;
+      let radiusY = Math.abs(cy - origin.y) / 2;
+
       const radius = Math.max(radiusX, radiusY);
+
+      if (shiftKey) {
+        radiusX = radius;
+        radiusY = radius;
+      }
+
+      const scaleX = shiftKey ? 1 : radiusX / radius;
+      const scaleY = shiftKey ? 1 : radiusY / radius;
 
       const minX = Math.min(cx, origin.x);
       const minY = Math.min(cy, origin.y);
@@ -75,27 +62,16 @@ export const useShapeDrawing = () => {
       useBoardStore.getState().updateElement(shapeIdRef.current, {
         x: minX + radiusX,
         y: minY + radiusY,
+        scaleX,
+        scaleY,
         radius,
       });
-    }
-  }, []);
+    },
+    [],
+  );
 
   const endDraw = useCallback(() => {
     if (!shapeIdRef.current) return;
-
-    const shape = useBoardStore.getState().elements.get(shapeIdRef.current);
-    if (shape) {
-      if (shape.type === "rect" && (shape.width < 5 || shape.height < 5)) {
-        useBoardStore.getState().updateElement(shape.id, {
-          width: 100,
-          height: 100,
-        });
-      } else if (shape.type === "circle" && shape.radius < 5) {
-        useBoardStore.getState().updateElement(shape.id, {
-          radius: 50,
-        });
-      }
-    }
 
     const { undoManager, setTool, pureSelect } = useBoardStore.getState();
     const currentId = shapeIdRef.current;
@@ -123,10 +99,8 @@ export const useShapeDrawing = () => {
     }
   }, []);
 
-  // ── Pointer ──
-
   const onPointerMove = useThrottledCallback((e: PointerEvent) => {
-    moveDraw(e.layerX, e.layerY);
+    moveDraw(e.layerX, e.layerY, e.shiftKey);
   });
 
   const onPointerUp = useCallback(() => {
@@ -134,28 +108,11 @@ export const useShapeDrawing = () => {
     stopListeners.current();
   }, [endDraw]);
 
-  const startPointerRectDraw = useCallback(
-    (e: KonvaEventObject<PointerEvent>) => {
-      if (e.evt.pointerType === "touch") return;
-
-      beginDraw(e.evt.layerX, e.evt.layerY, "rect");
-
-      window.addEventListener("pointermove", onPointerMove);
-      window.addEventListener("pointerup", onPointerUp);
-
-      stopListeners.current = () => {
-        window.removeEventListener("pointermove", onPointerMove);
-        window.removeEventListener("pointerup", onPointerUp);
-      };
-    },
-    [beginDraw, onPointerMove, onPointerUp],
-  );
-
   const startPointerCircleDraw = useCallback(
     (e: KonvaEventObject<PointerEvent>) => {
       if (e.evt.pointerType === "touch") return;
 
-      beginDraw(e.evt.layerX, e.evt.layerY, "circle");
+      beginDraw(e.evt.layerX, e.evt.layerY);
 
       window.addEventListener("pointermove", onPointerMove);
       window.addEventListener("pointerup", onPointerUp);
@@ -167,8 +124,6 @@ export const useShapeDrawing = () => {
     },
     [beginDraw, onPointerMove, onPointerUp],
   );
-
-  // ── Touch ──
 
   const containerRectRef = useRef<DOMRect | null>(null);
 
@@ -183,6 +138,7 @@ export const useShapeDrawing = () => {
     moveDraw(
       touch.clientX - containerRectRef.current.left,
       touch.clientY - containerRectRef.current.top,
+      e.shiftKey,
     );
   });
 
@@ -190,28 +146,6 @@ export const useShapeDrawing = () => {
     endDraw();
     stopListeners.current();
   }, [endDraw]);
-
-  const startTouchRectDraw = useCallback(
-    (e: KonvaEventObject<TouchEvent>) => {
-      const touch = e.evt.touches[0];
-      if (!touch) return;
-      const stage = e.target.getStage();
-      if (!stage) return;
-      const rect = stage.container().getBoundingClientRect();
-      containerRectRef.current = rect;
-
-      beginDraw(touch.clientX - rect.left, touch.clientY - rect.top, "rect");
-
-      window.addEventListener("touchmove", onTouchDrawMove);
-      window.addEventListener("touchend", onTouchDrawEnd);
-
-      stopListeners.current = () => {
-        window.removeEventListener("touchmove", onTouchDrawMove);
-        window.removeEventListener("touchend", onTouchDrawEnd);
-      };
-    },
-    [beginDraw, onTouchDrawMove, onTouchDrawEnd],
-  );
 
   const startTouchCircleDraw = useCallback(
     (e: KonvaEventObject<TouchEvent>) => {
@@ -222,7 +156,7 @@ export const useShapeDrawing = () => {
       const rect = stage.container().getBoundingClientRect();
       containerRectRef.current = rect;
 
-      beginDraw(touch.clientX - rect.left, touch.clientY - rect.top, "circle");
+      beginDraw(touch.clientX - rect.left, touch.clientY - rect.top);
 
       window.addEventListener("touchmove", onTouchDrawMove);
       window.addEventListener("touchend", onTouchDrawEnd);
@@ -249,9 +183,7 @@ export const useShapeDrawing = () => {
   }, []);
 
   return {
-    startPointerRectDraw,
     startPointerCircleDraw,
-    startTouchRectDraw,
     startTouchCircleDraw,
   };
 };
