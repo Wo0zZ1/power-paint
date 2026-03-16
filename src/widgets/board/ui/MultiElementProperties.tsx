@@ -9,6 +9,7 @@ import { useBoardStore } from "../model/useBoardStore";
 
 import { NumberField } from "./NumberField";
 
+// TODO REMOVE THIS COMPONENT
 export function MultiElementProperties({ ids }: { ids: Set<string> }) {
   const t = useTranslations("toolbar.sidebar");
   const updateElements = useBoardStore((s) => s.updateElements);

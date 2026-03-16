@@ -15,7 +15,7 @@ type TextElementProps = {
 } & Omit<ComponentProps<typeof Text>, "id" | "onDblClick" | "onDblTap">;
 
 export function TextElement({ element, ...props }: TextElementProps) {
-  const { activeColor } = useInvertableColor(element.color);
+  const { activeColor } = useInvertableColor(element.textColor);
 
   const textRef = useRef<Konva.Text>(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -61,8 +61,8 @@ export function TextElement({ element, ...props }: TextElementProps) {
         rotation={element.rotation}
         opacity={isEditing ? 0 : element.opacity}
         text={element.text}
-        align={element.align}
-        verticalAlign={element.verticalAlign}
+        align={element.textAlign}
+        verticalAlign={element.textVerticalAlign}
         fontSize={element.fontSize}
         fontFamily={element.fontFamily}
         lineHeight={1.2}
@@ -98,7 +98,7 @@ export function TextElement({ element, ...props }: TextElementProps) {
               width: element.width,
               fontSize: `${element.fontSize}px`,
               fontFamily: element.fontFamily,
-              textAlign: element.align,
+              textAlign: element.textAlign,
             }}
           />
         </Html>

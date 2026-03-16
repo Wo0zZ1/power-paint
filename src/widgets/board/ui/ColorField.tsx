@@ -1,4 +1,5 @@
 import { Hash, Pipette } from "lucide-react";
+import type { FocusEventHandler } from "react";
 import { useEffect, useRef } from "react";
 
 import { hexValueToInputValue, normalizeHexColor } from "@/shared/lib/utils";
@@ -20,6 +21,7 @@ interface ColorFieldProps {
   label?: string;
   value: string;
   onChange: (value: string) => void;
+  onFocus?: FocusEventHandler<HTMLInputElement>;
   className?: string;
   preview?: boolean;
 }
@@ -29,6 +31,7 @@ export function ColorField({
   label,
   value,
   onChange,
+  onFocus,
   className,
   preview = false,
 }: ColorFieldProps) {
@@ -41,6 +44,7 @@ export function ColorField({
     handlePickerChange,
   } = useHexColorInput({ value, onChange });
 
+  // TODO: Refactor Cascade Rendering
   const inputValueRef = useRef(inputValue);
 
   useEffect(() => {
@@ -81,6 +85,10 @@ export function ColorField({
             "invalid:border-destructive focus:invalid:ring-destructive font-mono min-w-16"
           }
           onChange={handleInputChange}
+          onFocus={(e) => {
+            e.target.select();
+            onFocus?.(e);
+          }}
         />
 
         <InputGroupAddon className="gap-1" align="inline-end">
