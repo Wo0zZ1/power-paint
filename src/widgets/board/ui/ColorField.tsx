@@ -20,6 +20,7 @@ interface ColorFieldProps {
   id?: string;
   label?: string;
   value: string;
+  exceptionValue?: string;
   onChange: (value: string) => void;
   onFocus?: FocusEventHandler<HTMLInputElement>;
   className?: string;
@@ -30,6 +31,7 @@ export function ColorField({
   id,
   label,
   value,
+  exceptionValue,
   onChange,
   onFocus,
   className,
@@ -80,7 +82,7 @@ export function ColorField({
           type="text"
           maxLength={6}
           value={inputValue}
-          aria-invalid={!isValid}
+          aria-invalid={inputValue !== exceptionValue && !isValid}
           className={
             "invalid:border-destructive focus:invalid:ring-destructive font-mono min-w-16"
           }
