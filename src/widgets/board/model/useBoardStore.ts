@@ -11,7 +11,7 @@ import type {
 } from "./types";
 
 interface BoardState {
-  // ── Yjs-ссылки (устанавливаются один раз при подключении) ──
+  // ── Yjs-ссылки ──
   provider: HocuspocusProvider | null;
   yElements: Y.Map<ElementType> | null;
   yGlobals: Y.Map<unknown> | null;

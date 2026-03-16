@@ -10,12 +10,12 @@ export type BaseElementType = {
   opacity: number;
 };
 
-export type FillType = null | "color" | "gradient";
+export type FillType = "none" | "color" | "gradient";
 export type GradientType = "linear" | "radial";
 
 export interface IFillable {
   fillType: FillType;
-  gradientType: GradientType;
+  fillGradientType: GradientType;
   fillColor1: string;
   fillColor2: string;
   fillAngle: number;
@@ -63,9 +63,9 @@ export type TextElementType = {
   text: string;
   fontSize: number;
   fontFamily: string;
-  align: TextAlign;
-  verticalAlign: VerticalAlign;
-  color: string;
+  textAlign: TextAlign;
+  textVerticalAlign: VerticalAlign;
+  textColor: string;
 } & BaseElementType &
   ISizable;
 // & IStrokable;
@@ -92,13 +92,13 @@ export const createCircle = (
   ...baseDefaults(),
   width: 100,
   height: 100,
-  fillType: "color",
-  gradientType: "linear",
+  fillType: "none",
+  fillGradientType: "linear",
   fillColor1: "#000000",
   fillColor2: "#000000",
   fillAngle: 0,
   strokeColor: "#000000",
-  strokeWidth: 0,
+  strokeWidth: 3,
   strokeType: "solid",
   ...overrides,
   type: "circle",
@@ -110,13 +110,13 @@ export const createRect = (
   ...baseDefaults(),
   width: 100,
   height: 100,
-  fillType: "color",
-  gradientType: "linear",
+  fillType: "none",
+  fillGradientType: "linear",
   fillColor1: "#000000",
   fillColor2: "#000000",
   fillAngle: 0,
   strokeColor: "#000000",
-  strokeWidth: 0,
+  strokeWidth: 3,
   strokeType: "solid",
   ...overrides,
   type: "rect",
@@ -141,11 +141,11 @@ export const createText = (
   text: "",
   fontSize: 16,
   fontFamily: "Arial, sans-serif",
-  align: "left",
-  verticalAlign: "top",
-  color: "#000000",
+  textAlign: "left",
+  textVerticalAlign: "top",
+  textColor: "#000000",
   width: 60,
-  height: 20,
+  height: 30,
   ...overrides,
   type: "text",
 });

@@ -7,13 +7,16 @@ import { cn } from "@/lib/utils";
 
 function Slider({
   className,
+  trackClassName,
   defaultValue,
   value,
   min = 0,
   max = 100,
   color,
   ...props
-}: React.ComponentProps<typeof SliderPrimitive.Root>) {
+}: { trackClassName?: string } & React.ComponentProps<
+  typeof SliderPrimitive.Root
+>) {
   const _values = React.useMemo(
     () =>
       Array.isArray(value)
@@ -39,7 +42,10 @@ function Slider({
     >
       <SliderPrimitive.Track
         data-slot="slider-track"
-        className="bg-muted rounded-full data-horizontal:h-1 data-vertical:w-1 relative grow overflow-hidden data-horizontal:w-full data-vertical:h-full"
+        className={cn(
+          "bg-muted-foreground rounded-full data-horizontal:h-1 data-vertical:w-1 relative grow overflow-hidden data-horizontal:w-full data-vertical:h-full",
+          trackClassName,
+        )}
       >
         <SliderPrimitive.Range
           data-slot="slider-range"

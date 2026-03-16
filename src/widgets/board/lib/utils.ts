@@ -17,7 +17,8 @@ export const generateId = (): string => {
 export const getFillPriority = (
   fillType: FillType,
   gradientType: GradientType,
-): "color" | "linear-gradient" | "radial-gradient" => {
+): "none" | "color" | "linear-gradient" | "radial-gradient" => {
+  if (fillType === "none") return "none";
   if (fillType === "gradient") {
     if (gradientType === "linear") return "linear-gradient";
     else if (gradientType === "radial") return "radial-gradient";

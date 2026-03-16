@@ -14,7 +14,7 @@ type CircleElementProps = {
 } & Omit<ComponentProps<typeof Ellipse>, "radiusX" | "radiusY">;
 
 export function CircleElement({ element, ...props }: CircleElementProps) {
-  const fillPriority = getFillPriority(element.fillType, element.gradientType);
+  const fillPriority = getFillPriority(element.fillType, element.fillGradientType);
   const dash = getDash(element.strokeType);
 
   // Вычисляем точки градиента
@@ -56,7 +56,7 @@ export function CircleElement({ element, ...props }: CircleElementProps) {
       // Fill
       fill={fillColor1}
       fillPriority={fillPriority}
-      fillEnabled={!!element.fillType}
+      fillEnabled={element.fillType !== "none"}
       fillRadialGradientStartRadius={0}
       fillRadialGradientEndRadius={Math.max(element.width, element.height) / 2}
       fillLinearGradientStartPoint={startPoint}
