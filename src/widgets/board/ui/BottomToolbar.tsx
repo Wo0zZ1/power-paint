@@ -47,7 +47,7 @@ export function BottomToolbar({ className }: BottomToolbarProps) {
       )}
     >
       {tools.map(({ tool, Icon, shortcut }) => (
-        <Tooltip key={tool}>
+        <Tooltip key={tool} disableHoverableContent>
           <TooltipTrigger asChild>
             <ToolButton
               tool={tool}

@@ -3,7 +3,14 @@
 import { RotateCcw, RotateCw } from "lucide-react";
 import { useTranslations } from "next-intl";
 
-import { Button, ButtonGroup } from "@/shared/ui";
+import { TOOLTIP_DELAY } from "@/shared/config";
+import {
+  Button,
+  ButtonGroup,
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/shared/ui";
 
 import { NumberField } from "../NumberField";
 import { SidebarBlock } from "../SidebarBlock";
@@ -33,27 +40,48 @@ export function RotationSection({ elements, update }: PropertySectionProps) {
           onChange={(v) => update({ rotation: v })}
         />
         <ButtonGroup>
-          <Button
-            onClick={() => update((prev) => ({ rotation: prev.rotation - 45 }))}
-            variant="outline"
-            size="icon-sm"
-          >
-            <RotateCcw className="size-4" />
-          </Button>
-          <Button
-            onClick={() => update({ rotation: 0 })}
-            variant="outline"
-            size="sm"
-          >
-            {t("reset")}
-          </Button>
-          <Button
-            onClick={() => update((prev) => ({ rotation: prev.rotation + 45 }))}
-            variant="outline"
-            size="icon-sm"
-          >
-            <RotateCw className="size-4" />
-          </Button>
+          <Tooltip delayDuration={TOOLTIP_DELAY} disableHoverableContent>
+            <TooltipTrigger asChild>
+              <Button
+                onClick={() =>
+                  update((prev) => ({ rotation: prev.rotation - 45 }))
+                }
+                variant="outline"
+                size="icon-sm"
+              >
+                <RotateCcw className="size-4" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>{t("rotation_ccw")}</TooltipContent>
+          </Tooltip>
+
+          <Tooltip delayDuration={TOOLTIP_DELAY} disableHoverableContent>
+            <TooltipTrigger asChild>
+              <Button
+                onClick={() => update({ rotation: 0 })}
+                variant="outline"
+                size="sm"
+              >
+                {t("rotation_reset")}
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>{t("rotation_reset_tooltip")}</TooltipContent>
+          </Tooltip>
+
+          <Tooltip delayDuration={TOOLTIP_DELAY} disableHoverableContent>
+            <TooltipTrigger asChild>
+              <Button
+                onClick={() =>
+                  update((prev) => ({ rotation: prev.rotation + 45 }))
+                }
+                variant="outline"
+                size="icon-sm"
+              >
+                <RotateCw className="size-4" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>{t("rotation_cw")}</TooltipContent>
+          </Tooltip>
         </ButtonGroup>
       </PropertiesRow>
     </SidebarBlock>

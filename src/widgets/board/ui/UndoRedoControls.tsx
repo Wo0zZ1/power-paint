@@ -26,7 +26,7 @@ export function UndoRedoControls() {
 
   return (
     <ButtonGroup className="rounded-md bg-secondary/85 backdrop-blur-sm shadow-md">
-      <Tooltip>
+      <Tooltip disableHoverableContent>
         <TooltipTrigger asChild>
           <Button
             variant="outline"
@@ -47,7 +47,7 @@ export function UndoRedoControls() {
         </TooltipContent>
       </Tooltip>
 
-      <Tooltip>
+      <Tooltip disableHoverableContent>
         <TooltipTrigger asChild>
           <Button
             variant="outline"
