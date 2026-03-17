@@ -1,6 +1,14 @@
 "use client";
 
-import { AlignCenter, AlignJustify, AlignLeft, AlignRight } from "lucide-react";
+import {
+  AlignCenter,
+  AlignJustify,
+  AlignLeft,
+  AlignRight,
+  AlignVerticalJustifyCenter,
+  AlignVerticalJustifyEnd,
+  AlignVerticalJustifyStart,
+} from "lucide-react";
 import { useTranslations } from "next-intl";
 
 import { FONT_OPTIONS } from "@/shared/constants";
@@ -79,7 +87,7 @@ export function TextSection({ elements, update }: PropertySectionProps) {
 
       <PropertiesRow>
         <Button
-          size="sm"
+          size="icon-sm"
           variant={elementsTextAlign === "left" ? "default" : "outline"}
           onClick={() => update({ textAlign: "left" })}
           style={{ borderWidth: 1 }}
@@ -87,7 +95,7 @@ export function TextSection({ elements, update }: PropertySectionProps) {
           <AlignLeft className="size-4" />
         </Button>
         <Button
-          size="sm"
+          size="icon-sm"
           variant={elementsTextAlign === "center" ? "default" : "outline"}
           onClick={() => update({ textAlign: "center" })}
           style={{ borderWidth: 1 }}
@@ -95,7 +103,7 @@ export function TextSection({ elements, update }: PropertySectionProps) {
           <AlignCenter className="size-4" />
         </Button>
         <Button
-          size="sm"
+          size="icon-sm"
           variant={elementsTextAlign === "right" ? "default" : "outline"}
           onClick={() => update({ textAlign: "right" })}
           style={{ borderWidth: 1 }}
@@ -103,7 +111,7 @@ export function TextSection({ elements, update }: PropertySectionProps) {
           <AlignRight className="size-4" />
         </Button>
         <Button
-          size="sm"
+          size="icon-sm"
           variant={elementsTextAlign === "justify" ? "default" : "outline"}
           onClick={() => update({ textAlign: "justify" })}
           style={{ borderWidth: 1 }}
@@ -114,32 +122,32 @@ export function TextSection({ elements, update }: PropertySectionProps) {
 
       <PropertiesRow className="flex items-center *:[button]:flex-1 gap-2">
         <Button
-          size="sm"
+          size="icon-sm"
           variant={elementsTextVerticalAlign === "top" ? "default" : "outline"}
           onClick={() => update({ textVerticalAlign: "top" })}
           style={{ borderWidth: 1 }}
         >
-          {t("align_top")}
+          <AlignVerticalJustifyStart />
         </Button>
         <Button
-          size="sm"
+          size="icon-sm"
           variant={
             elementsTextVerticalAlign === "middle" ? "default" : "outline"
           }
           onClick={() => update({ textVerticalAlign: "middle" })}
           style={{ borderWidth: 1 }}
         >
-          {t("align_middle")}
+          <AlignVerticalJustifyCenter />
         </Button>
         <Button
-          size="sm"
+          size="icon-sm"
           variant={
             elementsTextVerticalAlign === "bottom" ? "default" : "outline"
           }
           onClick={() => update({ textVerticalAlign: "bottom" })}
           style={{ borderWidth: 1 }}
         >
-          {t("align_bottom")}
+          <AlignVerticalJustifyEnd />
         </Button>
       </PropertiesRow>
     </SidebarBlock>

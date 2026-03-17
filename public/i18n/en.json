@@ -159,9 +159,6 @@
       "opacity": "Opacity",
       "text": "Text",
       "font": "Font",
-      "align_top": "Top",
-      "align_middle": "Middle",
-      "align_bottom": "Bottom",
       "fill": "Fill",
       "fill_none": "None",
       "fill_solid": "Solid",
@@ -175,9 +172,6 @@
       "stroke_dash_dotted": "Dash-Dotted",
 
       "multipleSelected": "{count} elements selected",
-
-      "addRect": "Add Rectangle",
-      "addCircle": "Add Circle",
 
       "delete": "Delete Selected"
     }

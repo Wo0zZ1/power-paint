@@ -159,9 +159,6 @@
       "opacity": "Непрозрачность",
       "text": "Текст",
       "font": "Шрифт",
-      "align_top": "Верх",
-      "align_middle": "Центр",
-      "align_bottom": "Низ",
       "fill": "Заливка",
       "fill_none": "Нет",
       "fill_solid": "Сплошной",
@@ -175,9 +172,6 @@
       "stroke_dash_dotted": "Штрихпунктир",
 
       "multipleSelected": "Выбрано элементов: {count}",
-
-      "addRect": "Прямоугольник",
-      "addCircle": "Круг",
 
       "delete": "Удалить выделенное"
     }
