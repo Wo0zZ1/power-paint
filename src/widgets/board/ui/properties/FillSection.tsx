@@ -9,6 +9,7 @@ import { ColorField } from "../ColorField";
 import { NumberField } from "../NumberField";
 import { SidebarBlock } from "../SidebarBlock";
 
+import { PropertiesRow } from "./PropertiesRow";
 import {
   type PropertySectionProps,
   getCommonElementProperties,
@@ -48,7 +49,7 @@ export function FillSection({ elements, update }: PropertySectionProps) {
 
   return (
     <SidebarBlock title={t("fill")}>
-      <div className="flex *:[button]:flex-1 items-center gap-2">
+      <PropertiesRow>
         <Button
           size="sm"
           variant={elementsFillType === "none" ? "default" : "outline"}
@@ -82,7 +83,7 @@ export function FillSection({ elements, update }: PropertySectionProps) {
         >
           {t("fill_gradient")}
         </Button>
-      </div>
+      </PropertiesRow>
       {elementsFillType === "color" && (
         <ColorField
           preview
@@ -93,7 +94,7 @@ export function FillSection({ elements, update }: PropertySectionProps) {
       )}
       {elementsFillType === "gradient" && (
         <>
-          <div className="flex *:[button]:flex-1 items-center gap-2">
+          <PropertiesRow>
             <Button
               size="sm"
               variant={
@@ -122,7 +123,7 @@ export function FillSection({ elements, update }: PropertySectionProps) {
             >
               {t("gradient_radial")}
             </Button>
-          </div>
+          </PropertiesRow>
 
           <ColorField
             preview

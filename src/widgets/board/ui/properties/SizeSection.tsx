@@ -6,6 +6,7 @@ import { hasSize } from "../../model/types";
 import { NumberField } from "../NumberField";
 import { SidebarBlock } from "../SidebarBlock";
 
+import { PropertiesRow } from "./PropertiesRow";
 import {
   type PropertySectionProps,
   getCommonElementProperties,
@@ -26,7 +27,7 @@ export function SizeSection({ elements, update }: PropertySectionProps) {
 
   return (
     <SidebarBlock title={t("size")}>
-      <div className="flex items-center gap-2">
+      <PropertiesRow>
         <NumberField
           label="w"
           min={1}
@@ -39,7 +40,7 @@ export function SizeSection({ elements, update }: PropertySectionProps) {
           value={elementsHeight}
           onChange={(v) => update({ height: Math.max(1, v) })}
         />
-      </div>
+      </PropertiesRow>
     </SidebarBlock>
   );
 }

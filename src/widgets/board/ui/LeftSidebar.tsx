@@ -19,7 +19,7 @@ export function LeftSidebar({ className }: LeftSidebarProps) {
     <div
       className={cn(
         className,
-        "space-y-2 w-72 p-3 border rounded-lg bg-secondary/85 backdrop-blur-sm overflow-y-auto",
+        "space-y-2 w-74 p-3 border rounded-lg bg-secondary/85 backdrop-blur-sm overflow-y-auto",
       )}
     >
       {/* TODO Вынести в отдельные настройки board */}

@@ -12,6 +12,7 @@ import { NumberField } from "../NumberField";
 import { SelectField } from "../SelectField";
 import { SidebarBlock } from "../SidebarBlock";
 
+import { PropertiesRow } from "./PropertiesRow";
 import {
   type PropertySectionProps,
   getCommonElementProperties,
@@ -59,7 +60,7 @@ export function TextSection({ elements, update }: PropertySectionProps) {
         options={FONT_OPTIONS}
       />
 
-      <div className="flex items-center gap-2">
+      <PropertiesRow className="overflow-visible">
         <NumberField
           label="Size"
           min={8}
@@ -74,9 +75,9 @@ export function TextSection({ elements, update }: PropertySectionProps) {
           onChange={(v) => update({ textColor: v })}
           className="w-min"
         />
-      </div>
+      </PropertiesRow>
 
-      <div className="flex items-center gap-2 *:[button]:flex-1">
+      <PropertiesRow>
         <Button
           size="sm"
           variant={elementsTextAlign === "left" ? "default" : "outline"}
@@ -109,9 +110,9 @@ export function TextSection({ elements, update }: PropertySectionProps) {
         >
           <AlignJustify className="size-4" />
         </Button>
-      </div>
+      </PropertiesRow>
 
-      <div className="flex items-center *:[button]:flex-1 gap-2">
+      <PropertiesRow className="flex items-center *:[button]:flex-1 gap-2">
         <Button
           size="sm"
           variant={elementsTextVerticalAlign === "top" ? "default" : "outline"}
@@ -140,7 +141,7 @@ export function TextSection({ elements, update }: PropertySectionProps) {
         >
           {t("align_bottom")}
         </Button>
-      </div>
+      </PropertiesRow>
     </SidebarBlock>
   );
 }

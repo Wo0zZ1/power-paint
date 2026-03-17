@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { NumberField } from "../NumberField";
 import { SidebarBlock } from "../SidebarBlock";
 
+import { PropertiesRow } from "./PropertiesRow";
 import {
   type PropertySectionProps,
   getCommonElementProperties,
@@ -18,7 +19,7 @@ export function PositionSection({ elements, update }: PropertySectionProps) {
 
   return (
     <SidebarBlock title={t("position")}>
-      <div className="flex items-center gap-2">
+      <PropertiesRow>
         <NumberField
           label="x"
           value={elementsX}
@@ -29,7 +30,7 @@ export function PositionSection({ elements, update }: PropertySectionProps) {
           value={elementsY}
           onChange={(v) => update({ y: v })}
         />
-      </div>
+      </PropertiesRow>
     </SidebarBlock>
   );
 }

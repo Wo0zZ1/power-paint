@@ -9,6 +9,7 @@ import { ColorField } from "../ColorField";
 import { NumberField } from "../NumberField";
 import { SidebarBlock } from "../SidebarBlock";
 
+import { PropertiesRow } from "./PropertiesRow";
 import {
   type PropertySectionProps,
   getCommonElementProperties,
@@ -40,7 +41,7 @@ export function StrokeSection({ elements, update }: PropertySectionProps) {
 
   return (
     <SidebarBlock title={t("stroke")}>
-      <div className="flex items-center gap-2">
+      <PropertiesRow className="overflow-visible">
         <NumberField
           label="w"
           min={someElementIsStroke ? 1 : 0}
@@ -57,9 +58,9 @@ export function StrokeSection({ elements, update }: PropertySectionProps) {
           onChange={(v) => update({ strokeColor: v })}
           className="grow"
         />
-      </div>
+      </PropertiesRow>
       {!someElementIsStroke && (
-        <div className="*:grow flex items-center gap-2 max-w-full overflow-x-auto [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-thumb]:bg-gray-500 [&::-webkit-scrollbar-thumb]:hover:bg-gray-400 [&::-webkit-scrollbar-thumb]:rounded-full">
+        <PropertiesRow>
           <Button
             size="sm"
             variant={elementsStrokeType === "solid" ? "default" : "outline"}
@@ -96,7 +97,7 @@ export function StrokeSection({ elements, update }: PropertySectionProps) {
           >
             {t("stroke_dash_dotted")}
           </Button>
-        </div>
+        </PropertiesRow>
       )}
     </SidebarBlock>
   );

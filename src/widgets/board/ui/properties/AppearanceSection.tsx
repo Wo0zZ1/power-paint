@@ -6,6 +6,7 @@ import { Label, Slider } from "@/shared/ui";
 
 import { SidebarBlock } from "../SidebarBlock";
 
+import { PropertiesRow } from "./PropertiesRow";
 import {
   type PropertySectionProps,
   getCommonElementProperties,
@@ -22,7 +23,7 @@ export function AppearanceSection({ elements, update }: PropertySectionProps) {
 
   return (
     <SidebarBlock title={t("appearance")}>
-      <div className="flex items-center gap-2">
+      <PropertiesRow>
         <Label className="text-xs text-muted-foreground">{t("opacity")}</Label>
         <Slider
           value={elementsOpacity === "mixed" ? [0.5] : [elementsOpacity]}
@@ -37,7 +38,7 @@ export function AppearanceSection({ elements, update }: PropertySectionProps) {
             ? "mixed"
             : `${Math.round((elementsOpacity as number) * 100)}%`}
         </span>
-      </div>
+      </PropertiesRow>
     </SidebarBlock>
   );
 }

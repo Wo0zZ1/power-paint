@@ -8,6 +8,7 @@ import { Button, ButtonGroup } from "@/shared/ui";
 import { NumberField } from "../NumberField";
 import { SidebarBlock } from "../SidebarBlock";
 
+import { PropertiesRow } from "./PropertiesRow";
 import {
   type PropertySectionProps,
   getCommonElementProperties,
@@ -24,7 +25,7 @@ export function RotationSection({ elements, update }: PropertySectionProps) {
 
   return (
     <SidebarBlock title={t("rotation")}>
-      <div className="flex items-center gap-2">
+      <PropertiesRow>
         <NumberField
           label={"°"}
           value={elementsRotation}
@@ -54,7 +55,7 @@ export function RotationSection({ elements, update }: PropertySectionProps) {
             <RotateCw className="size-4" />
           </Button>
         </ButtonGroup>
-      </div>
+      </PropertiesRow>
     </SidebarBlock>
   );
 }
