@@ -3,7 +3,7 @@
 import type { Workspace } from "@prisma/client";
 import { LucideFolder } from "lucide-react";
 import { useTranslations } from "next-intl";
-import type { SubmitEvent} from "react";
+import type { SubmitEvent } from "react";
 import { useEffect, useState } from "react";
 
 import { useDeleteWorkspaceMutation } from "@/entities/workspace/model/mutations";
@@ -27,8 +27,6 @@ import {
   EmptyDescription,
 } from "@/shared/ui";
 import { cn } from "@/utils";
-
-
 
 interface DeleteWorkspaceModalProps {
   workspace?: Workspace;
@@ -129,9 +127,7 @@ export function DeleteWorkspaceModal({
               type="submit"
             >
               {isMutating && <Spinner />}
-              {isMutating
-                ? t("workspace.delete.confirmation")
-                : t("workspace.delete.confirm")}
+              {isMutating ? t("confirmation") : t("confirm")}
             </Button>
           </DialogFooter>
         </form>

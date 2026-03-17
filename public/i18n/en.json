@@ -18,6 +18,8 @@
   "renaming": "Renaming",
   "delete": "Delete",
   "deleting": "Deleting",
+  "confirm": "Confirm",
+  "confirmation": "Confirmation",
 
   "auth": {
     "login": "Log In",

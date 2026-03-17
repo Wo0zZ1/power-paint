@@ -18,6 +18,8 @@
   "renaming": "Переименование",
   "delete": "Удалить",
   "deleting": "Удаление",
+  "confirm": "Подтвердить",
+  "confirmation": "Подтверждение",
 
   "auth": {
     "login": "Войти",

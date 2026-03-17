@@ -3,7 +3,7 @@
 import type { Board } from "@prisma/client";
 import { LucideFolder } from "lucide-react";
 import { useTranslations } from "next-intl";
-import type { SubmitEvent} from "react";
+import type { SubmitEvent } from "react";
 import { useEffect, useState } from "react";
 
 import { useDeleteBoardMutation } from "@/entities/board/model/mutations";
@@ -28,8 +28,6 @@ import {
 } from "@/shared/ui";
 import { cn } from "@/utils";
 
-
-
 interface DeleteBoardModalProps {
   board?: Board;
   open: boolean;
@@ -43,7 +41,7 @@ export function DeleteBoardModal({
   onOpenChange,
   className,
 }: DeleteBoardModalProps) {
-  const t = useTranslations("");
+  const t = useTranslations();
 
   const deleteBoardMutation = useDeleteBoardMutation();
 
@@ -126,9 +124,7 @@ export function DeleteBoardModal({
               type="submit"
             >
               {isMutating && <Spinner />}
-              {isMutating
-                ? t("board.delete.confirmation")
-                : t("board.delete.confirm")}
+              {isMutating ? t("confirmation") : t("confirm")}
             </Button>
           </DialogFooter>
         </form>
