@@ -47,7 +47,7 @@ export function StrokeSection({ elements, update }: PropertySectionProps) {
           max={100}
           value={elementsStrokeWidth}
           onChange={(v) => update({ strokeWidth: v })}
-          className="w-full max-w-32"
+          className="w-max"
         />
 
         <ColorField
@@ -55,11 +55,11 @@ export function StrokeSection({ elements, update }: PropertySectionProps) {
           exceptionValue="mixed"
           value={elementsStrokeColor}
           onChange={(v) => update({ strokeColor: v })}
-          className="w-min"
+          className="grow"
         />
       </div>
       {!someElementIsStroke && (
-        <div className="flex *:[button]:flex-1 items-center gap-2 max-w-full overflow-auto [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-thumb]:bg-gray-500 [&::-webkit-scrollbar-thumb]:hover:bg-gray-400 [&::-webkit-scrollbar-thumb]:rounded-full">
+        <div className="*:grow flex items-center gap-2 max-w-full overflow-x-auto [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-thumb]:bg-gray-500 [&::-webkit-scrollbar-thumb]:hover:bg-gray-400 [&::-webkit-scrollbar-thumb]:rounded-full">
           <Button
             size="sm"
             variant={elementsStrokeType === "solid" ? "default" : "outline"}

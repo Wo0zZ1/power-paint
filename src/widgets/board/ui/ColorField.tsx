@@ -61,7 +61,7 @@ export function ColorField({
   }, [value, setInputValue]);
 
   return (
-    <div className="grow flex items-center gap-2">
+    <div className="flex items-center gap-2">
       {label && <FieldLabel label={label} />}
 
       <InputGroup className={className}>
