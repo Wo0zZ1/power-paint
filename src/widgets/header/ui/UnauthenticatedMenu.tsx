@@ -1,5 +1,4 @@
-import { LoginButton } from "@/features/auth";
-
+import { LoginButton } from "./LoginButton";
 import { SettingsButton } from "./SettingsButton";
 
 export async function UnauthenticatedMenu() {

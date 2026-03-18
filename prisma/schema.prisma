@@ -11,6 +11,7 @@ model User {
   name           String
   email          String    @unique
   emailVerified  DateTime?
+  password       String?
   image          String?
   preferredColor String    @default(dbgenerated("'#' || lpad(to_hex((random() * (2^24))::int), 6, '0')")) @map("preferred_color")
   role           Role      @default(User)
@@ -130,6 +131,13 @@ model WorkspaceMember {
 
   @@id([workspaceId, userId])
   @@map("workspace_member")
+}
+
+model yjs_documents {
+  document_name String   @id
+  state         Bytes
+  created_at    DateTime @default(now()) @db.Timestamptz(6)
+  updated_at    DateTime @default(now()) @db.Timestamptz(6)
 }
 
 enum Role {

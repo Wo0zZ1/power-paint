@@ -1,10 +1,17 @@
+import { createHash } from "node:crypto";
+
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { AccessLevel, Role, WorkspaceType } from "@prisma/client";
-import type { DefaultSession, NextAuthOptions } from "next-auth";
+import type { NextAuthOptions } from "next-auth";
+import Credentials from "next-auth/providers/credentials";
 import Github from "next-auth/providers/github";
 import Google from "next-auth/providers/google";
+import z from "zod";
 
 import { prisma } from "../lib/prisma";
+
+import { getSigninSchema } from "./authSchemas";
+import { ROUTES } from "./routes";
 
 export const AUTH_CONFIG = {
   adapter: PrismaAdapter(prisma),
@@ -28,6 +35,7 @@ export const AUTH_CONFIG = {
       },
       allowDangerousEmailAccountLinking: true,
     }),
+
     Github({
       clientId: process.env.GITHUB_CLIENT_ID!,
       clientSecret: process.env.GITHUB_CLIENT_SECRET!,
@@ -46,7 +54,49 @@ export const AUTH_CONFIG = {
       },
       allowDangerousEmailAccountLinking: true,
     }),
+
+    Credentials({
+      name: "Credentials",
+
+      credentials: {
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" },
+      },
+
+      async authorize(credentials) {
+        const validatedUser = z.safeParse(getSigninSchema(), credentials);
+        if (!validatedUser.success) throw new Error("Invalid data");
+
+        const { email, password } = validatedUser.data;
+
+        const user = await prisma.user.findUnique({
+          where: { email },
+        });
+
+        if (!user) throw new Error("Invalid email or password");
+
+        const hashedPassword = createHash("sha256")
+          .update(password)
+          .digest("hex");
+
+        if (user.password !== hashedPassword)
+          throw new Error("Invalid email or password");
+
+        return {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          emailVerified: user.emailVerified,
+          image: user.image,
+          role: user.role,
+        };
+      },
+    }),
   ],
+
+  pages: {
+    signIn: ROUTES.SIGNIN,
+  },
 
   session: {
     strategy: "database",
@@ -130,38 +180,3 @@ export const AUTH_CONFIG = {
 
   secret: process.env.NEXTAUTH_SECRET,
 } satisfies NextAuthOptions;
-
-// TODO move to separate .d.ts file
-declare module "next-auth" {
-  interface Session {
-    user: {
-      id: string;
-      name: string;
-      email: string;
-      emailVerified: Date | null;
-      image: string | null;
-      preferredColor: string;
-      role: Role;
-    } & DefaultSession["user"];
-  }
-
-  interface User {
-    id: string;
-    name: string;
-    email: string;
-    emailVerified: Date | null;
-    image: string | null;
-    role: Role;
-  }
-
-  interface Profile {
-    email_verified?: Date | boolean;
-  }
-}
-
-// TODO move to separate .d.ts file
-declare module "next-auth/adapters" {
-  interface AdapterUser {
-    preferredColor: string;
-  }
-}

@@ -69,11 +69,11 @@ export function AuthenticatedMenu({ session }: AuthenticatedMenuProps) {
         <Separator className="my-1" />
 
         <DropdownMenuItem
-          onSelect={() => signOut({ callbackUrl: ROUTES.ROOT })}
+          onSelect={() => signOut({ callbackUrl: ROUTES.SIGNIN })}
           variant="destructive"
         >
           <LogOut />
-          {t("auth.logout")}
+          {t("auth.sign_out")}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

@@ -22,10 +22,42 @@
   "confirmation": "Подтверждение",
 
   "auth": {
-    "login": "Войти",
-    "logout": "Выйти",
-    "signup": "Зарегистрироваться"
+    "title": "Войдите, чтобы продолжить",
+    "description": "Используйте свою электронную почту или другую службу для продолжения",
+
+    "fields": {
+      "email": {
+        "label": "Электронная почта",
+        "placeholder": "Введите ваш email"
+      },
+      "password": {
+        "label": "Пароль",
+        "placeholder": "Введите ваш пароль"
+      }
+    },
+
+    "errors": {
+      "invalid_data": "Пожалуйста, заполните все обязательные поля правильно.",
+      "invalid_credentials": "Неверный email или пароль. Попробуйте снова.",
+
+      "invalid_email": "Пожалуйста, введите действительный email.",
+      "password_too_short": "Пароль должен быть не менее 6 символов.",
+      "password_too_long": "Пароль должен быть не более 100 символов."
+    },
+
+    "sign_in": "Войти",
+    "sign_out": "Выйти",
+    "sign_up": "Зарегистрироваться",
+
+    "dont_have_account": "Нет аккаунта?",
+    "forgot_password": "Забыли пароль?",
+
+    "providers": {
+      "github": "Продолжить с GitHub",
+      "google": "Продолжить с Google"
+    }
   },
+
   "account": "Аккаунт",
   "profile": "Профиль",
   "settings": {

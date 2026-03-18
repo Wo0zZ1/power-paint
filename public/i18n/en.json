@@ -22,10 +22,42 @@
   "confirmation": "Confirmation",
 
   "auth": {
-    "login": "Log In",
-    "logout": "Log Out",
-    "signup": "Sign Up"
+    "title": "Login to continue",
+    "description": "Use your email or another service to continue",
+
+    "fields": {
+      "email": {
+        "label": "Email",
+        "placeholder": "Enter your email"
+      },
+      "password": {
+        "label": "Password",
+        "placeholder": "Enter your password"
+      }
+    },
+
+    "errors": {
+      "invalid_data": "Please fill in all required fields correctly.",
+      "invalid_credentials": "Invalid email or password. Please try again.",
+
+      "invalid_email": "Please enter a valid email.",
+      "password_too_short": "Password must be at least 6 characters.",
+      "password_too_long": "Password must be no more than 100 characters."
+    },
+
+    "sign_in": "Sign In",
+    "sign_out": "Sign Out",
+    "sign_up": "Sign Up",
+
+    "dont_have_account": "Don't have an account?",
+    "forgot_password": "Forgot your Password?",
+
+    "providers": {
+      "github": "Continue with GitHub",
+      "google": "Continue with Google"
+    }
   },
+
   "account": "Account",
   "profile": "Profile",
   "settings": {

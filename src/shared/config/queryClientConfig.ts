@@ -1,6 +1,6 @@
 import type { QueryClientConfig } from "@tanstack/react-query";
 
-// TODO Configure query client  options
+// TODO: Configure query client  options
 export const queryClientOptions = {
   defaultOptions: {
     queries: {

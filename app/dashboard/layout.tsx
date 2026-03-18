@@ -15,7 +15,7 @@ export default async function DashboardLayout({
 
   const session = await getSession();
 
-  if (!session) redirect(ROUTES.LOGIN);
+  if (!session) redirect(ROUTES.SIGNIN);
 
   return (
     <div className="flex flex-col grow container mx-auto mt-8 px-4">
