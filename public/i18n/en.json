@@ -20,41 +20,117 @@
   "deleting": "Deleting",
   "confirm": "Confirm",
   "confirmation": "Confirmation",
+  "continue": "Continue",
+
+  "or": "or",
+
+  "errors": {
+    "unknown_error": "Something went wrong. Please try again.",
+    "invalid_data": "Please fill in all required fields correctly.",
+    "invalid_credentials": "Invalid email or password. Please try again.",
+    "invalid_email": "Please enter a valid email."
+  },
 
   "auth": {
-    "title": "Login to continue",
-    "description": "Use your email or another service to continue",
+    "signin_title": "Login to continue",
+    "signin_description": "Use your email or another service to continue",
+
+    "signup_title": "Create an account",
+    "signup_description": "Fill in the details below to create a new account",
+
+    "forgot_title": "Reset your password",
+    "forgot_description": "Enter your email to receive a verification code.",
+    "forgot_notice": "If the email is correct, you'll receive a reset code shortly.",
+
+    "verify_title": "Verify your login",
+    "verify_description": "Enter the verification code we sent to your email address.",
+
+    "reset_title": "Set a new password",
+    "reset_description": "Choose a new password to secure your account.",
+    "reset_success": "Password updated. Sessions have been reset. You can now sign in.",
 
     "fields": {
+      "first_name": {
+        "label": "First Name",
+        "placeholder": "Enter your first name"
+      },
+      "last_name": {
+        "label": "Last Name",
+        "placeholder": "Enter your last name"
+      },
       "email": {
         "label": "Email",
         "placeholder": "Enter your email"
       },
+      "phone": {
+        "label": "Phone Number",
+        "placeholder": "Enter your phone number"
+      },
       "password": {
         "label": "Password",
         "placeholder": "Enter your password"
+      },
+      "confirm_password": {
+        "label": "Confirm Password",
+        "placeholder": "Re-enter your password"
+      },
+      "email_code": {
+        "label": "Verification Code",
+        "placeholder": "Enter the code from your email"
       }
     },
 
+    "accept_terms": "I accept terms and conditions",
+
     "errors": {
-      "invalid_data": "Please fill in all required fields correctly.",
-      "invalid_credentials": "Invalid email or password. Please try again.",
+      "first_name_too_short": "Must be at least 1 character.",
+      "first_name_too_long": "Must be less than 16 characters.",
+
+      "last_name_too_short": "Must be at least 1 character.",
+      "last_name_too_long": "Must be less than 16 characters.",
 
       "invalid_email": "Please enter a valid email.",
+      "email_in_use": "An account with this email already exists.",
+      "invalid_email_code": "Invalid verification code.",
+      "code_expired": "Verification code has expired.",
+      "compromised_email_code": "Too many attempts. Request a new code.",
+
       "password_too_short": "Password must be at least 6 characters.",
-      "password_too_long": "Password must be no more than 100 characters."
+      "password_too_long": "Password must be less than 20 characters.",
+
+      "passwords_do_not_match": "Passwords do not match.",
+
+      "terms_required": "You must accept the terms and conditions.",
+
+      "invalid_phone": "Please enter a valid phone number.",
+
+      "invalid_preferred_color": "Please enter a valid hex color code.",
+
+      "invalid_image": "Please upload a valid image URL.",
+
+      "invalid_locale": "Please select a valid language."
     },
 
     "sign_in": "Sign In",
     "sign_out": "Sign Out",
     "sign_up": "Sign Up",
 
+    "already_have_account": "Already have an account?",
     "dont_have_account": "Don't have an account?",
     "forgot_password": "Forgot your Password?",
+    "abort_registration": "Abort Registration",
+    "abort_password_reset": "Abort Password Reset",
+
+    "actions": {
+      "resend_code": "Resend Code",
+      "send_reset_code": "Send code",
+      "verify_reset_code": "Verify code",
+      "save_new_password": "Save new password"
+    },
 
     "providers": {
-      "github": "Continue with GitHub",
-      "google": "Continue with Google"
+      "github": "Sign In with GitHub",
+      "google": "Sign In with Google"
     }
   },
 
@@ -216,6 +292,22 @@
       "multipleSelected": "{count} elements selected",
 
       "delete": "Delete Selected"
+    }
+  },
+  "email": {
+    "signup": {
+      "subject": "Confirm your email address",
+      "greeting": "Hello, {name}!",
+      "message": "Thanks for signing up for Power Paint! Please confirm your email address by entering the verification code.",
+      "closing": "If you didn't request this email, there's nothing to worry about, you can safely ignore it.",
+      "rights": "© {year} Power Paint. All rights reserved."
+    },
+    "reset": {
+      "subject": "Reset your password",
+      "greeting": "Hello, {name}!",
+      "message": "We received a request to reset your password. Use the verification code below to continue.",
+      "warning": "If you did not request a password reset, please ignore this email or contact support.",
+      "rights": "© {year} Power Paint. All rights reserved."
     }
   }
 }

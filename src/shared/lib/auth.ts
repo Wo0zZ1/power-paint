@@ -1,14 +1,10 @@
 import type { Board, Workspace } from "@prisma/client";
 import { AccessLevel, MemberRole } from "@prisma/client";
 import type { Session } from "next-auth";
-import { getServerSession } from "next-auth";
 
-import { AUTH_CONFIG } from "../config/authConfig";
 import type { AccessRole } from "../constants";
 
 import { prisma } from "./prisma";
-
-export const getSession = () => getServerSession(AUTH_CONFIG);
 
 export const getAccessToWorkspace = async (
   workspace: Workspace,

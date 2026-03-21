@@ -115,16 +115,21 @@ export const invertHslColor = (hsl: string): string => {
   return `hsl(${h}, ${s}%, ${l}%)`;
 };
 
+export const hexColorRegex = /^#?([a-fA-F0-9]{3}|[a-fA-F0-9]{6})$/;
+
+export const phoneRegex = /^[\d+()\s-]{6,20}$/;
+
 export const invertHexColor = (hex: string): string => {
   const hsl = hexToHsl(hex);
   return invertHslColor(hsl);
 };
 
 export const hexToRgb = (hex: string): string => {
-  const match = hex.match(/^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i);
-  if (!match) throw new Error("Invalid hex color format");
+  const isHex = hexColorRegex.test(hex);
 
-  return `rgb(${parseInt(match[1], 16)}, ${parseInt(match[2], 16)}, ${parseInt(match[3], 16)})`;
+  if (!isHex) throw new Error("Invalid hex color format");
+
+  return `rgb(${parseInt(hex.slice(1, 3), 16)}, ${parseInt(hex.slice(3, 5), 16)}, ${parseInt(hex.slice(5, 7), 16)})`;
 };
 
 export const rgbToHex = (rgb: string): string => {
@@ -194,3 +199,12 @@ export const hexValueToInputValue = (value: string) => value.slice(1);
 
 export const degToRad = (deg: number) => (deg * Math.PI) / 180;
 export const radToDeg = (rad: number) => (rad * 180) / Math.PI;
+
+export const generateRandomNumber = (min: number, max: number) =>
+  Math.random() * (max - min) + min;
+
+export const generateRandomInteger = (min: number, max: number) =>
+  Math.floor(generateRandomNumber(min, max + 1));
+
+export const addTimeToDate = (timeToAdd: number, date: Date = new Date()) =>
+  new Date(date.getTime() + timeToAdd);

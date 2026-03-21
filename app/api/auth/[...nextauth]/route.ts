@@ -1,7 +1,3 @@
-import NextAuth from "next-auth";
+import { handlers } from "@/shared/auth";
 
-import { AUTH_CONFIG } from "@/shared/config/authConfig";
-
-const handler = NextAuth(AUTH_CONFIG);
-
-export { handler as GET, handler as POST };
+export const { GET, POST } = handlers;

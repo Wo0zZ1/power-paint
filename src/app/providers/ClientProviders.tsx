@@ -6,6 +6,7 @@ import { NextIntlClientProvider } from "next-intl";
 
 import { getMessageFallback } from "@/shared/i18n";
 import { useTheme } from "@/shared/lib/theme";
+import { Toaster } from "@/shared/ui/sonner";
 import { TooltipProvider } from "@/shared/ui/tooltip";
 
 interface ClientProvidersProps {
@@ -34,7 +35,10 @@ export function ClientProviders({
         timeZone={timeZone}
         getMessageFallback={getMessageFallback}
       >
-        <TooltipProvider>{children}</TooltipProvider>
+        <TooltipProvider>
+          {children}
+          <Toaster position="top-center" />
+        </TooltipProvider>
       </NextIntlClientProvider>
     </SessionProvider>
   );

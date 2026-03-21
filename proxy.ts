@@ -1,7 +1,7 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
-import { getSession } from "@/shared/lib/auth";
+import { auth } from "@/shared/auth";
 import {
   generateRandomUsername,
   generateRandomColor,
@@ -12,7 +12,7 @@ export async function proxy() {
   const response = NextResponse.next();
 
   const cookieState = await cookies();
-  const session = await getSession();
+  const session = await auth();
 
   if (!session) {
     const guestUser = cookieState.get("guest-user")?.value;
