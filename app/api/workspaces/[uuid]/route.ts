@@ -1,11 +1,12 @@
 import { WorkspaceType } from "@prisma/client";
 import { forbidden, notFound } from "next/navigation";
-import type { NextRequest} from "next/server";
+import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
 import type { WorkspaceWithAccess } from "@/entities/workspace";
+import { auth } from "@/shared/auth";
 import { AccessRole } from "@/shared/constants";
-import { getAccessToWorkspace, getSession } from "@/shared/lib/auth";
+import { getAccessToWorkspace } from "@/shared/lib/auth";
 import { prisma } from "@/shared/lib/prisma";
 
 export const GET = async (
@@ -21,7 +22,7 @@ export const GET = async (
 
   if (!workspace) return notFound();
 
-  const session = await getSession();
+  const session = await auth();
 
   const accessRole = await getAccessToWorkspace(workspace, session?.user);
 
@@ -46,7 +47,7 @@ export const PATCH = async (
 
   if (workspace.type === WorkspaceType.personal) forbidden();
 
-  const session = await getSession();
+  const session = await auth();
 
   const accessRole = await getAccessToWorkspace(workspace, session?.user);
 
@@ -80,7 +81,7 @@ export const DELETE = async (
 
   if (workspace.type === WorkspaceType.personal) forbidden();
 
-  const session = await getSession();
+  const session = await auth();
 
   const accessRole = await getAccessToWorkspace(workspace, session?.user);
 

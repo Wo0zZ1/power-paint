@@ -1,8 +1,8 @@
 import { notFound } from "next/navigation";
-import type { NextRequest} from "next/server";
+import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
-import { getSession } from "@/shared/lib/auth";
+import { auth } from "@/shared/auth";
 import { prisma } from "@/shared/lib/prisma";
 import { getUserPublicInfo } from "@/shared/lib/utils";
 
@@ -18,7 +18,7 @@ export const GET = async (
 
   if (!user) notFound();
 
-  const session = await getSession();
+  const session = await auth();
 
   if (session?.user.id === user.id) return NextResponse.json(user);
 

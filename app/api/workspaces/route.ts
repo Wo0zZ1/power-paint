@@ -8,8 +8,9 @@ import {
   createWorkspaceSchema,
   type WorkspaceWithAccess,
 } from "@/entities/workspace";
+import { auth } from "@/shared/auth";
 import { AccessRole } from "@/shared/constants";
-import { getSession, getAccessToWorkspace } from "@/shared/lib/auth";
+import { getAccessToWorkspace } from "@/shared/lib/auth";
 import { prisma } from "@/shared/lib/prisma";
 
 export const GET = async (
@@ -27,7 +28,7 @@ export const GET = async (
     orderBy: { updatedAt: "desc" },
   });
 
-  const session = await getSession();
+  const session = await auth();
 
   const workspacesWithAccess = await Promise.all(
     workspaces.map(async (workspace) => {
@@ -51,7 +52,7 @@ export const POST = async (
 
   const { name, accessLevel } = z.parse(createWorkspaceSchema, body);
 
-  const session = await getSession();
+  const session = await auth();
 
   if (!session) return unauthorized();
 

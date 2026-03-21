@@ -4,8 +4,9 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 
 import { createBoardSchema, type BoardWithAccess } from "@/entities/board";
+import { auth } from "@/shared/auth";
 import { AccessRole } from "@/shared/constants";
-import { getSession, getAccessToBoard } from "@/shared/lib/auth";
+import { getAccessToBoard } from "@/shared/lib/auth";
 import { prisma } from "@/shared/lib/prisma";
 
 export const GET = async (
@@ -26,7 +27,7 @@ export const GET = async (
     },
   });
 
-  const session = await getSession();
+  const session = await auth();
 
   const boardsWithAccess = await Promise.all(
     boards.map(async (board) => {
@@ -50,7 +51,7 @@ export const POST = async (
 
   const { name, workspaceId, accessLevel } = z.parse(createBoardSchema, body);
 
-  const session = await getSession();
+  const session = await auth();
 
   if (!session) return unauthorized();
 

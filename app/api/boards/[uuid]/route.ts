@@ -3,8 +3,9 @@ import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
 import type { BoardWithAccess } from "@/entities/board";
+import { auth } from "@/shared/auth";
 import { AccessRole } from "@/shared/constants";
-import { getAccessToBoard, getSession } from "@/shared/lib/auth";
+import { getAccessToBoard } from "@/shared/lib/auth";
 import { prisma } from "@/shared/lib/prisma";
 
 export const GET = async (
@@ -19,7 +20,7 @@ export const GET = async (
 
   if (!board) notFound();
 
-  const session = await getSession();
+  const session = await auth();
 
   const accessRole = await getAccessToBoard(board, session?.user);
 
@@ -42,7 +43,7 @@ export const PATCH = async (
 
   if (!board) notFound();
 
-  const session = await getSession();
+  const session = await auth();
 
   const accessRole = await getAccessToBoard(board, session?.user);
 
@@ -74,7 +75,7 @@ export const DELETE = async (
 
   if (!board) notFound();
 
-  const session = await getSession();
+  const session = await auth();
 
   const accessRole = await getAccessToBoard(board, session?.user);
 
