@@ -1,0 +1,39 @@
+diff --git a/node_modules/@auth/core/lib/actions/callback/index.js b/node_modules/@auth/core/lib/actions/callback/index.js
+index edcb7f9..04927d3 100644
+--- a/node_modules/@auth/core/lib/actions/callback/index.js
++++ b/node_modules/@auth/core/lib/actions/callback/index.js
+@@ -4,6 +4,7 @@ import { handleLoginOrRegister } from "./handle-login.js";
+ import { handleOAuth } from "./oauth/callback.js";
+ import { state } from "./oauth/checks.js";
+ import { createHash } from "../../utils/web.js";
++import { fromDate } from "../../utils/date.js";
+ import { assertInternalOptionsWebAuthn, verifyAuthenticate, verifyRegister, } from "../../utils/webauthn-utils.js";
+ /** Handle callbacks from login services */
+ export async function callback(request, options, sessionStore, cookies) {
+@@ -244,6 +245,26 @@ export async function callback(request, options, sessionStore, cookies) {
+             const redirect = await handleAuthorized({ user, account, credentials }, options);
+             if (redirect)
+                 return { redirect, cookies };
++            const useDbSession = !useJwtSession && adapter?.createSession;
++            if (useDbSession) {
++                const sessionToken = options.session.generateSessionToken?.() ?? crypto.randomUUID();
++                const expires = fromDate(sessionMaxAge);
++                await adapter.createSession({
++                    sessionToken,
++                    userId: user.id,
++                    expires,
++                });
++                cookies.push({
++                    name: options.cookies.sessionToken.name,
++                    value: sessionToken,
++                    options: {
++                        ...options.cookies.sessionToken.options,
++                        expires,
++                    },
++                });
++                await events.signIn?.({ user, account });
++                return { redirect: callbackUrl, cookies };
++            }
+             const defaultToken = {
+                 name: user.name,
+                 email: user.email,
