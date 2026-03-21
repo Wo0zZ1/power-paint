@@ -30,6 +30,8 @@ export function BackgroundSection({ className }: BackgroundSectionProps) {
   const { backgroundColor } = useBoardStore(useShallow((s) => s.globals));
   const setBackgroundColor = useSetGlobal("backgroundColor");
 
+  if (!backgroundColor) return null;
+
   return (
     <div className={cn("flex gap-4", className)}>
       <div className="grid grid-cols-4 gap-x-4 gap-y-2">

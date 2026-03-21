@@ -1,7 +1,7 @@
 import type { Board } from "@prisma/client";
 import { cookies } from "next/headers";
 
-import { getSession } from "@/shared/lib/auth";
+import { auth } from "@/shared/auth";
 import type { IGuestUserCookie } from "@/shared/types";
 import { cn, generateRandomColor, generateRandomUsername } from "@/utils";
 
@@ -18,7 +18,7 @@ interface BoardProps {
 }
 
 export async function Board({ className, boardId }: BoardProps) {
-  const session = await getSession();
+  const session = await auth();
 
   const cookieState = await cookies();
 

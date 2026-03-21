@@ -47,18 +47,18 @@ export function ColorField({
   } = useHexColorInput({ value, onChange });
 
   // TODO: Refactor Cascade Rendering
-  const inputValueRef = useRef(inputValue);
+  // const inputValueRef = useRef(inputValue);
+
+  // useEffect(() => {
+  //   inputValueRef.current = inputValue;
+  // }, [inputValue]);
 
   useEffect(() => {
-    inputValueRef.current = inputValue;
-  }, [inputValue]);
-
-  useEffect(() => {
-    const normalizedInputValue = normalizeHexColor(inputValueRef.current);
+    const normalizedInputValue = normalizeHexColor(inputValue);
 
     if (value !== normalizedInputValue)
       setInputValue(hexValueToInputValue(value));
-  }, [value, setInputValue]);
+  }, [value, inputValue, setInputValue]);
 
   return (
     <div className="flex items-center gap-2">
