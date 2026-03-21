@@ -19,3 +19,6 @@ export * from "./kbd";
 export * from "./input-group";
 export * from "./textarea";
 export * from "./slider";
+export * from "./checkbox";
+export * from "./input-otp";
+export * from "./sonner";

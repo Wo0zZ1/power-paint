@@ -1,0 +1,44 @@
+@keyframes slideIn {
+  from {
+    left: 0%;
+    right: 100%;
+  }
+  to {
+    left: 0%;
+    right: 0%;
+  }
+}
+
+@keyframes slideOut {
+  from {
+    left: 0%;
+    right: 0%;
+  }
+  to {
+    left: 100%;
+    right: 0%;
+  }
+}
+
+@mixin underline($offset: 0) {
+  position: relative;
+  text-decoration: none;
+
+  &:hover {
+    &:after {
+      animation: slideIn ease-out 0.1s forwards;
+    }
+  }
+
+  &:after {
+    content: "";
+    position: absolute;
+    bottom: -$offset;
+    height: 1px;
+    background-color: var(--accent-foreground);
+    pointer-events: none;
+
+    transition: all;
+    animation: slideOut ease-out 0.1s forwards;
+  }
+}
