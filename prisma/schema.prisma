@@ -7,14 +7,19 @@ datasource db {
 }
 
 model User {
-  id             String    @id @default(uuid())
-  name           String
-  email          String    @unique
-  emailVerified  DateTime?
-  password       String?
-  image          String?
-  preferredColor String    @default(dbgenerated("'#' || lpad(to_hex((random() * (2^24))::int), 6, '0')")) @map("preferred_color")
-  role           Role      @default(User)
+  id            String    @id @default(uuid())
+  name          String
+  email         String    @unique
+  emailVerified DateTime? @map("email_verified")
+  image         String?
+
+  password String?
+  role     Role    @default(User)
+
+  phone  String? @unique
+  locale Locale  @default(en)
+
+  preferredColor String @default(dbgenerated("'#' || lpad(to_hex((random() * (2^24))::int), 6, '0')")) @map("preferred_color")
 
   board_members    BoardMember[]
   workspace_member WorkspaceMember[]
@@ -25,8 +30,9 @@ model User {
   sessions Session[]
   accounts Account[]
 
-  updated_at DateTime @updatedAt
-  created_at DateTime @default(now())
+  updated_at    DateTime       @updatedAt
+  created_at    DateTime       @default(now())
+  passwordReset PasswordReset?
 
   @@map("user")
 }
@@ -92,7 +98,7 @@ model Board {
   createdAt DateTime @default(now()) @map("created_at")
 
   owner     User      @relation(fields: [ownerId], references: [id], onDelete: Cascade)
-  workspace Workspace @relation(fields: [workspaceId], references: [id])
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
 
   members BoardMember[]
 
@@ -133,6 +139,42 @@ model WorkspaceMember {
   @@map("workspace_member")
 }
 
+model SignupVerification {
+  id             String   @id @default(uuid())
+  verificationId String   @unique @map("verification_id")
+  email          String   @unique
+  firstName      String   @map("first_name")
+  lastName       String   @map("last_name")
+  passwordHash   String   @map("password_hash")
+  phone          String?
+  preferredColor String?  @map("preferred_color")
+  image          String?
+  locale         Locale
+  codeHash       String   @map("code_hash")
+  expiresAt      DateTime @map("expires_at")
+  attempts       Int      @default(0)
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("signup_verification")
+}
+
+model PasswordReset {
+  id        String   @id @default(uuid())
+  userId    String   @unique @map("user_id")
+  codeHash  String   @map("code_hash")
+  expiresAt DateTime @map("expires_at")
+  attempts  Int      @default(0)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("password_reset")
+}
+
 model yjs_documents {
   document_name String   @id
   state         Bytes
@@ -160,4 +202,11 @@ enum MemberRole {
 enum WorkspaceType {
   personal
   team
+}
+
+enum Locale {
+  en
+  ru
+  de
+  fr
 }
