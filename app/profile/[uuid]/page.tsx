@@ -12,9 +12,12 @@ export default async function ProfilePage({
 
   const cookieStore = await cookies();
 
-  const user = await fetch(`${process.env.NEXTAUTH_URL}/api/users/${uuid}`, {
-    headers: { Cookie: cookieStore.toString() },
-  }).then((res) => res.json());
+  const user = await fetch(
+    `${process.env.NEXT_PUBLIC_BASE_URL}/api/users/${uuid}`,
+    {
+      headers: { Cookie: cookieStore.toString() },
+    },
+  ).then((res) => res.json());
 
   if (!user || user.error) notFound();
 

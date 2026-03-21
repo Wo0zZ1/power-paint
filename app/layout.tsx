@@ -3,7 +3,7 @@ import { getLocale, getMessages, getTimeZone } from "next-intl/server";
 
 import { ClientProviders, QueryProvider } from "@/app/providers";
 import { ThemeScript } from "@/features/theme-switcher/ui/ThemeScript";
-import { getSession } from "@/shared/lib/auth";
+import { auth } from "@/shared/auth";
 import { Header } from "@/widgets/header";
 
 import { geistMono, geistSans, interSans } from "./fonts";
@@ -25,7 +25,7 @@ export default async function RootLayout({
 }>) {
   const locale = await getLocale();
   const messages = await getMessages({ locale });
-  const session = await getSession();
+  const session = await auth();
   const timeZone = await getTimeZone();
 
   return (

@@ -3,8 +3,8 @@ import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import type { ReactNode } from "react";
 
+import { auth } from "@/shared/auth";
 import { ROUTES } from "@/shared/config";
-import { getSession } from "@/shared/lib/auth";
 
 export default async function DashboardLayout({
   children,
@@ -13,7 +13,7 @@ export default async function DashboardLayout({
 }) {
   const t = await getTranslations();
 
-  const session = await getSession();
+  const session = await auth();
 
   if (!session) redirect(ROUTES.SIGNIN);
 
