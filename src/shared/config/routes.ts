@@ -12,7 +12,7 @@ export const ROUTES = {
       `/dashboard/workspaces/${workspaceId}/boards` as const,
   },
   SIGNIN: "/signin",
-  SINGUP: "/signup",
-  FORGOT_PASSWORD: "/forgot-password",
+  SIGNUP: "/signup",
+  RESET_PASSWORD: "/reset-password",
   NOT_FOUND: "/404",
 } as const;

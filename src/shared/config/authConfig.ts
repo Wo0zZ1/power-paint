@@ -1,14 +1,13 @@
-import { createHash } from "node:crypto";
-
-import { PrismaAdapter } from "@next-auth/prisma-adapter";
+import { PrismaAdapter } from "@auth/prisma-adapter";
 import { AccessLevel, Role, WorkspaceType } from "@prisma/client";
-import type { NextAuthOptions } from "next-auth";
+import type { NextAuthConfig } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import Github from "next-auth/providers/github";
 import Google from "next-auth/providers/google";
 import z from "zod";
 
 import { prisma } from "../lib/prisma";
+import { compareHash } from "../lib/server";
 
 import { getSigninSchema } from "./authSchemas";
 import { ROUTES } from "./routes";
@@ -18,18 +17,15 @@ export const AUTH_CONFIG = {
 
   providers: [
     Google({
-      clientId: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-
       profile(profile) {
-        const emailVerified = profile.email_verified ? new Date() : null;
-
         return {
           id: profile.sub,
           name: profile.name,
-          email: profile.email,
-          emailVerified,
+          email: profile.email.toLowerCase(),
+          emailVerified: new Date(),
+
           image: profile.picture,
+          preferredColor: undefined,
           role: Role.User,
         };
       },
@@ -37,27 +33,23 @@ export const AUTH_CONFIG = {
     }),
 
     Github({
-      clientId: process.env.GITHUB_CLIENT_ID!,
-      clientSecret: process.env.GITHUB_CLIENT_SECRET!,
-
       profile(profile) {
-        const emailVerified = new Date();
-
         return {
-          id: String(profile.id),
-          name: profile.name || profile.login,
-          email: profile.email,
-          emailVerified,
+          id: profile.id.toString(),
+          name: profile.name ?? profile.login,
+          email: profile.email!.toLowerCase(),
+          emailVerified: new Date(),
+
           image: profile.avatar_url,
+          preferredColor: undefined,
           role: Role.User,
         };
       },
+
       allowDangerousEmailAccountLinking: true,
     }),
 
     Credentials({
-      name: "Credentials",
-
       credentials: {
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
@@ -65,7 +57,7 @@ export const AUTH_CONFIG = {
 
       async authorize(credentials) {
         const validatedUser = z.safeParse(getSigninSchema(), credentials);
-        if (!validatedUser.success) throw new Error("Invalid data");
+        if (!validatedUser.success) return null;
 
         const { email, password } = validatedUser.data;
 
@@ -73,21 +65,19 @@ export const AUTH_CONFIG = {
           where: { email },
         });
 
-        if (!user) throw new Error("Invalid email or password");
+        if (!user || !user.password) return null;
 
-        const hashedPassword = createHash("sha256")
-          .update(password)
-          .digest("hex");
+        const isPasswordValid = compareHash(password, user.password);
 
-        if (user.password !== hashedPassword)
-          throw new Error("Invalid email or password");
+        if (!isPasswordValid) return null;
 
         return {
           id: user.id,
           name: user.name,
           email: user.email,
-          emailVerified: user.emailVerified,
-          image: user.image,
+          emailVerified: new Date(),
+          image: user.image ?? undefined,
+          preferredColor: user.preferredColor,
           role: user.role,
         };
       },
@@ -96,6 +86,8 @@ export const AUTH_CONFIG = {
 
   pages: {
     signIn: ROUTES.SIGNIN,
+    error: ROUTES.SIGNIN,
+    newUser: ROUTES.DASHBOARD.ROOT,
   },
 
   session: {
@@ -120,23 +112,12 @@ export const AUTH_CONFIG = {
     async session({ session, user }) {
       session.user.id = user.id;
       session.user.email = user.email;
-      session.user.emailVerified = user.emailVerified;
       session.user.name = user.name;
-      session.user.image = user.image ?? null;
+      session.user.image = user.image;
       session.user.preferredColor = user.preferredColor;
       session.user.role = user.role;
 
       return session;
-    },
-
-    async signIn({ user, account }) {
-      // Check email verification except for Credentials provider
-      if (account?.provider !== "Credentials" && !user.emailVerified) {
-        console.error("Email not verified");
-        return false;
-      }
-
-      return true;
     },
   },
 
@@ -148,35 +129,23 @@ export const AUTH_CONFIG = {
           type: WorkspaceType.personal,
         },
       });
+
       if (userWorkspace) return;
+
       try {
         await prisma.workspace.create({
           data: {
+            ownerId: user.id,
             name: `${user.name}'s Workspace`,
             type: WorkspaceType.personal,
             accessLevel: AccessLevel.private,
-            ownerId: user.id,
           },
         });
       } catch (error) {
         console.error("Failed to create workspace:", error);
       }
     },
-
-    async linkAccount({ user, profile }) {
-      // Update emailVerified if we trust the provier's email verification
-      if (!user.emailVerified && profile.emailVerified) {
-        try {
-          await prisma.user.update({
-            where: { id: user.id },
-            data: { emailVerified: new Date() },
-          });
-        } catch (error) {
-          console.error("Failed to update emailVerified:", error);
-        }
-      }
-    },
   },
 
-  secret: process.env.NEXTAUTH_SECRET,
-} satisfies NextAuthOptions;
+  debug: false,
+} satisfies NextAuthConfig;
