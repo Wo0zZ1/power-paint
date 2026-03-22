@@ -6,11 +6,10 @@ import { useRef } from "react";
 import { Layer, Stage } from "react-konva";
 import { useShallow } from "zustand/react/shallow";
 
-import { useInvertableColor } from "@/shared/lib/hooks";
+import { useInvertableColor, useWindowSize } from "@/shared/lib/hooks";
 
 import type { AwarenessUser } from "../model/types";
 import { useBoardInteraction } from "../model/useBoardInteraction";
-import { useBoardSize } from "../model/useBoardSize";
 import { useBoardStore } from "../model/useBoardStore";
 import { useHocuspocus } from "../model/useHocuspocus";
 import { useHotKeys } from "../model/useHotKeys";
@@ -40,7 +39,7 @@ export function KonvaBoard({ user, boardId }: KonvaBoardProps) {
   useHotKeys();
   useHocuspocus({ boardId, user });
 
-  const { stageSize } = useBoardSize({ boardRef });
+  const { windowSize } = useWindowSize();
   const { activeColor } = useInvertableColor(globals.backgroundColor, true);
 
   const { handleCursorMove, handleTouchCursorMove, handleCursorLeave } =
@@ -50,7 +49,7 @@ export function KonvaBoard({ user, boardId }: KonvaBoardProps) {
     useBoardInteraction({ selectionRectRef });
 
   return (
-    <div className="w-full h-full min-w-0 min-h-0 px-3.75 rounded-lg overflow-hidden">
+    <div className="w-full h-full min-w-0 min-h-0 overflow-hidden">
       <div
         ref={boardRef}
         onPointerMove={handleCursorMove}
@@ -70,13 +69,10 @@ export function KonvaBoard({ user, boardId }: KonvaBoardProps) {
           </div>
         </div>
 
-        <div className="absolute bottom-3 left-3 z-10 flex gap-4"></div>
-
         <Stage
           style={{ backgroundColor: activeColor }}
-          className="border border-muted"
-          width={stageSize.width}
-          height={stageSize.height}
+          width={windowSize.width - 2} // Borders
+          height={windowSize.height - 2 - 72} // Borders + header
           x={viewport.x}
           y={viewport.y}
           scaleX={viewport.scale}
