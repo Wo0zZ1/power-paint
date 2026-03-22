@@ -1,4 +1,7 @@
 import type Konva from "konva";
+import type { KonvaEventObject } from "konva/lib/Node";
+import type { Transformer } from "konva/lib/shapes/Transformer";
+import type { Stage } from "konva/lib/Stage";
 import type { RefObject } from "react";
 import { useCallback, useEffect, useRef } from "react";
 
@@ -12,20 +15,13 @@ interface UseSelectionRectProps {
   rectRef: RefObject<Konva.Rect | null>;
 }
 
-export type SelectResult = "marquee" | "element" | "transformer";
+type SelectResult = "marquee" | "element" | "transformer";
 
 export const useSelectionRect = ({ rectRef }: UseSelectionRectProps) => {
   const startRef = useRef<Konva.Vector2d | null>(null);
+  const containerRectRef = useRef<DOMRect | null>(null);
 
   const stopListeners = useRef(() => {});
-
-  const removeSelection = useCallback(() => {
-    startRef.current = null;
-    if (!rectRef.current) return;
-
-    rectRef.current.visible(false);
-    rectRef.current.getLayer()?.batchDraw();
-  }, [rectRef]);
 
   // ── Pure core ──
 
@@ -33,10 +29,12 @@ export const useSelectionRect = ({ rectRef }: UseSelectionRectProps) => {
     (
       layerX: number,
       layerY: number,
-      stage: Konva.Stage,
+      stage: Stage,
       shift: boolean,
     ): SelectResult | null => {
       if (!rectRef.current) return null;
+
+      useBoardStore.getState().setSelectionType("transform");
 
       const [x, y] = screenToCanvas(
         layerX,
@@ -47,7 +45,7 @@ export const useSelectionRect = ({ rectRef }: UseSelectionRectProps) => {
 
       const shape = stage.getIntersection({ x: layerX, y: layerY });
       if (shape) {
-        const transformer = stage.findOne<Konva.Transformer>("#transformer");
+        const transformer = stage.findOne<Transformer>("#transformer");
         if (transformer?.children.some((child) => child.id() === shape.id()))
           return "transformer";
 
@@ -85,8 +83,6 @@ export const useSelectionRect = ({ rectRef }: UseSelectionRectProps) => {
       };
 
       rectRef.current.setAttrs(selectionRect);
-      rectRef.current.visible(true);
-      rectRef.current.getLayer()?.batchDraw();
 
       const elements = useBoardStore.getState().elements;
       const prevSelected = useBoardStore.getState().selectedIds;
@@ -106,19 +102,23 @@ export const useSelectionRect = ({ rectRef }: UseSelectionRectProps) => {
   );
 
   const endSelect = useCallback(() => {
-    removeSelection();
-  }, [removeSelection]);
+    const rect = rectRef.current;
+    if (!rect) return;
+
+    rect.setAttrs({ x: 0, y: 0, width: 0, height: 0 });
+    rect.visible(false);
+
+    startRef.current = null;
+  }, [rectRef]);
 
   // ── Pointer (mouse/pen — touch фильтруется) ──
-
-  const containerRectRef = useRef<DOMRect | null>(null);
 
   const onPointerMove = useThrottledCallback((e: PointerEvent) => {
     if (!containerRectRef.current) return;
     moveSelect(
       e.clientX - containerRectRef.current.left,
       e.clientY - containerRectRef.current.top,
-      e.shiftKey
+      e.shiftKey,
     );
   });
 
@@ -128,18 +128,23 @@ export const useSelectionRect = ({ rectRef }: UseSelectionRectProps) => {
   }, [endSelect]);
 
   const startPointerSelect = useCallback(
-    (e: Konva.KonvaEventObject<PointerEvent>) => {
+    (e: KonvaEventObject<PointerEvent>) => {
       if (e.evt.pointerType === "touch") return;
 
-      const stage = rectRef.current?.getStage();
+      const rect = rectRef.current;
+      if (!rect) return;
+
+      rect.visible(true);
+
+      const stage = rect.getStage();
       if (!stage) return;
 
-      const rect = stage.container().getBoundingClientRect();
-      containerRectRef.current = rect;
+      const stageRect = stage.container().getBoundingClientRect();
+      containerRectRef.current = stageRect;
 
       const result = beginSelect(
-        e.evt.clientX - rect.left,
-        e.evt.clientY - rect.top,
+        e.evt.clientX - stageRect.left,
+        e.evt.clientY - stageRect.top,
         stage,
         e.evt.shiftKey,
       );
@@ -181,20 +186,25 @@ export const useSelectionRect = ({ rectRef }: UseSelectionRectProps) => {
   }, [endSelect]);
 
   const startTouchSelect = useCallback(
-    (e: Konva.KonvaEventObject<TouchEvent>): SelectResult | null => {
+    (e: Konva.KonvaEventObject<TouchEvent>) => {
       const touch = e.evt.touches[0];
-      if (!touch) return null;
-      const stage = rectRef.current?.getStage();
-      if (!stage) return null;
 
-      const rect = stage.container().getBoundingClientRect();
-      containerRectRef.current = rect;
+      const rect = rectRef.current;
+      if (!rect) return;
 
-      const layerX = touch.clientX - rect.left;
-      const layerY = touch.clientY - rect.top;
+      rect.visible(true);
+
+      const stage = rect.getStage();
+      if (!stage) return;
+
+      const stageRect = stage.container().getBoundingClientRect();
+      containerRectRef.current = stageRect;
+
+      const layerX = touch.clientX - stageRect.left;
+      const layerY = touch.clientY - stageRect.top;
 
       const result = beginSelect(layerX, layerY, stage, false);
-      if (result !== "marquee") return result;
+      if (result !== "marquee") return;
 
       window.addEventListener("touchmove", onTouchSelectMove);
       window.addEventListener("touchend", onTouchSelectEnd);
@@ -203,8 +213,6 @@ export const useSelectionRect = ({ rectRef }: UseSelectionRectProps) => {
         window.removeEventListener("touchmove", onTouchSelectMove);
         window.removeEventListener("touchend", onTouchSelectEnd);
       };
-
-      return result;
     },
     [rectRef, beginSelect, onTouchSelectMove, onTouchSelectEnd],
   );
@@ -213,5 +221,5 @@ export const useSelectionRect = ({ rectRef }: UseSelectionRectProps) => {
     return () => stopListeners.current();
   }, []);
 
-  return { startPointerSelect, startTouchSelect, removeSelection };
+  return { startPointerSelect, startTouchSelect };
 };

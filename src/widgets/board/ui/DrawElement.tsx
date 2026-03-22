@@ -1,18 +1,26 @@
 import type { ComponentProps } from "react";
 import { Line } from "react-konva";
+import { useShallow } from "zustand/react/shallow";
 
 import { useInvertableColor } from "@/shared/lib/hooks";
 
-import { getDash } from "../lib/utils";
-import type { StrokeElementType } from "../model/types";
+import { getDash, getOpacity } from "../lib/utils";
+import type { DrawElementType } from "../model/types";
+import { useBoardStore } from "../model/useBoardStore";
 
-type StrokeElementProps = {
-  element: StrokeElementType;
+type DrawElementProps = {
+  element: DrawElementType;
   isSelected?: boolean;
 } & ComponentProps<typeof Line>;
 
-export function StrokeElement({ element, ...props }: StrokeElementProps) {
+export function DrawElement({ element, ...props }: DrawElementProps) {
+  const selectedIds = useBoardStore(useShallow((s) => s.selectedIds));
+  const selectionType = useBoardStore((s) => s.selectionType);
+  const isSelected = selectedIds.has(element.id);
+
   const dash = getDash(element.strokeType);
+
+  const opacity = getOpacity(element.opacity, isSelected, selectionType);
 
   const { activeColor: strokeColor } = useInvertableColor(element.strokeColor);
 
@@ -23,7 +31,7 @@ export function StrokeElement({ element, ...props }: StrokeElementProps) {
       y={element.y}
       points={element.points}
       rotation={element.rotation}
-      opacity={element.opacity}
+      opacity={opacity}
       lineCap="round"
       lineJoin="round"
       tension={0.5}

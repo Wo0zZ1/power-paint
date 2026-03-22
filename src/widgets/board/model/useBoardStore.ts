@@ -6,6 +6,7 @@ import type {
   ElementType,
   GlobalsState,
   RemoteCursorsMap,
+  SelectionType,
   Tool,
   Viewport,
 } from "./types";
@@ -41,12 +42,17 @@ interface BoardState {
   resetViewport: () => void;
 
   // ── Действия ──
+  selectionType: SelectionType;
+  setSelectionType: (type: SelectionType) => void;
   selectedIds: Set<string>;
   select: (id: string) => void;
+  selectMany: (ids: Set<string>) => void;
   pureSelect: (id: string) => void;
-  toggleSelect: (id: string) => void;
-  deselect: (id: string) => void;
   pureSelectMany: (ids: Set<string>) => void;
+  toggleSelect: (id: string) => void;
+  toggleSelectMany: (ids: Set<string>) => void;
+  deselect: (id: string) => void;
+  deselectMany: (ids: Set<string>) => void;
   clearSelection: () => void;
 
   // ── Действия (пишут в Yjs → observe обновит React-state) ──
@@ -87,6 +93,10 @@ export const useBoardStore = create<BoardState>((set, get) => ({
     scale: 1,
   },
 
+  selectionType: "none",
+
+  setSelectionType: (type) => set({ selectionType: type }),
+
   selectedIds: new Set(),
 
   select: (id) =>
@@ -96,7 +106,16 @@ export const useBoardStore = create<BoardState>((set, get) => ({
       return { selectedIds: newSelectedIds };
     }),
 
+  selectMany: (ids) =>
+    set((state) => {
+      const newSelectedIds = new Set(state.selectedIds);
+      ids.forEach((id) => newSelectedIds.add(id));
+      return { selectedIds: newSelectedIds };
+    }),
+
   pureSelect: (id) => set({ selectedIds: new Set([id]) }),
+
+  pureSelectMany: (ids) => set({ selectedIds: new Set(ids) }),
 
   toggleSelect: (id) => {
     set((state) => {
@@ -108,6 +127,17 @@ export const useBoardStore = create<BoardState>((set, get) => ({
     });
   },
 
+  toggleSelectMany: (ids) => {
+    set((state) => {
+      const newSelectedIds = new Set(state.selectedIds);
+      ids.forEach((id) => {
+        if (newSelectedIds.has(id)) newSelectedIds.delete(id);
+        else newSelectedIds.add(id);
+      });
+      return { selectedIds: newSelectedIds };
+    });
+  },
+
   deselect: (id) =>
     set((state) => {
       const newSelectedIds = new Set(state.selectedIds);
@@ -115,7 +145,12 @@ export const useBoardStore = create<BoardState>((set, get) => ({
       return { selectedIds: newSelectedIds };
     }),
 
-  pureSelectMany: (ids) => set({ selectedIds: new Set(ids) }),
+  deselectMany: (ids) =>
+    set((state) => {
+      const newSelectedIds = new Set(state.selectedIds);
+      ids.forEach((id) => newSelectedIds.delete(id));
+      return { selectedIds: newSelectedIds };
+    }),
 
   clearSelection: () => set({ selectedIds: new Set() }),
 

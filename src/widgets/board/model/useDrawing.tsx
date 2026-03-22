@@ -5,7 +5,8 @@ import { useThrottledCallback } from "../lib/useThrottledCallback";
 import { generateId } from "../lib/utils";
 import { screenToCanvas } from "../lib/viewport";
 
-import { createStroke, type StrokeElementType } from "./types";
+import type { DrawElementType } from "./types";
+import { createDraw } from "./types";
 import { useBoardStore } from "./useBoardStore";
 import { DEFAULT_CAPTURE_TIMEOUT } from "./useHocuspocus";
 
@@ -13,6 +14,7 @@ export const useDrawing = () => {
   const strokeIdRef = useRef<string | null>(null);
   const originRef = useRef({ x: 0, y: 0 });
   const pointsRef = useRef<number[]>([]);
+  const containerRectRef = useRef<DOMRect | null>(null);
 
   const stopListeners = useRef(() => {});
 
@@ -33,9 +35,9 @@ export const useDrawing = () => {
     originRef.current = { x: cx, y: cy };
     pointsRef.current = [0, 0];
 
-    const stroke = createStroke({ x: cx, y: cy, points: [0, 0], id });
+    const draw = createDraw({ x: cx, y: cy, points: [0, 0], id });
 
-    useBoardStore.getState().addElement(stroke);
+    useBoardStore.getState().addElement(draw);
   }, []);
 
   const moveDraw = useCallback((layerX: number, layerY: number) => {
@@ -48,7 +50,7 @@ export const useDrawing = () => {
 
     useBoardStore.getState().updateElement(strokeIdRef.current, {
       points: [...pointsRef.current],
-    } as Partial<StrokeElementType>);
+    } as Partial<DrawElementType>);
   }, []);
 
   const endDraw = useCallback(() => {
@@ -82,7 +84,7 @@ export const useDrawing = () => {
       x: originRef.current.x + minX,
       y: originRef.current.y + minY,
       points: normalizedPoints,
-    } as Partial<StrokeElementType>);
+    } as Partial<DrawElementType>);
 
     strokeIdRef.current = null;
 
@@ -106,8 +108,6 @@ export const useDrawing = () => {
   }, []);
 
   // ── Pointer ──
-
-  const containerRectRef = useRef<DOMRect | null>(null);
 
   const onPointerMove = useThrottledCallback((e: PointerEvent) => {
     if (!containerRectRef.current) return;

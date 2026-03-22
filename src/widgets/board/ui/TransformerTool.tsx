@@ -11,8 +11,9 @@ import { useTransformer } from "../model/useTransformer";
 export function TransformerTool() {
   const transformerRef = useRef<Konva.Transformer>(null);
   const selectedIds = useBoardStore(useShallow((s) => s.selectedIds));
+  const selectionType = useBoardStore(useShallow((s) => s.selectionType));
+  const viewportScale = useBoardStore((s) => s.viewport.scale);
   const shiftPressed = useBoardStore((s) => s.modifiers.shift);
-  const viewport = useBoardStore(useShallow((s) => s.viewport));
 
   const { handleTransformStart, handleTransform } = useTransformer();
 
@@ -28,17 +29,20 @@ export function TransformerTool() {
     enabledAnchors = ["top-left", "top-right", "bottom-left", "bottom-right"];
 
   useEffect(() => {
-    if (!transformerRef.current) return;
+    const transformer = transformerRef.current;
+    if (!transformer) return;
 
-    const layer = transformerRef.current.getLayer();
+    if (selectionType !== "transform") return void transformer.nodes();
+
+    const layer = transformer.getLayer();
     if (!layer) return;
 
     const nodes = Array.from(selectedIds)
       .map((id) => layer.findOne(`#${id}`))
-      .filter((node): node is Konva.Node => node !== null);
+      .filter((node) => !!node);
 
-    transformerRef.current.nodes(nodes);
-  }, [selectedIds]);
+    transformer.nodes(nodes);
+  }, [elements, selectedIds, selectionType]);
 
   return (
     <Transformer
@@ -49,7 +53,7 @@ export function TransformerTool() {
       rotationSnapTolerance={5}
       rotationSnaps={[0, 45, 90, 135, 180, 225, 270, 315]}
       boundBoxFunc={(oldBox, newBox) => {
-        if (isTextSelected && Math.abs(newBox.width) < 30 * viewport.scale)
+        if (isTextSelected && Math.abs(newBox.width) < 30 * viewportScale)
           return oldBox;
 
         return newBox;

@@ -59,7 +59,7 @@ export function KonvaBoard({ user, boardId }: KonvaBoardProps) {
         onPointerLeave={handlePointerLeave}
         className="w-full h-full min-w-0 min-h-0 relative select-none overflow-hidden touch-none"
       >
-        <div className="absolute container w-auto mx-auto inset-5 pointer-events-none z-11">
+        <div className="absolute w-auto mx-auto inset-5 pointer-events-none z-11">
           {isMobile ? (
             <div className="absolute bottom-0 left-1/2 -translate-x-1/2 space-y-2">
               <div className="flex gap-4">

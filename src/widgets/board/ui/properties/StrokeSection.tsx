@@ -4,7 +4,7 @@ import { useTranslations } from "next-intl";
 
 import { Button } from "@/shared/ui";
 
-import { isStrokable, isStroke } from "../../model/types";
+import { isStrokable, isDraw } from "../../model/types";
 import { ColorField } from "../ColorField";
 import { NumberField } from "../NumberField";
 import { SidebarBlock } from "../SidebarBlock";
@@ -21,7 +21,7 @@ export function StrokeSection({ elements, update }: PropertySectionProps) {
   const allElementsIsStrokable = elements.every((el) => el && isStrokable(el));
   if (!allElementsIsStrokable) return null;
 
-  const someElementIsStroke = elements.some((el) => isStroke(el));
+  const someElementIsStroke = elements.some((el) => isDraw(el));
 
   const elementsStrokeWidth = getCommonElementProperties(
     elements,

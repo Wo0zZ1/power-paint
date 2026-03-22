@@ -1,5 +1,9 @@
 // ─── Элементы ────────────────────────────────────────────────────────
 
+import type { Node, NodeConfig } from "konva/lib/Node";
+import type { ComponentProps } from "react";
+import type { KonvaNodeComponent } from "react-konva";
+
 import { generateId } from "../lib/utils";
 
 export type BaseElementType = {
@@ -9,6 +13,10 @@ export type BaseElementType = {
   rotation: number;
   opacity: number;
 };
+
+export type BaseElementProps = ComponentProps<
+  KonvaNodeComponent<Node, NodeConfig>
+>;
 
 export type FillType = "none" | "color" | "gradient";
 export type GradientType = "linear" | "radial";
@@ -48,8 +56,8 @@ export type RectElementType = {
   IStrokable &
   ISizable;
 
-export type StrokeElementType = {
-  type: "stroke";
+export type DrawElementType = {
+  type: "draw";
   points: number[]; // плоский массив [x1, y1, x2, y2, ...]
 } & BaseElementType &
   IStrokable;
@@ -73,7 +81,7 @@ export type TextElementType = {
 export type ElementType =
   | CircleElementType
   | RectElementType
-  | StrokeElementType
+  | DrawElementType
   | TextElementType;
 
 // ─── Фабричные функции ───────────────────────────────────────────────
@@ -122,16 +130,16 @@ export const createRect = (
   type: "rect",
 });
 
-export const createStroke = (
-  overrides: Partial<Omit<StrokeElementType, "type">> = {},
-): StrokeElementType => ({
+export const createDraw = (
+  overrides: Partial<Omit<DrawElementType, "type">> = {},
+): DrawElementType => ({
   ...baseDefaults(),
   points: [],
   strokeColor: "#000000",
   strokeWidth: 5,
   strokeType: "solid",
   ...overrides,
-  type: "stroke",
+  type: "draw",
 });
 
 export const createText = (
@@ -158,8 +166,8 @@ export const isRect = (el: ElementType): el is RectElementType =>
 export const isCircle = (el: ElementType): el is CircleElementType =>
   el.type === "circle";
 
-export const isStroke = (el: ElementType): el is StrokeElementType =>
-  el.type === "stroke";
+export const isDraw = (el: ElementType): el is DrawElementType =>
+  el.type === "draw";
 
 export const isText = (el: ElementType): el is TextElementType =>
   el.type === "text";
@@ -172,7 +180,7 @@ export const isFillable = <T extends ElementType>(el: T): el is IFillable & T =>
 
 export const isStrokable = <T extends ElementType>(
   el: T,
-): el is IStrokable & T => isRect(el) || isCircle(el) || isStroke(el);
+): el is IStrokable & T => isRect(el) || isCircle(el) || isDraw(el);
 
 // ─── Viewport ────────────────────────────────────────────────────────
 
@@ -189,6 +197,8 @@ export type GlobalsState = {
 };
 
 // ─── Типы инструментов ───────────────────────────────────────────────
+
+export type SelectionType = "transform" | "delete" | "none";
 
 export type Tool =
   | "select"

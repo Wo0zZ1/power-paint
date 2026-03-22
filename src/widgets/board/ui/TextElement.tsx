@@ -1,13 +1,14 @@
-import type Konva from "konva";
 import type { ComponentProps } from "react";
-import { useRef, useState } from "react";
 import { Text } from "react-konva";
 import { Html } from "react-konva-utils";
+import { useShallow } from "zustand/react/shallow";
 
 import { useInvertableColor } from "@/shared/lib/hooks";
 
+import { getOpacity, getTextHitFunc } from "../lib/utils";
 import type { TextElementType } from "../model/types";
 import { useBoardStore } from "../model/useBoardStore";
+import { useTextEditing } from "../model/useTextEditing";
 
 type TextElementProps = {
   element: TextElementType;
@@ -15,42 +16,25 @@ type TextElementProps = {
 } & Omit<ComponentProps<typeof Text>, "id" | "onDblClick" | "onDblTap">;
 
 export function TextElement({ element, ...props }: TextElementProps) {
-  const { activeColor } = useInvertableColor(element.textColor);
+  const selectedIds = useBoardStore(useShallow((s) => s.selectedIds));
+  const selectionType = useBoardStore((s) => s.selectionType);
+  const isSelected = selectedIds.has(element.id);
 
-  const textRef = useRef<Konva.Text>(null);
-  const [isEditing, setIsEditing] = useState(false);
+  const opacity = getOpacity(element.opacity, isSelected, selectionType);
 
-  const updateElement = useBoardStore((s) => s.updateElement);
+  const hitFunc = getTextHitFunc();
 
-  const handleDblClick = () => {
-    const activeTool = useBoardStore.getState().tool;
-    if (activeTool !== "select") return;
+  const {
+    textRef,
+    isEditing,
+    handleDblClick,
+    handleTextareaRef,
+    handleChange,
+    handleBlur,
+    handleKeyDown,
+  } = useTextEditing(element);
 
-    setIsEditing(true);
-  };
-
-  const handleTextareaRef = (el: HTMLTextAreaElement | null) => {
-    if (el) {
-      el.setSelectionRange(0, el.value.length);
-      el.style.height = Math.max(element.height, el.scrollHeight) + "px";
-    }
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    e.target.style.height = "auto";
-    e.target.style.height =
-      Math.max(element.height, e.target.scrollHeight) + "px";
-    const textValue = e.target.value;
-    updateElement(element.id, { text: textValue });
-  };
-
-  const handleBlur = () => {
-    setIsEditing(false);
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === "Escape") setIsEditing(false);
-  };
+  const { activeColor: textColor } = useInvertableColor(element.textColor);
 
   return (
     <>
@@ -62,20 +46,16 @@ export function TextElement({ element, ...props }: TextElementProps) {
         width={element.width}
         height={element.height}
         rotation={element.rotation}
-        opacity={isEditing ? 0 : element.opacity}
+        opacity={opacity}
+        visible={!isEditing}
         text={element.text}
         align={element.textAlign}
         verticalAlign={element.textVerticalAlign}
         fontSize={element.fontSize}
         fontFamily={element.fontFamily}
         lineHeight={1.2}
-        fill={activeColor}
-        hitFunc={(context, shape) => {
-          context.beginPath();
-          context.rect(0, 0, shape.width(), shape.height());
-          context.closePath();
-          context.fillStrokeShape(shape);
-        }}
+        fill={textColor}
+        hitFunc={hitFunc}
         onPointerDblClick={handleDblClick}
         {...props}
       />
@@ -89,14 +69,14 @@ export function TextElement({ element, ...props }: TextElementProps) {
         >
           <textarea
             ref={handleTextareaRef}
-            defaultValue={element.text}
             onChange={handleChange}
             onBlur={handleBlur}
             onKeyDown={handleKeyDown}
+            defaultValue={element.text}
             autoFocus
             className="resize-none outline-none my-auto border-none p-0 m-0 overflow-hidden bg-transparent leading-[1.2] whitespace-pre-wrap wrap-break-word"
             style={{
-              color: activeColor,
+              color: textColor,
               width: element.width,
               fontSize: `${element.fontSize}px`,
               fontFamily: element.fontFamily,

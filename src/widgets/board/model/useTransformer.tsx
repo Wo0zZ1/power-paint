@@ -10,14 +10,13 @@ import { shouldPan } from "./useViewport";
 export const useTransformer = () => {
   const handleTransformStart = useCallback(
     (e: KonvaEventObject<PointerEvent, Node<NodeConfig>>) => {
-      if (shouldPan(e.evt)) {
-        e.evt.stopPropagation();
-        e.evt.preventDefault();
+      if (!shouldPan(e.evt)) return;
 
-        const transformer = e.currentTarget as unknown as Transformer;
-        transformer.stopTransform();
-        return;
-      }
+      e.evt.stopPropagation();
+      e.evt.preventDefault();
+
+      const transformer = e.currentTarget as unknown as Transformer;
+      transformer.stopTransform();
     },
     [],
   );

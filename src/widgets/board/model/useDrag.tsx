@@ -48,6 +48,8 @@ export const useDragElements = () => {
   const startPointerDrag = useCallback(
     (e: Konva.KonvaEventObject<PointerEvent>) => {
       if (e.evt.pointerType === "touch") return;
+      const { tool } = useBoardStore.getState();
+      if (tool !== "select") return;
       if (shouldPan(e.evt)) return;
 
       beginDrag(e.evt.clientX, e.evt.clientY);

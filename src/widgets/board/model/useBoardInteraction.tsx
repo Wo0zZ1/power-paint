@@ -4,6 +4,7 @@ import { useCallback, type RefObject } from "react";
 import { useBoardStore } from "./useBoardStore";
 import { useCircleDrawing } from "./useCircleDrawing";
 import { useDrawing } from "./useDrawing";
+import { useEraser } from "./useEraser";
 import { useRectDrawing } from "./useRectDrawing";
 import { useSelectionRect } from "./useSelectionRect";
 import { useTextDrawing } from "./useTextDrawing";
@@ -17,23 +18,24 @@ export const useBoardInteraction = ({
   selectionRectRef,
 }: UseBoardInteractionProps) => {
   const { handleZoom, startPointerPan, startTouchPan } = useViewport();
+  const { startPointerSelect, startTouchSelect } = useSelectionRect({
+    rectRef: selectionRectRef,
+  });
   const { startPointerDraw, startTouchDraw } = useDrawing();
   const { startPointerRectDraw, startTouchRectDraw } = useRectDrawing();
   const { startPointerCircleDraw, startTouchCircleDraw } = useCircleDrawing();
   const { startPointerTextDraw, startTouchTextDraw } = useTextDrawing();
-  const { startPointerSelect, startTouchSelect } = useSelectionRect({
-    rectRef: selectionRectRef,
-  });
+  const { startPointerErase, startTouchErase } = useEraser();
 
   const handlePointerDown = useCallback(
     (e: Konva.KonvaEventObject<PointerEvent>) => {
       if (e.evt.pointerType === "touch") return;
 
-      if (shouldPan(e.evt)) return startPointerPan(e);
+      const { tool, clearSelection } = useBoardStore.getState();
+
+      if (tool === "hand" || shouldPan(e.evt)) return startPointerPan(e);
 
       if (e.evt.button !== 0) return;
-
-      const { tool, clearSelection } = useBoardStore.getState();
 
       if (tool === "select") return startPointerSelect(e);
 
@@ -43,6 +45,9 @@ export const useBoardInteraction = ({
       if (tool === "rect") return startPointerRectDraw(e);
       if (tool === "circle") return startPointerCircleDraw(e);
       if (tool === "text") return startPointerTextDraw(e);
+      if (tool === "eraser") return startPointerErase(e);
+      const _: never = tool;
+      return _;
     },
     [
       startPointerPan,
@@ -51,11 +56,12 @@ export const useBoardInteraction = ({
       startPointerRectDraw,
       startPointerCircleDraw,
       startPointerTextDraw,
+      startPointerErase,
     ],
   );
 
   const handleTouchStart = useCallback(
-    (e: Konva.KonvaEventObject<TouchEvent>) => {
+    (e: Konva.KonvaEventObject<TouchEvent>): void => {
       if (e.evt.cancelable) e.evt.preventDefault();
 
       const { tool, clearSelection } = useBoardStore.getState();
@@ -72,6 +78,9 @@ export const useBoardInteraction = ({
       if (tool === "rect") return startTouchRectDraw(e);
       if (tool === "circle") return startTouchCircleDraw(e);
       if (tool === "text") return startTouchTextDraw(e);
+      if (tool === "eraser") return startTouchErase(e);
+      const _: never = tool;
+      return _;
     },
     [
       startTouchPan,
@@ -80,6 +89,7 @@ export const useBoardInteraction = ({
       startTouchRectDraw,
       startTouchCircleDraw,
       startTouchTextDraw,
+      startTouchErase,
     ],
   );
 

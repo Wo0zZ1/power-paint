@@ -20,6 +20,7 @@ import {
 
 export function ElementProperties() {
   const selectedElementIds = useBoardStore(useShallow((s) => s.selectedIds));
+  const selectionType = useBoardStore((s) => s.selectionType);
   const elements = useBoardStore(useShallow((s) => s.elements));
 
   const selectedElements = Array.from(selectedElementIds)
@@ -43,7 +44,8 @@ export function ElementProperties() {
     },
   );
 
-  if (selectedElements.length === 0) return null;
+  if (selectionType !== "transform" || selectedElements.length === 0)
+    return null;
 
   return (
     <>
