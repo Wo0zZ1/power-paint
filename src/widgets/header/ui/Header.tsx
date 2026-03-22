@@ -15,10 +15,10 @@ export async function Header(props: HeaderProps) {
     <header
       className={cn(
         props.className,
-        "sticky shrink-0 top-0 z-50 h-18 w-full bg-background",
+        "sticky shrink-0 top-0 z-50 h-18 w-full bg-background shadow-md",
       )}
     >
-      <div className="flex container mx-auto h-full px-4 items-center justify-between">
+      <div className="flex container mx-auto h-full px-4 py-2 items-center justify-between">
         <Logo />
 
         <Suspense fallback={<LoadingAvatar />}>

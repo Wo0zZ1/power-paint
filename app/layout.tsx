@@ -37,7 +37,7 @@ export default async function RootLayout({
       <head>
         <ThemeScript />
       </head>
-      <body className="flex flex-col h-full ml-4">
+      <body className="flex flex-col h-full">
         <QueryProvider>
           <ClientProviders
             locale={locale}
