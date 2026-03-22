@@ -20,14 +20,15 @@
     ],
     "paths": {
       "@/*": ["./src/*"],
+      "@/public/*": ["./public/*"],
+      "@/emails/*": ["./emails/*"],
+      "@/prisma/*": ["./prisma/*"],
       "@/entities/*": ["./src/entities/*"],
       "@/features/*": ["./src/features/*"],
       "@/widgets/*": ["./src/widgets/*"],
       "@/shared/*": ["./src/shared/*"],
-      "@/processes/*": ["./src/processes/*"],
       "@/lib/*": ["./src/shared/lib/*"],
-      "@/utils": ["./src/shared/lib/utils"],
-      "@/config": ["./src/shared/config"]
+      "@/utils": ["./src/shared/lib/utils"]
     }
   },
   "include": [
