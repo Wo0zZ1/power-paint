@@ -28,6 +28,8 @@ export default async function RootLayout({
   const session = await auth();
   const timeZone = await getTimeZone();
 
+  const isQueryDevtoolsEnabled = process.env.REACT_QUERY_DEVTOOLS_ENABLED === "true";
+
   return (
     <html
       className={`${geistSans.variable} ${geistMono.variable} ${interSans.variable} antialiased h-full`}
@@ -38,7 +40,7 @@ export default async function RootLayout({
         <ThemeScript />
       </head>
       <body className="flex flex-col h-full">
-        <QueryProvider>
+        <QueryProvider isDevtoolsEnabled={isQueryDevtoolsEnabled}>
           <ClientProviders
             locale={locale}
             messages={messages}
