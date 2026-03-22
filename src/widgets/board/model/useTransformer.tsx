@@ -54,7 +54,7 @@ export const useTransformer = () => {
             scaleX: 1,
             scaleY: 1,
           });
-        } else if (el?.type === "stroke") {
+        } else if (el?.type === "draw") {
           const oldPoints = node.getAttr("points") as number[];
           const newPoints = oldPoints.map((val, i) => {
             return i % 2 === 0
