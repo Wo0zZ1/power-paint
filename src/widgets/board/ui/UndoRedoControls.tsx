@@ -3,6 +3,7 @@
 import { Redo2, Undo2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 
+import { cn } from "@/shared/lib/utils";
 import {
   Button,
   ButtonGroup,
@@ -15,7 +16,15 @@ import {
 
 import { useBoardStore } from "../model/useBoardStore";
 
-export function UndoRedoControls() {
+interface UndoRedoControlsProps {
+  className?: string;
+  tooltipActive?: boolean;
+}
+
+export function UndoRedoControls({
+  className,
+  tooltipActive = true,
+}: UndoRedoControlsProps) {
   const t = useTranslations("toolbar.history");
 
   const undo = useBoardStore((s) => s.undo);
@@ -25,8 +34,13 @@ export function UndoRedoControls() {
   const canRedo = useBoardStore((s) => s.canRedo);
 
   return (
-    <ButtonGroup className="rounded-md bg-secondary/85 backdrop-blur-sm shadow-md">
-      <Tooltip disableHoverableContent>
+    <ButtonGroup
+      className={cn(
+        "rounded-md bg-secondary/85 backdrop-blur-sm shadow-md",
+        className,
+      )}
+    >
+      <Tooltip open={tooltipActive ? undefined : false} disableHoverableContent>
         <TooltipTrigger asChild>
           <Button
             variant="outline"
@@ -47,7 +61,7 @@ export function UndoRedoControls() {
         </TooltipContent>
       </Tooltip>
 
-      <Tooltip disableHoverableContent>
+      <Tooltip open={tooltipActive ? undefined : false} disableHoverableContent>
         <TooltipTrigger asChild>
           <Button
             variant="outline"

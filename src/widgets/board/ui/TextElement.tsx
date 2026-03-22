@@ -23,6 +23,9 @@ export function TextElement({ element, ...props }: TextElementProps) {
   const updateElement = useBoardStore((s) => s.updateElement);
 
   const handleDblClick = () => {
+    const activeTool = useBoardStore.getState().tool;
+    if (activeTool !== "select") return;
+
     setIsEditing(true);
   };
 
@@ -73,8 +76,7 @@ export function TextElement({ element, ...props }: TextElementProps) {
           context.closePath();
           context.fillStrokeShape(shape);
         }}
-        onDblClick={handleDblClick}
-        onDblTap={handleDblClick}
+        onPointerDblClick={handleDblClick}
         {...props}
       />
       {isEditing && (

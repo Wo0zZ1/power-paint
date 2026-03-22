@@ -14,7 +14,10 @@ type RectElementProps = {
 } & ComponentProps<typeof Rect>;
 
 export function RectElement({ element, ...props }: RectElementProps) {
-  const fillPriority = getFillPriority(element.fillType, element.fillGradientType);
+  const fillPriority = getFillPriority(
+    element.fillType,
+    element.fillGradientType,
+  );
   const dash = getDash(element.strokeType);
   const angle = degToRad(element.fillAngle);
 
@@ -78,6 +81,7 @@ export function RectElement({ element, ...props }: RectElementProps) {
       )}
       fillRadialGradientColorStops={[0, fillColor1, 1, fillColor2]}
       // Stroke
+      hitStrokeWidth={22}
       strokeScaleEnabled={true}
       fillAfterStrokeEnabled={true}
       stroke={strokeColor}

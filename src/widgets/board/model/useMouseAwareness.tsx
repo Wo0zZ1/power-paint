@@ -27,7 +27,7 @@ export const useMouseAwareness = () => {
     },
   );
 
-  const handleCursorMove = useCallback(
+  const handlePointerMove = useCallback(
     (e: PointerEvent<HTMLDivElement>) => {
       if (e.pointerType === "touch") return;
       const rect = e.currentTarget.getBoundingClientRect();
@@ -36,7 +36,7 @@ export const useMouseAwareness = () => {
     [throttledUpdate],
   );
 
-  const handleTouchCursorMove = useCallback(
+  const handleTouchMove = useCallback(
     (e: TouchEvent<HTMLDivElement>) => {
       if (e.touches.length >= 2) {
         hideCursor();
@@ -52,9 +52,9 @@ export const useMouseAwareness = () => {
     [throttledUpdate],
   );
 
-  const handleCursorLeave = useCallback(() => {
+  const handlePointerLeave = useCallback(() => {
     hideCursor();
   }, []);
 
-  return { handleCursorMove, handleTouchCursorMove, handleCursorLeave };
+  return { handleTouchMove, handlePointerMove, handlePointerLeave };
 };

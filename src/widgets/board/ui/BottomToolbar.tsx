@@ -32,9 +32,13 @@ const tools: { tool: Tool; Icon: ElementType; shortcut: string }[] = [
 
 interface BottomToolbarProps {
   className?: string;
+  tooltipActive?: boolean;
 }
 
-export function BottomToolbar({ className }: BottomToolbarProps) {
+export function BottomToolbar({
+  className,
+  tooltipActive = true,
+}: BottomToolbarProps) {
   const t = useTranslations("toolbar.tools");
 
   const activeTool = useBoardStore((s) => s.tool);
@@ -47,7 +51,11 @@ export function BottomToolbar({ className }: BottomToolbarProps) {
       )}
     >
       {tools.map(({ tool, Icon, shortcut }) => (
-        <Tooltip key={tool} disableHoverableContent>
+        <Tooltip
+          open={tooltipActive ? undefined : false}
+          key={tool}
+          disableHoverableContent
+        >
           <TooltipTrigger asChild>
             <ToolButton
               tool={tool}

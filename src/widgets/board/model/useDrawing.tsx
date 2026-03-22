@@ -76,7 +76,9 @@ export const useDrawing = () => {
       i % 2 === 0 ? v - minX : v - minY,
     );
 
-    useBoardStore.getState().updateElement(strokeIdRef.current, {
+    const { updateElement } = useBoardStore.getState();
+
+    updateElement(strokeIdRef.current, {
       x: originRef.current.x + minX,
       y: originRef.current.y + minY,
       points: normalizedPoints,
@@ -111,7 +113,7 @@ export const useDrawing = () => {
     if (!containerRectRef.current) return;
     moveDraw(
       e.clientX - containerRectRef.current.left,
-      e.clientY - containerRectRef.current.top
+      e.clientY - containerRectRef.current.top,
     );
   });
 

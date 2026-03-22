@@ -81,8 +81,10 @@ export const useDragElements = () => {
 
   const startTouchDrag = useCallback(
     (e: Konva.KonvaEventObject<TouchEvent>) => {
+      const activeTool = useBoardStore.getState().tool;
+      if (activeTool !== "select") return;
+
       const touch = e.evt.touches[0];
-      if (!touch) return;
 
       beginDrag(touch.clientX, touch.clientY);
 

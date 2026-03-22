@@ -29,7 +29,7 @@ export function StrokeElement({ element, ...props }: StrokeElementProps) {
       tension={0.5}
       // Stroke
       dash={dash}
-      hitStrokeWidth={16}
+      hitStrokeWidth={22}
       strokeScaleEnabled={true}
       stroke={strokeColor}
       strokeWidth={element.strokeWidth}

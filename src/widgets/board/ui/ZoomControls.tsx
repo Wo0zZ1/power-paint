@@ -6,6 +6,7 @@ import { useCallback } from "react";
 import { useShallow } from "zustand/react/shallow";
 
 import { MAX_ZOOM, MIN_ZOOM } from "@/shared/config";
+import { cn } from "@/shared/lib/utils";
 import {
   Button,
   ButtonGroup,
@@ -18,7 +19,15 @@ import {
 
 import { useBoardStore } from "../model/useBoardStore";
 
-export function ZoomControls() {
+interface ZoomControlsProps {
+  className?: string;
+  tooltipActive?: boolean;
+}
+
+export function ZoomControls({
+  className,
+  tooltipActive = true,
+}: ZoomControlsProps) {
   const t = useTranslations("toolbar.zoom");
 
   const viewportScale = useBoardStore(useShallow((s) => s.viewport.scale));
@@ -38,8 +47,13 @@ export function ZoomControls() {
   }, [viewportScale, updateViewport]);
 
   return (
-    <ButtonGroup className="rounded-md bg-secondary/85 backdrop-blur-sm shadow-md">
-      <Tooltip disableHoverableContent>
+    <ButtonGroup
+      className={cn(
+        "rounded-md bg-secondary/85 backdrop-blur-sm shadow-md",
+        className,
+      )}
+    >
+      <Tooltip open={tooltipActive ? undefined : false} disableHoverableContent>
         <TooltipTrigger asChild>
           <Button
             variant="outline"
@@ -60,7 +74,7 @@ export function ZoomControls() {
         </TooltipContent>
       </Tooltip>
 
-      <Tooltip disableHoverableContent>
+      <Tooltip open={tooltipActive ? undefined : false} disableHoverableContent>
         <TooltipTrigger asChild>
           <Button
             variant="outline"
@@ -80,7 +94,7 @@ export function ZoomControls() {
         </TooltipContent>
       </Tooltip>
 
-      <Tooltip disableHoverableContent>
+      <Tooltip open={tooltipActive ? undefined : false} disableHoverableContent>
         <TooltipTrigger asChild>
           <Button
             variant="outline"
