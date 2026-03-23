@@ -18,7 +18,7 @@ export default async function SignupPage() {
 
   return (
     <div className="flex gap-10 w-full h-full">
-      <div className="grid grid-cols-2 gap-x-20">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-20 mx-auto">
         <div className="grid grid-cols-4 grid-rows-4 sr-only">
           <div className="col-start-1 col-end-3 row-start-1 row-end-5" />
           <div className="col-start-3 col-end-5 row-start-1 row-end-5" />
@@ -28,7 +28,7 @@ export default async function SignupPage() {
           src={Wallpaper}
           alt="Signup"
           loading="eager"
-          className="object-cover max-w-200 w-full h-full select-none pointer-events-none not-dark:invert"
+          className="object-cover max-w-200 w-full h-full select-none pointer-events-none not-dark:invert not-lg:hidden"
         />
 
         <div className="grow flex flex-col items-start justify-center px-4 my-6">

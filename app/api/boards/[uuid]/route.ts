@@ -56,7 +56,6 @@ export const PATCH = async (
       workspaceId: body.workspaceId,
       ownerId: body.ownerId,
       accessLevel: body.accessLevel,
-      content: body.content,
     },
   });
 

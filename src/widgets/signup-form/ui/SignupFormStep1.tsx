@@ -13,8 +13,6 @@ import {
   Checkbox,
 } from "@/shared/ui";
 
-// interface SignupFormStep1Props {}
-
 export function SignupFormStep1() {
   const t = useTranslations();
   const { register, control } = useFormContext<SignupFormStep1Data>();
@@ -23,13 +21,13 @@ export function SignupFormStep1() {
 
   return (
     <>
-      <Field orientation="horizontal" className="items-start">
+      <Field className="flex-row flex-wrap gap-4 *:flex-1">
         <div>
           <Input
             id="firstName"
             autoComplete="given-name"
             placeholder={t("auth.fields.first_name.placeholder")}
-            className="h-12"
+            className="h-12 min-w-50"
             {...register("firstName")}
           />
           {errors.firstName?.message && (
@@ -45,7 +43,7 @@ export function SignupFormStep1() {
             id="lastName"
             autoComplete="family-name"
             placeholder={t("auth.fields.last_name.placeholder")}
-            className="h-12"
+            className="h-12 min-w-50"
             {...register("lastName")}
           />
           {errors.lastName?.message && (

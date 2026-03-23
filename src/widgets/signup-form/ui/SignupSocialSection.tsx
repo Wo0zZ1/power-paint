@@ -26,7 +26,7 @@ export function SignupSocialSection({
       <Separator content={t("or")} className="my-8" />
 
       <div className="space-y-4">
-        <Field orientation="horizontal" className="*:flex-1">
+        <Field orientation="horizontal" className="*:flex-1 flex-wrap">
           <Button
             variant="outline"
             size="lg"
@@ -61,10 +61,7 @@ export function SignupSocialSection({
           )}
         </Field>
 
-        <Field
-          orientation="horizontal"
-          className="flex flex-wrap items-center justify-between"
-        >
+        <Field orientation="horizontal" className="flex-wrap justify-between">
           <FieldDescription className="text-sm text-muted-foreground">
             {t("auth.already_have_account")}{" "}
             <Link href={ROUTES.SIGNIN} className={styles.link}>
