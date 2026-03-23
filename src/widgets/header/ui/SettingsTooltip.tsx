@@ -20,7 +20,7 @@ export function SettingsTooltip({
 }: PropsWithChildren<SettingsTooltipProps>) {
   return (
     <Tooltip delayDuration={TOOLTIP_DELAY} disableHoverableContent>
-      <TooltipTrigger asChild>
+      <TooltipTrigger>
         <DropdownMenuTrigger asChild>{children}</DropdownMenuTrigger>
       </TooltipTrigger>
       <TooltipContent>

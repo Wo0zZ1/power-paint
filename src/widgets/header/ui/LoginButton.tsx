@@ -14,6 +14,7 @@ interface LoginButtonProps {
 export function LoginButton({ className }: LoginButtonProps) {
   const t = useTranslations("auth");
 
+
   return (
     <Button
       size="lg"

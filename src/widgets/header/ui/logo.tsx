@@ -1,7 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import LogoImage from "@/public/assets/power-paint-logo.png";
+import PowerPaintIcon from "@/public/assets/power-paint-icon.png";
+import PowerPaintLogo from "@/public/assets/power-paint-logo.png";
 import { ROUTES } from "@/shared/config";
 import { cn } from "@/utils";
 
@@ -15,10 +16,21 @@ export async function Logo(props: LogoProps) {
       <Image
         width={240}
         height={40}
-        src={LogoImage}
+        src={PowerPaintLogo}
+        priority
         loading="eager"
-        className="dark:invert select-none max-w-45 sm:max-w-55 lg:max-w-max"
-        alt="PowerPaint Logo"
+        className="dark:invert select-none max-w-45 sm:max-w-55 lg:max-w-max not-xs:hidden"
+        alt="Power Paint"
+      />
+
+      <Image
+        width={40}
+        height={40}
+        src={PowerPaintIcon}
+        priority
+        loading="eager"
+        className="dark:invert select-none max-w-45 sm:max-w-55 xs:hidden"
+        alt="Power Paint"
       />
     </Link>
   );
