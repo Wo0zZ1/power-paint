@@ -27,6 +27,8 @@ const getTransporter = async () => {
   });
 };
 
+const transporter = await getTransporter();
+
 const baseOptions = {
   from: process.env.EMAIL_LOGIN,
 } satisfies SendMailOptions;
@@ -40,7 +42,6 @@ interface SendEmailProps {
 export async function sendEmail({ component, subject, to }: SendEmailProps) {
   const resolvedComponent = await component;
   const componentHtml = await render(resolvedComponent);
-  const transporter = await getTransporter();
 
   await transporter.sendMail({
     ...baseOptions,
