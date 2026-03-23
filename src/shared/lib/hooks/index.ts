@@ -4,3 +4,4 @@ export { useDebounceFn } from "./useDebounceFn";
 export { useInvertableColor } from "./useInvertableColor";
 export { useMultiStepForm, type StepConfig } from "./useMultiStepForm";
 export { useWindowSize } from "./useWindowSize";
+export { useTooltip } from "./useTooltip";

@@ -5,16 +5,17 @@ import { SessionProvider } from "next-auth/react";
 import { NextIntlClientProvider } from "next-intl";
 
 import { getMessageFallback } from "@/shared/i18n";
-import { useTheme } from "@/shared/lib/theme";
 import { Toaster } from "@/shared/ui/sonner";
 import { TooltipProvider } from "@/shared/ui/tooltip";
+
+import { ThemeProvider } from "./ThemeProvider";
+import { WindowSizeProvider } from "./WindowSizeProvider";
 
 interface ClientProvidersProps {
   children: React.ReactNode;
   session: Session | null;
   locale: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  messages: Record<string, any>;
+  messages: Record<string, unknown>;
   timeZone: string;
 }
 
@@ -25,8 +26,6 @@ export function ClientProviders({
   messages,
   timeZone,
 }: ClientProvidersProps) {
-  const {} = useTheme(); // TODO Нужно для корректной работы переключения темы при SSR, иначе возникает рассинхронизация между сервером и клиентом
-
   return (
     <SessionProvider session={session}>
       <NextIntlClientProvider
@@ -35,10 +34,12 @@ export function ClientProviders({
         timeZone={timeZone}
         getMessageFallback={getMessageFallback}
       >
-        <TooltipProvider>
-          {children}
-          <Toaster position="top-center" />
-        </TooltipProvider>
+        <ThemeProvider>
+          <TooltipProvider>
+            <WindowSizeProvider>{children}</WindowSizeProvider>
+            <Toaster position="top-center" />
+          </TooltipProvider>
+        </ThemeProvider>
       </NextIntlClientProvider>
     </SessionProvider>
   );
