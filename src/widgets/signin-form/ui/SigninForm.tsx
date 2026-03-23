@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
-import { useForm } from "react-hook-form";
+import { FormProvider, useForm } from "react-hook-form";
 
 import { useSignInHandlers } from "@/features/signin";
 import { getSigninSchema } from "@/shared/config/authSchemas";
@@ -36,12 +36,8 @@ export function SigninForm({ className }: LoginFormProps) {
     invalidEmail: "errors.invalid_email",
   });
 
-  const {
-    handleSubmit,
-    formState: { errors, isSubmitting },
-    register,
-  } = useForm({
-    mode: "onTouched",
+  const methods = useForm({
+    mode: "onSubmit",
     resolver: zodResolver(signinSchema),
   });
 
@@ -49,7 +45,7 @@ export function SigninForm({ className }: LoginFormProps) {
     <>
       <Card
         className={cn(
-          "max-w-md w-full mx-auto bg-card/85 backdrop-blur-sm",
+          "max-w-md w-full mx-auto bg-card/75 backdrop-blur-sm",
           className,
         )}
       >
@@ -61,21 +57,18 @@ export function SigninForm({ className }: LoginFormProps) {
         </CardHeader>
 
         <CardContent>
-          <form onSubmit={handleSubmit(handleCredentialsSignIn)}>
-            <FieldGroup>
-              <SigninCredentials
-                register={register}
-                errors={errors}
-                isSubmitting={isSubmitting}
-                signinError={signinError}
-              />
+          <FormProvider {...methods}>
+            <form onSubmit={methods.handleSubmit(handleCredentialsSignIn)}>
+              <FieldGroup>
+                <SigninCredentials signinError={signinError} />
 
-              <SigninSocialButtons
-                onGoogle={handleGoogleSignIn}
-                onGithub={handleGithubSignIn}
-              />
-            </FieldGroup>
-          </form>
+                <SigninSocialButtons
+                  onGoogle={handleGoogleSignIn}
+                  onGithub={handleGithubSignIn}
+                />
+              </FieldGroup>
+            </form>
+          </FormProvider>
         </CardContent>
       </Card>
     </>

@@ -47,7 +47,7 @@ export function ForgotPasswordForm({
     useMultiStepForm<ForgotPasswordFormValues>({
       defaultValues,
       steps,
-      mode: "onTouched",
+      mode: "onSubmit",
     });
 
   useEffect(() => {
@@ -67,10 +67,7 @@ export function ForgotPasswordForm({
   return (
     <FormProvider {...methods}>
       <Card
-        className={cn(
-          "max-w-md w-full mx-auto bg-card/85 backdrop-blur-sm",
-          className,
-        )}
+        className={cn("max-w-md w-full mx-auto backdrop-blur-sm", className)}
       >
         <CardHeader>
           <CardTitle className="text-2xl font-bold">

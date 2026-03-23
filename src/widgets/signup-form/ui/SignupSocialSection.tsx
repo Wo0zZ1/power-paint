@@ -45,7 +45,12 @@ export function SignupSocialSection({
             className="h-12"
             onClick={onGithub}
           >
-            <Image width={22} src={Github} alt="Github" className="dark:invert" />
+            <Image
+              width={22}
+              src={Github}
+              alt="Github"
+              className="dark:invert"
+            />
             {t("auth.providers.github")}
           </Button>
 
@@ -56,11 +61,20 @@ export function SignupSocialSection({
           )}
         </Field>
 
-        <Field>
+        <Field
+          orientation="horizontal"
+          className="flex flex-wrap items-center justify-between"
+        >
           <FieldDescription className="text-sm text-muted-foreground">
-            {t("auth.already_have_account")} {" "}
-            <Link href={ROUTES.SIGNIN} className={styles.sign_in}>
+            {t("auth.already_have_account")}{" "}
+            <Link href={ROUTES.SIGNIN} className={styles.link}>
               {t("auth.sign_in")}
+            </Link>
+          </FieldDescription>
+
+          <FieldDescription className="text-sm text-muted-foreground">
+            <Link href={ROUTES.RESET_PASSWORD} className={styles.link}>
+              {t("auth.forgot_password")}
             </Link>
           </FieldDescription>
         </Field>

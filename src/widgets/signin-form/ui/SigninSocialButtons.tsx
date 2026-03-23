@@ -22,7 +22,7 @@ export function SigninSocialButtons({
 
   return (
     <>
-      <Separator content={t("or")} className="my-4" />
+      <Separator content={t("or")} className="my-2 md:my-4" />
 
       <Field>
         <Button

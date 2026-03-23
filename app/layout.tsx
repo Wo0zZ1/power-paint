@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { getLocale, getMessages, getTimeZone } from "next-intl/server";
+import type { ReactNode } from "react";
 
 import { ClientProviders, QueryProvider } from "@/app/providers";
 import { ThemeScript } from "@/features/theme-switcher/ui/ThemeScript";
@@ -20,15 +21,18 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({
   children,
+  modal,
 }: Readonly<{
-  children: React.ReactNode;
+  children: ReactNode;
+  modal: ReactNode;
 }>) {
   const locale = await getLocale();
   const messages = await getMessages({ locale });
   const session = await auth();
   const timeZone = await getTimeZone();
 
-  const isQueryDevtoolsEnabled = process.env.REACT_QUERY_DEVTOOLS_ENABLED === "true";
+  const isQueryDevtoolsEnabled =
+    process.env.REACT_QUERY_DEVTOOLS_ENABLED === "true";
 
   return (
     <html
@@ -49,6 +53,7 @@ export default async function RootLayout({
           >
             <Header />
             <div className="grow flex flex-col">{children}</div>
+            {modal}
           </ClientProviders>
         </QueryProvider>
       </body>

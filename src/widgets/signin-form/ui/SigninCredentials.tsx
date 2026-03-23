@@ -1,9 +1,10 @@
 import { Info } from "lucide-react";
+import Link from "next/link";
 import { useTranslations } from "next-intl";
-import type { FieldErrors, UseFormRegister } from "react-hook-form";
+import { useFormContext, useFormState } from "react-hook-form";
 
+import type { SigninData } from "@/shared/config";
 import { ROUTES } from "@/shared/config";
-import type { SigninData } from "@/shared/config/authSchemas";
 import {
   Button,
   Field,
@@ -16,19 +17,14 @@ import {
 import styles from "./SigninForm.module.scss";
 
 interface SigninCredentialsProps {
-  register: UseFormRegister<SigninData>;
-  errors: FieldErrors<SigninData>;
-  isSubmitting: boolean;
   signinError: string | null;
 }
 
-export function SigninCredentials({
-  register,
-  errors,
-  isSubmitting,
-  signinError,
-}: SigninCredentialsProps) {
+export function SigninCredentials({ signinError }: SigninCredentialsProps) {
   const t = useTranslations();
+
+  const { control, register } = useFormContext<SigninData>();
+  const { errors, isSubmitting } = useFormState({ control });
 
   return (
     <>
@@ -44,7 +40,7 @@ export function SigninCredentials({
             autoComplete="email"
             placeholder={t("auth.fields.email.placeholder")}
             aria-invalid={errors.email ? "true" : "false"}
-            className="h-10 rounded-sm"
+            className="h-10 rounded-sm bg-card"
           />
           {errors.email?.message && (
             <FieldDescription className="mt-1! text-destructive flex items-center gap-1">
@@ -60,9 +56,9 @@ export function SigninCredentials({
           <FieldLabel htmlFor="signin-password">
             {t("auth.fields.password.label")}
           </FieldLabel>
-          <a className={styles.forgot} href={ROUTES.RESET_PASSWORD}>
+          <Link className={styles.forgot} href={ROUTES.RESET_PASSWORD}>
             {t("auth.forgot_password")}
-          </a>
+          </Link>
         </div>
         <div>
           <Input
@@ -72,7 +68,7 @@ export function SigninCredentials({
             autoComplete="current-password"
             placeholder={t("auth.fields.password.placeholder")}
             aria-invalid={errors.password ? "true" : "false"}
-            className="h-10 rounded-sm"
+            className="h-10 rounded-sm bg-card"
           />
           {errors.password?.message && (
             <FieldDescription className="text-destructive flex items-center gap-1">

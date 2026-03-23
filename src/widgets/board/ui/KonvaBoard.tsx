@@ -39,10 +39,10 @@ export function KonvaBoard({ user, boardId }: KonvaBoardProps) {
   useHotKeys();
   useHocuspocus({ boardId, user });
 
-  const { windowSize } = useWindowSize();
+  const { width: windowWidth, height: windowHeight } = useWindowSize();
   const { activeColor } = useInvertableColor(globals.backgroundColor, true);
 
-  const isMobile = windowSize.width < 768;
+  const isMobile = windowWidth < 768;
 
   const { handleTouchMove, handlePointerMove, handlePointerLeave } =
     useMouseAwareness();
@@ -91,8 +91,8 @@ export function KonvaBoard({ user, boardId }: KonvaBoardProps) {
 
         <Stage
           style={{ backgroundColor: activeColor }}
-          width={windowSize.width - 2} // Borders
-          height={windowSize.height - 2 - 72} // Borders + header
+          width={windowWidth - 2} // Borders
+          height={windowHeight - 2 - 72} // Borders + header
           x={viewport.x}
           y={viewport.y}
           scaleX={viewport.scale}

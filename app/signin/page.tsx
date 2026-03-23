@@ -17,10 +17,10 @@ export default async function SigninPage() {
         src={Wallpaper}
         alt="Background"
         loading="eager"
-        className="absolute object-cover w-full h-full select-none pointer-events-none"
+        className="absolute object-cover w-full h-full select-none pointer-events-none not-dark:invert"
       />
       <div className="flex items-center justify-center w-full h-full">
-        <div className="container px-4">
+        <div className="container px-4 my-6">
           <SigninForm />
         </div>
       </div>
