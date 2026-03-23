@@ -52,11 +52,3 @@ export const signInWithCredentials = async (data: SigninData) => {
     password: data.password,
   });
 };
-
-export const signInWithGithub = async () => {
-  return performSignIn("github");
-};
-
-export const signInWithGoogle = async () => {
-  return performSignIn("google");
-};

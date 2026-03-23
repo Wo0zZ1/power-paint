@@ -1,6 +1,2 @@
-export {
-  signInWithCredentials,
-  signInWithGithub,
-  signInWithGoogle,
-} from "./model/actions";
+export { signInWithCredentials } from "./model/actions";
 export { useSignInHandlers } from "./model/useSignInHandlers";

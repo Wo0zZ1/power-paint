@@ -1,15 +1,12 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
 import { useCallback, useState } from "react";
 
 import type { SigninData } from "@/shared/config/authSchemas";
 
-import {
-  signInWithCredentials,
-  signInWithGithub,
-  signInWithGoogle,
-} from "./actions";
+import { signInWithCredentials } from "./actions";
 
 interface UseSignInHandlersResult {
   signinError: string | null;
@@ -23,9 +20,11 @@ export function useSignInHandlers(): UseSignInHandlersResult {
   const router = useRouter();
   const [signinError, setSigninError] = useState<string | null>(null);
 
+  const resetSigninError = useCallback(() => setSigninError(null), []);
+
   const handleCredentialsSignIn = useCallback(
     async (data: SigninData) => {
-      setSigninError(null);
+      resetSigninError();
       const { ok, error, url } = await signInWithCredentials(data);
 
       if (error) {
@@ -38,40 +37,18 @@ export function useSignInHandlers(): UseSignInHandlersResult {
         router.refresh();
       }
     },
-    [router],
+    [router, resetSigninError],
   );
 
   const handleGithubSignIn = useCallback(async () => {
-    setSigninError(null);
-    const { ok, error, url } = await signInWithGithub();
-
-    if (error) {
-      setSigninError(error);
-      return;
-    }
-
-    if (ok && url) {
-      router.push(url);
-      router.refresh();
-    }
-  }, [router]);
+    resetSigninError();
+    await signIn("github", { redirect: true });
+  }, [resetSigninError]);
 
   const handleGoogleSignIn = useCallback(async () => {
-    setSigninError(null);
-    const { ok, error, url } = await signInWithGoogle();
-
-    if (error) {
-      setSigninError(error);
-      return;
-    }
-
-    if (ok && url) {
-      router.push(url);
-      router.refresh();
-    }
-  }, [router]);
-
-  const resetSigninError = useCallback(() => setSigninError(null), []);
+    resetSigninError();
+    await signIn("google", { redirect: true });
+  }, [resetSigninError]);
 
   return {
     signinError,
