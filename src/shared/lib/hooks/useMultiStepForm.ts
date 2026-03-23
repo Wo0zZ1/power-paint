@@ -79,14 +79,18 @@ export function useMultiStepForm<TValues extends FieldValues>({
     const isValid = await methods.trigger();
     if (!isValid) return false;
 
-    const handler = await currentStepConfig.action?.({
-      data: methods.getValues(),
-      setError: methods.setError,
-      setValue: methods.setValue,
-      goTo,
-    });
+    const action = currentStepConfig.action;
 
-    if (handler === false) return false;
+    const actionSuccess = action
+      ? await action({
+          data: methods.getValues(),
+          setError: methods.setError,
+          setValue: methods.setValue,
+          goTo,
+        })
+      : true;
+
+    if (!actionSuccess) return false;
 
     goNext();
 

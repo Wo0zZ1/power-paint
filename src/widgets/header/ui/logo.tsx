@@ -15,7 +15,6 @@ export async function Logo(props: LogoProps) {
     <Link className={cn(props.className)} href={ROUTES.DASHBOARD.ROOT}>
       <Image
         width={240}
-        height={40}
         src={PowerPaintLogo}
         priority
         loading="eager"
@@ -25,7 +24,6 @@ export async function Logo(props: LogoProps) {
 
       <Image
         width={40}
-        height={40}
         src={PowerPaintIcon}
         priority
         loading="eager"

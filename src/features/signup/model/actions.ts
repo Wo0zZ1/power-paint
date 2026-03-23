@@ -19,76 +19,84 @@ import { compareHash, hashValue } from "@/shared/lib/server";
 import { addTimeToDate, generateRandomInteger } from "@/shared/lib/utils";
 
 export const SignupAction = async (formData: SignupFormData) => {
-  const { data, success } = signupFormSchema.safeParse(formData);
-
-  if (!success) return { error: "errors.invalid_data", ok: false } as const;
-
-  const account = await prisma.user.findUnique({
-    where: { email: data.email },
-  });
-
-  if (account) return { error: "auth.errors.email_in_use", ok: false } as const;
-
-  const verificationId = randomUUID();
-  const emailCode = generateRandomInteger(100000, 999999).toString();
-  const codeHash = hashValue(emailCode);
-  const passwordHash = hashValue(data.password);
-  const expiresAt = addTimeToDate(VERIFICATION_TTL_MS);
-
-  const signupData = {
-    verificationId,
-    firstName: data.firstName,
-    lastName: data.lastName,
-    passwordHash,
-    phone: data.phone ?? null,
-    locale: data.locale,
-    preferredColor: data.preferredColor ?? null,
-    image: data.image ?? null,
-    codeHash,
-    expiresAt,
-    attempts: 0,
-  };
-
-  await prisma.signupVerification.upsert({
-    where: { email: data.email },
-    create: { ...signupData, email: data.email },
-    update: signupData,
-  });
-
   const cookieState = await cookies();
+  try {
+    const { data, success } = signupFormSchema.safeParse(formData);
 
-  cookieState.set(
-    VERIFICATION_COOKIE,
-    verificationId,
-    VERIFICATION_COOKIE_SETTINGS,
-  );
+    if (!success) return { error: "errors.invalid_data", ok: false } as const;
 
-  await sendEmail({
-    subject: "Verify your email",
-    to: data.email,
-    component: SignupEmail({
-      name: data.firstName,
+    const account = await prisma.user.findUnique({
+      where: { email: data.email },
+    });
+
+    if (account)
+      return { error: "auth.errors.email_in_use", ok: false } as const;
+
+    const verificationId = randomUUID();
+    const emailCode = generateRandomInteger(100000, 999999).toString();
+    const codeHash = hashValue(emailCode);
+    const passwordHash = hashValue(data.password);
+    const expiresAt = addTimeToDate(VERIFICATION_TTL_MS);
+
+    cookieState.set(
+      VERIFICATION_COOKIE,
+      verificationId,
+      VERIFICATION_COOKIE_SETTINGS,
+    );
+
+    const signupData = {
+      verificationId,
+      firstName: data.firstName,
+      lastName: data.lastName,
+      passwordHash,
+      phone: data.phone ?? null,
       locale: data.locale,
-      validationCode: emailCode,
-    }),
-  });
+      preferredColor: data.preferredColor ?? null,
+      image: data.image ?? null,
+      codeHash,
+      expiresAt,
+      attempts: 0,
+    };
 
-  return { error: null, ok: true } as const;
+    await prisma.$transaction(async (tx) => {
+      await tx.signupVerification.upsert({
+        where: { email: data.email },
+        create: { ...signupData, email: data.email },
+        update: signupData,
+      });
+
+      await sendEmail({
+        subject: "Verify your email",
+        to: data.email,
+        component: SignupEmail({
+          name: data.firstName,
+          locale: data.locale,
+          validationCode: emailCode,
+        }),
+      });
+    });
+
+    return { error: null, ok: true } as const;
+  } catch (error) {
+    console.error(error);
+    cookieState.delete(VERIFICATION_COOKIE);
+    return { error: "errors.unknown_error", ok: false } as const;
+  }
 };
 
 export const VerifySignupAction = async (formData: SignupCodeData) => {
-  const { data, success } = getSignupCodeSchema().safeParse(formData);
-
-  if (!success)
-    return { error: "auth.errors.invalid_email_code", ok: false } as const;
-
   const cookieState = await cookies();
-  const verificationId = cookieState.get(VERIFICATION_COOKIE)?.value;
-
-  if (!verificationId)
-    return { error: "errors.unknown_error", ok: false } as const;
-
   try {
+    const { data, success } = getSignupCodeSchema().safeParse(formData);
+
+    if (!success)
+      return { error: "auth.errors.invalid_email_code", ok: false } as const;
+
+    const verificationId = cookieState.get(VERIFICATION_COOKIE)?.value;
+
+    if (!verificationId)
+      return { error: "errors.unknown_error", ok: false } as const;
+
     const pending = await prisma.signupVerification.update({
       where: { verificationId },
       data: { attempts: { increment: 1 } },
@@ -143,27 +151,19 @@ export const VerifySignupAction = async (formData: SignupCodeData) => {
     cookieState.delete(VERIFICATION_COOKIE);
 
     return { error: null, ok: true } as const;
-  } catch {
+  } catch (error) {
+    console.error(error);
     return { error: "errors.unknown_error", ok: false } as const;
   }
 };
 
 export const RequestNewCode = async () => {
   const cookieState = await cookies();
-  const verificationId = cookieState.get(VERIFICATION_COOKIE)?.value;
-
-  if (!verificationId)
-    return { error: "errors.unknown_error", ok: false } as const;
-
-  const newCode = generateRandomInteger(100000, 999999).toString();
-  const codeHash = hashValue(newCode);
-  const expiresAt = addTimeToDate(VERIFICATION_TTL_MS);
-
   try {
-    const updated = await prisma.signupVerification.update({
-      where: { verificationId },
-      data: { codeHash, expiresAt, attempts: 0 },
-    });
+    const verificationId = cookieState.get(VERIFICATION_COOKIE)?.value;
+
+    if (!verificationId)
+      return { error: "errors.unknown_error", ok: false } as const;
 
     cookieState.set(
       VERIFICATION_COOKIE,
@@ -171,18 +171,30 @@ export const RequestNewCode = async () => {
       VERIFICATION_COOKIE_SETTINGS,
     );
 
-    await sendEmail({
-      subject: "Verify your email",
-      to: updated.email,
-      component: SignupEmail({
-        name: updated.firstName,
-        locale: updated.locale,
-        validationCode: newCode,
-      }),
+    const newCode = generateRandomInteger(100000, 999999).toString();
+    const codeHash = hashValue(newCode);
+    const expiresAt = addTimeToDate(VERIFICATION_TTL_MS);
+
+    await prisma.$transaction(async (tx) => {
+      const updated = await tx.signupVerification.update({
+        where: { verificationId },
+        data: { codeHash, expiresAt, attempts: 0 },
+      });
+
+      await sendEmail({
+        subject: "Verify your email",
+        to: updated.email,
+        component: SignupEmail({
+          name: updated.firstName,
+          locale: updated.locale,
+          validationCode: newCode,
+        }),
+      });
     });
 
     return { error: null, ok: true } as const;
-  } catch {
+  } catch (error) {
+    console.error(error);
     return { error: "errors.unknown_error", ok: false } as const;
   }
 };
