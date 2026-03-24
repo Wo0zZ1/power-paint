@@ -1,7 +1,7 @@
 import { useTranslations } from "next-intl";
 import { memo, useCallback } from "react";
 
-import { EmailCodeCard } from "@/features/auth/ui/EmailCodeCard";
+import { EmailCodeCard } from "@/features/verify-by-email";
 
 interface VerifyStepProps {
   onResend: () => void;

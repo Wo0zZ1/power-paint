@@ -2,18 +2,13 @@
 
 import { useTranslations } from "next-intl";
 
-import { Button } from "@/shared/ui";
+import { Button, ColorInput, NumberField } from "@/shared/ui";
 
-import { isStrokable, isDraw } from "../../model/types";
-import { ColorField } from "../ColorField";
-import { NumberField } from "../NumberField";
-import { SidebarBlock } from "../SidebarBlock";
+import type { PropertySectionProps } from "../../model";
+import { isStrokable, isDraw, getCommonElementProperties } from "../../model";
+import { SidebarBlock } from "../sidebar";
 
 import { PropertiesRow } from "./PropertiesRow";
-import {
-  type PropertySectionProps,
-  getCommonElementProperties,
-} from "./shared";
 
 export function StrokeSection({ elements, update }: PropertySectionProps) {
   const t = useTranslations("toolbar.sidebar");
@@ -51,16 +46,16 @@ export function StrokeSection({ elements, update }: PropertySectionProps) {
           className="w-max"
         />
 
-        <ColorField
+        <ColorInput
           preview
-          exceptionValue="mixed"
+          exceptionValues={["mixed"]}
           value={elementsStrokeColor}
           onChange={(v) => update({ strokeColor: v })}
           className="grow"
         />
       </PropertiesRow>
       {!someElementIsStroke && (
-        <PropertiesRow>
+        <PropertiesRow className="overflow-x-auto overflow-y-hidden">
           <Button
             size="sm"
             variant={elementsStrokeType === "solid" ? "default" : "outline"}

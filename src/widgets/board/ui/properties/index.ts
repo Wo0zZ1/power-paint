@@ -1,7 +1,10 @@
-export { PositionSection } from "./PositionSection";
-export { SizeSection } from "./SizeSection";
-export { RotationSection } from "./RotationSection";
-export { AppearanceSection } from "./AppearanceSection";
-export { FillSection } from "./FillSection";
-export { StrokeSection } from "./StrokeSection";
-export { TextSection } from "./TextSection";
+export * from "./AppearanceSection";
+export * from "./FillSection";
+export * from "./PositionSection";
+export * from "./PropertiesRow";
+export * from "./RotationSection";
+export * from "./SizeSection";
+export * from "./StrokeSection";
+export * from "./TextSection";
+export * from "./SelectField";
+export * from "./FieldLabel";

@@ -2,15 +2,16 @@ import type { Board } from "@prisma/client";
 import { cookies } from "next/headers";
 
 import { auth } from "@/shared/auth";
+import {
+  generateRandomUsername,
+  generateRandomHslColor,
+  cn,
+} from "@/shared/lib/utils";
 import type { IGuestUserCookie } from "@/shared/types";
-import { cn, generateRandomColor, generateRandomUsername } from "@/utils";
 
-import type { AwarenessUser } from "../model/types";
+import type { AwarenessUser } from "../model";
 
 import { KonvaBoard } from "./KonvaBoard";
-
-export const revalidate = 0;
-export const dyanamic = "force-dynamic";
 
 interface BoardProps {
   className?: string;
@@ -30,7 +31,7 @@ export async function Board({ className, boardId }: BoardProps) {
     : null;
 
   const guestName = parsedGuestUser?.name ?? generateRandomUsername();
-  const guestColor = parsedGuestUser?.color ?? generateRandomColor();
+  const guestColor = parsedGuestUser?.color ?? generateRandomHslColor();
 
   const user = {
     guest: !session,

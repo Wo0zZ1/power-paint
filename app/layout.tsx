@@ -3,7 +3,7 @@ import { getLocale, getMessages, getTimeZone } from "next-intl/server";
 import type { ReactNode } from "react";
 
 import { ClientProviders, QueryProvider } from "@/app/providers";
-import { ThemeScript } from "@/features/theme-switcher/ui/ThemeScript";
+import { ThemeScript } from "@/features/switch-theme/ui/ThemeScript";
 import { auth } from "@/shared/auth";
 import { Header } from "@/widgets/header";
 

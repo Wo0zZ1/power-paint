@@ -2,18 +2,13 @@
 
 import { useTranslations } from "next-intl";
 
-import { Button } from "@/shared/ui";
+import { Button, ColorInput, NumberField } from "@/shared/ui";
 
-import { isFillable } from "../../model/types";
-import { ColorField } from "../ColorField";
-import { NumberField } from "../NumberField";
-import { SidebarBlock } from "../SidebarBlock";
+import type { PropertySectionProps } from "../../model";
+import { isFillable, getCommonElementProperties } from "../../model";
+import { SidebarBlock } from "../sidebar";
 
 import { PropertiesRow } from "./PropertiesRow";
-import {
-  type PropertySectionProps,
-  getCommonElementProperties,
-} from "./shared";
 
 export function FillSection({ elements, update }: PropertySectionProps) {
   const t = useTranslations("toolbar.sidebar");
@@ -85,9 +80,9 @@ export function FillSection({ elements, update }: PropertySectionProps) {
         </Button>
       </PropertiesRow>
       {elementsFillType === "color" && (
-        <ColorField
+        <ColorInput
           preview
-          exceptionValue="mixed"
+          exceptionValues={["mixed"]}
           value={elementsFillColor1}
           onChange={(v) => update({ fillColor1: v })}
         />
@@ -125,15 +120,15 @@ export function FillSection({ elements, update }: PropertySectionProps) {
             </Button>
           </PropertiesRow>
 
-          <ColorField
+          <ColorInput
             preview
-            exceptionValue="mixed"
+            exceptionValues={["mixed"]}
             value={elementsFillColor1}
             onChange={(v) => update({ fillColor1: v })}
           />
-          <ColorField
+          <ColorInput
             preview
-            exceptionValue="mixed"
+            exceptionValues={["mixed"]}
             value={elementsFillColor2}
             onChange={(v) => update({ fillColor2: v })}
           />

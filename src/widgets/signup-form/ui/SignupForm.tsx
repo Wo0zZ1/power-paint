@@ -5,13 +5,13 @@ import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useMemo } from "react";
 import { FormProvider } from "react-hook-form";
 
-import { useSignInHandlers, signInWithCredentials } from "@/features/signin";
-import { AbortSignupAction, buildSignupFlow } from "@/features/signup";
-import { type SignupCodeData, type SignupFormData } from "@/shared/config";
+import { useSignInHandlers, signInWithCredentials } from "@/features/sign-in";
+import { buildSignupFlow, AbortSignupAction } from "@/features/sign-up";
+import type { SignupFormData, SignupCodeData } from "@/shared/config";
 import type { SupportedLocaleCode } from "@/shared/i18n";
 import { useMultiStepForm } from "@/shared/lib/hooks";
+import { cn } from "@/shared/lib/utils";
 import { Button, Field } from "@/shared/ui";
-import { cn } from "@/utils";
 
 import { SignupFormStep1 } from "./SignupFormStep1";
 import { SignupFormStep2 } from "./SignupFormStep2";

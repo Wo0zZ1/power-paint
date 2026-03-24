@@ -2,8 +2,10 @@ export const hexColorRegex = /^#?([a-fA-F0-9]{3}|[a-fA-F0-9]{6})$/;
 
 // Generate Colors Section
 
-export const generateRandomColor = () =>
-  `hsl(${Math.floor(Math.random() * 360)}, 70%, 45%)`;
+export const generateRandomHslColor = () =>
+  `hsl(${Math.floor(Math.random() * 360)}, 70%, 50%)`;
+
+export const generateRandomHexColor = () => hslToHex(generateRandomHslColor());
 
 export const getContrastingTextColor = (bgColor: string): string => {
   const hslMatch = bgColor.match(/hsl\((\d+),\s*(\d+)%,\s*(\d+)%\)/);
@@ -106,6 +108,27 @@ export const rgbToHsl = (rgb: string): string => {
 export const hexToHsl = (hex: string): string => {
   const rgbColor = hexToRgb(hex);
   return rgbToHsl(rgbColor);
+};
+
+export const hslToHex = (hsl: string): string => {
+  const hslMatch = hsl.match(/hsl\((\d+),\s*(\d+)%,\s*(\d+)%\)/);
+
+  if (!hslMatch) throw new Error("Invalid HSL color format");
+
+  const h = parseInt(hslMatch[1]);
+  const s = parseInt(hslMatch[2]);
+  let l = parseInt(hslMatch[3]);
+  l /= 100;
+
+  const a = (s * Math.min(l, 1 - l)) / 100;
+  const f = (n: number) => {
+    const k = (n + h / 30) % 12;
+    const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+    return Math.round(255 * color)
+      .toString(16)
+      .padStart(2, "0");
+  };
+  return `#${f(0)}${f(8)}${f(4)}`;
 };
 
 export const normalizeHexColor = (hex: string): string => {

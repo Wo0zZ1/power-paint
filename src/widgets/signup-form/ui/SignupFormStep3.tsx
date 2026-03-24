@@ -2,8 +2,8 @@
 
 import { useTranslations } from "next-intl";
 
-import { EmailCodeCard } from "@/features/auth/ui/EmailCodeCard";
-import { RequestNewCode } from "@/features/signup";
+import { RequestNewCode } from "@/features/sign-up";
+import { EmailCodeCard } from "@/features/verify-by-email";
 
 interface SignupFormStep3Props {
   onNext: () => void;

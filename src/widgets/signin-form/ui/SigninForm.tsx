@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 import { FormProvider, useForm } from "react-hook-form";
 
-import { useSignInHandlers } from "@/features/signin";
+import { useSignInHandlers } from "@/features/sign-in";
 import { getSigninSchema } from "@/shared/config/authSchemas";
 import {
   Card,

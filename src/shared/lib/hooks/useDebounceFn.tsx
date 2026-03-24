@@ -1,7 +1,8 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
+
 import { useCallback, useRef } from "react";
 
-export const useDebounceFn = <T extends (...args: any[]) => any>(
+export const useDebounceFn = <T extends (...args: unknown[]) => unknown>(
   fn: T,
   delay: number,
 ): T => {

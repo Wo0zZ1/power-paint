@@ -13,19 +13,21 @@ import { useTranslations } from "next-intl";
 
 import { TOOLTIP_DELAY } from "@/shared/config";
 import { FONT_OPTIONS } from "@/shared/constants";
-import { Button, Tooltip, TooltipContent, TooltipTrigger } from "@/shared/ui";
+import {
+  Button,
+  ColorInput,
+  NumberField,
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/shared/ui";
 
-import { isText } from "../../model/types";
-import { ColorField } from "../ColorField";
-import { NumberField } from "../NumberField";
-import { SelectField } from "../SelectField";
-import { SidebarBlock } from "../SidebarBlock";
+import type { PropertySectionProps } from "../../model";
+import { isText, getCommonElementProperties } from "../../model";
+import { SidebarBlock } from "../sidebar";
 
 import { PropertiesRow } from "./PropertiesRow";
-import {
-  type PropertySectionProps,
-  getCommonElementProperties,
-} from "./shared";
+import { SelectField } from "./SelectField";
 
 export function TextSection({ elements, update }: PropertySectionProps) {
   const t = useTranslations("toolbar.sidebar");
@@ -78,7 +80,7 @@ export function TextSection({ elements, update }: PropertySectionProps) {
           onChange={(v) => update({ fontSize: v })}
           className="w-full max-w-32"
         />
-        <ColorField
+        <ColorInput
           preview
           value={elementsTextColor}
           onChange={(v) => update({ textColor: v })}

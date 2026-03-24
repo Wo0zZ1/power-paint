@@ -3,8 +3,8 @@
 import { EllipsisVertical } from "lucide-react";
 import { useTranslations } from "next-intl";
 
-import { LanguageSwitcherMenuItem } from "@/features/language-switcher";
-import { ThemeSwitcherMenuItem } from "@/features/theme-switcher";
+import { LanguageSwitcherMenuItem } from "@/features/switch-language";
+import { ThemeSwitcherMenuItem } from "@/features/switch-theme";
 import { TOOLTIP_DELAY } from "@/shared/config";
 import { useTooltip } from "@/shared/lib/hooks";
 import {

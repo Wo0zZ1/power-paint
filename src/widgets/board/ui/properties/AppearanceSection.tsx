@@ -4,13 +4,11 @@ import { useTranslations } from "next-intl";
 
 import { Label, Slider } from "@/shared/ui";
 
-import { SidebarBlock } from "../SidebarBlock";
+import type { PropertySectionProps } from "../../model";
+import { getCommonElementProperties } from "../../model";
+import { SidebarBlock } from "../sidebar";
 
 import { PropertiesRow } from "./PropertiesRow";
-import {
-  type PropertySectionProps,
-  getCommonElementProperties,
-} from "./shared";
 
 export function AppearanceSection({ elements, update }: PropertySectionProps) {
   const t = useTranslations("toolbar.sidebar");

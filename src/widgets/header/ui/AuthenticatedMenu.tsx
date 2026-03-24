@@ -5,8 +5,8 @@ import type { Session } from "next-auth";
 import { signOut } from "next-auth/react";
 import { useTranslations } from "next-intl";
 
-import { LanguageSwitcherMenuItem } from "@/features/language-switcher";
-import { ThemeSwitcherMenuItem } from "@/features/theme-switcher";
+import { LanguageSwitcherMenuItem } from "@/features/switch-language";
+import { ThemeSwitcherMenuItem } from "@/features/switch-theme";
 import { ROUTES } from "@/shared/config";
 import { shortenEmail } from "@/shared/lib/utils";
 import {

@@ -7,19 +7,17 @@ import { TOOLTIP_DELAY } from "@/shared/config";
 import {
   Button,
   ButtonGroup,
+  NumberField,
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/shared/ui";
 
-import { NumberField } from "../NumberField";
-import { SidebarBlock } from "../SidebarBlock";
+import type { PropertySectionProps } from "../../model";
+import { getCommonElementProperties } from "../../model";
+import { SidebarBlock } from "../sidebar";
 
 import { PropertiesRow } from "./PropertiesRow";
-import {
-  type PropertySectionProps,
-  getCommonElementProperties,
-} from "./shared";
 
 export function RotationSection({ elements, update }: PropertySectionProps) {
   const t = useTranslations("toolbar.sidebar");

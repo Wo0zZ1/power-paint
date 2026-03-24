@@ -6,23 +6,21 @@ import { useRef } from "react";
 import { Layer, Stage } from "react-konva";
 import { useShallow } from "zustand/react/shallow";
 
-import { useInvertableColor, useWindowSize } from "@/shared/lib/hooks";
+import { useWindowSize, useInvertableColor } from "@/shared/lib/hooks";
 
-import type { AwarenessUser } from "../model/types";
-import { useBoardInteraction } from "../model/useBoardInteraction";
-import { useBoardStore } from "../model/useBoardStore";
-import { useHocuspocus } from "../model/useHocuspocus";
-import { useHotKeys } from "../model/useHotKeys";
-import { useMouseAwareness } from "../model/useMouseAwareness";
+import type { AwarenessUser } from "../model";
+import {
+  useBoardStore,
+  useHotKeys,
+  useHocuspocus,
+  useMouseAwareness,
+  useBoardInteraction,
+} from "../model";
 
-import { BottomToolbar } from "./BottomToolbar";
-import { LayerContent } from "./LayerContent";
-import { LeftSidebar } from "./LeftSidebar";
-import { SelectionRect } from "./SelectionRect";
-import { TransformerTool } from "./TransformerTool";
-import { UndoRedoControls } from "./UndoRedoControls";
-import { UserCursors } from "./UserCursors";
-import { ZoomControls } from "./ZoomControls";
+import { LayerContent, TransformerTool, SelectionElement } from "./elements";
+import { UndoRedoControls, ZoomControls, UserCursors } from "./overlay";
+import { LeftSidebar } from "./sidebar";
+import { BottomToolbar } from "./toolbar";
 
 interface KonvaBoardProps {
   user: AwarenessUser;
@@ -42,8 +40,6 @@ export function KonvaBoard({ user, boardId }: KonvaBoardProps) {
   const { width: windowWidth, height: windowHeight } = useWindowSize();
   const { activeColor } = useInvertableColor(globals.backgroundColor, true);
 
-  const isMobile = windowWidth < 768;
-
   const { handleTouchMove, handlePointerMove, handlePointerLeave } =
     useMouseAwareness();
 
@@ -60,33 +56,32 @@ export function KonvaBoard({ user, boardId }: KonvaBoardProps) {
         className="w-full h-full min-w-0 min-h-0 relative select-none overflow-hidden touch-none"
       >
         <div className="absolute w-auto mx-auto inset-5 pointer-events-none z-11">
-          {isMobile ? (
-            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 space-y-2">
-              <div className="flex gap-4">
-                <></>
-                {/* / */}
-                <UndoRedoControls
-                  className="pointer-events-auto ml-auto"
-                  tooltipActive={false}
-                />
-              </div>
-
-              <BottomToolbar
+          {/* Mobile */}
+          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 space-y-2 md:hidden">
+            <div className="flex gap-4">
+              <></>
+              {/* / */}
+              <UndoRedoControls
+                className="pointer-events-auto ml-auto"
                 tooltipActive={false}
-                className="pointer-events-auto"
               />
             </div>
-          ) : (
-            <>
-              <LeftSidebar className="pointer-events-auto absolute top-0 left-0" />
-              <BottomToolbar className="pointer-events-auto absolute bottom-0 left-1/2 -translate-x-1/2" />
 
-              <div className="absolute bottom-0 left-0 flex gap-4">
-                <ZoomControls className="pointer-events-auto" />
-                <UndoRedoControls className="pointer-events-auto" />
-              </div>
-            </>
-          )}
+            <BottomToolbar
+              tooltipActive={false}
+              className="pointer-events-auto"
+            />
+          </div>
+          {/* Desktop */}
+          <div className="not-md:hidden">
+            <LeftSidebar className="pointer-events-auto absolute top-0 left-0" />
+            <BottomToolbar className="pointer-events-auto absolute bottom-0 left-1/2 -translate-x-1/2" />
+
+            <div className="absolute bottom-0 left-0 flex gap-4">
+              <ZoomControls className="pointer-events-auto" />
+              <UndoRedoControls className="pointer-events-auto" />
+            </div>
+          </div>
         </div>
 
         <Stage
@@ -107,7 +102,7 @@ export function KonvaBoard({ user, boardId }: KonvaBoardProps) {
           </Layer>
 
           <Layer>
-            <SelectionRect rectRef={selectionRectRef} />
+            <SelectionElement rectRef={selectionRectRef} />
           </Layer>
 
           <Layer>

@@ -156,10 +156,7 @@ export const getSignupFormStep2Schema = ({
     preferredColor: z
       .string()
       .trim()
-      .refine((value) => value === "" || hexColorRegex.test(value), {
-        error: invalidPreferredColor,
-      })
-      .optional(),
+      .regex(hexColorRegex, { error: invalidPreferredColor }),
     image: z
       .string()
       .trim()

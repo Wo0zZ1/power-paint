@@ -2,6 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { Workspace } from "@prisma/client";
+import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -12,6 +13,7 @@ import {
   useCreateBoardMutation,
 } from "@/entities/board";
 import { useGetWorkspacesQuery } from "@/entities/workspace";
+import { ROUTES } from "@/shared/config";
 import {
   DialogContent,
   DialogHeader,
@@ -48,6 +50,7 @@ export function CreateBoardModal({
   className,
 }: CreateBoardModalProps) {
   const t = useTranslations();
+  const router = useRouter();
 
   const { data, isLoading, isError, error } = useGetWorkspacesQuery();
   const createBoardMutation = useCreateBoardMutation();
@@ -78,10 +81,11 @@ export function CreateBoardModal({
 
   const handleCreateBoard = useCallback(
     async (data: CreateBoardFormData) => {
-      await createBoardMutation.mutateAsync(data);
+      const { board } = await createBoardMutation.mutateAsync(data);
+      router.push(ROUTES.BOARD(board.id));
       onOpenChange(false);
     },
-    [createBoardMutation, onOpenChange],
+    [createBoardMutation, onOpenChange, router],
   );
 
   return (

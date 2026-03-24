@@ -2,14 +2,13 @@
 
 import { useTranslations } from "next-intl";
 
-import { NumberField } from "../NumberField";
-import { SidebarBlock } from "../SidebarBlock";
+import { NumberField } from "@/shared/ui";
+
+import type { PropertySectionProps } from "../../model";
+import { getCommonElementProperties } from "../../model";
+import { SidebarBlock } from "../sidebar";
 
 import { PropertiesRow } from "./PropertiesRow";
-import {
-  type PropertySectionProps,
-  getCommonElementProperties,
-} from "./shared";
 
 export function PositionSection({ elements, update }: PropertySectionProps) {
   const t = useTranslations("toolbar.sidebar");

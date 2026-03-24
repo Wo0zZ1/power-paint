@@ -5,8 +5,9 @@ import { useTranslations } from "next-intl";
 import { useCallback } from "react";
 import { Controller, useFormContext, useFormState } from "react-hook-form";
 
-import { changeLocaleAction } from "@/features/language-switcher";
+import { changeLocaleAction } from "@/features/switch-language";
 import type { SignupFormStep2Data } from "@/shared/config";
+import { DEFAULT_USER_COLORS } from "@/shared/constants";
 import type { SupportedLocaleCode } from "@/shared/i18n";
 import { ALL_LOCALES } from "@/shared/i18n";
 import {
@@ -18,7 +19,10 @@ import {
   SelectItem,
   Select,
   FieldDescription,
+  FieldTitle,
+  ColorButton,
 } from "@/shared/ui";
+import { ColorInput } from "@/shared/ui/ColorInput";
 
 export function SignupFormStep2() {
   const t = useTranslations();
@@ -96,7 +100,42 @@ export function SignupFormStep2() {
         )}
       </Field>
 
-      <Field>Preffered Color</Field>
+      <Field>
+        <FieldTitle>Preffered Color</FieldTitle>
+
+        <FieldDescription>
+          It will be used to highlight your contributions.
+        </FieldDescription>
+
+        <div className="flex flex-wrap justify-between gap-4">
+          <Controller
+            name="preferredColor"
+            control={control}
+            render={({ field }) => (
+              <>
+                <div className="flex gap-x-2">
+                  {DEFAULT_USER_COLORS.map((c) => (
+                    <ColorButton
+                      key={c}
+                      color={c}
+                      active={c === field.value}
+                      onSelect={field.onChange}
+                      invertable
+                      className="my-auto size-8 outline-2 outline-offset-2 rounded-full"
+                    />
+                  ))}
+                </div>
+                <ColorInput
+                  preview
+                  className="h-12 w-min"
+                  value={field.value}
+                  onChange={field.onChange}
+                />
+              </>
+            )}
+          ></Controller>
+        </div>
+      </Field>
 
       <Field>Image</Field>
     </>
