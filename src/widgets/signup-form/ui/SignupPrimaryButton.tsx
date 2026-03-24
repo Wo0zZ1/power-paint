@@ -1,20 +1,23 @@
+"use client";
+
+import { useTranslations } from "next-intl";
 import type { MouseEvent } from "react";
 
 import { Button, Field, Spinner } from "@/shared/ui";
 
 interface SignupPrimaryButtonProps {
-  t: (key: string) => string;
   isLastStep: boolean;
   isSubmitting: boolean;
   onNext: (e: MouseEvent<HTMLButtonElement>) => void;
 }
 
 export function SignupPrimaryButton({
-  t,
   isLastStep,
   isSubmitting,
   onNext,
 }: SignupPrimaryButtonProps) {
+  const t = useTranslations();
+
   return (
     <Field orientation="horizontal">
       <Button

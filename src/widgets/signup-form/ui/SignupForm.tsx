@@ -37,11 +37,19 @@ export function SignupForm({ className, verificationId }: SignupFormProps) {
     [locale, router],
   );
 
-  const { methods, step, hasBackButton, isLastStep, goPrev, goTo, handleNext } =
-    useMultiStepForm<SignupFormData & SignupCodeData>({
-      defaultValues,
-      steps,
-    });
+  const {
+    methods,
+    step,
+    hasBackButton,
+    isLastStep,
+    goPrev,
+    goTo,
+    handleNext,
+    isPending,
+  } = useMultiStepForm<SignupFormData & SignupCodeData>({
+    defaultValues,
+    steps,
+  });
 
   useEffect(() => {
     if (verificationId) goTo(3);
@@ -63,9 +71,8 @@ export function SignupForm({ className, verificationId }: SignupFormProps) {
           {step === 3 && <SignupFormStep3 onNext={handleNext} />}
 
           <SignupPrimaryButton
-            t={t}
             isLastStep={isLastStep}
-            isSubmitting={methods.formState.isSubmitting}
+            isSubmitting={isPending}
             onNext={handleNext}
           />
 

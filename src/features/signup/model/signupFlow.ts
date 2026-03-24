@@ -81,6 +81,11 @@ export const buildSignupFlow = ({
                 message: result.error,
               });
               goTo(1);
+            case "auth.errors.phone_in_use":
+              setError("phone", {
+                type: "manual",
+                message: result.error,
+              });
             default:
               setError("root", {
                 type: "manual",

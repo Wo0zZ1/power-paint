@@ -25,12 +25,18 @@ export const SignupAction = async (formData: SignupFormData) => {
 
     if (!success) return { error: "errors.invalid_data", ok: false } as const;
 
-    const account = await prisma.user.findUnique({
-      where: { email: data.email },
+    const user = await prisma.user.findFirst({
+      where: {
+        OR: [{ email: data.email }, { phone: data.phone }],
+      },
     });
 
-    if (account)
-      return { error: "auth.errors.email_in_use", ok: false } as const;
+    if (user) {
+      if (user.email === data.email)
+        return { error: "auth.errors.email_in_use", ok: false } as const;
+      if (user.phone === data.phone)
+        return { error: "auth.errors.phone_in_use", ok: false } as const;
+    }
 
     const verificationId = randomUUID();
     const emailCode = generateRandomInteger(100000, 999999).toString();

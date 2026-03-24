@@ -91,6 +91,7 @@
 
       "invalid_email": "Please enter a valid email.",
       "email_in_use": "An account with this email already exists.",
+
       "invalid_email_code": "Invalid verification code.",
       "code_expired": "Verification code has expired.",
       "compromised_email_code": "Too many attempts. Request a new code.",
@@ -103,6 +104,7 @@
       "terms_required": "You must accept the terms and conditions.",
 
       "invalid_phone": "Please enter a valid phone number.",
+      "phone_in_use": "An account with this phone number already exists.",
 
       "invalid_preferred_color": "Please enter a valid hex color code.",
 

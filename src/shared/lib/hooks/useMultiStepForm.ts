@@ -38,6 +38,7 @@ export function useMultiStepForm<TValues extends FieldValues>({
   mode = "onTouched",
 }: UseMultiStepFormParams<TValues>) {
   const [step, setStep] = useState(1);
+  const [isPending, setIsPending] = useState<boolean>(false);
 
   const validateStep = useCallback(
     (step: number) => Math.min(Math.max(step, 1), steps.length),
@@ -81,16 +82,20 @@ export function useMultiStepForm<TValues extends FieldValues>({
 
     const action = currentStepConfig.action;
 
-    const actionSuccess = action
-      ? await action({
-          data: methods.getValues(),
-          setError: methods.setError,
-          setValue: methods.setValue,
-          goTo,
-        })
-      : true;
+    if (action) {
+      setIsPending(true);
 
-    if (!actionSuccess) return false;
+      const actionSuccess = await action({
+        data: methods.getValues(),
+        setError: methods.setError,
+        setValue: methods.setValue,
+        goTo,
+      });
+
+      setIsPending(false);
+
+      if (!actionSuccess) return false;
+    }
 
     goNext();
 
@@ -105,5 +110,6 @@ export function useMultiStepForm<TValues extends FieldValues>({
     handleNext,
     goTo,
     goPrev,
+    isPending,
   };
 }
