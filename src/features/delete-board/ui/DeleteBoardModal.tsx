@@ -61,18 +61,14 @@ export function DeleteBoardModal({
     setIsMutating(true);
 
     deleteBoardMutation.mutateAsync(board.id, {
-      onSuccess: () => {
-        onOpenChange(false);
-      },
-      onSettled: () => {
-        setIsMutating(false);
-      },
+      onSuccess: () => onOpenChange(false),
+      onSettled: () => setIsMutating(false),
     });
   };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className={cn("md:max-w-160", className)}>
+      <DialogContent className={cn("sm:max-w-lg w-full", className)}>
         <form className="flex flex-col gap-4" onSubmit={handleDeleteBoard}>
           <DialogHeader>
             <DialogTitle>{t("board.delete.title")}</DialogTitle>

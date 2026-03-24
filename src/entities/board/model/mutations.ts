@@ -14,7 +14,7 @@ export const useCreateBoardMutation = () => {
     onSuccess: (data) => {
       queryClient.setQueryData(
         [BOARDS_QUERY_KEY, `workspace-${data.board.workspaceId}`, {}],
-        (oldData: BoardWithAccess[]) => [data, ...oldData],
+        (oldData?: BoardWithAccess[]) => [data, ...(oldData ?? [])],
       );
 
       queryClient.invalidateQueries({
@@ -60,8 +60,8 @@ export const useDeleteBoardMutation = () => {
     onSuccess: (data) => {
       queryClient.setQueryData(
         [BOARDS_QUERY_KEY, `workspace-${data.board.workspaceId}`, {}],
-        (oldData: BoardWithAccess[]) =>
-          oldData.filter((w) => w.board.id !== data.board.id),
+        (oldData?: BoardWithAccess[]) =>
+          (oldData ?? []).filter((w) => w.board.id !== data.board.id),
       );
 
       queryClient.invalidateQueries({

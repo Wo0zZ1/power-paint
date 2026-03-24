@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
@@ -10,6 +11,7 @@ import {
   createWorkspaceFormSchema,
   useCreateWorkspaceMutation,
 } from "@/entities/workspace";
+import { ROUTES } from "@/shared/config";
 import {
   DialogContent,
   DialogHeader,
@@ -39,6 +41,7 @@ export function CreateWorkspaceModal({
   className,
 }: CreateWorkspaceModalProps) {
   const t = useTranslations();
+  const router = useRouter();
 
   const createWorkspaceMutation = useCreateWorkspaceMutation();
 
@@ -55,13 +58,14 @@ export function CreateWorkspaceModal({
   }, [open, reset]);
 
   const handleCreateWorkspace = async (data: CreateWorkspaceFormData) => {
-    await createWorkspaceMutation.mutateAsync(data);
+    const { workspace } = await createWorkspaceMutation.mutateAsync(data);
+    router.push(ROUTES.DASHBOARD.WORKSPACE(workspace.id));
     onOpenChange(false);
   };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className={cn("", className)}>
+      <DialogContent className={cn("sm:max-w-sm", className)}>
         <form
           className="flex flex-col gap-4"
           onSubmit={handleSubmit(handleCreateWorkspace)}

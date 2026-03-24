@@ -44,7 +44,9 @@ const fetchWorkspace = async ({
   return response.json();
 };
 
-const createWorkspace = async (workspace: CreateWorkspaceData) => {
+const createWorkspace = async (
+  workspace: CreateWorkspaceData,
+): Promise<WorkspaceWithAccess> => {
   const response = await fetch(url, {
     ...fetchInitWithCookies(),
     method: "POST",
@@ -58,7 +60,7 @@ const createWorkspace = async (workspace: CreateWorkspaceData) => {
 
 const updateWorkspace = async (
   workspace: Partial<Workspace> & Pick<Workspace, "id">,
-) => {
+): Promise<WorkspaceWithAccess> => {
   const response = await fetch(`${url}/${workspace.id}`, {
     ...fetchInitWithCookies(),
     method: "PATCH",
@@ -70,7 +72,9 @@ const updateWorkspace = async (
   return response.json();
 };
 
-const removeWorkspace = async (workspaceId: string) => {
+const removeWorkspace = async (
+  workspaceId: string,
+): Promise<WorkspaceWithAccess> => {
   const response = await fetch(`${url}/${workspaceId}`, {
     ...fetchInitWithCookies(),
     method: "DELETE",

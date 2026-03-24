@@ -61,18 +61,14 @@ export function DeleteWorkspaceModal({
     setIsMutating(true);
 
     deleteWorkspaceMutation.mutateAsync(workspace.id, {
-      onSuccess: () => {
-        onOpenChange(false);
-      },
-      onSettled: () => {
-        setIsMutating(false);
-      },
+      onSuccess: () => onOpenChange(false),
+      onSettled: () => setIsMutating(false),
     });
   };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className={cn("md:max-w-160", className)}>
+      <DialogContent className={cn("sm:max-w-lg w-full", className)}>
         <form className="flex flex-col gap-4" onSubmit={handleDeleteWorkspace}>
           <DialogHeader>
             <DialogTitle>{t("workspace.delete.title")}</DialogTitle>

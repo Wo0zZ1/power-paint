@@ -90,7 +90,7 @@ export function CreateBoardModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className={cn("", className)}>
+      <DialogContent className={cn("sm:max-w-sm", className)}>
         <form
           className="flex flex-col gap-4"
           onSubmit={handleSubmit(handleCreateBoard)}

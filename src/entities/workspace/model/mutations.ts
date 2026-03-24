@@ -14,7 +14,7 @@ export const useCreateWorkspaceMutation = () => {
     onSuccess: (data) => {
       queryClient.setQueryData(
         [WORKSPACES_QUERY_KEY, "team", {}],
-        (oldData: WorkspaceWithAccess[]) => [data, ...oldData],
+        (oldData?: WorkspaceWithAccess[]) => [data, ...(oldData ?? [])],
       );
     },
 
@@ -33,9 +33,11 @@ export const useUpdateWorkspaceMutation = () => {
     onSuccess: (data) => {
       queryClient.setQueryData(
         [WORKSPACES_QUERY_KEY, "team", {}],
-        (oldData: WorkspaceWithAccess[]) => [
+        (oldData?: WorkspaceWithAccess[]) => [
           data,
-          ...oldData.filter((w) => w.workspace.id !== data.workspace.id),
+          ...(oldData ?? []).filter(
+            (w) => w.workspace.id !== data.workspace.id,
+          ),
         ],
       );
     },
@@ -55,8 +57,8 @@ export const useDeleteWorkspaceMutation = () => {
     onSuccess: (_, workspaceId) => {
       queryClient.setQueryData(
         [WORKSPACES_QUERY_KEY, "team", {}],
-        (oldData: WorkspaceWithAccess[]) =>
-          oldData.filter((w) => w.workspace.id !== workspaceId),
+        (oldData?: WorkspaceWithAccess[]) =>
+          (oldData ?? []).filter((w) => w.workspace.id !== workspaceId),
       );
     },
 
