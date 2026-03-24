@@ -37,7 +37,10 @@ export async function ResetPasswordEmail({
 
   return (
     <Html>
-      <Head />
+      <Head>
+        <meta name="color-scheme" content="light only" />
+        <meta name="supported-color-schemes" content="light only" />
+      </Head>
       <Tailwind config={tailwindConfig}>
         <Body className="text-[#1d1c1d] bg-white font-sans mx-auto">
           <Preview>{t("subject")}</Preview>

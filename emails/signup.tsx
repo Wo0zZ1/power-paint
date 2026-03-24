@@ -37,7 +37,10 @@ export async function SignupEmail({
 
   return (
     <Html>
-      <Head />
+      <Head>
+        <meta name="color-scheme" content="light only" />
+        <meta name="supported-color-schemes" content="light only" />
+      </Head>
       <Tailwind config={tailwindConfig}>
         <Body className="text-[#1d1c1d] bg-white font-sans mx-auto">
           <Preview>{t("subject")}</Preview>
@@ -45,10 +48,10 @@ export async function SignupEmail({
           <Container className="mx-auto my-8 px-5">
             <Link href={baseUrl} className="mb-6 w-max block">
               <Img
+                src={`${baseUrl}/assets/power-paint-logo.png`}
                 width="250"
                 height="44"
                 alt="Power Paint"
-                src={`${baseUrl}/assets/power-paint-logo.png`}
               />
             </Link>
 
