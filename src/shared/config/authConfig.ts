@@ -25,7 +25,6 @@ export const AUTH_CONFIG = {
           emailVerified: new Date(),
 
           image: profile.picture,
-          preferredColor: undefined,
           role: Role.User,
         };
       },
@@ -41,7 +40,6 @@ export const AUTH_CONFIG = {
           emailVerified: new Date(),
 
           image: profile.avatar_url,
-          preferredColor: undefined,
           role: Role.User,
         };
       },
@@ -144,6 +142,15 @@ export const AUTH_CONFIG = {
       } catch (error) {
         console.error("Failed to create workspace:", error);
       }
+    },
+
+    async linkAccount({ user, profile }) {
+      const image = profile.image;
+
+      await prisma.user.update({
+        where: { id: user.id },
+        data: { image },
+      });
     },
   },
 
