@@ -1,0 +1,1 @@
+export const DEFAULT_CAPTURE_TIMEOUT = 300;

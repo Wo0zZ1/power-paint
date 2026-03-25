@@ -1,6 +1,11 @@
 import type { Board } from "@prisma/client";
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { cookies } from "next/headers";
+import { notFound } from "next/navigation";
 
+import type { BoardWithAccess } from "@/entities/board";
+import { getBoardQueryOption } from "@/entities/board/server";
+import { getQueryClient } from "@/shared/api";
 import { auth } from "@/shared/auth";
 import {
   generateRandomUsername,
@@ -10,6 +15,7 @@ import {
 import type { IGuestUserCookie } from "@/shared/types";
 
 import type { AwarenessUser } from "../model";
+import { generateWsToken } from "../model/lib/token";
 
 import { KonvaBoard } from "./KonvaBoard";
 
@@ -22,6 +28,25 @@ export async function Board({ className, boardId }: BoardProps) {
   const session = await auth();
 
   const cookieState = await cookies();
+  const cookieString = cookieState.toString();
+
+  const queryClient = getQueryClient();
+
+  let boardWithAccess: BoardWithAccess;
+
+  try {
+    boardWithAccess = await queryClient.fetchQuery(
+      getBoardQueryOption({ boardId, cookieString }),
+    );
+  } catch {
+    notFound();
+  }
+
+  const { accessRole } = boardWithAccess;
+  const accessToken = await generateWsToken({
+    user: session?.user,
+    accessRole,
+  });
 
   const guestUser = cookieState.get("guest-user")?.value;
   const parsedGuestUser = guestUser
@@ -40,10 +65,12 @@ export async function Board({ className, boardId }: BoardProps) {
   } satisfies AwarenessUser;
 
   return (
-    <div className={cn(className, "grow min-w-0 min-h-0 overflow-hidden")}>
-      <div className="w-full h-full min-w-0 min-h-0">
-        <KonvaBoard boardId={boardId} user={user} />
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <div className={cn(className, "grow min-w-0 min-h-0 overflow-hidden")}>
+        <div className="w-full h-full min-w-0 min-h-0">
+          <KonvaBoard user={user} accessToken={accessToken} boardId={boardId} />
+        </div>
       </div>
-    </div>
+    </HydrationBoundary>
   );
 }

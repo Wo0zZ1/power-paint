@@ -34,5 +34,5 @@ export async function proxy() {
 }
 
 export const config = {
-  matcher: ["/board/:path*"],
+  matcher: ["/boards/:path*"],
 };

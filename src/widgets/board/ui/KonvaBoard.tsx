@@ -24,10 +24,11 @@ import { BottomToolbar } from "./toolbar";
 
 interface KonvaBoardProps {
   user: AwarenessUser;
+  accessToken: string;
   boardId: Board["id"];
 }
 
-export function KonvaBoard({ user, boardId }: KonvaBoardProps) {
+export function KonvaBoard({ user, accessToken, boardId }: KonvaBoardProps) {
   const boardRef = useRef<HTMLDivElement>(null);
   const selectionRectRef = useRef<Konva.Rect>(null);
 
@@ -35,7 +36,7 @@ export function KonvaBoard({ user, boardId }: KonvaBoardProps) {
   const viewport = useBoardStore(useShallow((s) => s.viewport));
 
   useHotKeys();
-  useHocuspocus({ boardId, user });
+  useHocuspocus({ user, accessToken, boardId });
 
   const { width: windowWidth, height: windowHeight } = useWindowSize();
   const { activeColor } = useInvertableColor(globals.backgroundColor, true);

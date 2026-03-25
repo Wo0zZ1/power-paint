@@ -18,3 +18,4 @@ export {
   type ForgotPasswordData,
   type ResetPasswordData,
 } from "./authSchemas";
+export { DEFAULT_CAPTURE_TIMEOUT } from "./hocuspocus";

@@ -2,6 +2,8 @@ import { HocuspocusProvider } from "@hocuspocus/provider";
 import { useEffect } from "react";
 import { UndoManager } from "yjs";
 
+import { DEFAULT_CAPTURE_TIMEOUT } from "@/shared/config";
+
 import type {
   AwarenessUser,
   RemoteCursorsMap,
@@ -12,17 +14,21 @@ import type {
 import { useBoardStore } from "./useBoardStore";
 
 interface UseHocuspocusProps {
-  boardId: string;
   user: AwarenessUser;
+  accessToken: string;
+  boardId: string;
 }
 
-export const DEFAULT_CAPTURE_TIMEOUT = 300;
-
-export const useHocuspocus = ({ boardId, user }: UseHocuspocusProps) => {
+export const useHocuspocus = ({
+  user,
+  accessToken,
+  boardId,
+}: UseHocuspocusProps) => {
   useEffect(() => {
     const provider = new HocuspocusProvider({
       url: process.env.NEXT_PUBLIC_WS_URL!,
       name: boardId,
+      token: accessToken,
     });
 
     const ydoc = provider.document;
@@ -91,5 +97,5 @@ export const useHocuspocus = ({ boardId, user }: UseHocuspocusProps) => {
       provider.destroy();
       useBoardStore.getState().reset();
     };
-  }, [boardId, user]);
+  }, [boardId, user, accessToken]);
 };

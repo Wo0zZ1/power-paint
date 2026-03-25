@@ -20,7 +20,7 @@ import {
 import { sendEmail } from "@/shared/lib/email";
 import { prisma } from "@/shared/lib/prisma";
 import { compareHash, hashValue } from "@/shared/lib/server";
-import { addTimeToDate, generateRandomInteger } from "@/shared/lib/utils";
+import { fromDate, generateRandomInteger } from "@/shared/lib/utils";
 
 export const RequestPasswordResetAction = async (formData: {
   email: string;
@@ -44,7 +44,7 @@ export const RequestPasswordResetAction = async (formData: {
 
   const newCode = generateRandomInteger(100000, 999999).toString();
   const codeHash = hashValue(newCode);
-  const expiresAt = addTimeToDate(RESET_PASSWORD_TTL_MS);
+  const expiresAt = fromDate(RESET_PASSWORD_TTL_MS);
 
   await prisma.passwordReset.upsert({
     where: { userId: user.id },
@@ -113,7 +113,7 @@ export const VerifyPasswordResetCodeAction = async (formData: {
     }
 
     const resetToken = randomUUID();
-    const expiresAt = addTimeToDate(RESET_PASSWORD_TTL_MS);
+    const expiresAt = fromDate(RESET_PASSWORD_TTL_MS);
 
     await prisma.passwordReset.update({
       where: { id: record.id },
@@ -146,7 +146,7 @@ export const RequestNewCode = async () => {
 
   const newCode = generateRandomInteger(100000, 999999).toString();
   const codeHash = hashValue(newCode);
-  const expiresAt = addTimeToDate(VERIFICATION_TTL_MS);
+  const expiresAt = fromDate(VERIFICATION_TTL_MS);
 
   try {
     const updated = await prisma.passwordReset.update({
