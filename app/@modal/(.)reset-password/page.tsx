@@ -11,8 +11,6 @@ export default async function ForgotPasswordModal() {
 
   const resetPasswordCookie = cookieState.get(RESET_PASSWORD_COOKIE)?.value;
 
-  console.log("resetPasswordCookie", resetPasswordCookie);
-
   return (
     <>
       <DialogTitle className="sr-only">{t("auth.forgot_title")}</DialogTitle>
