@@ -1,33 +1,43 @@
-import type { onAuthenticatePayload } from '@hocuspocus/server'
+import type { Context, onAuthenticatePayload } from "@hocuspocus/server";
+import { decode } from "jwt-simple";
+import { WS_TOKEN_SECRET } from "../config";
 
-/**
- * Проверка сессии пользователя.
- *
- * Фронтенд (Next.js / NextAuth) должен передавать токен сессии
- * в поле `token` при подключении к Hocuspocus.
- *
- * TODO: подключить Prisma и проверять сессию в БД:
- *
- * import { PrismaClient } from '@prisma/client'
- * const prisma = new PrismaClient()
- *
- * async function validateSession(token: string) {
- *   const session = await prisma.session.findUnique({
- *     where: { sessionToken: token },
- *     include: { user: true },
- *   })
- *   if (!session || session.expires < new Date()) {
- *     throw new Error('Unauthorized')
- *   }
- *   return { userId: session.user.id, name: session.user.name }
- * }
- */
-export async function onAuthenticate({ token, documentName }: onAuthenticatePayload) {
-	// Когда аутентификация не включена — пропускаем всех.
-	// Раскомментируй и замени на реальную проверку, когда будет готова Prisma-интеграция.
+export const throwUnauthorized = () => {
+  throw new Error("Unauthorized");
+};
 
-	// if (!token) throw new Error('Unauthorized: no token')
-	// return await validateSession(token)
+type AccessRole = "OWNER" | "ADMIN" | "EDITOR" | "VIEWER" | "NONE";
 
-	return {}
+declare module "@hocuspocus/server" {
+  export interface Context {
+    accessRole: AccessRole;
+  }
+}
+
+interface WsTokenPayload {
+  accessRole: AccessRole;
+  exp: string;
+  sub?: string;
+  name?: string;
+  email?: string;
+  image?: string;
+}
+
+export async function onAuthenticate({
+  token,
+  connectionConfig,
+}: onAuthenticatePayload): Promise<Context> {
+  try {
+    const data = decode(token, WS_TOKEN_SECRET) as WsTokenPayload;
+
+    if (new Date(data.exp) < new Date()) throwUnauthorized();
+
+    if (data.accessRole === "NONE") throwUnauthorized();
+
+    if (data.accessRole === "VIEWER") connectionConfig.readOnly = true;
+
+    return { accessRole: data.accessRole };
+  } catch {
+    return throwUnauthorized();
+  }
 }

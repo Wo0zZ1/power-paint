@@ -1,44 +1,24 @@
-import { Server } from '@hocuspocus/server'
-import { onAuthenticate } from './extensions/auth'
-import { postgresDatabase } from './extensions/database'
+import { Server } from "@hocuspocus/server";
+import { onAuthenticate } from "./extensions/auth";
+import { postgresDatabase } from "./extensions/database";
 
-export { closePostgresStorage, ensurePostgresStorageIsReady } from './extensions/database'
+export const hocuspocus = new Server(
+  {
+    name: "power-paint",
 
-/**
- * Hocuspocus v3: используем new Server({}) вместо Server.configure({})
- *
- * Hocuspocus обрабатывает Y.js awareness из коробки.
- * Фронтенд использует awareness для хранения:
- *   - позиции курсора пользователя (x, y на canvas)
- *   - имя и цвет пользователя
- *   - список активных участников
- */
-export const hocuspocus = new Server({
-	name: 'power-paint',
+    extensions: [postgresDatabase],
 
-	extensions: [
-		/**
-		 * PostgreSQL хранит бинарное состояние Y.js в таблице yjs_documents
-		 * или в таблице из HOCUSPOCUS_DOCUMENTS_TABLE.
-		 *
-		 * В качестве подключения используется DATABASE_URL.
-		 */
-		postgresDatabase,
-	],
+    onAuthenticate,
 
-	/**
-	 * Проверка токена сессии при подключении.
-	 * Логика вынесена в src/extensions/auth.ts.
-	 */
-	async onAuthenticate(data) {
-		return onAuthenticate(data)
-	},
+    debounce: 1000,
 
-	async onConnect({ documentName }) {
-		console.log(`[connect]  room: ${documentName}`)
-	},
+    async onConnect({ documentName }) {
+      console.log(`[connect]\troom: ${documentName}`);
+    },
 
-	async onDisconnect({ documentName }) {
-		console.log(`[disconnect] room: ${documentName}`)
-	},
-})
+    async onDisconnect({ documentName }) {
+      console.log(`[disconnect]\troom: ${documentName}`);
+    },
+  },
+  { allowSynchronousEvents: false },
+);
