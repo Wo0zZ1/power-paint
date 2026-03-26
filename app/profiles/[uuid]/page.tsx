@@ -1,7 +1,7 @@
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 
-import { cn } from "@/utils";
+import { fetchInitWithCookies } from "@/shared/api";
 
 export default async function ProfilePage({
   params,
@@ -11,15 +11,31 @@ export default async function ProfilePage({
   const { uuid } = await params;
 
   const cookieStore = await cookies();
+  const cookieString = cookieStore.toString();
 
   const user = await fetch(
     `${process.env.NEXT_PUBLIC_BASE_URL}/api/users/${uuid}`,
-    {
-      headers: { Cookie: cookieStore.toString() },
-    },
+    fetchInitWithCookies(cookieString),
   ).then((res) => res.json());
 
   if (!user || user.error) notFound();
 
-  return <div className={cn("")}>{JSON.stringify(user)}</div>;
+  return <div>{JSON.stringify(user)}</div>;
+
+  // TODO implement
+
+  // const queryClient = getQueryClient();
+
+  // let userProfile: unknown;
+
+  // try {
+  //   userProfile = await queryClient.fetchQuery(
+  //     getProfileQueryOption({
+  //       profileId: uuid,
+  //       cookieString: cookieStore.toString(),
+  //     }),
+  //   );
+  // } catch {
+  //   notFound();
+  // }
 }

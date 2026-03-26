@@ -2,8 +2,7 @@
 
 import type { Board } from "@prisma/client";
 import type Konva from "konva";
-import Image from "next/image";
-import { useMemo, useRef } from "react";
+import { useRef } from "react";
 import { Layer, Stage } from "react-konva";
 import { useShallow } from "zustand/react/shallow";
 
@@ -20,6 +19,7 @@ import {
 
 import { LayerContent, TransformerTool, SelectionElement } from "./elements";
 import { UndoRedoControls, ZoomControls, UserCursors } from "./overlay";
+import { ActiveUsers } from "./overlay/ActiveUsers";
 import { LeftSidebar } from "./sidebar";
 import { BottomToolbar } from "./toolbar";
 
@@ -39,18 +39,6 @@ export function KonvaBoard({
 
   const globals = useBoardStore(useShallow((s) => s.globals));
   const viewport = useBoardStore(useShallow((s) => s.viewport));
-
-  //
-  const awareness = useBoardStore(useShallow((s) => s.awareness));
-  const clientID = useBoardStore((s) => s.clientID);
-  const omittedAwareness = useMemo(
-    () =>
-      Array.from(awareness.entries()).filter(
-        ([clientId]) => clientId !== clientID,
-      ),
-    [awareness, clientID],
-  );
-  //
 
   useHotKeys();
   useHocuspocus({ userAwareness, accessToken, boardId });
@@ -75,39 +63,29 @@ export function KonvaBoard({
       >
         <div className="absolute w-auto mx-auto inset-5 pointer-events-none z-11">
           {/* Mobile */}
-          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 space-y-2 md:hidden">
-            <div className="flex gap-4">
-              <></>
-              {/* / */}
-              <UndoRedoControls
-                className="pointer-events-auto ml-auto"
+          <div className="md:hidden">
+            <ActiveUsers className="pointer-events-auto absolute top-0 right-0" />
+
+            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 space-y-2">
+              <div className="flex gap-4">
+                <></>
+                {/* / */}
+                <UndoRedoControls
+                  className="pointer-events-auto ml-auto"
+                  tooltipActive={false}
+                />
+              </div>
+
+              <BottomToolbar
                 tooltipActive={false}
+                className="pointer-events-auto"
               />
             </div>
-
-            <BottomToolbar
-              tooltipActive={false}
-              className="pointer-events-auto"
-            />
           </div>
+
           {/* Desktop */}
           <div className="not-md:hidden">
-            <div className="pointer-events-auto absolute top-0 right-0">
-              <div className="flex flex-col gap-2">
-                {omittedAwareness.map(([clientId, state]) => (
-                  <>
-                    {state.user.image && (
-                      <Image
-                        width={32}
-                        height={32}
-                        src={state.user.image}
-                        alt={`User ${state.user.name.join(" ")}`}
-                      />
-                    )}
-                  </>
-                ))}
-              </div>
-            </div>
+            <ActiveUsers className="pointer-events-auto absolute top-0 right-0" />
 
             <LeftSidebar className="pointer-events-auto absolute top-0 left-0" />
             <BottomToolbar className="pointer-events-auto absolute bottom-0 left-1/2 -translate-x-1/2" />

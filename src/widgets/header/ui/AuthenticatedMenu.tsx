@@ -18,9 +18,8 @@ import {
   DropdownMenuItem,
   DropdownMenu,
   Separator,
+  UserAvatar,
 } from "@/shared/ui";
-
-import { ButtonAvatar } from "./ButtonAvatar";
 
 interface AuthenticatedMenuProps {
   session: Session;
@@ -32,7 +31,11 @@ export function AuthenticatedMenu({ session }: AuthenticatedMenuProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
-        <ButtonAvatar fallback={session.user.email} src={session.user.image} />
+        <UserAvatar
+          status="online"
+          fallback={session.user.email}
+          src={session.user.image}
+        />
       </DropdownMenuTrigger>
 
       <DropdownMenuContent align="end">

@@ -29,3 +29,5 @@ export * from "./ColorInput";
 export * from "./ColorButton";
 export * from "./ColorSwatch";
 export * from "./NumberInput";
+export * from "./UserAvatar";
+export * from "./UserBadge";

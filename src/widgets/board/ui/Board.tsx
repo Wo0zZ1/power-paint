@@ -53,16 +53,15 @@ export async function Board({ className, boardId }: BoardProps) {
   const guestColor = parsedGuestUser?.color ?? generateRandomHslColor();
 
   const userAwareness = {
-    guest: !session,
     name: session ? [session.user.name] : guestName,
     image: session?.user.image ?? null,
     color: session?.user.preferredColor ?? guestColor,
+    id: session?.user.id ?? null,
   } satisfies UserAwareness;
 
   const { accessRole } = boardWithAccess;
   const accessToken = await generateWsToken({
     user: {
-      guest: userAwareness.guest,
       name: userAwareness.name,
       color: userAwareness.color,
       id: session?.user.id,

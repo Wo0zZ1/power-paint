@@ -19,11 +19,12 @@ interface UserCursorProps {
 export function UserCursor({ state }: UserCursorProps) {
   const t = useTranslations("guestNameParts");
 
-  const { name, color, guest } = state.user;
+  const { name, color, id } = state.user;
+  const isGuest = id === null;
 
-  const userName = getParsedUsername(name, guest, t);
+  const userName = getParsedUsername(name, isGuest, t);
 
-  const { activeColor } = useInvertableColor(color, true);
+  const { activeColor } = useInvertableColor(color);
 
   if (!state.cursor) return null; // пользователь вне холста
 

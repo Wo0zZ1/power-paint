@@ -31,7 +31,6 @@ export const generateWsToken = async ({
   };
   if (user?.id) payload.sub = user.id;
   if (user?.color) payload.color = user.color;
-  if (user?.guest) payload.guest = user.guest;
   if (user?.name) payload.name = user.name;
   if (user?.email) payload.email = user.email;
   if (user?.image) payload.image = user.image;
