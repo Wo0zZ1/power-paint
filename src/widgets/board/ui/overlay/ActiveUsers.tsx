@@ -38,19 +38,23 @@ export function ActiveUsers({ className }: ActiveUsersProps) {
 
   return (
     <div className={cn("", className)}>
-      <AvatarGroup className="hover:space-x-1 *:not-last:transition-[margin]">
+      <AvatarGroup className="-space-x-4 hover:-space-x-2 *:not-last:transition-[margin]">
         {omittedAwareness.map(([clientId, state]) => {
           const isGuest = state.user.id === null;
           const userName = getParsedUsername(state.user.name, isGuest, t);
 
           return (
             <Tooltip key={clientId}>
-              <TooltipTrigger asChild>
+              <TooltipTrigger>
                 {isGuest ? (
-                  <UserAvatar fallback={userName} />
+                  <UserAvatar
+                    className="border border-background"
+                    fallback={userName}
+                  />
                 ) : (
                   <Link href={ROUTES.PROFILE(state.user.id!)}>
                     <UserAvatar
+                      className="border border-background"
                       status="online"
                       fallback={userName}
                       src={state.user.image}
