@@ -7,7 +7,11 @@ import { useBoardStore } from "../core";
 
 import { shouldPan } from "./useViewport";
 
-export const useDragElements = () => {
+interface UseDragElementsProps {
+  canEdit: boolean;
+}
+
+export const useDragElements = ({ canEdit }: UseDragElementsProps) => {
   const dragStartRef = useRef({ x: 0, y: 0 });
 
   const stopListeners = useRef(() => {});
@@ -49,9 +53,10 @@ export const useDragElements = () => {
   const startPointerDrag = useCallback(
     (e: Konva.KonvaEventObject<PointerEvent>) => {
       if (e.evt.pointerType === "touch") return;
+      if (!canEdit || shouldPan(e.evt)) return;
+
       const { tool } = useBoardStore.getState();
       if (tool !== "select") return;
-      if (shouldPan(e.evt)) return;
 
       beginDrag(e.evt.clientX, e.evt.clientY);
 
@@ -63,7 +68,7 @@ export const useDragElements = () => {
         window.removeEventListener("pointerup", onPointerUp);
       };
     },
-    [beginDrag, onPointerMove, onPointerUp],
+    [canEdit, beginDrag, onPointerMove, onPointerUp],
   );
 
   // ── Touch ──
@@ -84,8 +89,10 @@ export const useDragElements = () => {
 
   const startTouchDrag = useCallback(
     (e: Konva.KonvaEventObject<TouchEvent>) => {
-      const activeTool = useBoardStore.getState().tool;
-      if (activeTool !== "select") return;
+      if (!canEdit) return;
+
+      const { tool } = useBoardStore.getState();
+      if (tool !== "select") return;
 
       const touch = e.evt.touches[0];
 
@@ -99,7 +106,7 @@ export const useDragElements = () => {
         window.removeEventListener("touchend", onTouchDragEnd);
       };
     },
-    [beginDrag, onTouchDragMove, onTouchDragEnd],
+    [canEdit, beginDrag, onTouchDragMove, onTouchDragEnd],
   );
 
   useEffect(() => {

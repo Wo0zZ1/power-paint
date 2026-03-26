@@ -2,12 +2,13 @@ import type { HocuspocusProvider } from "@hocuspocus/provider";
 import type * as Y from "yjs";
 import { create } from "zustand";
 
+import type { Tool } from "@/shared/constants";
+
 import type {
   ElementType,
   GlobalsState,
   AwarenessMap,
   SelectionType,
-  Tool,
   Viewport,
 } from "../types";
 

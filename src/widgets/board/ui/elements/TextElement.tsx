@@ -15,10 +15,10 @@ import {
 
 type TextElementProps = {
   element: TextElementType;
-  isSelected?: boolean;
-} & Omit<ComponentProps<typeof Text>, "id" | "onDblClick" | "onDblTap">;
+  canEdit: boolean;
+} & ComponentProps<typeof Text>;
 
-export function TextElement({ element, ...props }: TextElementProps) {
+export function TextElement({ element, canEdit, ...props }: TextElementProps) {
   const selectedIds = useBoardStore(useShallow((s) => s.selectedIds));
   const selectionType = useBoardStore((s) => s.selectionType);
   const isSelected = selectedIds.has(element.id);
@@ -35,7 +35,7 @@ export function TextElement({ element, ...props }: TextElementProps) {
     handleChange,
     handleBlur,
     handleKeyDown,
-  } = useTextEditing(element);
+  } = useTextEditing(element, canEdit);
 
   const { activeColor: textColor } = useInvertableColor(element.textColor);
 

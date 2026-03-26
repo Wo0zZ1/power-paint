@@ -8,10 +8,14 @@ import { useBoardStore } from "../core";
 
 import { shouldPan } from "./useViewport";
 
-export const useTransformer = () => {
+interface UseTransformerProps {
+  canEdit: boolean;
+}
+
+export const useTransformer = ({ canEdit }: UseTransformerProps) => {
   const handleTransformStart = useCallback(
     (e: KonvaEventObject<PointerEvent, Node<NodeConfig>>) => {
-      if (!shouldPan(e.evt)) return;
+      if (canEdit && !shouldPan(e.evt)) return;
 
       e.evt.stopPropagation();
       e.evt.preventDefault();
@@ -19,7 +23,7 @@ export const useTransformer = () => {
       const transformer = e.currentTarget as unknown as Transformer;
       transformer.stopTransform();
     },
-    [],
+    [canEdit],
   );
 
   const handleTransform = useThrottledCallback(

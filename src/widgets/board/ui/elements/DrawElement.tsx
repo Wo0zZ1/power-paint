@@ -9,7 +9,7 @@ import { useBoardStore, getDash, getOpacity } from "../../model";
 
 type DrawElementProps = {
   element: DrawElementType;
-  isSelected?: boolean;
+  canEdit: boolean;
 } & ComponentProps<typeof Line>;
 
 export function DrawElement({ element, ...props }: DrawElementProps) {

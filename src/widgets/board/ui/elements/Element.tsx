@@ -10,10 +10,11 @@ import { TextElement } from "./TextElement";
 
 interface ElementProps {
   element: ElementType;
+  canEdit: boolean;
 }
 
-export function Element({ element }: ElementProps) {
-  const { startPointerDrag, startTouchDrag } = useDragElements();
+export function Element({ element, canEdit }: ElementProps) {
+  const { startPointerDrag, startTouchDrag } = useDragElements({ canEdit });
 
   const commonProps = {
     onPointerDown: startPointerDrag,
@@ -23,19 +24,39 @@ export function Element({ element }: ElementProps) {
   switch (element.type) {
     case "rect":
       return (
-        <RectElement key={element.id} {...commonProps} element={element} />
+        <RectElement
+          key={element.id}
+          {...commonProps}
+          element={element}
+          canEdit={canEdit}
+        />
       );
     case "circle":
       return (
-        <CircleElement key={element.id} {...commonProps} element={element} />
+        <CircleElement
+          key={element.id}
+          {...commonProps}
+          element={element}
+          canEdit={canEdit}
+        />
       );
     case "draw":
       return (
-        <DrawElement key={element.id} {...commonProps} element={element} />
+        <DrawElement
+          key={element.id}
+          {...commonProps}
+          element={element}
+          canEdit={canEdit}
+        />
       );
     case "text":
       return (
-        <TextElement key={element.id} {...commonProps} element={element} />
+        <TextElement
+          key={element.id}
+          {...commonProps}
+          element={element}
+          canEdit={canEdit}
+        />
       );
     default:
       const _: never = element;

@@ -2,10 +2,10 @@
 
 import type { ComponentProps, ElementType } from "react";
 
+import type { Tool } from "@/shared/constants";
 import { cn } from "@/shared/lib/utils";
 import { Button } from "@/shared/ui";
 
-import type { Tool } from "../../model";
 import { useBoardStore } from "../../model";
 
 interface ToolButtonProps {

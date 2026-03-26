@@ -15,6 +15,7 @@ import {
 
 type RectElementProps = {
   element: RectElementType;
+  canEdit: boolean;
 } & ComponentProps<typeof Rect>;
 
 export function RectElement({ element, ...props }: RectElementProps) {

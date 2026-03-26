@@ -6,6 +6,7 @@ import { useRef } from "react";
 import { Layer, Stage } from "react-konva";
 import { useShallow } from "zustand/react/shallow";
 
+import type { AccessRole } from "@/shared/constants";
 import { useWindowSize, useInvertableColor } from "@/shared/lib/hooks";
 
 import type { UserAwareness } from "../model";
@@ -27,18 +28,22 @@ interface KonvaBoardProps {
   userAwareness: UserAwareness;
   accessToken: string;
   boardId: Board["id"];
+  accessRole: AccessRole;
 }
 
 export function KonvaBoard({
   userAwareness,
   accessToken,
   boardId,
+  accessRole,
 }: KonvaBoardProps) {
   const boardRef = useRef<HTMLDivElement>(null);
   const selectionRectRef = useRef<Konva.Rect>(null);
 
   const globals = useBoardStore(useShallow((s) => s.globals));
   const viewport = useBoardStore(useShallow((s) => s.viewport));
+
+  const canEdit = !(accessRole === "VIEWER" || accessRole === "NONE");
 
   useHotKeys();
   useHocuspocus({ userAwareness, accessToken, boardId });
@@ -50,7 +55,7 @@ export function KonvaBoard({
     useMouseAwareness();
 
   const { handlePointerDown, handleTouchStart, handleZoom } =
-    useBoardInteraction({ selectionRectRef });
+    useBoardInteraction({ selectionRectRef, canEdit });
 
   return (
     <div className="w-full h-full min-w-0 min-h-0 overflow-hidden">
@@ -70,16 +75,21 @@ export function KonvaBoard({
               <div className="flex gap-4">
                 <></>
                 {/* / */}
-                <UndoRedoControls
-                  className="pointer-events-auto ml-auto"
-                  tooltipActive={false}
-                />
+                {canEdit && (
+                  <UndoRedoControls
+                    className="pointer-events-auto ml-auto"
+                    tooltipActive={false}
+                  />
+                )}
               </div>
 
-              <BottomToolbar
-                tooltipActive={false}
-                className="pointer-events-auto"
-              />
+              {
+                <BottomToolbar
+                  tooltipActive={false}
+                  tools={!canEdit ? ["select", "hand"] : undefined}
+                  className="pointer-events-auto"
+                />
+              }
             </div>
           </div>
 
@@ -87,12 +97,19 @@ export function KonvaBoard({
           <div className="not-md:hidden">
             <ActiveUsers className="pointer-events-auto absolute top-0 right-0" />
 
-            <LeftSidebar className="pointer-events-auto absolute top-0 left-0" />
-            <BottomToolbar className="pointer-events-auto absolute bottom-0 left-1/2 -translate-x-1/2" />
+            {canEdit && (
+              <LeftSidebar className="pointer-events-auto absolute top-0 left-0" />
+            )}
+            {
+              <BottomToolbar
+                tools={!canEdit ? ["select", "hand"] : undefined}
+                className="pointer-events-auto absolute bottom-0 left-1/2 -translate-x-1/2"
+              />
+            }
 
             <div className="absolute bottom-0 left-0 flex gap-4">
               <ZoomControls className="pointer-events-auto" />
-              <UndoRedoControls className="pointer-events-auto" />
+              {canEdit && <UndoRedoControls className="pointer-events-auto" />}
             </div>
           </div>
         </div>
@@ -110,8 +127,8 @@ export function KonvaBoard({
           onTouchStart={handleTouchStart}
         >
           <Layer>
-            <LayerContent />
-            <TransformerTool />
+            <LayerContent canEdit={canEdit} />
+            <TransformerTool canEdit={canEdit} />
           </Layer>
 
           <Layer>

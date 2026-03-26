@@ -201,15 +201,6 @@ export type GlobalsState = {
 
 export type SelectionType = "transform" | "delete" | "none";
 
-export type Tool =
-  | "select"
-  | "hand"
-  | "rect"
-  | "circle"
-  | "draw"
-  | "eraser"
-  | "text";
-
 // ─── Awareness ───────────────────────────────────────────────────────
 
 export type UserAwareness = {

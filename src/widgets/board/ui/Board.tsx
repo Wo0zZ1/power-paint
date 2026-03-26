@@ -79,6 +79,7 @@ export async function Board({ className, boardId }: BoardProps) {
             userAwareness={userAwareness}
             accessToken={accessToken}
             boardId={boardId}
+            accessRole={accessRole}
           />
         </div>
       </div>

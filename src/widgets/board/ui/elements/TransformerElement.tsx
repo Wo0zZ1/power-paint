@@ -7,14 +7,18 @@ import { useShallow } from "zustand/react/shallow";
 
 import { useBoardStore, useTransformer } from "../../model";
 
-export function TransformerTool() {
+interface TransformerToolProps {
+  canEdit: boolean;
+}
+
+export function TransformerTool({ canEdit }: TransformerToolProps) {
   const transformerRef = useRef<Konva.Transformer>(null);
   const selectedIds = useBoardStore(useShallow((s) => s.selectedIds));
   const selectionType = useBoardStore(useShallow((s) => s.selectionType));
   const viewportScale = useBoardStore((s) => s.viewport.scale);
   const shiftPressed = useBoardStore((s) => s.modifiers.shift);
 
-  const { handleTransformStart, handleTransform } = useTransformer();
+  const { handleTransformStart, handleTransform } = useTransformer({ canEdit });
 
   const elements = useBoardStore(useShallow((s) => s.elements));
   const isTextSelected =
@@ -24,8 +28,11 @@ export function TransformerTool() {
 
   let enabledAnchors: string[] | undefined = undefined;
 
-  if (selectedIds.size > 1)
+  if (!canEdit) {
+    enabledAnchors = [];
+  } else if (selectedIds.size > 1) {
     enabledAnchors = ["top-left", "top-right", "bottom-left", "bottom-right"];
+  }
 
   useEffect(() => {
     const transformer = transformerRef.current;
@@ -49,6 +56,7 @@ export function TransformerTool() {
       keepRatio={keepRatio}
       enabledAnchors={enabledAnchors}
       anchorCornerRadius={100}
+      rotateEnabled={canEdit}
       rotationSnapTolerance={5}
       rotationSnaps={[0, 45, 90, 135, 180, 225, 270, 315]}
       boundBoxFunc={(oldBox, newBox) => {

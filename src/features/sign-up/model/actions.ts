@@ -71,6 +71,8 @@ export const SignupAction = async (formData: SignupFormData) => {
         update: signupData,
       });
 
+      console.log(1);
+
       await sendEmail({
         subject: "Verify your email",
         to: data.email,
@@ -80,6 +82,8 @@ export const SignupAction = async (formData: SignupFormData) => {
           validationCode: emailCode,
         }),
       });
+
+      console.log(2);
     });
 
     return { error: null, ok: true } as const;

@@ -4,16 +4,18 @@ import { useRef, useState, useCallback } from "react";
 import { useBoardStore } from "../core";
 import type { TextElementType } from "../types";
 
-export function useTextEditing(element: TextElementType) {
+export function useTextEditing(element: TextElementType, canEdit: boolean) {
   const textRef = useRef<Konva.Text>(null);
   const [isEditing, setIsEditing] = useState(false);
   const updateElement = useBoardStore((s) => s.updateElement);
 
   const handleDblClick = useCallback(() => {
+    if (!canEdit) return;
+
     const activeTool = useBoardStore.getState().tool;
     if (activeTool !== "select") return;
     setIsEditing(true);
-  }, []);
+  }, [canEdit]);
 
   const handleTextareaRef = useCallback(
     (el: HTMLTextAreaElement | null) => {

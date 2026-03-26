@@ -16,10 +16,12 @@ import {
 
 interface UseBoardInteractionProps {
   selectionRectRef: RefObject<Konva.Rect | null>;
+  canEdit?: boolean;
 }
 
 export const useBoardInteraction = ({
   selectionRectRef,
+  canEdit,
 }: UseBoardInteractionProps) => {
   const { handleZoom, startPointerPan, startTouchPan } = useViewport();
   const { startPointerSelect, startTouchSelect } = useSelectionRect({
@@ -45,6 +47,8 @@ export const useBoardInteraction = ({
 
       clearSelection();
 
+      if (!canEdit) return;
+
       if (tool === "draw") return startPointerDraw(e);
       if (tool === "rect") return startPointerRectDraw(e);
       if (tool === "circle") return startPointerCircleDraw(e);
@@ -54,6 +58,7 @@ export const useBoardInteraction = ({
       return _;
     },
     [
+      canEdit,
       startPointerPan,
       startPointerSelect,
       startPointerDraw,
@@ -78,6 +83,8 @@ export const useBoardInteraction = ({
 
       clearSelection();
 
+      if (!canEdit) return;
+
       if (tool === "draw") return startTouchDraw(e);
       if (tool === "rect") return startTouchRectDraw(e);
       if (tool === "circle") return startTouchCircleDraw(e);
@@ -87,6 +94,7 @@ export const useBoardInteraction = ({
       return _;
     },
     [
+      canEdit,
       startTouchPan,
       startTouchSelect,
       startTouchDraw,

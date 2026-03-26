@@ -48,7 +48,7 @@ export function ActiveUsers({ className }: ActiveUsersProps) {
               <TooltipTrigger>
                 {isGuest ? (
                   <UserAvatar
-                    className="border border-background"
+                    className="border border-background cursor-default"
                     fallback={userName}
                   />
                 ) : (
@@ -69,7 +69,9 @@ export function ActiveUsers({ className }: ActiveUsersProps) {
             </Tooltip>
           );
         })}
-        <AvatarGroupCount>+{omittedAwareness.length}</AvatarGroupCount>
+        <AvatarGroupCount data-size="lg">
+          +{omittedAwareness.length}
+        </AvatarGroupCount>
       </AvatarGroup>
     </div>
   );

@@ -16,7 +16,7 @@ import {
 
 type CircleElementProps = {
   element: CircleElementType;
-  isSelected?: boolean;
+  canEdit: boolean;
 } & Omit<ComponentProps<typeof Ellipse>, "radiusX" | "radiusY">;
 
 export function CircleElement({ element, ...props }: CircleElementProps) {
