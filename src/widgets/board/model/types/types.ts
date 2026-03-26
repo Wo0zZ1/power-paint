@@ -211,15 +211,16 @@ export type Tool =
 
 // ─── Awareness ───────────────────────────────────────────────────────
 
-export type AwarenessUser = {
+export type UserAwareness = {
   guest: boolean;
   name: string[];
   color: string;
+  image: string | null;
 };
 
 export type AwarenessState = {
-  user: AwarenessUser;
+  user: UserAwareness;
   cursor: { x: number; y: number } | null; // null = курсор вне холста
 };
 
-export type RemoteCursorsMap = Map<number, AwarenessState>;
+export type AwarenessMap = Map<number, AwarenessState>;

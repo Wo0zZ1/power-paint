@@ -10,7 +10,7 @@ import {
   getParsedUsername,
 } from "@/shared/lib/utils";
 
-import type { AwarenessState } from "../../model";
+import { type AwarenessState } from "../../model";
 
 interface UserCursorProps {
   state: AwarenessState;

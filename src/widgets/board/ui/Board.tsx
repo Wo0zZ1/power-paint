@@ -14,7 +14,7 @@ import {
 } from "@/shared/lib/utils";
 import type { IGuestUserCookie } from "@/shared/types";
 
-import type { AwarenessUser } from "../model";
+import type { UserAwareness } from "../model";
 import { generateWsToken } from "../model/lib/token";
 
 import { KonvaBoard } from "./KonvaBoard";
@@ -42,12 +42,6 @@ export async function Board({ className, boardId }: BoardProps) {
     notFound();
   }
 
-  const { accessRole } = boardWithAccess;
-  const accessToken = await generateWsToken({
-    user: session?.user,
-    accessRole,
-  });
-
   const guestUser = cookieState.get("guest-user")?.value;
   const parsedGuestUser = guestUser
     ? (JSON.parse(
@@ -58,17 +52,35 @@ export async function Board({ className, boardId }: BoardProps) {
   const guestName = parsedGuestUser?.name ?? generateRandomUsername();
   const guestColor = parsedGuestUser?.color ?? generateRandomHslColor();
 
-  const user = {
+  const userAwareness = {
     guest: !session,
     name: session ? [session.user.name] : guestName,
+    image: session?.user.image ?? null,
     color: session?.user.preferredColor ?? guestColor,
-  } satisfies AwarenessUser;
+  } satisfies UserAwareness;
+
+  const { accessRole } = boardWithAccess;
+  const accessToken = await generateWsToken({
+    user: {
+      guest: userAwareness.guest,
+      name: userAwareness.name,
+      color: userAwareness.color,
+      id: session?.user.id,
+      email: session?.user.email,
+      image: session?.user.image,
+    },
+    accessRole,
+  });
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       <div className={cn(className, "grow min-w-0 min-h-0 overflow-hidden")}>
         <div className="w-full h-full min-w-0 min-h-0">
-          <KonvaBoard user={user} accessToken={accessToken} boardId={boardId} />
+          <KonvaBoard
+            userAwareness={userAwareness}
+            accessToken={accessToken}
+            boardId={boardId}
+          />
         </div>
       </div>
     </HydrationBoundary>

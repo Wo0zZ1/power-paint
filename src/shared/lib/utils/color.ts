@@ -32,6 +32,22 @@ export const getContrastingTextColor = (bgColor: string): string => {
 
 // Convert colors Section
 
+export const invertColor = (color: string): string => {
+  const hexMatch = color.match(hexColorRegex);
+  const rgbMatch = color.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
+  const hslMatch = color.match(/hsl\((\d+),\s*(\d+)%,\s*(\d+)%\)/);
+
+  if (hexMatch) {
+    return invertHexColor(color);
+  } else if (rgbMatch) {
+    return rgbToHex(color);
+  } else if (hslMatch) {
+    return invertHslColor(color);
+  } else {
+    throw new Error("Unsupported color format");
+  }
+};
+
 export const invertHslColor = (hsl: string): string => {
   const hslMatch = hsl.match(/hsl\((\d+),\s*(\d+)%,\s*(\d+)%\)/);
 

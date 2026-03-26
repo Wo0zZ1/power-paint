@@ -4,8 +4,16 @@ import type { Session } from "next-auth";
 import type { AccessRole } from "@/shared/constants";
 import { fromDate } from "@/shared/lib/utils";
 
+import type { UserAwareness } from "../types";
+
 interface GenerateWsTokenParams {
-  user?: Session["user"];
+  user?: Partial<
+    {
+      id: Session["user"]["id"];
+      email: Session["user"]["email"];
+      image: Session["user"]["image"];
+    } & UserAwareness
+  >;
   accessRole: AccessRole;
 }
 
@@ -22,6 +30,8 @@ export const generateWsToken = async ({
     exp: fromDate(1 * 60 * 1000),
   };
   if (user?.id) payload.sub = user.id;
+  if (user?.color) payload.color = user.color;
+  if (user?.guest) payload.guest = user.guest;
   if (user?.name) payload.name = user.name;
   if (user?.email) payload.email = user.email;
   if (user?.image) payload.image = user.image;

@@ -2,13 +2,14 @@
 
 import type { Board } from "@prisma/client";
 import type Konva from "konva";
-import { useRef } from "react";
+import Image from "next/image";
+import { useMemo, useRef } from "react";
 import { Layer, Stage } from "react-konva";
 import { useShallow } from "zustand/react/shallow";
 
 import { useWindowSize, useInvertableColor } from "@/shared/lib/hooks";
 
-import type { AwarenessUser } from "../model";
+import type { UserAwareness } from "../model";
 import {
   useBoardStore,
   useHotKeys,
@@ -23,20 +24,36 @@ import { LeftSidebar } from "./sidebar";
 import { BottomToolbar } from "./toolbar";
 
 interface KonvaBoardProps {
-  user: AwarenessUser;
+  userAwareness: UserAwareness;
   accessToken: string;
   boardId: Board["id"];
 }
 
-export function KonvaBoard({ user, accessToken, boardId }: KonvaBoardProps) {
+export function KonvaBoard({
+  userAwareness,
+  accessToken,
+  boardId,
+}: KonvaBoardProps) {
   const boardRef = useRef<HTMLDivElement>(null);
   const selectionRectRef = useRef<Konva.Rect>(null);
 
   const globals = useBoardStore(useShallow((s) => s.globals));
   const viewport = useBoardStore(useShallow((s) => s.viewport));
 
+  //
+  const awareness = useBoardStore(useShallow((s) => s.awareness));
+  const clientID = useBoardStore((s) => s.clientID);
+  const omittedAwareness = useMemo(
+    () =>
+      Array.from(awareness.entries()).filter(
+        ([clientId]) => clientId !== clientID,
+      ),
+    [awareness, clientID],
+  );
+  //
+
   useHotKeys();
-  useHocuspocus({ user, accessToken, boardId });
+  useHocuspocus({ userAwareness, accessToken, boardId });
 
   const { width: windowWidth, height: windowHeight } = useWindowSize();
   const { activeColor } = useInvertableColor(globals.backgroundColor, true);
@@ -75,6 +92,23 @@ export function KonvaBoard({ user, accessToken, boardId }: KonvaBoardProps) {
           </div>
           {/* Desktop */}
           <div className="not-md:hidden">
+            <div className="pointer-events-auto absolute top-0 right-0">
+              <div className="flex flex-col gap-2">
+                {omittedAwareness.map(([clientId, state]) => (
+                  <>
+                    {state.user.image && (
+                      <Image
+                        width={32}
+                        height={32}
+                        src={state.user.image}
+                        alt={`User ${state.user.name.join(" ")}`}
+                      />
+                    )}
+                  </>
+                ))}
+              </div>
+            </div>
+
             <LeftSidebar className="pointer-events-auto absolute top-0 left-0" />
             <BottomToolbar className="pointer-events-auto absolute bottom-0 left-1/2 -translate-x-1/2" />
 

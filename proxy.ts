@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/shared/auth";
 import {
   generateRandomUsername,
-  generateRandomHslColor,
+  generateRandomHexColor,
 } from "@/shared/lib/utils";
 import type { IGuestUserCookie } from "@/shared/types";
 
@@ -20,7 +20,7 @@ export async function proxy() {
     if (!guestUser) {
       const guestUserCookie = {
         name: generateRandomUsername(),
-        color: generateRandomHslColor(),
+        color: generateRandomHexColor(),
       } satisfies IGuestUserCookie;
 
       response.cookies.set(

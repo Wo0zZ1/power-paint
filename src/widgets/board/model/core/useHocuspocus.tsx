@@ -5,8 +5,8 @@ import { UndoManager } from "yjs";
 import { DEFAULT_CAPTURE_TIMEOUT } from "@/shared/config";
 
 import type {
-  AwarenessUser,
-  RemoteCursorsMap,
+  UserAwareness,
+  AwarenessMap,
   AwarenessState,
   ElementType,
 } from "../types";
@@ -14,13 +14,13 @@ import type {
 import { useBoardStore } from "./useBoardStore";
 
 interface UseHocuspocusProps {
-  user: AwarenessUser;
+  userAwareness: UserAwareness;
   accessToken: string;
   boardId: string;
 }
 
 export const useHocuspocus = ({
-  user,
+  userAwareness,
   accessToken,
   boardId,
 }: UseHocuspocusProps) => {
@@ -56,8 +56,9 @@ export const useHocuspocus = ({
     onGlobalsChange();
 
     // ── Awareness: сообщаем остальным, кто мы ──
-    provider.setAwarenessField("user", user);
+    provider.setAwarenessField("user", userAwareness);
     provider.setAwarenessField("cursor", null);
+    useBoardStore.setState({ clientID: provider.awareness?.clientID });
 
     // ── Undo / Redo ──
     const undoManager = new UndoManager([yElements, yGlobals], {
@@ -78,12 +79,11 @@ export const useHocuspocus = ({
     const onAwarenessChange = () => {
       const states = provider.awareness?.getStates();
 
-      const others = new Map() as RemoteCursorsMap;
+      const others = new Map() as AwarenessMap;
       states?.forEach((state, clientId) => {
-        if (clientId !== provider.awareness?.clientID)
-          others.set(clientId, state as AwarenessState);
+        others.set(clientId, state as AwarenessState);
       });
-      useBoardStore.setState({ remoteCursors: others });
+      useBoardStore.setState({ awareness: others });
     };
     provider.awareness?.on("change", onAwarenessChange);
 
@@ -97,5 +97,5 @@ export const useHocuspocus = ({
       provider.destroy();
       useBoardStore.getState().reset();
     };
-  }, [boardId, user, accessToken]);
+  }, [boardId, userAwareness, accessToken]);
 };
