@@ -50,7 +50,6 @@ export function BackgroundSection({ className }: BackgroundSectionProps) {
           <DropdownMenuTrigger asChild>
             <ColorButton
               invertable
-              key={backgroundColor}
               color={backgroundColor}
               active={!DEFAULT_BOARD_COLORS.includes(backgroundColor)}
               className="size-10"

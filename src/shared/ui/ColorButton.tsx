@@ -1,5 +1,7 @@
 "use client";
 
+import type { ComponentProps } from "react";
+
 import { cn } from "@/utils";
 
 import { useInvertableColor } from "../lib/hooks";
@@ -20,14 +22,14 @@ export function ColorButton({
   color,
   active,
   invertable = false,
+  id: _,
   ...props
-}: ColorButtonProps) {
+}: ColorButtonProps & ComponentProps<"button">) {
   const { activeColor } = useInvertableColor(color, invertable);
 
   return (
     <button
       type="button"
-      key={color}
       onClick={() => onSelect?.(color)}
       style={{
         outlineColor: activeColor,
