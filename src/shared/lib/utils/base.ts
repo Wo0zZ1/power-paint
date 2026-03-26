@@ -91,5 +91,5 @@ export const phoneRegex = /^[\d+()\s-]{6,20}$/;
 export const degToRad = (deg: number) => (deg * Math.PI) / 180;
 export const radToDeg = (rad: number) => (rad * 180) / Math.PI;
 
-export const addTimeToDate = (timeToAdd: number, date: Date = new Date()) =>
+export const fromDate = (timeToAdd: number, date: Date = new Date()) =>
   new Date(date.getTime() + timeToAdd);

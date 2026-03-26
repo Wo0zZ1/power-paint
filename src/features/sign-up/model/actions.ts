@@ -16,7 +16,7 @@ import {
 import { sendEmail } from "@/shared/lib/email";
 import { prisma } from "@/shared/lib/prisma";
 import { compareHash, hashValue } from "@/shared/lib/server";
-import { addTimeToDate, generateRandomInteger } from "@/shared/lib/utils";
+import { fromDate, generateRandomInteger } from "@/shared/lib/utils";
 
 export const SignupAction = async (formData: SignupFormData) => {
   const cookieState = await cookies();
@@ -42,7 +42,7 @@ export const SignupAction = async (formData: SignupFormData) => {
     const emailCode = generateRandomInteger(100000, 999999).toString();
     const codeHash = hashValue(emailCode);
     const passwordHash = hashValue(data.password);
-    const expiresAt = addTimeToDate(VERIFICATION_TTL_MS);
+    const expiresAt = fromDate(VERIFICATION_TTL_MS);
 
     cookieState.set(
       VERIFICATION_COOKIE,
@@ -179,7 +179,7 @@ export const RequestNewCode = async () => {
 
     const newCode = generateRandomInteger(100000, 999999).toString();
     const codeHash = hashValue(newCode);
-    const expiresAt = addTimeToDate(VERIFICATION_TTL_MS);
+    const expiresAt = fromDate(VERIFICATION_TTL_MS);
 
     await prisma.$transaction(async (tx) => {
       const updated = await tx.signupVerification.update({

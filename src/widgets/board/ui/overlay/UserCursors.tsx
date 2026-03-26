@@ -8,16 +8,20 @@ import { useBoardStore } from "../../model";
 import { UserCursor } from "./UserCursor";
 
 export function UserCursors() {
-  const remoteCursors = useBoardStore(useShallow((s) => s.remoteCursors));
+  const awareness = useBoardStore(useShallow((s) => s.awareness));
+  const clientID = useBoardStore((s) => s.clientID);
 
-  const cursorsList = useMemo(
-    () => Array.from(remoteCursors.entries()),
-    [remoteCursors],
+  const omittedAwareness = useMemo(
+    () =>
+      Array.from(awareness.entries()).filter(
+        ([clientId]) => clientId !== clientID,
+      ),
+    [awareness, clientID],
   );
 
   return (
     <>
-      {cursorsList.map(([clientId, state]) => (
+      {omittedAwareness.map(([clientId, state]) => (
         <UserCursor key={clientId} state={state} />
       ))}
     </>

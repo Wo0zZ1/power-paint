@@ -5,7 +5,7 @@ import { create } from "zustand";
 import type {
   ElementType,
   GlobalsState,
-  RemoteCursorsMap,
+  AwarenessMap,
   SelectionType,
   Tool,
   Viewport,
@@ -27,7 +27,8 @@ interface BoardState {
   // ── React-состояние (обновляется через Yjs observe) ──
   elements: Map<string, ElementType>;
   globals: GlobalsState;
-  remoteCursors: RemoteCursorsMap;
+  awareness: AwarenessMap;
+  clientID: number;
 
   // ── Инструменты ──
   tool: Tool;
@@ -80,8 +81,9 @@ export const useBoardStore = create<BoardState>((set, get) => ({
   redo: () => get().undoManager?.redo(),
 
   elements: new Map(),
-  globals: { backgroundColor: "#f8f9fa" },
-  remoteCursors: new Map(),
+  globals: { backgroundColor: "#ffffff" },
+  awareness: new Map(),
+  clientID: 0,
 
   tool: "select",
 
@@ -218,6 +220,6 @@ export const useBoardStore = create<BoardState>((set, get) => ({
       canRedo: false,
       elements: new Map(),
       globals: { backgroundColor: "#ffffff" },
-      remoteCursors: new Map(),
+      awareness: new Map(),
     }),
 }));

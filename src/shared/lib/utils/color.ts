@@ -8,28 +8,45 @@ export const generateRandomHslColor = () =>
 export const generateRandomHexColor = () => hslToHex(generateRandomHslColor());
 
 export const getContrastingTextColor = (bgColor: string): string => {
-  const hslMatch = bgColor.match(/hsl\((\d+),\s*(\d+)%,\s*(\d+)%\)/);
+  const hexMatch = bgColor.match(hexColorRegex);
   const rgbMatch = bgColor.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
 
-  if (hslMatch) {
-    const l = parseInt(hslMatch[3]);
+  let hslColor: string = "";
 
-    return l > 50 ? "#000000" : "#ffffff";
+  if (hexMatch) {
+    hslColor = hexToHsl(bgColor);
+  } else if (rgbMatch) {
+    hslColor = rgbToHsl(bgColor);
+  } else {
+    return "#ffffff"; // fallback
   }
 
-  if (rgbMatch) {
-    const r = parseInt(rgbMatch[1]);
-    const g = parseInt(rgbMatch[2]);
-    const b = parseInt(rgbMatch[3]);
+  const hslMatch = hslColor.match(/hsl\((\d+),\s*(\d+)%,\s*(\d+)%\)/);
 
-    const yiq = (r * 299 + g * 587 + b * 114) / 1000;
-    return yiq >= 128 ? "#000000" : "#ffffff";
-  }
+  if (!hslMatch) return "#ffffff";
 
-  return "#ffffff";
+  const l = parseInt(hslMatch[3]);
+
+  return l > 50 ? "#000000" : "#ffffff";
 };
 
 // Convert colors Section
+
+export const invertColor = (color: string): string => {
+  const hexMatch = color.match(hexColorRegex);
+  const rgbMatch = color.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
+  const hslMatch = color.match(/hsl\((\d+),\s*(\d+)%,\s*(\d+)%\)/);
+
+  if (hexMatch) {
+    return invertHexColor(color);
+  } else if (rgbMatch) {
+    return rgbToHex(color);
+  } else if (hslMatch) {
+    return invertHslColor(color);
+  } else {
+    throw new Error("Unsupported color format");
+  }
+};
 
 export const invertHslColor = (hsl: string): string => {
   const hslMatch = hsl.match(/hsl\((\d+),\s*(\d+)%,\s*(\d+)%\)/);

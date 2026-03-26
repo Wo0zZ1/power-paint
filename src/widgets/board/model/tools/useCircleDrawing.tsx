@@ -1,9 +1,10 @@
 import type { KonvaEventObject } from "konva/lib/Node";
 import { useCallback, useEffect, useRef } from "react";
 
+import { DEFAULT_CAPTURE_TIMEOUT } from "@/shared/config";
 import { useThrottledCallback } from "@/shared/lib/hooks";
 
-import { DEFAULT_CAPTURE_TIMEOUT, useBoardStore } from "../core";
+import { useBoardStore } from "../core";
 import { screenToCanvas, generateId } from "../lib";
 import { createCircle } from "../types";
 

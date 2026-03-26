@@ -1,8 +1,8 @@
 export const ROUTES = {
   ROOT: "/",
   SETTINGS: "/settings", // TODO Remove this route
-  PROFILE: (uuid?: string) => `/profile/${uuid}` as const,
-  BOARD: (boardId: string) => `/board/${boardId}` as const,
+  PROFILE: (uuid?: string) => `/profiles/${uuid}` as const,
+  BOARD: (boardId: string) => `/boards/${boardId}` as const,
   DASHBOARD: {
     ROOT: "/dashboard",
     WORKSPACES: `/dashboard/workspaces`,

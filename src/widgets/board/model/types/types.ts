@@ -1,6 +1,7 @@
 // ─── Элементы ────────────────────────────────────────────────────────
 
 import type { Node, NodeConfig } from "konva/lib/Node";
+import type { Session } from "next-auth";
 import type { ComponentProps } from "react";
 import type { KonvaNodeComponent } from "react-konva";
 
@@ -211,15 +212,16 @@ export type Tool =
 
 // ─── Awareness ───────────────────────────────────────────────────────
 
-export type AwarenessUser = {
-  guest: boolean;
+export type UserAwareness = {
   name: string[];
   color: string;
+  image: string | null;
+  id: Session["user"]["id"] | null;
 };
 
 export type AwarenessState = {
-  user: AwarenessUser;
+  user: UserAwareness;
   cursor: { x: number; y: number } | null; // null = курсор вне холста
 };
 
-export type RemoteCursorsMap = Map<number, AwarenessState>;
+export type AwarenessMap = Map<number, AwarenessState>;

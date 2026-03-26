@@ -8,7 +8,7 @@ import { useShallow } from "zustand/react/shallow";
 
 import { useWindowSize, useInvertableColor } from "@/shared/lib/hooks";
 
-import type { AwarenessUser } from "../model";
+import type { UserAwareness } from "../model";
 import {
   useBoardStore,
   useHotKeys,
@@ -19,15 +19,21 @@ import {
 
 import { LayerContent, TransformerTool, SelectionElement } from "./elements";
 import { UndoRedoControls, ZoomControls, UserCursors } from "./overlay";
+import { ActiveUsers } from "./overlay/ActiveUsers";
 import { LeftSidebar } from "./sidebar";
 import { BottomToolbar } from "./toolbar";
 
 interface KonvaBoardProps {
-  user: AwarenessUser;
+  userAwareness: UserAwareness;
+  accessToken: string;
   boardId: Board["id"];
 }
 
-export function KonvaBoard({ user, boardId }: KonvaBoardProps) {
+export function KonvaBoard({
+  userAwareness,
+  accessToken,
+  boardId,
+}: KonvaBoardProps) {
   const boardRef = useRef<HTMLDivElement>(null);
   const selectionRectRef = useRef<Konva.Rect>(null);
 
@@ -35,7 +41,7 @@ export function KonvaBoard({ user, boardId }: KonvaBoardProps) {
   const viewport = useBoardStore(useShallow((s) => s.viewport));
 
   useHotKeys();
-  useHocuspocus({ boardId, user });
+  useHocuspocus({ userAwareness, accessToken, boardId });
 
   const { width: windowWidth, height: windowHeight } = useWindowSize();
   const { activeColor } = useInvertableColor(globals.backgroundColor, true);
@@ -57,23 +63,30 @@ export function KonvaBoard({ user, boardId }: KonvaBoardProps) {
       >
         <div className="absolute w-auto mx-auto inset-5 pointer-events-none z-11">
           {/* Mobile */}
-          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 space-y-2 md:hidden">
-            <div className="flex gap-4">
-              <></>
-              {/* / */}
-              <UndoRedoControls
-                className="pointer-events-auto ml-auto"
+          <div className="md:hidden">
+            <ActiveUsers className="pointer-events-auto absolute top-0 right-0" />
+
+            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 space-y-2">
+              <div className="flex gap-4">
+                <></>
+                {/* / */}
+                <UndoRedoControls
+                  className="pointer-events-auto ml-auto"
+                  tooltipActive={false}
+                />
+              </div>
+
+              <BottomToolbar
                 tooltipActive={false}
+                className="pointer-events-auto"
               />
             </div>
-
-            <BottomToolbar
-              tooltipActive={false}
-              className="pointer-events-auto"
-            />
           </div>
+
           {/* Desktop */}
           <div className="not-md:hidden">
+            <ActiveUsers className="pointer-events-auto absolute top-0 right-0" />
+
             <LeftSidebar className="pointer-events-auto absolute top-0 left-0" />
             <BottomToolbar className="pointer-events-auto absolute bottom-0 left-1/2 -translate-x-1/2" />
 

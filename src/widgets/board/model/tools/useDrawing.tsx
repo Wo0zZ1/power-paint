@@ -1,9 +1,10 @@
 import type { KonvaEventObject } from "konva/lib/Node";
 import { useCallback, useEffect, useRef } from "react";
 
+import { DEFAULT_CAPTURE_TIMEOUT } from "@/shared/config";
 import { useThrottledCallback } from "@/shared/lib/hooks";
 
-import { useBoardStore, DEFAULT_CAPTURE_TIMEOUT } from "../core";
+import { useBoardStore } from "../core";
 import { screenToCanvas, generateId } from "../lib";
 import type { DrawElementType } from "../types";
 import { createDraw } from "../types";
