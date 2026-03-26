@@ -52,7 +52,7 @@ export default async function DashboardPage() {
                   </Link>
                 </Button>
               }
-              workspace={personalWorkspace}
+              workspaceWithAccess={personalWorkspace}
             />
           )}
         </div>

@@ -24,6 +24,7 @@ export function WorkspaceCardMenuActions({
   return (
     <>
       <DropdownMenuGroup>
+        {/* TODO: Вынести права в константы */}
         {AccessRole[accessRole] >= AccessRole.ADMIN && (
           <DropdownMenuItem onSelect={onEditWorkspaceName}>
             <PencilLine />
@@ -31,7 +32,7 @@ export function WorkspaceCardMenuActions({
           </DropdownMenuItem>
         )}
 
-        {AccessRole[accessRole] >= AccessRole.ADMIN && (
+        {AccessRole[accessRole] >= AccessRole.OWNER && (
           <DropdownMenuItem onSelect={onEditWorkspaceAccess}>
             <Share2 />
             {t("access.action")}

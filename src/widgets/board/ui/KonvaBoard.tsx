@@ -6,7 +6,7 @@ import { useRef } from "react";
 import { Layer, Stage } from "react-konva";
 import { useShallow } from "zustand/react/shallow";
 
-import type { AccessRole } from "@/shared/constants";
+import { AccessRole } from "@/shared/constants";
 import { useWindowSize, useInvertableColor } from "@/shared/lib/hooks";
 
 import type { UserAwareness } from "../model";
@@ -43,7 +43,7 @@ export function KonvaBoard({
   const globals = useBoardStore(useShallow((s) => s.globals));
   const viewport = useBoardStore(useShallow((s) => s.viewport));
 
-  const canEdit = !(accessRole === "VIEWER" || accessRole === "NONE");
+  const canEdit = AccessRole[accessRole] >= AccessRole.EDITOR;
 
   useHotKeys();
   useHocuspocus({ userAwareness, accessToken, boardId });

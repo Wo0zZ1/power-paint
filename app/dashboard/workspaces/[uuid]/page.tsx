@@ -38,7 +38,7 @@ export default async function Workspace({
   return (
     <BoardsCarouselBlock
       title={t("board.plural")}
-      workspace={workspaceWithAccess}
+      workspaceWithAccess={workspaceWithAccess}
       action={
         <Button variant="link" size="xs" className="text-sm" asChild>
           <Link

@@ -1,4 +1,4 @@
-import { unauthorized } from "next/navigation";
+import { forbidden, notFound, unauthorized } from "next/navigation";
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import { z } from "zod";
@@ -6,7 +6,7 @@ import { z } from "zod";
 import { createBoardSchema, type BoardWithAccess } from "@/entities/board";
 import { auth } from "@/shared/auth";
 import { AccessRole } from "@/shared/constants";
-import { getAccessToBoard } from "@/shared/lib/auth";
+import { getAccessToBoard, getAccessToWorkspace } from "@/shared/lib/auth";
 import { prisma } from "@/shared/lib/prisma";
 
 export const GET = async (
@@ -54,6 +54,16 @@ export const POST = async (
   const session = await auth();
 
   if (!session) return unauthorized();
+
+  const workspace = await prisma.workspace.findUnique({
+    where: { id: workspaceId },
+  });
+
+  if (!workspace) notFound();
+
+  const accessRole = await getAccessToWorkspace(workspace, session.user);
+
+  if (AccessRole[accessRole] < AccessRole.ADMIN) forbidden();
 
   const newBoard = await prisma.board.create({
     data: {

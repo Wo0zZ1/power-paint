@@ -10,7 +10,7 @@ import { getAccessToWorkspace } from "@/shared/lib/auth";
 import { prisma } from "@/shared/lib/prisma";
 
 export const GET = async (
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: Promise<{ uuid: string }> },
 ): Promise<NextResponse<WorkspaceWithAccess>> => {
   const { uuid } = await params;
@@ -68,7 +68,7 @@ export const PATCH = async (
 };
 
 export const DELETE = async (
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: Promise<{ uuid: string }> },
 ): Promise<NextResponse<WorkspaceWithAccess>> => {
   const { uuid } = await params;

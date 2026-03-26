@@ -14,6 +14,7 @@ import {
 } from "@/entities/board";
 import { useGetWorkspacesQuery } from "@/entities/workspace";
 import { ROUTES } from "@/shared/config";
+import { AccessRole } from "@/shared/constants";
 import {
   DialogContent,
   DialogHeader,
@@ -52,11 +53,13 @@ export function CreateBoardModal({
   const t = useTranslations();
   const router = useRouter();
 
-  const { data, isLoading, isError, error } = useGetWorkspacesQuery();
+  const { data } = useGetWorkspacesQuery();
   const createBoardMutation = useCreateBoardMutation();
 
-  const workspaces = data?.map((wa) => wa.workspace) ?? [];
-  const workspaceIds = workspaces?.map((w) => w.id) ?? [];
+  const filteredWorkspaces =
+    data?.filter((wa) => AccessRole[wa.accessRole] >= AccessRole.ADMIN) ?? [];
+  const workspaces = filteredWorkspaces.map((wa) => wa.workspace);
+  const workspaceIds = workspaces.map((w) => w.id);
   const createBoardSchema = getCreateBoardFormSchema(workspaceIds);
 
   const {
@@ -126,32 +129,19 @@ export function CreateBoardModal({
                 {t("board.create.workspaceInputLabel")}
               </FieldLabel>
 
+              {/* TODO: Добавить Combobox */}
               <Controller
                 render={({ field }) => (
                   <Select value={field.value} onValueChange={field.onChange}>
                     <SelectTrigger>
-                      <SelectValue
-                        placeholder={t(
-                          "board.create.workspaceInputPlaceholder",
-                        )}
-                      />
+                      <SelectValue />
                     </SelectTrigger>
                     <SelectContent position="item-aligned">
-                      {isLoading && <div>Loading...</div>}
-                      {isError && (
-                        <div className="text-sm text-destructive">
-                          {error instanceof Error
-                            ? error.message
-                            : "An error occurred"}
-                        </div>
-                      )}
-                      {!isLoading &&
-                        !isError &&
-                        workspaces.map((workspace) => (
-                          <SelectItem key={workspace.id} value={workspace.id}>
-                            {workspace.name}
-                          </SelectItem>
-                        ))}
+                      {workspaces.map((workspace) => (
+                        <SelectItem key={workspace.id} value={workspace.id}>
+                          {workspace.name}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                     {errors.workspaceId && (
                       <span className="text-sm text-destructive">

@@ -9,7 +9,7 @@ import { getAccessToBoard } from "@/shared/lib/auth";
 import { prisma } from "@/shared/lib/prisma";
 
 export const GET = async (
-  request: NextRequest,
+  _: NextRequest,
   { params }: { params: Promise<{ uuid: string }> },
 ): Promise<NextResponse<BoardWithAccess>> => {
   const { uuid } = await params;
@@ -63,7 +63,7 @@ export const PATCH = async (
 };
 
 export const DELETE = async (
-  request: NextRequest,
+  _: NextRequest,
   { params }: { params: Promise<{ uuid: string }> },
 ): Promise<NextResponse<BoardWithAccess>> => {
   const { uuid } = await params;

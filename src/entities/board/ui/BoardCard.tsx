@@ -4,7 +4,6 @@ import { AccessRole } from "@/shared/constants";
 import { Card } from "@/shared/ui";
 import { cn } from "@/utils";
 
-
 import preview1 from "../../../../public/assets/preview1.jpeg"; // TODO Remove this hardcoded preview image
 
 import { BoardCardBadge } from "./BoardCardBadge";
@@ -12,7 +11,6 @@ import { BoardCardFooter } from "./BoardCardFooter";
 import { BoardCardHeader } from "./BoardCardHeader";
 import { BoardCardImage } from "./BoardCardImage";
 import { BoardCardSettingsMenu } from "./BoardCardSettingsMenu";
-
 
 interface BoardCardProps {
   board: Board;

@@ -14,7 +14,7 @@ export const useEraser = () => {
   // ── Pure core ──
 
   const beginErase = useCallback(
-    (layerX: number, layerY: number, stage: Stage) => {
+    (_layerX: number, _layerY: number, stage: Stage) => {
       stageRef.current = stage;
 
       const { clearSelection, setSelectionType } = useBoardStore.getState();

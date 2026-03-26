@@ -7,7 +7,7 @@ import { prisma } from "@/shared/lib/prisma";
 import { getUserPublicInfo } from "@/shared/lib/utils";
 
 export const GET = async (
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: Promise<{ uuid: string }> },
 ) => {
   const { uuid } = await params;

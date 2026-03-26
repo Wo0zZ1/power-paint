@@ -2,7 +2,6 @@ import type { AccessRole } from "@/shared/constants";
 import { Badge } from "@/shared/ui";
 import { cn, getBadgeContentByAccessRole } from "@/utils";
 
-
 interface WorkspaceCardBadgeProps {
   className?: string;
   accessRole: AccessRole;

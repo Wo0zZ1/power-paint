@@ -2,15 +2,12 @@ import type { AccessRole } from "@/shared/constants";
 import { Badge } from "@/shared/ui";
 import { cn, getBadgeContentByAccessRole } from "@/utils";
 
-
 interface BoardCardBadgeProps {
   className?: string;
   accessRole: AccessRole;
 }
 
 export function BoardCardBadge({ className, accessRole }: BoardCardBadgeProps) {
-  if (accessRole === "NONE") return null;
-
   return (
     <Badge
       className={cn(

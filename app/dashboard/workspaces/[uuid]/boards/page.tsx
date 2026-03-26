@@ -27,7 +27,7 @@ export default async function BoardsPage({
   return (
     <BoardsGridBlock
       title={t("board.all")}
-      workspace={workspaceWithAccess}
+      workspaceWithAccess={workspaceWithAccess}
       action={<GoBackButton variant="link" size="xs" className="text-sm" />}
     />
   );

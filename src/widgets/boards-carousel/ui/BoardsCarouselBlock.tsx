@@ -7,27 +7,30 @@ import type { WorkspaceWithAccess } from "@/entities/workspace";
 import { getWorkspacesQueryOption } from "@/entities/workspace/server";
 import { CreateBoardButton } from "@/features/create-board";
 import { getQueryClient } from "@/shared/api";
+import { AccessRole } from "@/shared/constants";
 
 import { BoardsCarousel } from "./BoardsCarousel";
 
 interface BoardsCarouselBlockProps {
   title: string;
-  workspace: WorkspaceWithAccess;
+  workspaceWithAccess: WorkspaceWithAccess;
   action?: ReactNode;
 }
 
 export async function BoardsCarouselBlock({
-  workspace: { workspace },
+  workspaceWithAccess,
   title,
   action,
 }: BoardsCarouselBlockProps) {
   const queryClient = getQueryClient();
   const cookieStore = await cookies();
 
+  const { workspace, accessRole } = workspaceWithAccess;
+
   await queryClient.prefetchQuery(
     getBoardsQueryOption({
-      cookieString: cookieStore.toString(),
       workspaceId: workspace.id,
+      cookieString: cookieStore.toString(),
     }),
   );
 
@@ -41,11 +44,13 @@ export async function BoardsCarouselBlock({
         <div className="flex items-end mt-12 mb-4">
           <h2 className="mr-auto text-2xl font-semibold">{title}</h2>
 
-          <CreateBoardButton
-            workspace={workspace}
-            size="sm"
-            className="text-sm mr-4"
-          />
+          {AccessRole[accessRole] >= AccessRole.ADMIN && (
+            <CreateBoardButton
+              workspace={workspace}
+              size="sm"
+              className="text-sm mr-4"
+            />
+          )}
 
           {action}
         </div>

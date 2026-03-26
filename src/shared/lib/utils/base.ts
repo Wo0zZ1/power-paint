@@ -2,6 +2,8 @@ import type { User } from "@prisma/client";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
+import type { AccessRole } from "@/shared/constants";
+
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
@@ -30,7 +32,7 @@ export function getUserPublicInfo(
   };
 }
 
-export const getBadgeContentByAccessRole = (accessRole: string) => {
+export const getBadgeContentByAccessRole = (accessRole: AccessRole) => {
   switch (accessRole) {
     case "OWNER":
       return "Owner";
@@ -43,7 +45,7 @@ export const getBadgeContentByAccessRole = (accessRole: string) => {
     case "NONE":
       return "None";
     default:
-      return "Unknown";
+      const _: never = accessRole;
   }
 };
 
