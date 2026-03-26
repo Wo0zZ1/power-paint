@@ -26,20 +26,19 @@ export function ActiveUsers({ className }: ActiveUsersProps) {
   const t = useTranslations("guestNameParts");
 
   const awareness = useBoardStore(useShallow((s) => s.awareness));
-  const clientID = useBoardStore((s) => s.clientID);
 
-  const omittedAwareness = useMemo(
+  const sortedAwareness = useMemo(
     () =>
-      Array.from(awareness.entries())
-        .filter(([clientId]) => clientId !== clientID)
-        .sort((a, b) => Number(!!b[1].user.image) - Number(!!a[1].user.image)), // Sort users with images first
-    [awareness, clientID],
+      Array.from(awareness.entries()).sort(
+        (a, b) => Number(!!b[1].user.image) - Number(!!a[1].user.image), // Sort users with images first
+      ),
+    [awareness],
   );
 
   return (
     <div className={cn("", className)}>
       <AvatarGroup className="-space-x-4 hover:-space-x-2 *:not-last:transition-[margin]">
-        {omittedAwareness.map(([clientId, state]) => {
+        {sortedAwareness.slice(0, 3).map(([clientId, state]) => {
           const isGuest = state.user.id === null;
           const userName = getParsedUsername(state.user.name, isGuest, t);
 
@@ -69,9 +68,11 @@ export function ActiveUsers({ className }: ActiveUsersProps) {
             </Tooltip>
           );
         })}
-        <AvatarGroupCount data-size="lg">
-          +{omittedAwareness.length}
-        </AvatarGroupCount>
+        {sortedAwareness.length > 3 && (
+          <AvatarGroupCount data-size="lg">
+            +{sortedAwareness.length - 3}
+          </AvatarGroupCount>
+        )}
       </AvatarGroup>
     </div>
   );
