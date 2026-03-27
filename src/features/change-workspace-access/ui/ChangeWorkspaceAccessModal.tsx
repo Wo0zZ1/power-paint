@@ -1,13 +1,16 @@
 "use client";
 
-import type { Workspace } from "@prisma/client";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { AccessLevel, type Workspace } from "@prisma/client";
 import { useTranslations } from "next-intl";
-import type { SubmitEvent } from "react";
 import { useEffect } from "react";
+import { Controller, useForm } from "react-hook-form";
+import z from "zod";
 
+import { useUpdateWorkspaceMutation } from "@/entities/workspace";
+import { ACCESS_LEVELS } from "@/shared/constants";
 import {
   Field,
-  Input,
   Label,
   Button,
   Dialog,
@@ -17,7 +20,14 @@ import {
   DialogFooter,
   DialogHeader,
   DialogContent,
+  FieldDescription,
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
   DialogDescription,
+  Spinner,
 } from "@/shared/ui";
 import { cn } from "@/utils";
 
@@ -28,7 +38,12 @@ interface ChangeWorkspaceAccessModalProps {
   className?: string;
 }
 
-// TODO Implement actual access level changing functionality
+const changeWorkspaceAccessSchema = z.object({
+  accessLevel: z.enum(AccessLevel, {
+    error: "Invalid access level",
+  }),
+});
+
 export function ChangeWorkspaceAccessModal({
   workspace,
   open,
@@ -37,13 +52,39 @@ export function ChangeWorkspaceAccessModal({
 }: ChangeWorkspaceAccessModalProps) {
   const t = useTranslations();
 
-  useEffect(() => {}, [open, workspace]);
+  const updateWorkspaceMutation = useUpdateWorkspaceMutation();
 
-  const handleChangeWorkspaceAccess = (e: SubmitEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const {
+    formState: { isSubmitting, dirtyFields },
+    handleSubmit,
+    reset,
+    control,
+  } = useForm({
+    defaultValues: {
+      accessLevel: workspace?.accessLevel || AccessLevel.private,
+    },
+    resolver: zodResolver(changeWorkspaceAccessSchema),
+  });
 
-    // TODO Implement access level changing logic
-    console.log("Change workspace access");
+  useEffect(() => {
+    if (open && workspace) {
+      reset({
+        accessLevel: workspace.accessLevel || AccessLevel.private,
+      });
+    }
+  }, [open, workspace, reset]);
+
+  const handleChangeWorkspaceAccess = async (data: {
+    accessLevel: AccessLevel;
+  }) => {
+    if (!workspace) return;
+
+    await updateWorkspaceMutation.mutateAsync({
+      id: workspace.id,
+      accessLevel: data.accessLevel,
+    });
+
+    onOpenChange(false);
   };
 
   return (
@@ -51,10 +92,11 @@ export function ChangeWorkspaceAccessModal({
       <DialogContent className={cn("", className)}>
         <form
           className="flex flex-col gap-4"
-          onSubmit={handleChangeWorkspaceAccess}
+          onSubmit={handleSubmit(handleChangeWorkspaceAccess)}
         >
           <DialogHeader>
             <DialogTitle>{t("workspace.access.title")}</DialogTitle>
+
             <DialogDescription>
               {t("workspace.access.description")}
             </DialogDescription>
@@ -62,11 +104,36 @@ export function ChangeWorkspaceAccessModal({
 
           <FieldGroup>
             <Field>
-              <Label htmlFor="workspace-access">Workspace Access</Label>
-              <Input
-                id="workspace-access"
-                name="workspace-access"
-                placeholder="Enter workspace access"
+              <Label htmlFor="workspace-access">
+                {t("workspace.access.inputLabel")}
+              </Label>
+              <FieldDescription>
+                {t("workspace.access.inputDescription")}
+              </FieldDescription>
+
+              <Controller
+                name="accessLevel"
+                control={control}
+                render={({ field }) => (
+                  <Select
+                    name={field.name}
+                    onValueChange={field.onChange}
+                    value={field.value}
+                  >
+                    <SelectTrigger>
+                      <SelectValue>
+                        {t(`accessLevels.${field.value}`)}
+                      </SelectValue>
+                    </SelectTrigger>
+                    <SelectContent>
+                      {ACCESS_LEVELS.map(({ value, translationKey }) => (
+                        <SelectItem key={value} value={value}>
+                          {t(translationKey)}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
               />
             </Field>
           </FieldGroup>
@@ -75,8 +142,12 @@ export function ChangeWorkspaceAccessModal({
             <DialogClose asChild>
               <Button variant="outline">{t("cancel")}</Button>
             </DialogClose>
-            <Button type="submit">
-              {false ? t("savingChanges") : t("saveChanges")}
+            <Button
+              type="submit"
+              disabled={isSubmitting || !dirtyFields.accessLevel}
+            >
+              {isSubmitting && <Spinner />}
+              {isSubmitting ? t("savingChanges") : t("saveChanges")}
             </Button>
           </DialogFooter>
         </form>

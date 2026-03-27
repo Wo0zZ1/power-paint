@@ -21,7 +21,6 @@
   "confirm": "Confirm",
   "confirmation": "Confirmation",
   "continue": "Continue",
-
   "or": "or",
 
   "errors": {
@@ -136,17 +135,26 @@
     }
   },
 
+  "accessLevels": {
+    "private": "Private",
+    "public_view": "Public (View Only)",
+    "public_edit": "Public (Editing)"
+  },
+
   "account": "Account",
   "profile": "Profile",
+
   "settings": {
     "title": "Settings",
     "theme": "Theme",
     "language": "Language"
   },
+
   "dashboard": {
     "title": "Dashboard",
     "welcome": "Welcome to your Dashboard."
   },
+
   "workspace": {
     "plural": "Workspaces",
     "all": "All Workspaces",
@@ -173,7 +181,9 @@
     "access": {
       "action": "Configure Access",
       "title": "Configure Workspace Access",
-      "description": "Update the access settings for this workspace."
+      "description": "Update the default access settings for this workspace. This will affect all boards within the workspace that are set to inherit access.",
+      "inputLabel": "Workspace Access",
+      "inputDescription": "Update the default workspace settings for this board."
     },
     "delete": {
       "action": "Delete",
@@ -185,6 +195,7 @@
       "inputPlaceholder": "Enter workspace name"
     }
   },
+
   "board": {
     "plural": "Boards",
     "all": "All Boards",
@@ -214,7 +225,9 @@
     "access": {
       "action": "Configure Access",
       "title": "Configure Board Access",
-      "description": "Update the access settings for this board."
+      "description": "Update the default access settings for this board.",
+      "inputLabel": "Board Access",
+      "inputDescription": "Update the default board settings for this board."
     },
     "delete": {
       "action": "Delete",
@@ -226,6 +239,7 @@
       "inputPlaceholder": "Enter board name"
     }
   },
+
   "guestNameParts": {
     "Swift": "Swift",
     "Silent": "Silent",
@@ -239,6 +253,7 @@
     "Tiger": "Tiger",
     "Bear": "Bear"
   },
+
   "toolbar": {
     "tools": {
       "select": "Select",
@@ -296,6 +311,7 @@
       "delete": "Delete Selected"
     }
   },
+
   "email": {
     "signup": {
       "subject": "Confirm your email address",

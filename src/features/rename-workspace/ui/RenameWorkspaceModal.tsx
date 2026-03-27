@@ -77,6 +77,7 @@ export function RenameWorkspaceModal({
         <form className="flex flex-col gap-4" onSubmit={handleRenameWorkspace}>
           <DialogHeader>
             <DialogTitle>{t("workspace.rename.title")}</DialogTitle>
+
             <DialogDescription>
               {t("workspace.rename.description")}
             </DialogDescription>
@@ -87,6 +88,7 @@ export function RenameWorkspaceModal({
               <Label htmlFor="workspace-name">
                 {t("workspace.rename.inputLabel")}
               </Label>
+
               <Input
                 autoComplete="off"
                 id="workspace-name"
