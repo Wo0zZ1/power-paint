@@ -33,7 +33,10 @@ export function WorkspaceCard({
 }: WorkspaceCardProps) {
   return (
     <Card
-      className={cn("select-text relative h-full overflow-hidden", className)}
+      className={cn(
+        "select-text relative h-full overflow-hidden pt-0",
+        className,
+      )}
     >
       <WorkspaceCardBadge accessRole={accessRole} />
 
@@ -48,7 +51,7 @@ export function WorkspaceCard({
 
       <WorkspaceCardImage workspaceId={workspace.id} imageProps={preview1} />
 
-      <WorkspaceCardHeader name={workspace.name} />
+      <WorkspaceCardHeader className="grow" name={workspace.name} />
 
       <WorkspaceCardFooter buttonText={buttonText} workspaceId={workspace.id} />
     </Card>

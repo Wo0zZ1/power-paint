@@ -33,7 +33,10 @@ export function BoardCard({
 }: BoardCardProps) {
   return (
     <Card
-      className={cn("select-text relative h-full overflow-hidden", className)}
+      className={cn(
+        "select-text relative h-full overflow-hidden pt-0",
+        className,
+      )}
     >
       <BoardCardBadge accessRole={accessRole} />
 
@@ -48,7 +51,7 @@ export function BoardCard({
 
       <BoardCardImage boardId={board.id} imageProps={preview1} />
 
-      <BoardCardHeader name={board.name} />
+      <BoardCardHeader className="grow" name={board.name} />
 
       <BoardCardFooter buttonText={buttonText} boardId={board.id} />
     </Card>
