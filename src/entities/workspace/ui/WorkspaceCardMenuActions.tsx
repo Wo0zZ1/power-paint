@@ -32,10 +32,10 @@ export function WorkspaceCardMenuActions({
           </DropdownMenuItem>
         )}
 
-        {AccessRole[accessRole] >= AccessRole.OWNER && (
+        {AccessRole[accessRole] >= AccessRole.VIEWER && (
           <DropdownMenuItem onSelect={onEditWorkspaceAccess}>
             <Share2 />
-            {t("access.action")}
+            {t("share.action")}
           </DropdownMenuItem>
         )}
       </DropdownMenuGroup>

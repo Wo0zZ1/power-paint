@@ -1,7 +1,8 @@
-import type { Workspace } from "@prisma/client";
 import { useState } from "react";
 
-type setSelectedWorkspaceFn = (workspace: Workspace) => void;
+import type { WorkspaceWithAccess } from "@/entities/workspace";
+
+type setSelectedWorkspaceFn = (workspace: WorkspaceWithAccess) => void;
 
 export const useChangeWorkspaceAccess = (
   setSelectedWorkspace: setSelectedWorkspaceFn,
@@ -9,7 +10,7 @@ export const useChangeWorkspaceAccess = (
   const [isChangeAccessModalOpen, setIsChangeAccessModalOpen] =
     useState<boolean>(false);
 
-  const handleChangeWorkspaceAccess = (workspace: Workspace) => {
+  const handleChangeWorkspaceAccess = (workspace: WorkspaceWithAccess) => {
     setSelectedWorkspace(workspace);
     setIsChangeAccessModalOpen(true);
   };

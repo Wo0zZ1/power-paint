@@ -1,4 +1,3 @@
-import type { User } from "@prisma/client";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -18,18 +17,6 @@ export function shortenEmail(email: string, maxLocalLength = 6): string {
 
   const shortenedLocal = `${localPart.slice(0, maxLocalLength)}..${localPart.slice(-1)}`;
   return `${shortenedLocal}@${domain}`;
-}
-
-export function getUserPublicInfo(
-  user: User,
-): Pick<User, "id" | "name" | "image" | "email" | "created_at"> {
-  return {
-    id: user.id,
-    name: user.name,
-    email: user.email,
-    image: user.image,
-    created_at: user.created_at,
-  };
 }
 
 export const getBadgeContentByAccessRole = (accessRole: AccessRole) => {

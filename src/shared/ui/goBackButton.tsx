@@ -20,7 +20,7 @@ export const Component = (props: React.ComponentProps<typeof Button>) => {
       onClick={handleMouseClick}
       {...props}
     >
-      {t("goBack")}
+      {t("go_back")}
     </Button>
   );
 };

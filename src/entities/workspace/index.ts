@@ -1,4 +1,8 @@
-export type { WorkspaceWithAccess, WorkspaceWithBoards } from "./model/types";
+export type {
+  WorkspaceWithAccess,
+  Workspace,
+  WorkspaceMemberWithUser,
+} from "./model/types";
 
 export { WorkspaceCard } from "./ui/WorkspaceCard";
 
@@ -15,8 +19,11 @@ export { getPersonalWorkspace } from "./model/utils";
 export {
   createWorkspaceFormSchema,
   createWorkspaceSchema,
+  updateWorkspaceSchema,
+  workspaceMember,
 } from "./model/schemas";
 export type {
   CreateWorkspaceData,
   CreateWorkspaceFormData,
+  UpdateWorkspaceData,
 } from "./model/schemas";

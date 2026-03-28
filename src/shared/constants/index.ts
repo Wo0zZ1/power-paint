@@ -5,3 +5,4 @@ export * from "./fonts";
 export * from "./cookie";
 export * from "./toolbar";
 export * from "./accessLevel";
+export * from "./memberRole";

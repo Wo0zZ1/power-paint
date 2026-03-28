@@ -74,7 +74,7 @@ model Workspace {
   name        String
   ownerId     String        @map("owner_id")
   type        WorkspaceType @default(team)
-  accessLevel AccessLevel?  @default(private) @map("access_level")
+  accessLevel AccessLevel   @default(private) @map("access_level")
 
   updatedAt DateTime @updatedAt @map("updated_at")
   createdAt DateTime @default(now()) @map("created_at")
@@ -87,11 +87,11 @@ model Workspace {
 }
 
 model Board {
-  id          String       @id @default(uuid())
+  id          String      @id @default(uuid())
   name        String
-  workspaceId String       @map("workspace_id")
-  ownerId     String       @map("owner_id")
-  accessLevel AccessLevel? @default(private) @map("access_level")
+  workspaceId String      @map("workspace_id")
+  ownerId     String      @map("owner_id")
+  accessLevel AccessLevel @default(private) @map("access_level")
 
   updatedAt DateTime @updatedAt @map("updated_at")
   createdAt DateTime @default(now()) @map("created_at")

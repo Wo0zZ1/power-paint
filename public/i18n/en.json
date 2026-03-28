@@ -2,18 +2,18 @@
   "loading": "Loading",
   "cancel": "Cancel",
   "error": "Error",
-  "goBack": "Go Back",
+  "go_back": "Go Back",
   "open": "Open",
   "view": "View",
-  "viewAll": "View All",
+  "view_all": "View All",
   "create": "Create",
   "creating": "Creating",
   "update": "Update",
   "updating": "Updating",
   "save": "Save",
   "saving": "Saving",
-  "saveChanges": "Save Changes",
-  "savingChanges": "Saving Changes",
+  "save_changes": "Save Changes",
+  "saving_changes": "Saving Changes",
   "rename": "Rename",
   "renaming": "Renaming",
   "delete": "Delete",
@@ -21,6 +21,8 @@
   "confirm": "Confirm",
   "confirmation": "Confirmation",
   "continue": "Continue",
+  "copy": "Copy",
+  "copied": "Copied",
   "or": "or",
 
   "errors": {
@@ -137,8 +139,18 @@
 
   "accessLevels": {
     "private": "Private",
-    "public_view": "Public (View Only)",
-    "public_edit": "Public (Editing)"
+    "public_view": "Viewing",
+    "public_edit": "Editing",
+
+    "private_description": "Only invited members can access.",
+    "public_view_description": "Anyone with the direct link can view.",
+    "public_edit_description": "Anyone with the direct link can view and edit."
+  },
+
+  "member_roles": {
+    "viewer": "Viewer",
+    "editor": "Editor",
+    "admin": "Admin"
   },
 
   "account": "Account",
@@ -160,10 +172,12 @@
     "all": "All Workspaces",
     "empty": "No available workspaces",
     "settings": "Workspace Settings",
+
     "notFound": {
       "title": "Workspace not found",
       "description": "The workspace you are looking for does not exist or is inaccessible."
     },
+
     "create": {
       "action": "Create",
       "title": "Create New Workspace",
@@ -171,6 +185,7 @@
       "inputLabel": "Workspace Name",
       "inputPlaceholder": "Enter workspace name"
     },
+
     "rename": {
       "action": "Rename",
       "title": "Rename Workspace",
@@ -178,13 +193,27 @@
       "inputLabel": "Workspace Name",
       "inputPlaceholder": "Enter new workspace name"
     },
-    "access": {
-      "action": "Configure Access",
-      "title": "Configure Workspace Access",
-      "description": "Update the default access settings for this workspace. This will affect all boards within the workspace that are set to inherit access.",
-      "inputLabel": "Workspace Access",
-      "inputDescription": "Update the default workspace settings for this board."
+
+    "share": {
+      "action": "Share",
+
+      "title": "Share workspace and configure access",
+      "description": "Configure access rights for this workspace and its contents.",
+
+      "tabs": {
+        "share": "Share",
+        "export": "Export"
+      },
+
+      "direct_link": "Direct Link",
+
+      "invite_title": "Invite to collaborate",
+      "invite_description": "Add team members by username or email.",
+      "members_empty": "No members selected",
+
+      "export_coming_soon": "Coming soon!"
     },
+
     "delete": {
       "action": "Delete",
       "title": "Delete Workspace",

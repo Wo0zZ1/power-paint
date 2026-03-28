@@ -2,9 +2,9 @@ import { notFound } from "next/navigation";
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
+import { getUserPublicInfo } from "@/entities/user";
 import { auth } from "@/shared/auth";
 import { prisma } from "@/shared/lib/prisma";
-import { getUserPublicInfo } from "@/shared/lib/utils";
 
 export const GET = async (
   _request: NextRequest,

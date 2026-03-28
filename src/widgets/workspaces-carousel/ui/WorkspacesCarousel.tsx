@@ -80,7 +80,7 @@ export function WorkspacesCarousel() {
       </Carousel>
 
       <RenameWorkspaceModal
-        workspace={selectedWorkspace!}
+        workspace={selectedWorkspace}
         open={isRenameModalOpen}
         onOpenChange={setIsRenameModalOpen}
       />

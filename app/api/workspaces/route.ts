@@ -24,7 +24,22 @@ export const GET = async (
 
   const workspaces = await prisma.workspace.findMany({
     where: { ownerId: userId, type },
-    include: { boards: true },
+    include: {
+      boards: true,
+      members: {
+        include: {
+          user: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+              image: true,
+              created_at: true,
+            },
+          },
+        },
+      },
+    },
     orderBy: { updatedAt: "desc" },
   });
 
@@ -62,7 +77,22 @@ export const POST = async (
       accessLevel,
       ownerId: session.user.id,
     },
-    include: { boards: true },
+    include: {
+      boards: true,
+      members: {
+        include: {
+          user: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+              image: true,
+              created_at: true,
+            },
+          },
+        },
+      },
+    },
   });
 
   return NextResponse.json({

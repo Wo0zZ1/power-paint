@@ -86,7 +86,7 @@ export function SignupForm({ className, verificationId }: SignupFormProps) {
                 onClick={goPrev}
                 disabled={methods.formState.isSubmitting}
               >
-                {t("goBack")}
+                {t("go_back")}
               </Button>
             </Field>
           )}

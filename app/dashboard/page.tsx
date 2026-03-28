@@ -33,7 +33,7 @@ export default async function DashboardPage() {
             title={t("workspace.plural")}
             action={
               <Button size="xs" variant="link" className="text-sm" asChild>
-                <Link href={ROUTES.DASHBOARD.WORKSPACES}>{t("viewAll")}</Link>
+                <Link href={ROUTES.DASHBOARD.WORKSPACES}>{t("view_all")}</Link>
               </Button>
             }
           />
@@ -48,7 +48,7 @@ export default async function DashboardPage() {
                       personalWorkspace.workspace.id,
                     )}
                   >
-                    {t("viewAll")}
+                    {t("view_all")}
                   </Link>
                 </Button>
               }

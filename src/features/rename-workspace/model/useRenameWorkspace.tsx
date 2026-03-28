@@ -1,14 +1,15 @@
-import type { Workspace } from "@prisma/client";
 import { useState } from "react";
 
-type setSelectedWorkspaceFn = (workspace: Workspace) => void;
+import type { WorkspaceWithAccess } from "@/entities/workspace";
+
+type setSelectedWorkspaceFn = (workspace: WorkspaceWithAccess) => void;
 
 export const useRenameWorkspace = (
   setSelectedWorkspace: setSelectedWorkspaceFn,
 ) => {
   const [isRenameModalOpen, setIsRenameModalOpen] = useState<boolean>(false);
 
-  const handleChangeWorkspaceName = (workspace: Workspace) => {
+  const handleChangeWorkspaceName = (workspace: WorkspaceWithAccess) => {
     setSelectedWorkspace(workspace);
     setIsRenameModalOpen(true);
   };

@@ -3,7 +3,7 @@
 import { useTranslations } from "next-intl";
 
 import { useGetBoardsQuery, BoardCard } from "@/entities/board";
-import type { WorkspaceWithBoards } from "@/entities/workspace";
+import type { Workspace } from "@/entities/workspace";
 import { ChangeBoardAccessModal } from "@/features/change-board-access";
 import { DeleteBoardModal } from "@/features/delete-board";
 import { RenameBoardModal } from "@/features/rename-board";
@@ -15,7 +15,7 @@ import { ErrorBoardGrid } from "./ErrorBoardsGrid";
 import { LoadingBoardGrid } from "./LoadingBoardsGrid";
 
 interface BoardsGridProps {
-  workspace: WorkspaceWithBoards;
+  workspace: Workspace;
 }
 
 export function BoardsGrid({ workspace }: BoardsGridProps) {

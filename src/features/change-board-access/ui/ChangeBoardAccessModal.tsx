@@ -147,7 +147,7 @@ export function ChangeBoardAccessModal({
               disabled={isSubmitting || !dirtyFields.accessLevel}
             >
               {isSubmitting && <Spinner />}
-              {isSubmitting ? t("savingChanges") : t("saveChanges")}
+              {isSubmitting ? t("saving_changes") : t("save_changes")}
             </Button>
           </DialogFooter>
         </form>

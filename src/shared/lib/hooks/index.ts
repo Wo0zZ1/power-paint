@@ -8,3 +8,4 @@ export { useNumberInput } from "./useNumberInput";
 export { useThrottledCallback } from "./useThrottledCallback";
 export { useTooltip } from "./useTooltip";
 export { useWindowSize } from "./useWindowSize";
+export { useOnClickOutside } from "./useOnClickOutside";

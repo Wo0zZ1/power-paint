@@ -1,9 +1,12 @@
+import type { ComponentProps } from "react";
+
 import type { UserOnlineStatus } from "@/shared/ui";
 import { Avatar, AvatarFallback, AvatarImage, UserBadge } from "@/shared/ui";
 import { cn } from "@/utils";
 
 type UserAvatarProps = {
   className?: string;
+  size?: ComponentProps<typeof Avatar>["size"];
   src?: string | null;
   fallback: string;
   status?: UserOnlineStatus;
@@ -11,12 +14,13 @@ type UserAvatarProps = {
 
 export function UserAvatar({
   className,
+  size = "lg",
   fallback,
   src,
   status,
 }: UserAvatarProps) {
   return (
-    <Avatar className={cn("", className)} size="lg">
+    <Avatar className={cn("", className)} size={size}>
       {src && (
         <AvatarImage
           src={src}

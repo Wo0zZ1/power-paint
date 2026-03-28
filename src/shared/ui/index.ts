@@ -24,6 +24,10 @@ export * from "./checkbox";
 export * from "./input-otp";
 export * from "./sonner";
 export * from "./radio-group";
+export * from "./tabs";
+export * from "./popover";
+export * from "./scroll-area";
+export * from "./item";
 // Custom
 export * from "./ColorInput";
 export * from "./ColorButton";
@@ -31,3 +35,4 @@ export * from "./ColorSwatch";
 export * from "./NumberInput";
 export * from "./UserAvatar";
 export * from "./UserBadge";
+export * from "./Combobox";

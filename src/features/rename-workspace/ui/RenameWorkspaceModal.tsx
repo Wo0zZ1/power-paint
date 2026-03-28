@@ -1,10 +1,10 @@
 "use client";
 
-import type { Workspace } from "@prisma/client";
 import { useTranslations } from "next-intl";
 import type { SubmitEvent } from "react";
 import { useEffect, useState } from "react";
 
+import type { WorkspaceWithAccess } from "@/entities/workspace";
 import { useUpdateWorkspaceMutation } from "@/entities/workspace";
 import {
   Label,
@@ -24,7 +24,7 @@ import {
 import { cn } from "@/utils";
 
 interface RenameWorkspaceModalProps {
-  workspace?: Workspace;
+  workspace?: WorkspaceWithAccess;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   className?: string;
@@ -45,7 +45,7 @@ export function RenameWorkspaceModal({
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    if (open) setWorkspaceName(workspace!.name);
+    if (open) setWorkspaceName(workspace?.workspace.name ?? "");
   }, [open, setWorkspaceName, workspace]);
 
   const handleRenameWorkspace = (e: SubmitEvent<HTMLFormElement>) => {
@@ -57,8 +57,10 @@ export function RenameWorkspaceModal({
 
     updateWorkspaceMutation.mutate(
       {
-        id: workspace.id,
-        name: workspaceName,
+        workspaceId: workspace.workspace.id,
+        data: {
+          name: workspaceName,
+        },
       },
       {
         onSuccess() {
@@ -106,7 +108,9 @@ export function RenameWorkspaceModal({
             </DialogClose>
 
             <Button
-              disabled={workspaceName === workspace?.name || isMutating}
+              disabled={
+                workspaceName === workspace?.workspace.name || isMutating
+              }
               className="transition-colors"
               data-icon="inline-start"
               type="submit"

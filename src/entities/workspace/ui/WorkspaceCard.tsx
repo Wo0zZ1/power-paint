@@ -1,10 +1,9 @@
-import type { Workspace } from "@prisma/client";
-
-import { AccessRole } from "@/shared/constants";
+import type { AccessRole } from "@/shared/constants";
 import { Card } from "@/shared/ui";
 import { cn } from "@/utils";
 
 import preview1 from "../../../../public/assets/preview1.jpeg"; // TODO Remove this hardcoded preview image
+import type { Workspace, WorkspaceWithAccess } from "../model/types";
 
 import { WorkspaceCardBadge } from "./WorkspaceCardBadge";
 import { WorkspaceCardFooter } from "./WorkspaceCardFooter";
@@ -16,9 +15,9 @@ interface WorkspaceCardProps {
   workspace: Workspace;
   accessRole: AccessRole;
   buttonText: string;
-  onEditWorkspaceName?: (workspace: Workspace) => void;
-  onEditWorkspaceAccess?: (workspace: Workspace) => void;
-  onDeleteWorkspace?: (workspace: Workspace) => void;
+  onEditWorkspaceName?: (workspace: WorkspaceWithAccess) => void;
+  onEditWorkspaceAccess?: (workspace: WorkspaceWithAccess) => void;
+  onDeleteWorkspace?: (workspace: WorkspaceWithAccess) => void;
   className?: string;
 }
 
@@ -40,14 +39,18 @@ export function WorkspaceCard({
     >
       <WorkspaceCardBadge accessRole={accessRole} />
 
-      {AccessRole[accessRole] >= AccessRole.ADMIN && (
-        <WorkspaceCardSettingsMenu
-          accessRole={accessRole}
-          onEditWorkspaceName={() => onEditWorkspaceName?.(workspace)}
-          onEditWorkspaceAccess={() => onEditWorkspaceAccess?.(workspace)}
-          onDeleteWorkspace={() => onDeleteWorkspace?.(workspace)}
-        />
-      )}
+      <WorkspaceCardSettingsMenu
+        accessRole={accessRole}
+        onEditWorkspaceName={(accessRole) =>
+          onEditWorkspaceName?.({ workspace, accessRole })
+        }
+        onEditWorkspaceAccess={(accessRole) =>
+          onEditWorkspaceAccess?.({ workspace, accessRole })
+        }
+        onDeleteWorkspace={(accessRole) =>
+          onDeleteWorkspace?.({ workspace, accessRole })
+        }
+      />
 
       <WorkspaceCardImage workspaceId={workspace.id} imageProps={preview1} />
 

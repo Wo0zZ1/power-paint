@@ -1,14 +1,15 @@
-import type { Workspace } from "@prisma/client";
 import { useState } from "react";
 
-type setSelectedWorkspaceFn = (workspace: Workspace) => void;
+import type { WorkspaceWithAccess } from "@/entities/workspace";
+
+type setSelectedWorkspaceFn = (workspace: WorkspaceWithAccess) => void;
 
 export const useDeleteWorkspace = (
   setSelectedWorkspace: setSelectedWorkspaceFn,
 ) => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
 
-  const handleDeleteWorkspace = (workspace: Workspace) => {
+  const handleDeleteWorkspace = (workspace: WorkspaceWithAccess) => {
     setSelectedWorkspace(workspace);
     setIsDeleteModalOpen(true);
   };

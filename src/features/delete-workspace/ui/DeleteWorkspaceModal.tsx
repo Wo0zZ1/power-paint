@@ -1,11 +1,11 @@
 "use client";
 
-import type { Workspace } from "@prisma/client";
 import { LucideFolder } from "lucide-react";
 import { useTranslations } from "next-intl";
 import type { SubmitEvent } from "react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
+import type { WorkspaceWithAccess } from "@/entities/workspace";
 import { useDeleteWorkspaceMutation } from "@/entities/workspace/model/mutations";
 import {
   Field,
@@ -29,14 +29,14 @@ import {
 import { cn } from "@/utils";
 
 interface DeleteWorkspaceModalProps {
-  workspace?: Workspace;
+  workspace?: WorkspaceWithAccess;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   className?: string;
 }
 
 export function DeleteWorkspaceModal({
-  workspace,
+  workspace: _workspace,
   open,
   onOpenChange,
   className,
@@ -53,18 +53,25 @@ export function DeleteWorkspaceModal({
     if (open) setWorkspaceName("");
   }, [open, setWorkspaceName]);
 
-  if (!workspace) return null;
+  const handleDeleteWorkspace = useCallback(
+    (e: SubmitEvent<HTMLFormElement>) => {
+      if (!_workspace) return;
 
-  const handleDeleteWorkspace = (e: SubmitEvent<HTMLFormElement>) => {
-    e.preventDefault();
+      e.preventDefault();
 
-    setIsMutating(true);
+      setIsMutating(true);
 
-    deleteWorkspaceMutation.mutateAsync(workspace.id, {
-      onSuccess: () => onOpenChange(false),
-      onSettled: () => setIsMutating(false),
-    });
-  };
+      deleteWorkspaceMutation.mutateAsync(_workspace.workspace.id, {
+        onSuccess: () => onOpenChange(false),
+        onSettled: () => setIsMutating(false),
+      });
+    },
+    [deleteWorkspaceMutation, _workspace, onOpenChange],
+  );
+
+  if (!_workspace) return null;
+
+  const { workspace } = _workspace;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>

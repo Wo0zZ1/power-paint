@@ -17,9 +17,9 @@ import { WorkspaceCardMenuActions } from "./WorkspaceCardMenuActions";
 
 interface WorkspaceCardSettingsMenuProps {
   accessRole: AccessRole;
-  onEditWorkspaceName?: () => void;
-  onEditWorkspaceAccess?: () => void;
-  onDeleteWorkspace?: () => void;
+  onEditWorkspaceName?: (role: AccessRole) => void;
+  onEditWorkspaceAccess?: (role: AccessRole) => void;
+  onDeleteWorkspace?: (role: AccessRole) => void;
 }
 
 export function WorkspaceCardSettingsMenu({
@@ -49,9 +49,9 @@ export function WorkspaceCardSettingsMenu({
 
         <WorkspaceCardMenuActions
           accessRole={accessRole}
-          onEditWorkspaceName={onEditWorkspaceName}
-          onEditWorkspaceAccess={onEditWorkspaceAccess}
-          onDeleteWorkspace={onDeleteWorkspace}
+          onEditWorkspaceName={() => onEditWorkspaceName?.(accessRole)}
+          onEditWorkspaceAccess={() => onEditWorkspaceAccess?.(accessRole)}
+          onDeleteWorkspace={() => onDeleteWorkspace?.(accessRole)}
         />
       </DropdownMenuContent>
     </DropdownMenu>

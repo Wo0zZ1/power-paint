@@ -2,7 +2,7 @@ import type { Workspace, WorkspaceType } from "@prisma/client";
 
 import { GET_BASE_API_URL, fetchInitWithCookies } from "@/shared/api";
 
-import type { CreateWorkspaceData } from "./schemas";
+import type { CreateWorkspaceData, UpdateWorkspaceData } from "./schemas";
 import type { WorkspaceWithAccess } from "./types";
 
 export const url = GET_BASE_API_URL() + "/workspaces";
@@ -31,7 +31,7 @@ const fetchWorkspace = async ({
   workspaceId,
   cookieString,
 }: {
-  workspaceId: string;
+  workspaceId: Workspace["id"];
   cookieString?: string;
 }): Promise<WorkspaceWithAccess> => {
   const response = await fetch(
@@ -58,13 +58,17 @@ const createWorkspace = async (
   return response.json();
 };
 
-const updateWorkspace = async (
-  workspace: Partial<Workspace> & Pick<Workspace, "id">,
-): Promise<WorkspaceWithAccess> => {
-  const response = await fetch(`${url}/${workspace.id}`, {
+const updateWorkspace = async ({
+  workspaceId,
+  data,
+}: {
+  workspaceId: Workspace["id"];
+  data: UpdateWorkspaceData;
+}): Promise<WorkspaceWithAccess> => {
+  const response = await fetch(`${url}/${workspaceId}`, {
     ...fetchInitWithCookies(),
     method: "PATCH",
-    body: JSON.stringify(workspace),
+    body: JSON.stringify(data),
   });
 
   if (!response.ok) throw new Error("Failed to update workspace");
@@ -73,7 +77,7 @@ const updateWorkspace = async (
 };
 
 const removeWorkspace = async (
-  workspaceId: string,
+  workspaceId: Workspace["id"],
 ): Promise<WorkspaceWithAccess> => {
   const response = await fetch(`${url}/${workspaceId}`, {
     ...fetchInitWithCookies(),

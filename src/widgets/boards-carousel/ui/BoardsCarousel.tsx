@@ -2,9 +2,8 @@
 
 import { useTranslations } from "next-intl";
 
-
 import { BoardCard, useGetBoardsQuery } from "@/entities/board";
-import type { WorkspaceWithBoards } from "@/entities/workspace";
+import type { Workspace } from "@/entities/workspace";
 import { ChangeBoardAccessModal } from "@/features/change-board-access";
 import { DeleteBoardModal } from "@/features/delete-board";
 import { RenameBoardModal } from "@/features/rename-board";
@@ -22,7 +21,7 @@ import { ErrorBoardsCarousel } from "./ErrorBoardsCarousel";
 import { LoadingBoardsCarousel } from "./LoadingBoardsCarousel";
 
 interface BoardsCarouselProps {
-  workspace: WorkspaceWithBoards;
+  workspace: Workspace;
 }
 
 export function BoardsCarousel({ workspace }: BoardsCarouselProps) {
