@@ -80,18 +80,21 @@ export function WorkspacesCarousel() {
       </Carousel>
 
       <RenameWorkspaceModal
+        key={`rename-${selectedWorkspace?.workspace.id}`}
         workspace={selectedWorkspace}
         open={isRenameModalOpen}
         onOpenChange={setIsRenameModalOpen}
       />
 
       <ChangeWorkspaceAccessModal
+        key={`change-access-${selectedWorkspace?.workspace.id}`}
         workspace={selectedWorkspace}
         open={isChangeAccessModalOpen}
         onOpenChange={setIsChangeAccessModalOpen}
       />
 
       <DeleteWorkspaceModal
+        key={`delete-${selectedWorkspace?.workspace.id}`}
         workspace={selectedWorkspace}
         open={isDeleteModalOpen}
         onOpenChange={setIsDeleteModalOpen}

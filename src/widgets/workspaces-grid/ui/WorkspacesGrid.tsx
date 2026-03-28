@@ -57,18 +57,21 @@ export function WorkspacesGrid() {
       </div>
 
       <RenameWorkspaceModal
+        key={`rename-${selectedWorkspace?.workspace.id}`}
         workspace={selectedWorkspace!}
         open={isRenameModalOpen}
         onOpenChange={setIsRenameModalOpen}
       />
 
       <ChangeWorkspaceAccessModal
+        key={`rename-${selectedWorkspace?.workspace.id}`}
         workspace={selectedWorkspace}
         open={isChangeAccessModalOpen}
         onOpenChange={setIsChangeAccessModalOpen}
       />
 
       <DeleteWorkspaceModal
+        key={`rename-${selectedWorkspace?.workspace.id}`}
         workspace={selectedWorkspace}
         open={isDeleteModalOpen}
         onOpenChange={setIsDeleteModalOpen}
