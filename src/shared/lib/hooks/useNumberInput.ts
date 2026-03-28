@@ -1,7 +1,7 @@
 "use client";
 
-import type { ChangeEvent } from "react";
-import { useCallback, useEffect, useState } from "react";
+import type { ChangeEvent, RefObject } from "react";
+import { useCallback, useEffect } from "react";
 
 import { useThrottledCallback } from "./useThrottledCallback";
 
@@ -18,6 +18,7 @@ const NUMBER_REGEX = /^-?\d+(?:[.,]\d+)?$/;
 interface UseNumberInputOptions {
   value: number | string;
   onChange: (value: number) => void;
+  inputRef: RefObject<HTMLInputElement | null>;
   min?: number | string;
   max?: number | string;
   modulo?: number;
@@ -26,48 +27,43 @@ interface UseNumberInputOptions {
 export function useNumberInput({
   value,
   onChange,
+  inputRef,
   min,
   max,
   modulo,
 }: UseNumberInputOptions) {
-  const [inputValue, setInputValue] = useState<number | string>(
-    initValue(value, modulo),
-  );
-
   useEffect(() => {
     const newValue = initValue(value, modulo);
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setInputValue(newValue);
-  }, [value, modulo]);
 
-  const throttledOnChange = useThrottledCallback(
-    (inputValue: number | string, value?: number) => {
-      setInputValue(inputValue);
-      if (value !== undefined) {
-        if (min !== undefined && value < Number(min)) return;
-        if (max !== undefined && value > Number(max)) return;
+    if (inputRef?.current) inputRef.current.value = newValue.toString();
+  }, [value, modulo, inputRef]);
 
-        const finalValue = modulo !== undefined ? value % modulo : value;
-        onChange(finalValue);
-      }
-    },
-  );
+  const throttledOnChange = useThrottledCallback((value: number) => {
+    if (value === undefined) return;
+    if (min !== undefined && value < Number(min)) return;
+    if (max !== undefined && value > Number(max)) return;
+
+    const finalValue = modulo !== undefined ? value % modulo : value;
+
+    onChange(finalValue);
+  });
 
   const handleChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
       const v = e.target.value;
 
-      if (!NUMBER_REGEX.test(v)) return throttledOnChange(v);
+      if (!NUMBER_REGEX.test(v)) return;
 
       const n = Number(v);
 
-      if (!isNaN(n)) throttledOnChange(v, n);
+      if (isNaN(n)) return;
+
+      throttledOnChange(n);
     },
     [throttledOnChange],
   );
 
   return {
-    inputValue,
     handleChange,
   };
 }

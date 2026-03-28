@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 
 import { useTheme, getSystemTheme } from "@/shared/lib/theme";
-import { invertHexColor } from "@/shared/lib/utils";
+import { invertColor } from "@/shared/lib/utils";
 
 /**
  * A hook that returns a color inverted based on the user's theme.
@@ -20,11 +20,15 @@ export function useInvertableColor(color: string, invertable: boolean = true) {
     const resolvedTheme =
       themePreference === "system" ? getSystemTheme() : themePreference;
 
-    const targetColor =
-      invertable && resolvedTheme === "dark" ? invertHexColor(color) : color;
+    try {
+      const targetColor =
+        invertable && resolvedTheme === "dark" ? invertColor(color) : color;
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setActiveColor(targetColor);
+    } catch (error) {
+      console.error("Failed to invert color:", error);
+    }
 
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setActiveColor(targetColor);
     setIsloadding(false);
   }, [themePreference, color, invertable]);
 

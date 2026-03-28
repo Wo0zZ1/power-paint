@@ -1,6 +1,6 @@
 export { useDebounce } from "./useDebounce";
 export { useDebounceFn } from "./useDebounceFn";
-export { useColorInput } from "./useHexColorInput";
+export { useColorInput } from "./useColorInput";
 export { useInvertableColor } from "./useInvertableColor";
 export { useLocalStorage } from "./useLocalStorage";
 export { useMultiStepForm, type StepConfig } from "./useMultiStepForm";

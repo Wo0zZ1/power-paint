@@ -30,12 +30,16 @@ export function SizeSection({ elements, update }: PropertySectionProps) {
           label="w"
           min={1}
           value={elementsWidth}
+          name="width"
+          id="input-width"
           onChange={(v) => update({ width: Math.max(1, v) })}
         />
         <NumberField
           label="h"
           min={1}
           value={elementsHeight}
+          name="height"
+          id="input-height"
           onChange={(v) => update({ height: Math.max(1, v) })}
         />
       </PropertiesRow>

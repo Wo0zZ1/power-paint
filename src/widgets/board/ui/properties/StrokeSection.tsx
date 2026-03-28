@@ -43,7 +43,7 @@ export function StrokeSection({ elements, update }: PropertySectionProps) {
           max={100}
           value={elementsStrokeWidth}
           onChange={(v) => update({ strokeWidth: v })}
-          className="w-max"
+          className="w-max max-w-20"
         />
 
         <ColorInput

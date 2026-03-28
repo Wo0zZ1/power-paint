@@ -40,12 +40,25 @@ export const invertColor = (color: string): string => {
   if (hexMatch) {
     return invertHexColor(color);
   } else if (rgbMatch) {
-    return rgbToHex(color);
+    return invertRgbColor(color);
   } else if (hslMatch) {
     return invertHslColor(color);
   } else {
     throw new Error("Unsupported color format");
   }
+};
+
+export const invertHexColor = (hex: string): string => {
+  const hsl = hexToHsl(hex);
+  const invertedHsl = invertHslColor(hsl);
+  return hslToHex(invertedHsl);
+};
+
+export const invertRgbColor = (rgb: string): string => {
+  const hsl = rgbToHsl(rgb);
+  const invertedHsl = invertHslColor(hsl);
+  const invertedHex = hslToHex(invertedHsl);
+  return hexToRgb(invertedHex);
 };
 
 export const invertHslColor = (hsl: string): string => {
@@ -58,11 +71,6 @@ export const invertHslColor = (hsl: string): string => {
   const l = 100 - parseInt(hslMatch[3]);
 
   return `hsl(${h}, ${s}%, ${l}%)`;
-};
-
-export const invertHexColor = (hex: string): string => {
-  const hsl = hexToHsl(hex);
-  return invertHslColor(hsl);
 };
 
 export const hexToRgb = (hex: string): string => {

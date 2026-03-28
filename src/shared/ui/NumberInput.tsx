@@ -1,4 +1,6 @@
-import type { ComponentProps, ReactNode } from "react";
+"use client";
+
+import { useRef, type ComponentProps, type ReactNode } from "react";
 
 import { cn } from "@/shared/lib/utils";
 import { Input } from "@/shared/ui";
@@ -21,21 +23,28 @@ export function NumberField({
   modulo?: number;
   onChange: (v: number) => void;
 } & Omit<ComponentProps<typeof Input>, "value" | "onChange">) {
-  const { inputValue, handleChange } = useNumberInput({
+  const inputRef = useRef<HTMLInputElement | null>(null);
+
+  const { handleChange } = useNumberInput({
     value,
     onChange,
+    inputRef,
     min,
     max,
     modulo,
   });
+
+  const isMixed = value === "mixed";
+  const normalizedType = isMixed ? "text" : "number";
 
   return (
     <div className="flex items-center gap-2">
       {label}
 
       <Input
-        type={typeof value === "string" ? "text" : "number"}
-        value={inputValue}
+        ref={inputRef}
+        type={normalizedType}
+        defaultValue={value}
         onChange={handleChange}
         onFocus={(e) => {
           e.target.select();

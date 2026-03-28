@@ -1,7 +1,7 @@
 "use client";
 
 import type { ChangeEvent, RefObject } from "react";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { hexValueToInputValue, normalizeHexColor } from "@/utils";
 
@@ -12,7 +12,7 @@ const HEX_INPUT_REGEX = /^([A-Fa-f0-9]{3}|[A-Fa-f0-9]{6})$/;
 
 interface UseColorInputOptions {
   value: string;
-  colorInputRef?: RefObject<HTMLInputElement | null>;
+  colorInputRef: RefObject<HTMLInputElement | null>;
   exceptionValues?: string[];
   onChange: (value: string) => void;
 }
@@ -23,51 +23,53 @@ export const useColorInput = ({
   exceptionValues = [],
   onChange,
 }: UseColorInputOptions) => {
-  const [inputValue, setInputValue] = useState(hexValueToInputValue(value));
+  const [isValid, setIsValid] = useState<boolean>(true);
 
   const defaultValue = useMemo(() => hexValueToInputValue(value), [value]);
 
-  const isValid = useMemo(
-    () =>
-      HEX_INPUT_REGEX.test(inputValue) ||
-      exceptionValues.some((ev) => inputValue === ev),
-    [exceptionValues, inputValue],
-  );
+  useEffect(() => {
+    const input = colorInputRef.current;
+    if (!input) return;
+
+    if (normalizeHexColor(input.value) !== value)
+      input.value = hexValueToInputValue(value);
+  }, [value, colorInputRef, exceptionValues]);
 
   const resetValue = useCallback(() => {
-    setInputValue(hexValueToInputValue(value));
-    if (!colorInputRef?.current) return;
-    colorInputRef.current.value = value;
+    if (!colorInputRef.current) return;
+
+    colorInputRef.current.value = hexValueToInputValue(value);
+    setIsValid(true);
   }, [colorInputRef, value]);
 
-  const throttledOnChange = useThrottledCallback(
-    (inputValue: string, value?: string) => {
-      if (value) onChange(value);
-      setInputValue(inputValue);
-    },
-  );
+  const throttledOnChange = useThrottledCallback((value: string) => {
+    if (value) onChange(value);
+  });
 
   const handleInputChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
       const inputValue = e.target.value;
       const value = normalizeHexColor(inputValue);
 
-      if (!HEX_INPUT_REGEX.test(inputValue))
-        return throttledOnChange(inputValue);
+      const isValidColor = HEX_INPUT_REGEX.test(inputValue);
+      const isExceptionValue = exceptionValues.some((ev) => inputValue === ev);
 
-      throttledOnChange(inputValue, value);
+      setIsValid(isValidColor || isExceptionValue);
+
+      if (!isValidColor) return;
+
+      throttledOnChange(value);
     },
-    [throttledOnChange],
+    [throttledOnChange, setIsValid, exceptionValues],
   );
 
   const handlePickerChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value;
-      const inputValue = hexValueToInputValue(value);
 
-      if (!HEX_REGEX.test(value)) return throttledOnChange(value);
+      if (!HEX_REGEX.test(value)) return;
 
-      throttledOnChange(inputValue, value);
+      throttledOnChange(value);
     },
     [throttledOnChange],
   );
