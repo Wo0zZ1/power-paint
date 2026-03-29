@@ -45,7 +45,7 @@ export function WorkspacesCarousel() {
 
   return (
     <>
-      <Carousel opts={{ dragFree: true }}>
+      <Carousel>
         {data && data?.length > 0 ? (
           <CarouselContent>
             {data.map(({ workspace, accessRole }) => (
