@@ -4,8 +4,6 @@ import { AccessRole } from "@/shared/constants";
 import { Card } from "@/shared/ui";
 import { cn } from "@/utils";
 
-import preview1 from "../../../../public/assets/preview1.jpeg"; // TODO Remove this hardcoded preview image
-
 import { BoardCardBadge } from "./BoardCardBadge";
 import { BoardCardFooter } from "./BoardCardFooter";
 import { BoardCardHeader } from "./BoardCardHeader";
@@ -31,14 +29,6 @@ export function BoardCard({
   onDeleteBoard,
   className,
 }: BoardCardProps) {
-  const imageProps = {
-    src: board.preview ?? preview1,
-    alt: "Board preview image",
-    fill: true,
-    unoptimized: true,
-    sizes: "100vw",
-  } as const;
-
   return (
     <div className="p-0.5">
       <Card
@@ -58,7 +48,11 @@ export function BoardCard({
           />
         )}
 
-        <BoardCardImage boardId={board.id} imageProps={imageProps} />
+        <BoardCardImage
+          boardId={board.id}
+          lightPreview={board.lightPreview}
+          darkPreview={board.darkPreview}
+        />
 
         <BoardCardHeader className="grow" name={board.name} />
 

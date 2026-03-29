@@ -3,6 +3,7 @@
 import z from "zod";
 
 import { prisma } from "@/shared/lib/prisma";
+import type { Theme } from "@/shared/lib/theme";
 
 const base64ImageSchema = z
   .string()
@@ -14,15 +15,21 @@ const base64ImageSchema = z
 export async function updateBoardPreviewAction(
   boardId: string,
   previewDataUrl: string,
+  theme: Exclude<Theme, "system">,
 ) {
   base64ImageSchema.parse(previewDataUrl);
 
-  await prisma.board.update({
-    where: { id: boardId },
-    data: {
-      preview: previewDataUrl,
-    },
-  });
+  if (theme === "dark") {
+    await prisma.board.update({
+      where: { id: boardId },
+      data: { darkPreview: previewDataUrl },
+    });
+  } else {
+    await prisma.board.update({
+      where: { id: boardId },
+      data: { lightPreview: previewDataUrl },
+    });
+  }
 
   return { success: true };
 }

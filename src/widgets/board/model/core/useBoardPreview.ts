@@ -4,8 +4,10 @@ import type { Layer } from "konva/lib/Layer";
 import type { RefObject } from "react";
 import { useEffect } from "react";
 
+import { getSystemTheme, useTheme } from "@/shared/lib/theme";
+
 import { updateBoardPreviewAction } from "../actions";
-import { generateSmartPreview } from "../lib";
+import { generateBothPreviews } from "../lib";
 
 interface UseBoardPreviewProps {
   ref: RefObject<Layer | null>;
@@ -13,16 +15,25 @@ interface UseBoardPreviewProps {
 }
 
 export const useBoardPreview = ({ ref, boardId }: UseBoardPreviewProps) => {
+  const { themePreference } = useTheme();
+
   useEffect(() => {
     const sendPreview = async () => {
       const layer = ref.current;
       if (!layer) return;
 
-      const smartPreview = generateSmartPreview(layer);
+      const resolvedTheme =
+        themePreference === "system" ? getSystemTheme() : themePreference;
 
-      if (!smartPreview) return;
+      const { lightPreview, darkPreview } = generateBothPreviews(
+        layer,
+        resolvedTheme,
+      );
 
-      await updateBoardPreviewAction(boardId, smartPreview);
+      if (!lightPreview || !darkPreview) return;
+
+      await updateBoardPreviewAction(boardId, lightPreview, "light");
+      await updateBoardPreviewAction(boardId, darkPreview, "dark");
     };
 
     const intervalId = setInterval(sendPreview, 5 * 1000);
@@ -30,5 +41,5 @@ export const useBoardPreview = ({ ref, boardId }: UseBoardPreviewProps) => {
     return () => {
       clearInterval(intervalId);
     };
-  }, [ref, boardId]);
+  }, [ref, boardId, themePreference]);
 };

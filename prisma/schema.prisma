@@ -88,12 +88,13 @@ model Workspace {
 }
 
 model Board {
-  id          String      @id @default(uuid())
-  name        String
-  workspaceId String      @map("workspace_id")
-  ownerId     String      @map("owner_id")
-  accessLevel AccessLevel @default(private) @map("access_level")
-  preview     String?
+  id           String      @id @default(uuid())
+  name         String
+  workspaceId  String      @map("workspace_id")
+  ownerId      String      @map("owner_id")
+  accessLevel  AccessLevel @default(private) @map("access_level")
+  darkPreview  String?
+  lightPreview String?
 
   updatedAt DateTime @updatedAt @map("updated_at")
   createdAt DateTime @default(now()) @map("created_at")
