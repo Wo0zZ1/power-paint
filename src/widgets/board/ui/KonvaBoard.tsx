@@ -17,6 +17,7 @@ import {
   useMouseAwareness,
   useBoardInteraction,
 } from "../model";
+import { useBoardPreview } from "../model/core/useBoardPreview";
 
 import { LayerContent, TransformerTool, SelectionElement } from "./elements";
 import { UndoRedoControls, ZoomControls, UserCursors } from "./overlay";
@@ -37,6 +38,8 @@ export function KonvaBoard({
   boardId,
   accessRole,
 }: KonvaBoardProps) {
+  const stageRef = useRef<Konva.Stage>(null);
+  const contentLayerRef = useRef<Konva.Layer>(null);
   const boardRef = useRef<HTMLDivElement>(null);
   const selectionRectRef = useRef<Konva.Rect>(null);
 
@@ -46,6 +49,7 @@ export function KonvaBoard({
   const canEdit = AccessRole[accessRole] >= AccessRole.EDITOR;
 
   useHotKeys();
+  useBoardPreview({ ref: contentLayerRef, boardId });
   useHocuspocus({ userAwareness, accessToken, boardId });
 
   const { width: windowWidth, height: windowHeight } = useWindowSize();
@@ -115,6 +119,7 @@ export function KonvaBoard({
         </div>
 
         <Stage
+          ref={stageRef}
           style={{ backgroundColor: activeColor }}
           width={windowWidth - 2} // Borders
           height={windowHeight - 2 - 72} // Borders + header
@@ -126,12 +131,15 @@ export function KonvaBoard({
           onPointerDown={handlePointerDown}
           onTouchStart={handleTouchStart}
         >
-          <Layer>
+          <Layer ref={contentLayerRef}>
             <LayerContent canEdit={canEdit} />
-            <TransformerTool canEdit={canEdit} />
           </Layer>
 
           <Layer>
+            <TransformerTool
+              contentLayerRef={contentLayerRef}
+              canEdit={canEdit}
+            />
             <SelectionElement rectRef={selectionRectRef} />
           </Layer>
 
