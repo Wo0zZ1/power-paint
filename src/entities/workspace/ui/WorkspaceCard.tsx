@@ -31,32 +31,37 @@ export function WorkspaceCard({
   className,
 }: WorkspaceCardProps) {
   return (
-    <Card
-      className={cn(
-        "select-text relative h-full overflow-hidden pt-0",
-        className,
-      )}
-    >
-      <WorkspaceCardBadge accessRole={accessRole} />
+    <div className="p-0.5">
+      <Card
+        className={cn(
+          "select-text relative h-full overflow-hidden pt-0",
+          className,
+        )}
+      >
+        <WorkspaceCardBadge accessRole={accessRole} />
 
-      <WorkspaceCardSettingsMenu
-        accessRole={accessRole}
-        onEditWorkspaceName={(accessRole) =>
-          onEditWorkspaceName?.({ workspace, accessRole })
-        }
-        onEditWorkspaceAccess={(accessRole) =>
-          onEditWorkspaceAccess?.({ workspace, accessRole })
-        }
-        onDeleteWorkspace={(accessRole) =>
-          onDeleteWorkspace?.({ workspace, accessRole })
-        }
-      />
+        <WorkspaceCardSettingsMenu
+          accessRole={accessRole}
+          onEditWorkspaceName={(accessRole) =>
+            onEditWorkspaceName?.({ workspace, accessRole })
+          }
+          onEditWorkspaceAccess={(accessRole) =>
+            onEditWorkspaceAccess?.({ workspace, accessRole })
+          }
+          onDeleteWorkspace={(accessRole) =>
+            onDeleteWorkspace?.({ workspace, accessRole })
+          }
+        />
 
-      <WorkspaceCardImage workspaceId={workspace.id} imageProps={preview1} />
+        <WorkspaceCardImage workspaceId={workspace.id} imageProps={preview1} />
 
-      <WorkspaceCardHeader className="grow" name={workspace.name} />
+        <WorkspaceCardHeader className="grow" name={workspace.name} />
 
-      <WorkspaceCardFooter buttonText={buttonText} workspaceId={workspace.id} />
-    </Card>
+        <WorkspaceCardFooter
+          buttonText={buttonText}
+          workspaceId={workspace.id}
+        />
+      </Card>
+    </div>
   );
 }

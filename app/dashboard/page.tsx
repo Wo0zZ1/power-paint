@@ -40,6 +40,7 @@ export default async function DashboardPage() {
 
           {personalWorkspace && (
             <BoardsCarouselBlock
+              className="mt-12"
               title={t("board.personal")}
               action={
                 <Button variant="link" size="xs" className="text-sm" asChild>

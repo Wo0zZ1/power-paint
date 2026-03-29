@@ -37,6 +37,7 @@ export default async function Workspace({
 
   return (
     <BoardsCarouselBlock
+      className="mt-12"
       title={t("board.plural")}
       workspaceWithAccess={workspaceWithAccess}
       action={

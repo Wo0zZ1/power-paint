@@ -40,28 +40,30 @@ export function BoardCard({
   } as const;
 
   return (
-    <Card
-      className={cn(
-        "select-text relative h-full overflow-hidden pt-0",
-        className,
-      )}
-    >
-      <BoardCardBadge accessRole={accessRole} />
+    <div className="p-0.5">
+      <Card
+        className={cn(
+          "select-text relative h-full overflow-hidden pt-0",
+          className,
+        )}
+      >
+        <BoardCardBadge accessRole={accessRole} />
 
-      {AccessRole[accessRole] >= AccessRole.ADMIN && (
-        <BoardCardSettingsMenu
-          accessRole={accessRole}
-          onEditBoardName={() => onEditBoardName?.(board)}
-          onEditBoardAccess={() => onEditBoardAccess?.(board)}
-          onDeleteBoard={() => onDeleteBoard?.(board)}
-        />
-      )}
+        {AccessRole[accessRole] >= AccessRole.ADMIN && (
+          <BoardCardSettingsMenu
+            accessRole={accessRole}
+            onEditBoardName={() => onEditBoardName?.(board)}
+            onEditBoardAccess={() => onEditBoardAccess?.(board)}
+            onDeleteBoard={() => onDeleteBoard?.(board)}
+          />
+        )}
 
-      <BoardCardImage boardId={board.id} imageProps={imageProps} />
+        <BoardCardImage boardId={board.id} imageProps={imageProps} />
 
-      <BoardCardHeader className="grow" name={board.name} />
+        <BoardCardHeader className="grow" name={board.name} />
 
-      <BoardCardFooter buttonText={buttonText} boardId={board.id} />
-    </Card>
+        <BoardCardFooter buttonText={buttonText} boardId={board.id} />
+      </Card>
+    </div>
   );
 }

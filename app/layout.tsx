@@ -52,7 +52,7 @@ export default async function RootLayout({
             timeZone={timeZone}
           >
             <Header />
-            <div className="grow flex flex-col">{children}</div>
+            <div className="grow flex flex-col pb-8">{children}</div>
             {modal}
           </ClientProviders>
         </QueryProvider>

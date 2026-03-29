@@ -28,14 +28,16 @@ export async function WorkspacesGridBlock({
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <div className="flex items-end mt-12 mb-4">
-        <h2 className="mr-auto text-2xl font-semibold">{title}</h2>
+      <div className="bg-accent -mx-5 p-5 rounded-2xl">
+        <div className="flex items-end mb-4">
+          <h2 className="mr-auto text-2xl font-semibold">{title}</h2>
 
-        <CreateWorkspaceButton size="sm" className="text-sm mr-4" />
-        {action}
+          <CreateWorkspaceButton size="sm" className="text-sm mr-4" />
+          {action}
+        </div>
+
+        <WorkspacesGrid />
       </div>
-
-      <WorkspacesGrid />
     </HydrationBoundary>
   );
 }
