@@ -75,6 +75,7 @@ model Workspace {
   ownerId     String        @map("owner_id")
   type        WorkspaceType @default(team)
   accessLevel AccessLevel   @default(private) @map("access_level")
+  preview     String?
 
   updatedAt DateTime @updatedAt @map("updated_at")
   createdAt DateTime @default(now()) @map("created_at")
@@ -92,6 +93,7 @@ model Board {
   workspaceId String      @map("workspace_id")
   ownerId     String      @map("owner_id")
   accessLevel AccessLevel @default(private) @map("access_level")
+  preview     String?
 
   updatedAt DateTime @updatedAt @map("updated_at")
   createdAt DateTime @default(now()) @map("created_at")

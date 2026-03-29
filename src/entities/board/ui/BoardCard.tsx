@@ -31,6 +31,14 @@ export function BoardCard({
   onDeleteBoard,
   className,
 }: BoardCardProps) {
+  const imageProps = {
+    src: board.preview ?? preview1,
+    alt: "Board preview image",
+    fill: true,
+    unoptimized: true,
+    sizes: "100vw",
+  } as const;
+
   return (
     <Card
       className={cn(
@@ -49,7 +57,7 @@ export function BoardCard({
         />
       )}
 
-      <BoardCardImage boardId={board.id} imageProps={preview1} />
+      <BoardCardImage boardId={board.id} imageProps={imageProps} />
 
       <BoardCardHeader className="grow" name={board.name} />
 

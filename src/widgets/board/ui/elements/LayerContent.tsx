@@ -15,5 +15,7 @@ export function LayerContent({ canEdit }: LayerContentProps) {
   const elements = useBoardStore(useShallow((s) => s.elements));
   const elementsList = useMemo(() => Array.from(elements.values()), [elements]);
 
-  return elementsList.map((el) => <Element key={el.id} element={el} canEdit={canEdit} />);
+  return elementsList.map((el) => (
+    <Element key={el.id} element={el} canEdit={canEdit} />
+  ));
 }
