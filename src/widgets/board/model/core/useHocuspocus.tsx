@@ -1,14 +1,14 @@
-import { HocuspocusProvider } from "@hocuspocus/provider";
+import { HocuspocusProvider, WebSocketStatus } from "@hocuspocus/provider";
 import { useEffect } from "react";
 import { UndoManager } from "yjs";
 
 import { DEFAULT_CAPTURE_TIMEOUT } from "@/shared/config";
 
-import type {
-  UserAwareness,
-  AwarenessMap,
-  AwarenessState,
-  ElementType,
+import {
+  type UserAwareness,
+  type AwarenessMap,
+  type AwarenessState,
+  type ElementType,
 } from "../types";
 
 import { useBoardStore } from "./useBoardStore";
@@ -25,10 +25,15 @@ export const useHocuspocus = ({
   boardId,
 }: UseHocuspocusProps) => {
   useEffect(() => {
+    useBoardStore.setState({ connectionStatus: WebSocketStatus.Connecting });
+
     const provider = new HocuspocusProvider({
       url: process.env.NEXT_PUBLIC_WS_URL!,
       name: boardId,
       token: accessToken,
+      onStatus: ({ status }: { status: WebSocketStatus }) => {
+        useBoardStore.setState({ connectionStatus: status });
+      },
     });
 
     const ydoc = provider.document;

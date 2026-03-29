@@ -136,6 +136,14 @@
     }
   },
 
+  "connection": {
+    "status": {
+      "connecting": "Подключение к серверу...",
+      "connected": "Подключено",
+      "disconnected": "Соединение потеряно, переподключение..."
+    }
+  },
+
   "accessLevels": {
     "private": "Приватный",
     "public_view": "Просмотр",

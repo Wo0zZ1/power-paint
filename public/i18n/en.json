@@ -137,6 +137,14 @@
     }
   },
 
+  "connection": {
+    "status": {
+      "connecting": "Connecting to server...",
+      "connected": "Connected",
+      "disconnected": "Connection lost, reconnecting..."
+    }
+  },
+
   "accessLevels": {
     "private": "Private",
     "public_view": "Viewing",

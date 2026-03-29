@@ -99,7 +99,6 @@ export const generateSmartPreview = (
       y: cropY,
       width: cropWidth,
       height: cropHeight,
-      pixelRatio: scale,
       mimeType: "image/png",
     });
 
