@@ -1,155 +1,130 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { AccessLevel, type Board } from "@prisma/client";
 import { useTranslations } from "next-intl";
-import { useEffect } from "react";
-import { Controller, useForm } from "react-hook-form";
-import z from "zod";
 
-import { useUpdateBoardMutation } from "@/entities/board";
-import { ACCESS_LEVELS } from "@/shared/constants";
+import type { BoardWithAccess } from "@/entities/board";
+import { useUsersSearchQuery } from "@/entities/user";
+import { ROUTES } from "@/shared/config";
+import { AccessRole } from "@/shared/constants";
 import {
   Field,
-  Label,
-  Button,
   Dialog,
-  FieldGroup,
-  DialogClose,
-  DialogTitle,
-  DialogFooter,
-  DialogHeader,
   DialogContent,
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
   FieldDescription,
-  DialogDescription,
-  Spinner,
+  Tabs,
+  TabsContent,
+  FieldTitle,
+  FieldContent,
+  MembersCombobox,
+  DirectLinkCard,
 } from "@/shared/ui";
 import { cn } from "@/utils";
 
+import { useChangeBoardForm } from "../model/useChangeBoardForm";
+
+import { ModalFooter } from "./ModalFooter";
+import { ModalHeader } from "./ModalHeader";
+
 interface ChangeBoardAccessModalProps {
-  board?: Board;
+  board?: BoardWithAccess;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   className?: string;
 }
 
-const changeBoardAccessSchema = z.object({
-  accessLevel: z.enum(AccessLevel, {
-    error: "Invalid access level",
-  }),
-});
-
 export function ChangeBoardAccessModal({
-  board,
+  board: _board,
   open,
   onOpenChange,
   className,
 }: ChangeBoardAccessModalProps) {
-  const t = useTranslations();
+  const tShare = useTranslations("board.share");
+  const tMembers = useTranslations("members");
 
-  const updateBoardMutation = useUpdateBoardMutation();
+  const { queryUsers, isUsersFetching, usersQuery, setUsersQuery } =
+    useUsersSearchQuery({ debounce: 500 });
 
   const {
-    formState: { isSubmitting, dirtyFields },
-    handleSubmit,
-    reset,
     control,
-  } = useForm({
-    defaultValues: {
-      accessLevel: board?.accessLevel || AccessLevel.private,
-    },
-    resolver: zodResolver(changeBoardAccessSchema),
+    formState: { isDirty, isSubmitting },
+    defaultRole,
+    selectedMembers,
+    setDefaultRole,
+    handleSubmit,
+    selectMember,
+    removeMember,
+    updateMemberRole,
+  } = useChangeBoardForm({
+    board: _board,
+    setSearchQuery: setUsersQuery,
+    onOpenChange,
   });
 
-  useEffect(() => {
-    if (open && board) {
-      reset({
-        accessLevel: board.accessLevel || AccessLevel.private,
-      });
-    }
-  }, [open, board, reset]);
+  if (!_board) return null;
 
-  const handleChangeBoardAccess = async (data: {
-    accessLevel: AccessLevel;
-  }) => {
-    if (!board) return;
-
-    await updateBoardMutation.mutateAsync({
-      id: board.id,
-      accessLevel: data.accessLevel,
-    });
-
-    onOpenChange(false);
-  };
+  const { board, accessRole } = _board;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className={cn("", className)}>
-        <form
-          className="flex flex-col gap-4"
-          onSubmit={handleSubmit(handleChangeBoardAccess)}
-        >
-          <DialogHeader>
-            <DialogTitle>{t("board.access.title")}</DialogTitle>
+      <DialogContent
+        className={cn(
+          "max-h-165 h-full flex flex-col overflow-hidden gap-2",
+          className,
+        )}
+      >
+        <form className="contents" onSubmit={handleSubmit}>
+          <div className="flex-1">
+            <Tabs defaultValue="share">
+              <ModalHeader />
 
-            <DialogDescription>
-              {t("board.access.description")}
-            </DialogDescription>
-          </DialogHeader>
+              <TabsContent value="share">
+                <div className="flex flex-col gap-4">
+                  <DirectLinkCard
+                    getDescription={(accessRole) =>
+                      tShare(`access_level.${accessRole}_description`)
+                    }
+                    link={`${process.env.NEXT_PUBLIC_BASE_URL}${ROUTES.BOARD(board.id)}`}
+                    disabled={AccessRole[accessRole] < AccessRole.ADMIN}
+                    control={control}
+                    name="accessLevel"
+                  />
 
-          <FieldGroup>
-            <Field>
-              <Label htmlFor="board-access">
-                {t("board.access.inputLabel")}
-              </Label>
-              <FieldDescription>
-                {t("board.access.inputDescription")}
-              </FieldDescription>
+                  <Field>
+                    <FieldTitle>{tMembers("invite_title")}</FieldTitle>
+                    <FieldDescription>
+                      {tMembers("invite_description")}
+                    </FieldDescription>
 
-              <Controller
-                name="accessLevel"
-                control={control}
-                render={({ field }) => (
-                  <Select
-                    name={field.name}
-                    onValueChange={field.onChange}
-                    value={field.value}
-                  >
-                    <SelectTrigger>
-                      <SelectValue>
-                        {t(`accessLevels.${field.value}`)}
-                      </SelectValue>
-                    </SelectTrigger>
-                    <SelectContent>
-                      {ACCESS_LEVELS.map(({ value, translationKey }) => (
-                        <SelectItem key={value} value={value}>
-                          {t(translationKey)}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                )}
-              />
-            </Field>
-          </FieldGroup>
+                    <FieldContent>
+                      <MembersCombobox
+                        disabled={AccessRole[accessRole] < AccessRole.ADMIN}
+                        defaultRole={defaultRole}
+                        queryUsers={queryUsers}
+                        isUsersFetching={isUsersFetching}
+                        usersQuery={usersQuery}
+                        setUsersQuery={setUsersQuery}
+                        selectMember={selectMember}
+                        selectedMembers={selectedMembers}
+                        setDefaultRole={setDefaultRole}
+                        updateMemberRole={updateMemberRole}
+                        removeMember={removeMember}
+                      />
+                    </FieldContent>
+                  </Field>
+                </div>
+              </TabsContent>
 
-          <DialogFooter>
-            <DialogClose asChild>
-              <Button variant="outline">{t("cancel")}</Button>
-            </DialogClose>
-            <Button
-              type="submit"
-              disabled={isSubmitting || !dirtyFields.accessLevel}
-            >
-              {isSubmitting && <Spinner />}
-              {isSubmitting ? t("saving_changes") : t("save_changes")}
-            </Button>
-          </DialogFooter>
+              <TabsContent value="export">
+                {tShare("export_coming_soon")}
+              </TabsContent>
+            </Tabs>
+          </div>
+
+          <ModalFooter
+            isSubmitting={isSubmitting}
+            isDirty={isDirty}
+            onClose={() => onOpenChange(false)}
+          />
         </form>
       </DialogContent>
     </Dialog>

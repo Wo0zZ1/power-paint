@@ -2,30 +2,26 @@
 
 import { useTranslations } from "next-intl";
 
+import { useUsersSearchQuery } from "@/entities/user";
 import type { WorkspaceWithAccess } from "@/entities/workspace";
+import { ROUTES } from "@/shared/config";
 import { AccessRole } from "@/shared/constants";
 import {
   Field,
   Dialog,
   DialogContent,
   FieldDescription,
-  Tabs,
-  TabsContent,
-  Combobox,
   FieldTitle,
   FieldContent,
+  MembersCombobox,
+  DirectLinkCard,
 } from "@/shared/ui";
 import { cn } from "@/utils";
 
 import { useChangeWorkspaceForm } from "../model/useChangeWorkspaceForm";
-import { useUsersSearchQuery } from "../model/useUsersSearchQuery";
 
-import { ComboboxAddon } from "./ComboboxAddon";
-import { DirectLinkCard } from "./DirectLinkCard";
 import { ModalFooter } from "./ModalFooter";
 import { ModalHeader } from "./ModalHeader";
-import { WorkspaceMemberItem } from "./WorkspaceMemberItem";
-import { WorkspaceMembersList } from "./WorkspaceMembersList";
 
 interface ChangeWorkspaceAccessModalProps {
   workspace?: WorkspaceWithAccess;
@@ -40,25 +36,25 @@ export function ChangeWorkspaceAccessModal({
   onOpenChange,
   className,
 }: ChangeWorkspaceAccessModalProps) {
-  const t = useTranslations();
+  const tShare = useTranslations("workspace.share");
+  const tMembers = useTranslations("members");
 
-  const { queryUsers, searchQuery, setSearchQuery } = useUsersSearchQuery();
+  const { queryUsers, isUsersFetching, usersQuery, setUsersQuery } =
+    useUsersSearchQuery({ debounce: 500 });
 
   const {
-    isDirty,
     control,
+    formState: { isDirty, isSubmitting },
     defaultRole,
-    isSubmitting,
     selectedMembers,
-    handleSubmit,
     setDefaultRole,
-    handleRemoveMember,
-    handleSelectMember,
-    handleChangeMemberRole,
-    handleChangeWorkspaceAccess,
+    handleSubmit,
+    selectMember,
+    removeMember,
+    updateMemberRole,
   } = useChangeWorkspaceForm({
     workspace: _workspace,
-    setSearchQuery,
+    setSearchQuery: setUsersQuery,
     onOpenChange,
   });
 
@@ -74,64 +70,44 @@ export function ChangeWorkspaceAccessModal({
           className,
         )}
       >
-        <form
-          className="contents"
-          onSubmit={handleSubmit(handleChangeWorkspaceAccess)}
-        >
+        <form className="contents" onSubmit={handleSubmit}>
           <div className="flex-1">
-            <Tabs defaultValue="share">
-              <ModalHeader />
+            <ModalHeader />
 
-              <TabsContent value="share">
-                <div className="flex flex-col gap-4">
-                  <DirectLinkCard
+            <div className="flex flex-col gap-4 mt-4">
+              <DirectLinkCard
+                getDescription={(accessRole) =>
+                  tShare(`access_level.${accessRole}_description`)
+                }
+                link={`${process.env.NEXT_PUBLIC_BASE_URL}${ROUTES.DASHBOARD.WORKSPACE(workspace.id)}`}
+                disabled={AccessRole[accessRole] < AccessRole.ADMIN}
+                control={control}
+                name="accessLevel"
+              />
+
+              <Field>
+                <FieldTitle>{tMembers("invite_title")}</FieldTitle>
+                <FieldDescription>
+                  {tMembers("invite_description")}
+                </FieldDescription>
+
+                <FieldContent>
+                  <MembersCombobox
                     disabled={AccessRole[accessRole] < AccessRole.ADMIN}
-                    control={control}
-                    workspaceId={workspace.id}
+                    defaultRole={defaultRole}
+                    queryUsers={queryUsers}
+                    isUsersFetching={isUsersFetching}
+                    usersQuery={usersQuery}
+                    setUsersQuery={setUsersQuery}
+                    selectMember={selectMember}
+                    selectedMembers={selectedMembers}
+                    setDefaultRole={setDefaultRole}
+                    updateMemberRole={updateMemberRole}
+                    removeMember={removeMember}
                   />
-
-                  <Field>
-                    <FieldTitle>{t("workspace.share.invite_title")}</FieldTitle>
-                    <FieldDescription>
-                      {t("workspace.share.invite_description")}
-                    </FieldDescription>
-
-                    <FieldContent>
-                      <Combobox
-                        items={queryUsers ?? []}
-                        value={searchQuery}
-                        disabled={AccessRole[accessRole] < AccessRole.ADMIN}
-                        onValueChange={setSearchQuery}
-                        onSelect={handleSelectMember}
-                        className="h-12"
-                        placeholder={t("workspace.share.invite_description")}
-                        rightAddon={
-                          <ComboboxAddon
-                            role={defaultRole}
-                            setDefaultRole={setDefaultRole}
-                            disabled={AccessRole[accessRole] < AccessRole.ADMIN}
-                          />
-                        }
-                        renderItem={(user) => (
-                          <WorkspaceMemberItem user={user} />
-                        )}
-                      />
-
-                      <WorkspaceMembersList
-                        members={selectedMembers}
-                        disabled={AccessRole[accessRole] < AccessRole.ADMIN}
-                        onChangeMemberRole={handleChangeMemberRole}
-                        onRemoveMember={handleRemoveMember}
-                      />
-                    </FieldContent>
-                  </Field>
-                </div>
-              </TabsContent>
-
-              <TabsContent value="export">
-                {t("workspace.share.export_coming_soon")}
-              </TabsContent>
-            </Tabs>
+                </FieldContent>
+              </Field>
+            </div>
           </div>
 
           <ModalFooter

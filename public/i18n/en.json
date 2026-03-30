@@ -24,6 +24,7 @@
   "copy": "Copy",
   "copied": "Copied",
   "or": "or",
+  "direct_link": "Direct Link",
 
   "errors": {
     "unknown_error": "Something went wrong. Please try again.",
@@ -137,20 +138,23 @@
     }
   },
 
-  "accessLevels": {
+  "access_levels": {
     "private": "Private",
     "public_view": "Viewing",
-    "public_edit": "Editing",
-
-    "private_description": "Only invited members can access.",
-    "public_view_description": "Anyone with the direct link can view.",
-    "public_edit_description": "Anyone with the direct link can view and edit."
+    "public_edit": "Editing"
   },
 
   "member_roles": {
     "viewer": "Viewer",
     "editor": "Editor",
     "admin": "Admin"
+  },
+
+  "members": {
+    "invite_title": "Invite to collaborate",
+    "invite_description": "Add team members by username or email.",
+    "invite_empty": "No users found",
+    "no_members": "No members yet. Invite your team to collaborate!"
   },
 
   "account": "Account",
@@ -200,18 +204,11 @@
       "title": "Share workspace and configure access",
       "description": "Configure access rights for this workspace and its contents.",
 
-      "tabs": {
-        "share": "Share",
-        "export": "Export"
-      },
-
-      "direct_link": "Direct Link",
-
-      "invite_title": "Invite to collaborate",
-      "invite_description": "Add team members by username or email.",
-      "members_empty": "No members selected",
-
-      "export_coming_soon": "Coming soon!"
+      "access_level": {
+        "private_description": "Only invited members can access.",
+        "public_view_description": "Anyone with the direct link can view.",
+        "public_edit_description": "Anyone with the direct link can view and edit."
+      }
     },
 
     "delete": {
@@ -231,10 +228,12 @@
     "personal": "Personal Boards",
     "empty": "No available boards",
     "settings": "Board Settings",
+
     "notFound": {
       "title": "Board not found",
       "description": "The board you are looking for does not exist or is inaccessible."
     },
+
     "create": {
       "action": "Create",
       "title": "Create New Board",
@@ -244,6 +243,7 @@
       "workspaceInputLabel": "Workspace",
       "workspaceInputPlaceholder": "Select a workspace"
     },
+
     "rename": {
       "action": "Rename",
       "title": "Rename Board",
@@ -251,13 +251,27 @@
       "inputLabel": "Board Name",
       "inputPlaceholder": "Enter new board name"
     },
-    "access": {
-      "action": "Configure Access",
-      "title": "Configure Board Access",
-      "description": "Update the default access settings for this board.",
-      "inputLabel": "Board Access",
-      "inputDescription": "Update the default board settings for this board."
+
+    "share": {
+      "action": "Share",
+
+      "title": "Share board and configure access",
+      "description": "Configure access rights for this board.",
+
+      "tabs": {
+        "share": "Share",
+        "export": "Export"
+      },
+
+      "access_level": {
+        "private_description": "Only invited members can access.",
+        "public_view_description": "Anyone with the direct link can view.",
+        "public_edit_description": "Anyone with the direct link can view and edit."
+      },
+
+      "export_coming_soon": "Coming soon!"
     },
+
     "delete": {
       "action": "Delete",
       "title": "Delete Board",

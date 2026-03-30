@@ -1,11 +1,11 @@
 "use client";
 
-import type { Board } from "@prisma/client";
 import { LucideFolder } from "lucide-react";
 import { useTranslations } from "next-intl";
 import type { SubmitEvent } from "react";
 import { useEffect, useState } from "react";
 
+import type { BoardWithAccess } from "@/entities/board";
 import { useDeleteBoardMutation } from "@/entities/board/model/mutations";
 import {
   Field,
@@ -29,7 +29,7 @@ import {
 import { cn } from "@/utils";
 
 interface DeleteBoardModalProps {
-  board?: Board;
+  board?: BoardWithAccess;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   className?: string;
@@ -60,7 +60,7 @@ export function DeleteBoardModal({
 
     setIsMutating(true);
 
-    deleteBoardMutation.mutateAsync(board.id, {
+    deleteBoardMutation.mutateAsync(board.board.id, {
       onSuccess: () => onOpenChange(false),
       onSettled: () => setIsMutating(false),
     });
@@ -95,7 +95,7 @@ export function DeleteBoardModal({
             <Field className="gap-2">
               <label className="font-medium cursor-text" htmlFor="board-name">
                 {t("board.delete.inputLabel", {
-                  boardName: board.name,
+                  boardName: board.board.name,
                 })}
               </label>
               <Input
@@ -114,7 +114,7 @@ export function DeleteBoardModal({
               <Button variant="outline">{t("cancel")}</Button>
             </DialogClose>
             <Button
-              disabled={boardName !== board.name || isMutating}
+              disabled={boardName !== board.board.name || isMutating}
               className="transition-colors"
               variant="destructive"
               type="submit"

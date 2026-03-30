@@ -1,13 +1,14 @@
-import type { Board } from "@prisma/client";
 import { useState } from "react";
 
-type setSelectedBoardFn = (board: Board) => void;
+import type { BoardWithAccess } from "@/entities/board";
+
+type setSelectedBoardFn = (board: BoardWithAccess) => void;
 
 export const useChangeBoardAccess = (setSelectedBoard: setSelectedBoardFn) => {
   const [isChangeAccessModalOpen, setIsChangeAccessModalOpen] =
     useState<boolean>(false);
 
-  const handleChangeBoardAccess = (board: Board) => {
+  const handleChangeBoardAccess = (board: BoardWithAccess) => {
     setSelectedBoard(board);
     setIsChangeAccessModalOpen(true);
   };

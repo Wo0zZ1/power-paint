@@ -1,12 +1,13 @@
-import type { Board } from "@prisma/client";
 import { useState } from "react";
 
-type setSelectedBoardFn = (board: Board) => void;
+import type { BoardWithAccess } from "@/entities/board";
+
+type setSelectedBoardFn = (board: BoardWithAccess) => void;
 
 export const useDeleteBoard = (setSelectedBoard: setSelectedBoardFn) => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
 
-  const handleDeleteBoard = (board: Board) => {
+  const handleDeleteBoard = (board: BoardWithAccess) => {
     setSelectedBoard(board);
     setIsDeleteModalOpen(true);
   };

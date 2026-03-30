@@ -5,17 +5,9 @@ interface MemberRoleItem {
   translationKey: string;
 }
 
-export const MEMBER_ROLES: MemberRoleItem[] = [
-  {
-    value: MemberRole.viewer,
-    translationKey: "member_roles.viewer",
-  },
-  {
-    value: MemberRole.editor,
-    translationKey: "member_roles.editor",
-  },
-  {
-    value: MemberRole.admin,
-    translationKey: "member_roles.admin",
-  },
-];
+export const MEMBER_ROLES: MemberRoleItem[] = Object.values(MemberRole).map(
+  (role) => ({
+    value: role,
+    translationKey: role,
+  }),
+);

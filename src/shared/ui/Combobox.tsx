@@ -1,88 +1,118 @@
 "use client";
 
-import { useRef, useState } from "react";
+import type { ChangeEvent, ComponentProps, ReactNode } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 
+import { useOnClickOutside } from "@/lib/hooks";
 import { cn } from "@/shared/lib/utils";
+import { InputGroup, InputGroupAddon, InputGroupInput } from "@/shared/ui";
 
-import { useOnClickOutside } from "../lib/hooks";
-
-import { InputGroup, InputGroupAddon, InputGroupInput } from "./input-group";
-
-export interface ComboboxProps<T> {
-  items: T[];
-  value: string;
-  onValueChange: (value: string) => void;
+type ComboboxProps<T> = {
+  items?: T[];
+  input: string;
+  isFetching?: boolean;
+  onInputChange: (input: string) => void;
   onSelect: (item: T) => void;
-  renderItem: (item: T) => React.ReactNode;
   maxVisibleItems?: number;
   placeholder?: string;
   className?: string;
-  rightAddon?: React.ReactNode;
-  disabled?: boolean;
-}
+  rightAddon?: ReactNode;
+  LoadingItem?: ReactNode;
+  EmptyItem?: ReactNode;
+  renderItem: (item: T) => ReactNode;
+} & Pick<
+  ComponentProps<typeof InputGroupInput>,
+  "type" | "autoComplete" | "disabled" | "name"
+>;
 
 export function Combobox<T>({
+  type,
+  name,
   items,
-  value,
-  onValueChange,
+  input,
+  disabled,
+  autoComplete = "nope",
+  isFetching,
+  onInputChange,
   onSelect,
-  renderItem,
   maxVisibleItems = 3,
-  placeholder = "Search...",
+  placeholder,
   className,
   rightAddon,
-  disabled = false,
+  LoadingItem,
+  EmptyItem,
+  renderItem,
 }: ComboboxProps<T>) {
   const rootRef = useRef<HTMLDivElement>(null);
 
   const [isFocused, setIsFocused] = useState(false);
   const [highlightedIndex, setHighlightedIndex] = useState(0);
 
-  const visibleItems = items.slice(0, maxVisibleItems);
-
-  const selectItem = (item: T) => {
-    onSelect(item);
-    onValueChange("");
-    setIsFocused(false);
-  };
+  const visibleItems = useMemo(
+    () => items?.slice(0, maxVisibleItems),
+    [items, maxVisibleItems],
+  );
 
   useOnClickOutside(rootRef, () => setIsFocused(false));
+
+  const selectItem = useCallback(
+    (item: T) => {
+      onSelect(item);
+      setIsFocused(false);
+      onInputChange("");
+    },
+    [onSelect, onInputChange],
+  );
+
+  const handleFocus = useCallback(() => {
+    if (disabled) return;
+
+    setIsFocused(true);
+  }, [disabled, setIsFocused]);
+
+  const handleChange = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      if (disabled) return;
+
+      setIsFocused(true);
+      onInputChange(e.target.value);
+    },
+    [disabled, onInputChange, setIsFocused],
+  );
+
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (disabled || !visibleItems) return;
+
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        setHighlightedIndex((prev) =>
+          Math.min(prev + 1, visibleItems.length - 1),
+        );
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        setHighlightedIndex((prev) => Math.max(prev - 1, 0));
+      } else if (e.key === "Enter") {
+        e.preventDefault();
+        selectItem(visibleItems[highlightedIndex]);
+      }
+    },
+    [disabled, visibleItems, highlightedIndex, selectItem],
+  );
 
   return (
     <div ref={rootRef} className={cn("relative w-full", className)}>
       <InputGroup className="h-full px-2">
         <InputGroupInput
-          value={value}
-          autoComplete="off"
-          type="text"
-          placeholder={placeholder}
+          type={type}
+          name={name}
+          value={input}
           disabled={disabled}
-          onFocus={() => {
-            if (disabled) return;
-            setIsFocused(true);
-          }}
-          onChange={(e) => {
-            if (disabled) return;
-            onValueChange(e.target.value);
-            setIsFocused(true);
-          }}
-          onKeyDown={(e) => {
-            if (disabled) return;
-            if (e.key === "ArrowDown") {
-              e.preventDefault();
-              setHighlightedIndex((prev) =>
-                Math.min(prev + 1, visibleItems.length - 1),
-              );
-            }
-            if (e.key === "ArrowUp") {
-              e.preventDefault();
-              setHighlightedIndex((prev) => Math.max(prev - 1, 0));
-            }
-            if (e.key === "Enter" && visibleItems[highlightedIndex]) {
-              e.preventDefault();
-              selectItem(visibleItems[highlightedIndex]);
-            }
-          }}
+          placeholder={placeholder}
+          autoComplete={autoComplete}
+          onFocus={handleFocus}
+          onChange={handleChange}
+          onKeyDown={handleKeyDown}
         />
 
         {rightAddon && (
@@ -90,22 +120,29 @@ export function Combobox<T>({
         )}
       </InputGroup>
 
-      {isFocused && !disabled && (
-        <ul className="absolute z-50 mt-1 max-h-56 w-full overflow-y-auto rounded-lg border border-border bg-popover text-sm shadow-lg">
-          {visibleItems.map((item, index) => (
-            <li
-              key={index}
-              className={cn(
-                "cursor-pointer",
-                index === highlightedIndex ? "bg-muted" : "hover:bg-muted",
-              )}
-              onMouseEnter={() => setHighlightedIndex(index)}
-              onClick={() => selectItem(item)}
-            >
-              {renderItem(item)}
-            </li>
-          ))}
-        </ul>
+      {isFocused && (
+        <div className="absolute z-50 max-h-56 overflow-y-auto w-full mt-1 rounded-lg border border-border bg-popover shadow-lg text-sm">
+          <ul>
+            {visibleItems?.map((item, index) => (
+              <li
+                key={index}
+                className={cn("cursor-pointer hover:bg-muted", {
+                  "bg-muted": index === highlightedIndex,
+                })}
+                onMouseEnter={() => setHighlightedIndex(index)}
+                onClick={() => selectItem(item)}
+              >
+                {renderItem(item)}
+              </li>
+            ))}
+
+            {isFetching && <li>{LoadingItem}</li>}
+
+            {!isFetching && items?.length === 0 && EmptyItem && (
+              <li>{EmptyItem}</li>
+            )}
+          </ul>
+        </div>
       )}
     </div>
   );

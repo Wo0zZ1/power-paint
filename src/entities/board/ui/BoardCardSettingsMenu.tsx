@@ -17,9 +17,9 @@ import { BoardCardMenuActions } from "./BoardCardMenuActions";
 
 interface BoardCardSettingsMenuProps {
   accessRole: AccessRole;
-  onEditBoardName?: () => void;
-  onEditBoardAccess?: () => void;
-  onDeleteBoard?: () => void;
+  onEditBoardName?: (role: AccessRole) => void;
+  onEditBoardAccess?: (role: AccessRole) => void;
+  onDeleteBoard?: (role: AccessRole) => void;
 }
 
 export function BoardCardSettingsMenu({
@@ -49,9 +49,9 @@ export function BoardCardSettingsMenu({
 
         <BoardCardMenuActions
           accessRole={accessRole}
-          onEditBoardName={onEditBoardName}
-          onEditBoardAccess={onEditBoardAccess}
-          onDeleteBoard={onDeleteBoard}
+          onEditBoardName={() => onEditBoardName?.(accessRole)}
+          onEditBoardAccess={() => onEditBoardAccess?.(accessRole)}
+          onDeleteBoard={() => onDeleteBoard?.(accessRole)}
         />
       </DropdownMenuContent>
     </DropdownMenu>

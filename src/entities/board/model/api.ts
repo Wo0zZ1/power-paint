@@ -2,7 +2,7 @@ import type { Board } from "@prisma/client";
 
 import { GET_BASE_API_URL, fetchInitWithCookies } from "@/shared/api";
 
-import type { CreateBoardFormData } from "./schemas";
+import type { CreateBoardFormData, UpdateBoardData } from "./schemas";
 import type { BoardWithAccess } from "./types";
 
 const url = GET_BASE_API_URL() + "/boards";
@@ -58,13 +58,17 @@ const createBoard = async (
   return response.json();
 };
 
-const updateBoard = async (
-  board: Partial<Board> & Pick<Board, "id">,
-): Promise<BoardWithAccess> => {
-  const response = await fetch(`${url}/${board.id}`, {
+const updateBoard = async ({
+  boardId,
+  data,
+}: {
+  boardId: Board["id"];
+  data: UpdateBoardData;
+}): Promise<BoardWithAccess> => {
+  const response = await fetch(`${url}/${boardId}`, {
     ...fetchInitWithCookies(),
     method: "PATCH",
-    body: JSON.stringify(board),
+    body: JSON.stringify(data),
   });
 
   if (!response.ok) throw new Error("Failed to update board");

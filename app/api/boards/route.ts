@@ -22,6 +22,21 @@ export const GET = async (
       ownerId: userId,
       workspaceId: workspaceId,
     },
+    include: {
+      members: {
+        include: {
+          user: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+              image: true,
+              created_at: true,
+            },
+          },
+        },
+      },
+    },
     orderBy: {
       updatedAt: "desc",
     },
@@ -71,6 +86,21 @@ export const POST = async (
       workspaceId,
       accessLevel,
       ownerId: session.user.id,
+    },
+    include: {
+      members: {
+        include: {
+          user: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+              image: true,
+              created_at: true,
+            },
+          },
+        },
+      },
     },
   });
 

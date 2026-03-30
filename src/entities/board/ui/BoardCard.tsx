@@ -1,8 +1,8 @@
-import type { Board } from "@prisma/client";
-
 import { AccessRole } from "@/shared/constants";
 import { Card } from "@/shared/ui";
 import { cn } from "@/utils";
+
+import type { Board, BoardWithAccess } from "../model/types";
 
 import { BoardCardBadge } from "./BoardCardBadge";
 import { BoardCardFooter } from "./BoardCardFooter";
@@ -14,9 +14,9 @@ interface BoardCardProps {
   board: Board;
   accessRole: AccessRole;
   buttonText: string;
-  onEditBoardName?: (board: Board) => void;
-  onEditBoardAccess?: (board: Board) => void;
-  onDeleteBoard?: (board: Board) => void;
+  onEditBoardName?: (board: BoardWithAccess) => void;
+  onEditBoardAccess?: (board: BoardWithAccess) => void;
+  onDeleteBoard?: (board: BoardWithAccess) => void;
   className?: string;
 }
 
@@ -42,9 +42,15 @@ export function BoardCard({
         {AccessRole[accessRole] >= AccessRole.ADMIN && (
           <BoardCardSettingsMenu
             accessRole={accessRole}
-            onEditBoardName={() => onEditBoardName?.(board)}
-            onEditBoardAccess={() => onEditBoardAccess?.(board)}
-            onDeleteBoard={() => onDeleteBoard?.(board)}
+            onEditBoardName={(accessRole) =>
+              onEditBoardName?.({ board, accessRole })
+            }
+            onEditBoardAccess={(accessRole) =>
+              onEditBoardAccess?.({ board, accessRole })
+            }
+            onDeleteBoard={(accessRole) =>
+              onDeleteBoard?.({ board, accessRole })
+            }
           />
         )}
 

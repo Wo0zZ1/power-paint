@@ -88,18 +88,21 @@ export function BoardsCarousel({ workspace }: BoardsCarouselProps) {
       </Carousel>
 
       <RenameBoardModal
-        board={selectedBoard!}
+        key={`rename-${selectedBoard?.board.id}`}
+        board={selectedBoard}
         open={isRenameModalOpen}
         onOpenChange={setIsRenameModalOpen}
       />
 
       <ChangeBoardAccessModal
+        key={`change-access-${selectedBoard?.board.id}`}
         board={selectedBoard}
         open={isChangeAccessModalOpen}
         onOpenChange={setIsChangeAccessModalOpen}
       />
 
       <DeleteBoardModal
+        key={`delete-${selectedBoard?.board.id}`}
         board={selectedBoard}
         open={isDeleteModalOpen}
         onOpenChange={setIsDeleteModalOpen}

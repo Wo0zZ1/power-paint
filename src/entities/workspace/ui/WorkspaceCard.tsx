@@ -1,8 +1,8 @@
+import preview1 from "@/public/assets/preview1.jpeg"; // TODO Remove this hardcoded preview image
 import type { AccessRole } from "@/shared/constants";
 import { Card } from "@/shared/ui";
 import { cn } from "@/utils";
 
-import preview1 from "../../../../public/assets/preview1.jpeg"; // TODO Remove this hardcoded preview image
 import type { Workspace, WorkspaceWithAccess } from "../model/types";
 
 import { WorkspaceCardBadge } from "./WorkspaceCardBadge";

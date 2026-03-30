@@ -20,7 +20,6 @@ export {
   createWorkspaceFormSchema,
   createWorkspaceSchema,
   updateWorkspaceSchema,
-  workspaceMember,
 } from "./model/schemas";
 export type {
   CreateWorkspaceData,

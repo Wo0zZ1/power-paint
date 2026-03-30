@@ -16,6 +16,21 @@ export const GET = async (
 
   const board = await prisma.board.findUnique({
     where: { id: uuid },
+    include: {
+      members: {
+        include: {
+          user: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+              image: true,
+              created_at: true,
+            },
+          },
+        },
+      },
+    },
   });
 
   if (!board) notFound();
@@ -57,6 +72,21 @@ export const PATCH = async (
       ownerId: body.ownerId,
       accessLevel: body.accessLevel,
     },
+    include: {
+      members: {
+        include: {
+          user: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+              image: true,
+              created_at: true,
+            },
+          },
+        },
+      },
+    },
   });
 
   return NextResponse.json({ board: updatedBoard, accessRole });
@@ -82,6 +112,21 @@ export const DELETE = async (
 
   const updatedBoard = await prisma.board.delete({
     where: { id: uuid },
+    include: {
+      members: {
+        include: {
+          user: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+              image: true,
+              created_at: true,
+            },
+          },
+        },
+      },
+    },
   });
 
   return NextResponse.json({ board: updatedBoard, accessRole });

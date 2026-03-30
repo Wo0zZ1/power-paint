@@ -1,21 +1,38 @@
 import type { Workspace } from "@prisma/client";
-import { AccessLevel } from "@prisma/client";
+import { MemberRole } from "@prisma/client";
 import { z } from "zod";
 
-const uuidSchema = z.uuid("Invalid workspace ID format");
+import { accessLevelSchema } from "@/shared/lib/schemas";
 
-export const getCreateBoardFormSchema = (workspaceIds: Workspace["id"][]) => {
+const boardNameSchema = z
+  .string()
+  .min(3, "Name must be at least 3 characters long")
+  .max(25, "Name must be less than 25 characters long");
+
+const getWorkspaceIdSchema = (workspaceIds: Workspace["id"][]) => {
   const validWorkspaceIds = new Set(workspaceIds);
 
-  return z.object({
-    name: z
-      .string()
-      .min(3, "Name must be at least 3 characters long")
-      .max(25, "Name must be less than 25 characters long"),
-    workspaceId: uuidSchema.refine(
+  return z
+    .uuid("Invalid workspace ID format")
+    .refine(
       (id) => validWorkspaceIds.size === 0 || validWorkspaceIds.has(id),
       "Selected workspace does not exist or you don't have access",
-    ),
+    );
+};
+
+const boardMemberSchema = z.object({
+  userId: z.uuid(),
+  role: z.enum(MemberRole, {
+    error: "Invalid member role",
+  }),
+});
+
+// Exported Schemas
+
+export const getCreateBoardFormSchema = (workspaceIds: Workspace["id"][]) => {
+  return z.object({
+    name: boardNameSchema,
+    workspaceId: getWorkspaceIdSchema(workspaceIds),
   });
 };
 
@@ -25,7 +42,17 @@ export type CreateBoardFormData = z.infer<
 
 export const createBoardSchema = getCreateBoardFormSchema([]).and(
   z.object({
-    accessLevel: z.enum(AccessLevel).optional(),
-    workspaceId: uuidSchema,
+    accessLevel: accessLevelSchema,
   }),
 );
+
+export type CreateBoardData = z.infer<typeof createBoardSchema>;
+
+export const updateBoardSchema = z.object({
+  ownerId: z.uuid().optional(),
+  name: boardNameSchema.optional(),
+  accessLevel: accessLevelSchema.optional(),
+  members: z.array(boardMemberSchema).optional(),
+});
+
+export type UpdateBoardData = z.infer<typeof updateBoardSchema>;

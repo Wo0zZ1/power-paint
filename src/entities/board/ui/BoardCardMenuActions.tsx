@@ -24,7 +24,6 @@ export function BoardCardMenuActions({
   return (
     <>
       <DropdownMenuGroup>
-        {/* TODO: Вынести права в константы */}
         {AccessRole[accessRole] >= AccessRole.ADMIN && (
           <DropdownMenuItem onSelect={onEditBoardName}>
             <PencilLine />
@@ -35,7 +34,7 @@ export function BoardCardMenuActions({
         {AccessRole[accessRole] >= AccessRole.OWNER && (
           <DropdownMenuItem onSelect={onEditBoardAccess}>
             <Share2 />
-            {t("access.action")}
+            {t("share.action")}
           </DropdownMenuItem>
         )}
       </DropdownMenuGroup>

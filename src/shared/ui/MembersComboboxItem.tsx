@@ -4,51 +4,50 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 
 import { ROUTES } from "@/shared/config";
-import type { PublicUser } from "@/shared/types";
+import type { UserWithRole } from "@/shared/types";
 import {
-  ItemMedia,
-  UserAvatar,
-  ItemContent,
-  ItemTitle,
-  ItemDescription,
-  ItemActions,
   Item,
+  ItemContent,
+  ItemDescription,
+  ItemMedia,
+  ItemTitle,
+  UserAvatar,
 } from "@/shared/ui";
 import { cn } from "@/utils";
 
-interface WorkspaceMemberItemProps {
+interface MembersComboboxItemProps {
   className?: string;
-  user: PublicUser;
+  member: UserWithRole;
   actions?: ReactNode;
   withLink?: boolean;
 }
 
-export function WorkspaceMemberItem({
+export function MembersComboboxItem({
   className,
-  user,
+  member,
   actions,
   withLink = false,
-}: WorkspaceMemberItemProps) {
+}: MembersComboboxItemProps) {
   return (
     <Item
-      key={user.id}
+      key={member.user.id}
       size="xs"
       variant="default"
       className={cn("hover:bg-muted", className)}
     >
       {withLink ? (
-        <Link href={ROUTES.PROFILE(user.id)} className="contents">
+        <Link href={ROUTES.PROFILE(member.user.id)} className="contents">
           <ItemMedia className="self-center!">
             <UserAvatar
               size="default"
-              src={user.image}
-              fallback={user.name[0]}
+              src={member.user.image}
+              fallback={member.user.name[0]}
             />
           </ItemMedia>
 
           <ItemContent>
-            <ItemTitle>{user.name}</ItemTitle>
-            <ItemDescription>{user.email}</ItemDescription>
+            <ItemTitle>{member.user.name}</ItemTitle>
+            <ItemDescription>{member.user.email}</ItemDescription>
           </ItemContent>
         </Link>
       ) : (
@@ -56,19 +55,19 @@ export function WorkspaceMemberItem({
           <ItemMedia className="self-center!">
             <UserAvatar
               size="default"
-              src={user.image}
-              fallback={user.name[0]}
+              src={member.user.image}
+              fallback={member.user.name[0]}
             />
           </ItemMedia>
 
           <ItemContent>
-            <ItemTitle>{user.name}</ItemTitle>
-            <ItemDescription>{user.email}</ItemDescription>
+            <ItemTitle>{member.user.name}</ItemTitle>
+            <ItemDescription>{member.user.email}</ItemDescription>
           </ItemContent>
         </>
       )}
 
-      {actions && <ItemActions>{actions}</ItemActions>}
+      {actions}
     </Item>
   );
 }

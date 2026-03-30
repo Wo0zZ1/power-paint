@@ -1,6 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { MemberRole } from "@prisma/client";
-import { useState, useEffect, useCallback } from "react";
+import { useEffect, useCallback } from "react";
 import { useForm } from "react-hook-form";
 
 import {
@@ -11,6 +10,7 @@ import type {
   UpdateWorkspaceData,
   WorkspaceWithAccess,
 } from "@/entities/workspace";
+import { useMembersManagement } from "@/shared/lib/hooks";
 import type { PublicUser } from "@/shared/types";
 
 interface UseChangeWorkspaceFormProps {
@@ -24,24 +24,7 @@ export const useChangeWorkspaceForm = ({
   onOpenChange,
   setSearchQuery,
 }: UseChangeWorkspaceFormProps) => {
-  const [defaultRole, setDefaultRole] = useState<MemberRole>(MemberRole.viewer);
-  const [selectedMembers, setSelectedMembers] = useState<
-    { user: PublicUser; role: MemberRole }[]
-  >(
-    (workspace?.workspace?.members ?? []).map((m) => ({
-      user: m.user,
-      role: m.role,
-    })),
-  );
-
-  const updateWorkspaceMutation = useUpdateWorkspaceMutation();
-
-  const {
-    formState: { isDirty, isSubmitting },
-    handleSubmit,
-    setValue,
-    control,
-  } = useForm({
+  const { control, formState, setValue, handleSubmit } = useForm({
     values: {
       accessLevel: workspace?.workspace?.accessLevel,
       members: workspace?.workspace?.members?.map((m) => ({
@@ -50,6 +33,26 @@ export const useChangeWorkspaceForm = ({
       })),
     },
     resolver: zodResolver(updateWorkspaceSchema),
+  });
+
+  const updateWorkspaceMutation = useUpdateWorkspaceMutation();
+
+  const {
+    // State
+    defaultRole,
+    selectedMembers,
+    // Setters
+    setDefaultRole,
+    resetMembers,
+    // Actions
+    addMember,
+    updateMemberRole,
+    removeMember,
+  } = useMembersManagement({
+    initialMembers: workspace?.workspace.members.map((m) => ({
+      user: m.user,
+      role: m.role,
+    })),
   });
 
   useEffect(() => {
@@ -63,29 +66,14 @@ export const useChangeWorkspaceForm = ({
     );
   }, [selectedMembers, setValue]);
 
-  const handleSelectMember = useCallback(
+  const selectMember = useCallback(
     (user: PublicUser) => {
-      if (selectedMembers.find((m) => m.user.id === user.id)) return;
-
-      setSelectedMembers((prev) => [...prev, { role: defaultRole, user }]);
+      addMember(user);
 
       setSearchQuery("");
     },
-    [defaultRole, setSearchQuery, selectedMembers],
+    [setSearchQuery, addMember],
   );
-
-  const handleChangeMemberRole = useCallback(
-    (userId: PublicUser["id"], role: MemberRole) => {
-      setSelectedMembers((prev) =>
-        prev.map((m) => (m.user.id === userId ? { ...m, role } : m)),
-      );
-    },
-    [],
-  );
-
-  const handleRemoveMember = useCallback((user: PublicUser) => {
-    setSelectedMembers((prev) => prev.filter((m) => m.user.id !== user.id));
-  }, []);
 
   const handleChangeWorkspaceAccess = useCallback(
     async (data: UpdateWorkspaceData) => {
@@ -102,16 +90,19 @@ export const useChangeWorkspaceForm = ({
   );
 
   return {
+    // form
     control,
-    isDirty,
+    formState,
+    handleSubmit: handleSubmit(handleChangeWorkspaceAccess),
+    // State
     defaultRole,
-    isSubmitting,
     selectedMembers,
-    handleSubmit,
+    // Setters
     setDefaultRole,
-    handleRemoveMember,
-    handleSelectMember,
-    handleChangeMemberRole,
-    handleChangeWorkspaceAccess,
+    resetMembers,
+    // Actions
+    updateMemberRole,
+    selectMember,
+    removeMember,
   };
 };

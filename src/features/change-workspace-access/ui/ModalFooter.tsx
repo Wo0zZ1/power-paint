@@ -1,6 +1,6 @@
 import { useTranslations } from "next-intl";
 
-import { Button, DialogFooter } from "@/shared/ui";
+import { Button, DialogFooter, Spinner } from "@/shared/ui";
 import { cn } from "@/utils";
 
 interface ModalFooterProps {
@@ -24,6 +24,7 @@ export function ModalFooter({
         {t("cancel")}
       </Button>
       <Button type="submit" disabled={isSubmitting || !isDirty}>
+        {isSubmitting && <Spinner className="size-4" />}
         {isSubmitting ? t("saving") : t("save_changes")}
       </Button>
     </DialogFooter>

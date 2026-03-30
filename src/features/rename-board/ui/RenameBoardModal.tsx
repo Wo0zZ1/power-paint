@@ -1,10 +1,10 @@
 "use client";
 
-import type { Board } from "@prisma/client";
 import { useTranslations } from "next-intl";
 import type { SubmitEvent } from "react";
 import { useEffect, useState } from "react";
 
+import type { BoardWithAccess } from "@/entities/board";
 import { useUpdateBoardMutation } from "@/entities/board";
 import {
   Label,
@@ -24,7 +24,7 @@ import {
 import { cn } from "@/utils";
 
 interface RenameBoardModalProps {
-  board?: Board;
+  board?: BoardWithAccess;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   className?: string;
@@ -45,7 +45,7 @@ export function RenameBoardModal({
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    if (open) setBoardName(board!.name);
+    if (open) setBoardName(board?.board.name ?? "");
   }, [open, setBoardName, board]);
 
   const handleRenameBoard = (e: SubmitEvent<HTMLFormElement>) => {
@@ -57,8 +57,10 @@ export function RenameBoardModal({
 
     updateBoardMutation.mutate(
       {
-        id: board.id,
-        name: boardName,
+        boardId: board.board.id,
+        data: {
+          name: boardName,
+        },
       },
       {
         onSuccess() {
@@ -102,7 +104,7 @@ export function RenameBoardModal({
             </DialogClose>
 
             <Button
-              disabled={boardName === board?.name || isMutating}
+              disabled={boardName === board?.board.name || isMutating}
               className="transition-colors"
               data-icon="inline-start"
               type="submit"

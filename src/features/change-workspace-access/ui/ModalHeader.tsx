@@ -2,13 +2,7 @@
 
 import { useTranslations } from "next-intl";
 
-import {
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  TabsList,
-  TabsTrigger,
-} from "@/shared/ui";
+import { DialogHeader, DialogTitle, DialogDescription } from "@/shared/ui";
 import { cn } from "@/utils";
 
 interface ModalHeaderProps {
@@ -16,22 +10,13 @@ interface ModalHeaderProps {
 }
 
 export function ModalHeader({ className }: ModalHeaderProps) {
-  const t = useTranslations();
+  const t = useTranslations("workspace.share");
 
   return (
     <DialogHeader className={cn("", className)}>
-      <DialogTitle>{t("workspace.share.title")}</DialogTitle>
+      <DialogTitle>{t("title")}</DialogTitle>
 
-      <DialogDescription>{t("workspace.share.description")}</DialogDescription>
-
-      <TabsList className="h-10! mt-2 w-full">
-        <TabsTrigger value="share">
-          {t("workspace.share.tabs.share")}
-        </TabsTrigger>
-        <TabsTrigger value="export">
-          {t("workspace.share.tabs.export")}
-        </TabsTrigger>
-      </TabsList>
+      <DialogDescription>{t("description")}</DialogDescription>
     </DialogHeader>
   );
 }
