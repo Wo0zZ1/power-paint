@@ -6,7 +6,7 @@ export const THEMES = {
 
 export type Theme = (typeof THEMES)[keyof typeof THEMES];
 
-export const THEME_PREFERENCE: Theme = THEMES.system;
+export const DEFAULT_THEME: Theme = THEMES.system;
 
 export const THEME_PREFERENCE_STORAGE_KEY = "theme";
 

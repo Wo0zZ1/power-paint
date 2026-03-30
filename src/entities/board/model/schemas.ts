@@ -42,7 +42,7 @@ export type CreateBoardFormData = z.infer<
 
 export const createBoardSchema = getCreateBoardFormSchema([]).and(
   z.object({
-    accessLevel: accessLevelSchema,
+    accessLevel: accessLevelSchema.optional(),
   }),
 );
 

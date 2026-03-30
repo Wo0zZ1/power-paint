@@ -5,13 +5,13 @@ import { useLayoutEffect } from "react";
 import { useLocalStorage } from "@/shared/lib/hooks";
 
 import type { Theme } from "./config";
-import { THEME_PREFERENCE, THEME_PREFERENCE_STORAGE_KEY } from "./config";
+import { DEFAULT_THEME, THEME_PREFERENCE_STORAGE_KEY } from "./config";
 import { getSystemTheme } from "./getSystemTheme";
 
 export const useTheme = () => {
   const [themePreference, setThemePreference] = useLocalStorage<Theme>(
     THEME_PREFERENCE_STORAGE_KEY,
-    THEME_PREFERENCE,
+    DEFAULT_THEME,
   );
 
   useLayoutEffect(() => {
