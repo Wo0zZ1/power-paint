@@ -88,7 +88,6 @@ export const PATCH = async (
         deleteMany: {},
         create: membersPayload,
       },
-      type: body.type,
     },
     include: {
       boards: true,

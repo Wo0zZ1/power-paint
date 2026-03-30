@@ -64,14 +64,14 @@ export function WorkspacesGrid() {
       />
 
       <ChangeWorkspaceAccessModal
-        key={`rename-${selectedWorkspace?.workspace.id}`}
+        key={`change-access-${selectedWorkspace?.workspace.id}`}
         workspace={selectedWorkspace}
         open={isChangeAccessModalOpen}
         onOpenChange={setIsChangeAccessModalOpen}
       />
 
       <DeleteWorkspaceModal
-        key={`rename-${selectedWorkspace?.workspace.id}`}
+        key={`delete-${selectedWorkspace?.workspace.id}`}
         workspace={selectedWorkspace}
         open={isDeleteModalOpen}
         onOpenChange={setIsDeleteModalOpen}

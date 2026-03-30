@@ -2,7 +2,7 @@ import { notFound, forbidden } from "next/navigation";
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
-import type { BoardWithAccess } from "@/entities/board";
+import { updateBoardSchema, type BoardWithAccess } from "@/entities/board";
 import { auth } from "@/shared/auth";
 import { AccessRole } from "@/shared/constants";
 import { getAccessToBoard } from "@/shared/lib/auth";
@@ -52,6 +52,8 @@ export const PATCH = async (
 
   const body = await request.json();
 
+  const { name, accessLevel, ownerId, members } = updateBoardSchema.parse(body);
+
   const board = await prisma.board.findUnique({
     where: { id: uuid },
   });
@@ -59,18 +61,26 @@ export const PATCH = async (
   if (!board) notFound();
 
   const session = await auth();
-
   const accessRole = await getAccessToBoard(board, session?.user);
 
   if (AccessRole[accessRole] < AccessRole.ADMIN) forbidden();
 
+  const membersPayload =
+    members?.map((m) => ({
+      userId: m.userId,
+      role: m.role,
+    })) ?? [];
+
   const updatedBoard = await prisma.board.update({
     where: { id: uuid },
     data: {
-      name: body.name,
-      workspaceId: body.workspaceId,
-      ownerId: body.ownerId,
-      accessLevel: body.accessLevel,
+      name,
+      accessLevel,
+      ownerId,
+      members: {
+        deleteMany: {},
+        create: membersPayload,
+      },
     },
     include: {
       members: {

@@ -20,11 +20,11 @@ export function WorkspaceCardImage({
     <div className={cn(className, "")}>
       <Link href={ROUTES.DASHBOARD.WORKSPACE(workspaceId)}>
         <Image
-          className="relative aspect-video"
-          alt="Workspace preview image"
-          quality={25}
+          quality={75}
           loading="eager"
           src={imageProps}
+          alt="Workspace preview image"
+          className="relative aspect-video"
         />
       </Link>
     </div>

@@ -1,4 +1,4 @@
-import type { HocuspocusProvider } from "@hocuspocus/provider";
+import { WebSocketStatus, type HocuspocusProvider } from "@hocuspocus/provider";
 import type * as Y from "yjs";
 import { create } from "zustand";
 
@@ -30,6 +30,10 @@ interface BoardState {
   globals: GlobalsState;
   awareness: AwarenessMap;
   clientID: number;
+
+  // ── Hocuspocus connection status ──
+  connectionStatus: WebSocketStatus;
+  setConnectionStatus: (status: WebSocketStatus) => void;
 
   // ── Инструменты ──
   tool: Tool;
@@ -85,6 +89,9 @@ export const useBoardStore = create<BoardState>((set, get) => ({
   globals: { backgroundColor: "#ffffff" },
   awareness: new Map(),
   clientID: 0,
+
+  connectionStatus: WebSocketStatus.Connecting,
+  setConnectionStatus: (status) => set({ connectionStatus: status }),
 
   tool: "select",
 

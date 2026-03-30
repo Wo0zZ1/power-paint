@@ -53,7 +53,7 @@ export function BoardsCarousel({ workspace }: BoardsCarouselProps) {
 
   return (
     <>
-      <Carousel opts={{ dragFree: true }}>
+      <Carousel>
         {boards && boards.length > 0 ? (
           <CarouselContent>
             {boards.map(({ board, accessRole }) => (

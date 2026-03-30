@@ -22,6 +22,7 @@ import { useBoardPreview } from "../model/core/useBoardPreview";
 import { LayerContent, TransformerTool, SelectionElement } from "./elements";
 import { UndoRedoControls, ZoomControls, UserCursors } from "./overlay";
 import { ActiveUsers } from "./overlay/ActiveUsers";
+import { ConnectionStatus } from "./overlay/ConnectionStatus";
 import { LeftSidebar } from "./sidebar";
 import { BottomToolbar } from "./toolbar";
 
@@ -58,6 +59,8 @@ export function KonvaBoard({
   const { handleTouchMove, handlePointerMove, handlePointerLeave } =
     useMouseAwareness();
 
+  const connectionStatus = useBoardStore((s) => s.connectionStatus);
+
   const { handlePointerDown, handleTouchStart, handleZoom } =
     useBoardInteraction({ selectionRectRef, canEdit });
 
@@ -73,7 +76,11 @@ export function KonvaBoard({
         <div className="absolute w-auto mx-auto inset-5 pointer-events-none z-11">
           {/* Mobile */}
           <div className="md:hidden">
-            <ActiveUsers className="pointer-events-auto absolute top-0 right-0" />
+            <div className="absolute flex items-start gap-4 top-0 right-0">
+              <ConnectionStatus status={connectionStatus} />
+
+              <ActiveUsers className="pointer-events-auto" />
+            </div>
 
             <div className="absolute bottom-0 left-1/2 -translate-x-1/2 space-y-2">
               <div className="flex gap-4">
@@ -99,7 +106,11 @@ export function KonvaBoard({
 
           {/* Desktop */}
           <div className="not-md:hidden">
-            <ActiveUsers className="pointer-events-auto absolute top-0 right-0" />
+            <div className="absolute flex items-start gap-4 top-0 right-0">
+              <ConnectionStatus status={connectionStatus} />
+
+              <ActiveUsers className="pointer-events-auto" />
+            </div>
 
             {canEdit && (
               <LeftSidebar className="pointer-events-auto absolute top-0 left-0" />
@@ -117,7 +128,6 @@ export function KonvaBoard({
             </div>
           </div>
         </div>
-
         <Stage
           ref={stageRef}
           style={{ backgroundColor: activeColor }}
