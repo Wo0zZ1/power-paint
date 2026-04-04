@@ -22,7 +22,7 @@ const getTransporter = async () => {
       pass: process.env.EMAIL_PASSWORD,
     },
     tls: {
-      rejectUnauthorized: process.env.NODE_ENV === "production" || true,
+      rejectUnauthorized: true,
     },
   });
 };
