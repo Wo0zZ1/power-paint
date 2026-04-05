@@ -2,10 +2,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useCallback } from "react";
 import { useForm } from "react-hook-form";
 
-import { updateBoardSchema, useUpdateBoardMutation } from "@/entities/board";
-import type { UpdateBoardData } from "@/entities/board";
 import { useMembersManagement } from "@/shared/lib/hooks";
 import type { BoardWithAccess, PublicUser } from "@/shared/types";
+
+import { updateBoardSchema, useUpdateBoardMutation } from "@/entities/board";
+import type { UpdateBoardData } from "@/entities/board";
 
 interface UseChangeBoardFormProps {
   board?: BoardWithAccess;

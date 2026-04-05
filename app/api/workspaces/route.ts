@@ -4,14 +4,15 @@ import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
-import {
-  createWorkspaceSchema,
-  type WorkspaceWithAccess,
-} from "@/entities/workspace";
 import { auth } from "@/shared/auth";
 import { AccessRole } from "@/shared/constants";
 import { getAccessToWorkspace } from "@/shared/lib/auth";
 import { prisma } from "@/shared/lib/prisma";
+
+import {
+  createWorkspaceSchema,
+  type WorkspaceWithAccess,
+} from "@/entities/workspace";
 
 export const GET = async (
   request: NextRequest,

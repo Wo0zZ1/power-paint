@@ -7,12 +7,8 @@ import { useTranslations } from "next-intl";
 import { useCallback, useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 
-import type { CreateBoardFormData } from "@/entities/board";
-import {
-  getCreateBoardFormSchema,
-  useCreateBoardMutation,
-} from "@/entities/board";
-import { useGetWorkspacesQuery } from "@/entities/workspace";
+import { cn } from "@/utils";
+
 import { ROUTES } from "@/shared/config";
 import { AccessRole } from "@/shared/constants";
 import {
@@ -35,7 +31,14 @@ import {
   SelectContent,
   SelectItem,
 } from "@/shared/ui";
-import { cn } from "@/utils";
+
+import type { CreateBoardFormData } from "@/entities/board";
+import {
+  getCreateBoardFormSchema,
+  useCreateBoardMutation,
+} from "@/entities/board";
+import { useGetWorkspacesQuery } from "@/entities/workspace";
+
 
 interface CreateBoardModalProps {
   open: boolean;

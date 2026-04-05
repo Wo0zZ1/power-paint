@@ -2,8 +2,8 @@
 
 import { useTranslations } from "next-intl";
 
-import { useUsersSearchQuery } from "@/entities/user";
-import type { WorkspaceWithAccess } from "@/entities/workspace";
+import { cn } from "@/utils";
+
 import { ROUTES } from "@/shared/config";
 import { AccessRole } from "@/shared/constants";
 import {
@@ -16,7 +16,10 @@ import {
   MembersCombobox,
   DirectLinkCard,
 } from "@/shared/ui";
-import { cn } from "@/utils";
+
+import { useUsersSearchQuery } from "@/entities/user";
+import type { WorkspaceWithAccess } from "@/entities/workspace";
+
 
 import { useChangeWorkspaceForm } from "../model/useChangeWorkspaceForm";
 

@@ -4,8 +4,8 @@ import { useTranslations } from "next-intl";
 import type { SubmitEvent } from "react";
 import { useEffect, useState } from "react";
 
-import type { WorkspaceWithAccess } from "@/entities/workspace";
-import { useUpdateWorkspaceMutation } from "@/entities/workspace";
+import { cn } from "@/utils";
+
 import {
   Label,
   Field,
@@ -21,7 +21,9 @@ import {
   DialogDescription,
   Spinner,
 } from "@/shared/ui";
-import { cn } from "@/utils";
+
+import type { WorkspaceWithAccess } from "@/entities/workspace";
+import { useUpdateWorkspaceMutation } from "@/entities/workspace";
 
 interface RenameWorkspaceModalProps {
   workspace?: WorkspaceWithAccess;

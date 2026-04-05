@@ -5,6 +5,7 @@ import { randomUUID } from "node:crypto";
 import { cookies } from "next/headers";
 
 import { SignupEmail } from "@/../emails/signup";
+
 import type { SignupCodeData, SignupFormData } from "@/shared/config";
 import { getSignupCodeSchema, signupFormSchema } from "@/shared/config";
 import {

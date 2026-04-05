@@ -1,6 +1,7 @@
+import { cn } from "@/utils";
+
 import type { AccessRole } from "@/shared/constants";
 import { Card } from "@/shared/ui";
-import { cn } from "@/utils";
 
 import type { Workspace, WorkspaceWithAccess } from "../model/types";
 

@@ -2,12 +2,13 @@ import { notFound, forbidden } from "next/navigation";
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
-import { updateBoardSchema } from "@/entities/board";
 import { auth } from "@/shared/auth";
 import { AccessRole } from "@/shared/constants";
 import { getAccessToBoard } from "@/shared/lib/auth";
 import { prisma } from "@/shared/lib/prisma";
 import type { BoardWithAccess } from "@/shared/types";
+
+import { updateBoardSchema } from "@/entities/board";
 
 export const GET = async (
   _: NextRequest,

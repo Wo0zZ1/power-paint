@@ -3,6 +3,8 @@
 import { useTranslations } from "next-intl";
 import { useShallow } from "zustand/react/shallow";
 
+import { cn } from "@/utils";
+
 import { DEFAULT_BOARD_COLORS } from "@/shared/constants";
 import {
   ColorButton,
@@ -14,7 +16,6 @@ import {
   DropdownMenuTrigger,
   Separator,
 } from "@/shared/ui";
-import { cn } from "@/utils";
 
 import { useBoardStore, useSetGlobal } from "../../model";
 

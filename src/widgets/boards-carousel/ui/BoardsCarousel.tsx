@@ -2,11 +2,6 @@
 
 import { useTranslations } from "next-intl";
 
-import { BoardCard, useGetBoardsQuery } from "@/entities/board";
-import type { Workspace } from "@/entities/workspace";
-import { ChangeBoardAccessModal } from "@/features/change-board-access";
-import { DeleteBoardModal } from "@/features/delete-board";
-import { RenameBoardModal } from "@/features/rename-board";
 import {
   Carousel,
   CarouselContent,
@@ -14,6 +9,13 @@ import {
   CarouselPrevious,
   CarouselNext,
 } from "@/shared/ui";
+
+import { BoardCard, useGetBoardsQuery } from "@/entities/board";
+import type { Workspace } from "@/entities/workspace";
+
+import { ChangeBoardAccessModal } from "@/features/change-board-access";
+import { DeleteBoardModal } from "@/features/delete-board";
+import { RenameBoardModal } from "@/features/rename-board";
 
 import { useBoardsCarousel } from "../model/useBoardsCarousel";
 

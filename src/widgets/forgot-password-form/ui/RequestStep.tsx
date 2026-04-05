@@ -1,8 +1,9 @@
 import type { useTranslations } from "next-intl";
 import { useFormContext, useFormState } from "react-hook-form";
 
-import type { ForgotPasswordFormValues } from "@/features/reset-password";
 import { FieldGroup, Field, FieldLabel, Input, Button } from "@/shared/ui";
+
+import type { ForgotPasswordFormValues } from "@/features/reset-password";
 
 interface RequestStepProps {
   t: ReturnType<typeof useTranslations>;

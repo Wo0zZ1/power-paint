@@ -2,8 +2,10 @@ import Image from "next/image";
 import { redirect } from "next/navigation";
 
 import Wallpaper from "@/../public/assets/sign_in_wallpaper.jpg";
+
 import { auth } from "@/shared/auth";
 import { ROUTES } from "@/shared/config";
+
 import { SigninForm } from "@/widgets/signin-form";
 
 export default async function SigninPage() {

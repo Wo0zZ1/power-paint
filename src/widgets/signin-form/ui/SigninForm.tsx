@@ -4,7 +4,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 import { FormProvider, useForm } from "react-hook-form";
 
-import { useSignInHandlers } from "@/features/sign-in";
+import { cn } from "@/utils";
+
 import { getSigninSchema } from "@/shared/config/authSchemas";
 import {
   Card,
@@ -14,7 +15,9 @@ import {
   CardContent,
   FieldGroup,
 } from "@/shared/ui";
-import { cn } from "@/utils";
+
+import { useSignInHandlers } from "@/features/sign-in";
+
 
 import { SigninCredentials } from "./SigninCredentials";
 import { SigninSocialButtons } from "./SigninSocialButtons";

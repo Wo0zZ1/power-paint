@@ -5,12 +5,8 @@ import { useTranslations } from "next-intl";
 import { useEffect, useMemo } from "react";
 import { FormProvider } from "react-hook-form";
 
-import {
-  AbortPasswordResetAction,
-  RequestNewCode,
-  buildForgotPasswordFlow,
-  type ForgotPasswordFormValues,
-} from "@/features/reset-password";
+import { cn } from "@/utils";
+
 import { useMultiStepForm } from "@/shared/lib/hooks";
 import {
   Card,
@@ -20,7 +16,14 @@ import {
   CardTitle,
   Button,
 } from "@/shared/ui";
-import { cn } from "@/utils";
+
+import {
+  AbortPasswordResetAction,
+  RequestNewCode,
+  buildForgotPasswordFlow,
+  type ForgotPasswordFormValues,
+} from "@/features/reset-password";
+
 
 import { NewPasswordStep } from "./NewPasswordStep";
 import { RequestStep } from "./RequestStep";

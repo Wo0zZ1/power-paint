@@ -3,9 +3,10 @@ import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 import type { ReactNode } from "react";
 
+import { getQueryClient } from "@/shared/api";
+
 import type { WorkspaceWithAccess } from "@/entities/workspace";
 import { getWorkspaceQueryOption } from "@/entities/workspace/server";
-import { getQueryClient } from "@/shared/api";
 
 export default async function Boardslayout({
   children,

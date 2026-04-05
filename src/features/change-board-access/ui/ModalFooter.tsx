@@ -1,7 +1,8 @@
 import { useTranslations } from "next-intl";
 
-import { Button, DialogFooter, Spinner } from "@/shared/ui";
 import { cn } from "@/utils";
+
+import { Button, DialogFooter, Spinner } from "@/shared/ui";
 
 interface ModalFooterProps {
   className?: string;

@@ -2,8 +2,9 @@
 
 import { useTranslations } from "next-intl";
 
-import { DialogHeader, DialogTitle, DialogDescription } from "@/shared/ui";
 import { cn } from "@/utils";
+
+import { DialogHeader, DialogTitle, DialogDescription } from "@/shared/ui";
 
 interface ModalHeaderProps {
   className?: string;

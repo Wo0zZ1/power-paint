@@ -3,6 +3,7 @@ import { getTranslations } from "next-intl/server";
 
 import { RESET_PASSWORD_COOKIE } from "@/shared/constants";
 import { DialogTitle, DialogContent, DialogDescription } from "@/shared/ui";
+
 import { ForgotPasswordForm } from "@/widgets/forgot-password-form";
 
 export default async function ForgotPasswordModal() {

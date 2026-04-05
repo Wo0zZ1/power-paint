@@ -2,6 +2,8 @@
 
 import { useTranslations } from "next-intl";
 
+import { cn } from "@/utils";
+
 import {
   DialogHeader,
   DialogTitle,
@@ -9,7 +11,6 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/shared/ui";
-import { cn } from "@/utils";
 
 interface ModalHeaderProps {
   className?: string;

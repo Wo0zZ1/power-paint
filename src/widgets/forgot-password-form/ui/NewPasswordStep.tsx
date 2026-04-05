@@ -1,8 +1,9 @@
 import { useTranslations } from "next-intl";
 import { useFormContext, useFormState } from "react-hook-form";
 
-import type { ForgotPasswordFormValues } from "@/features/reset-password";
 import { Button, Field, FieldGroup, FieldLabel, Input } from "@/shared/ui";
+
+import type { ForgotPasswordFormValues } from "@/features/reset-password";
 
 interface NewPasswordStepProps {
   onNext: () => Promise<boolean>;

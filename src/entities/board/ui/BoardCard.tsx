@@ -1,7 +1,8 @@
+import { cn } from "@/utils";
+
 import { AccessRole } from "@/shared/constants";
 import type { Board, BoardWithAccess } from "@/shared/types";
 import { Card } from "@/shared/ui";
-import { cn } from "@/utils";
 
 import { BoardCardBadge } from "./BoardCardBadge";
 import { BoardCardFooter } from "./BoardCardFooter";

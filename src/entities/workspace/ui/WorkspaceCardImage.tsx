@@ -2,8 +2,9 @@ import Image from "next/image";
 import Link from "next/link";
 
 import preview from "@/public/assets/preview1.jpeg";
-import { ROUTES } from "@/shared/config";
 import { cn } from "@/utils";
+
+import { ROUTES } from "@/shared/config";
 
 interface WorkspaceCardImageProps {
   className?: string;

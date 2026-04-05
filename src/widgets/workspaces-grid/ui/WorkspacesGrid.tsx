@@ -3,6 +3,7 @@
 import { useTranslations } from "next-intl";
 
 import { useGetWorkspacesQuery, WorkspaceCard } from "@/entities/workspace";
+
 import { ChangeWorkspaceAccessModal } from "@/features/change-workspace-access";
 import { DeleteWorkspaceModal } from "@/features/delete-workspace";
 import { RenameWorkspaceModal } from "@/features/rename-workspace";

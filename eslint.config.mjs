@@ -11,11 +11,8 @@ const eslintConfig = defineConfig([
   ...nextVitals,
   ...nextTs,
   ...compat.extends(
-    "@feature-sliced/eslint-config/rules/public-api",
-    "@feature-sliced/eslint-config/rules/layers-slices",
-    "@feature-sliced/eslint-config/rules/import-order",
+    "@feature-sliced/eslint-config/rules/import-order/experimental",
   ),
-  // Override default ignores of eslint-config-next.
   globalIgnores([
     // Default ignores of eslint-config-next:
     ".next/**",
@@ -28,36 +25,19 @@ const eslintConfig = defineConfig([
     rules: {
       "@typescript-eslint/no-empty-object-type": "off",
       "@typescript-eslint/consistent-type-imports": "error",
-      "react/no-unstable-nested-components": "warn",
       "@typescript-eslint/no-unused-vars": [
         "error",
         {
           args: "all",
-          argsIgnorePattern: "^_",
           caughtErrors: "all",
+          argsIgnorePattern: "^_",
+          varsIgnorePattern: "^_",
           caughtErrorsIgnorePattern: "^_",
           destructuredArrayIgnorePattern: "^_",
-          varsIgnorePattern: "^_",
           ignoreRestSiblings: true,
         },
       ],
-      "import/no-duplicates": "error",
-      "import/no-internal-modules": "off",
-      "import/order": [
-        "error",
-        {
-          groups: [
-            "builtin",
-            "external",
-            "internal",
-            "parent",
-            "sibling",
-            "index",
-          ],
-          "newlines-between": "always",
-          alphabetize: { order: "asc", caseInsensitive: true },
-        },
-      ],
+      "react/no-unstable-nested-components": "error",
     },
   },
 ]);

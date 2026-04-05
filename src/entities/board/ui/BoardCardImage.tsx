@@ -5,9 +5,10 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 
 import preview from "@/public/assets/preview1.jpeg";
+import { cn } from "@/utils";
+
 import { ROUTES } from "@/shared/config";
 import { getSystemTheme, useTheme } from "@/shared/lib/theme";
-import { cn } from "@/utils";
 
 interface BoardCardImageProps {
   className?: string;

@@ -2,12 +2,14 @@
 
 import { useTranslations } from "next-intl";
 
+import { cn } from "@/utils";
+
 import { useGetBoardsQuery, BoardCard } from "@/entities/board";
 import type { Workspace } from "@/entities/workspace";
+
 import { ChangeBoardAccessModal } from "@/features/change-board-access";
 import { DeleteBoardModal } from "@/features/delete-board";
 import { RenameBoardModal } from "@/features/rename-board";
-import { cn } from "@/utils";
 
 import { useBoardsGrid } from "../model/useBoardsGrid";
 

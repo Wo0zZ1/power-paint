@@ -2,10 +2,12 @@ import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { cookies } from "next/headers";
 import type { ReactNode } from "react";
 
-import { getWorkspacesQueryOption } from "@/entities/workspace/server";
-import { CreateWorkspaceButton } from "@/features/create-workspace";
 import { getQueryClient } from "@/shared/api";
 import { cn } from "@/shared/lib/utils";
+
+import { getWorkspacesQueryOption } from "@/entities/workspace/server";
+
+import { CreateWorkspaceButton } from "@/features/create-workspace";
 
 import { WorkspacesCarousel } from "./WorkspacesCarousel";
 

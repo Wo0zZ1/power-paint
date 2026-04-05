@@ -1,7 +1,8 @@
 "use client";
 
-import { useInvertableColor } from "@/shared/lib/hooks";
 import { cn } from "@/utils";
+
+import { useInvertableColor } from "@/shared/lib/hooks";
 
 interface ColorSwatchProps {
   className?: string;

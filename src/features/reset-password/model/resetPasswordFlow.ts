@@ -2,11 +2,6 @@ import type { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 import {
-  RequestPasswordResetAction,
-  VerifyPasswordResetCodeAction,
-  UpdatePasswordAction,
-} from "@/features/reset-password";
-import {
   getForgotPasswordSchema,
   getSignupCodeSchema,
   getResetPasswordSchema,
@@ -16,6 +11,12 @@ import {
   type ResetPasswordData,
 } from "@/shared/config";
 import type { StepConfig } from "@/shared/lib/hooks/useMultiStepForm";
+
+import {
+  RequestPasswordResetAction,
+  VerifyPasswordResetCodeAction,
+  UpdatePasswordAction,
+} from "@/features/reset-password";
 
 export type ForgotPasswordFormValues = ForgotPasswordData &
   SignupCodeData &

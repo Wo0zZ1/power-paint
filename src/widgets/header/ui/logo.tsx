@@ -3,8 +3,9 @@ import Link from "next/link";
 
 import PowerPaintIcon from "@/public/assets/power-paint-icon.png";
 import PowerPaintLogo from "@/public/assets/power-paint-logo.png";
-import { ROUTES } from "@/shared/config";
 import { cn } from "@/utils";
+
+import { ROUTES } from "@/shared/config";
 
 interface LogoProps {
   className?: string;

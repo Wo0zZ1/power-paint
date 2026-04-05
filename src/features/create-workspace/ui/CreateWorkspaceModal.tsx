@@ -6,11 +6,8 @@ import { useTranslations } from "next-intl";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
-import type { CreateWorkspaceFormData } from "@/entities/workspace";
-import {
-  createWorkspaceFormSchema,
-  useCreateWorkspaceMutation,
-} from "@/entities/workspace";
+import { cn } from "@/utils";
+
 import { ROUTES } from "@/shared/config";
 import {
   DialogContent,
@@ -27,7 +24,13 @@ import {
   Dialog,
   Label,
 } from "@/shared/ui";
-import { cn } from "@/utils";
+
+import type { CreateWorkspaceFormData } from "@/entities/workspace";
+import {
+  createWorkspaceFormSchema,
+  useCreateWorkspaceMutation,
+} from "@/entities/workspace";
+
 
 interface CreateWorkspaceModalProps {
   open: boolean;

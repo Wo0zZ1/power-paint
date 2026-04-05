@@ -1,9 +1,11 @@
 import { cookies } from "next/headers";
 import { getTranslations } from "next-intl/server";
 
-import { getWorkspaceQueryOption } from "@/entities/workspace/server";
 import { getQueryClient } from "@/shared/api";
 import { GoBackButton } from "@/shared/ui";
+
+import { getWorkspaceQueryOption } from "@/entities/workspace/server";
+
 import { BoardsGridBlock } from "@/widgets/boards-grid";
 
 export default async function BoardsPage({

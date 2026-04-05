@@ -2,7 +2,8 @@
 
 import { useTranslations } from "next-intl";
 
-import { useUsersSearchQuery } from "@/entities/user";
+import { cn } from "@/utils";
+
 import { ROUTES } from "@/shared/config";
 import { AccessRole } from "@/shared/constants";
 import type { BoardWithAccess } from "@/shared/types";
@@ -18,7 +19,9 @@ import {
   MembersCombobox,
   DirectLinkCard,
 } from "@/shared/ui";
-import { cn } from "@/utils";
+
+import { useUsersSearchQuery } from "@/entities/user";
+
 
 import { useChangeBoardForm } from "../model/useChangeBoardForm";
 

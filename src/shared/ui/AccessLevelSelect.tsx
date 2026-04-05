@@ -4,6 +4,8 @@ import type { AccessLevel } from "@prisma/client";
 import { useTranslations } from "next-intl";
 import type { ComponentProps } from "react";
 
+import { cn } from "@/utils";
+
 import { ACCESS_LEVELS } from "@/shared/constants";
 import {
   SelectTrigger,
@@ -12,7 +14,6 @@ import {
   SelectItem,
   Select,
 } from "@/shared/ui";
-import { cn } from "@/utils";
 
 type AccessLevelSelectProps = {
   className?: string;

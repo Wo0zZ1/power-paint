@@ -1,8 +1,9 @@
 import type { ComponentProps } from "react";
 
+import { cn } from "@/utils";
+
 import type { UserOnlineStatus } from "@/shared/ui";
 import { Avatar, AvatarFallback, AvatarImage, UserBadge } from "@/shared/ui";
-import { cn } from "@/utils";
 
 type UserAvatarProps = {
   className?: string;

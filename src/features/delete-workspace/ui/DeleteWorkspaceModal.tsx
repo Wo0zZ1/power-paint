@@ -5,8 +5,8 @@ import { useTranslations } from "next-intl";
 import type { SubmitEvent } from "react";
 import { useCallback, useEffect, useState } from "react";
 
-import type { WorkspaceWithAccess } from "@/entities/workspace";
-import { useDeleteWorkspaceMutation } from "@/entities/workspace/model/mutations";
+import { cn } from "@/utils";
+
 import {
   Field,
   Input,
@@ -26,7 +26,9 @@ import {
   EmptyTitle,
   EmptyDescription,
 } from "@/shared/ui";
-import { cn } from "@/utils";
+
+import type { WorkspaceWithAccess } from "@/entities/workspace";
+import { useDeleteWorkspaceMutation } from "@/entities/workspace/model/mutations";
 
 interface DeleteWorkspaceModalProps {
   workspace?: WorkspaceWithAccess;

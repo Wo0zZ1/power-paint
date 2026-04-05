@@ -4,8 +4,9 @@ import { WebSocketStatus } from "@hocuspocus/provider";
 import { CircleCheck, CircleX } from "lucide-react";
 import { useTranslations } from "next-intl";
 
-import { Spinner } from "@/shared/ui";
 import { cn } from "@/utils";
+
+import { Spinner } from "@/shared/ui";
 
 interface ConnectionStatusProps {
   className?: string;

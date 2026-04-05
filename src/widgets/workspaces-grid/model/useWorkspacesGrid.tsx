@@ -1,6 +1,7 @@
 import { useState } from "react";
 
 import type { WorkspaceWithAccess } from "@/entities/workspace";
+
 import { useChangeWorkspaceAccess } from "@/features/change-workspace-access";
 import { useDeleteWorkspace } from "@/features/delete-workspace";
 import { useRenameWorkspace } from "@/features/rename-workspace";

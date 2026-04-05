@@ -3,7 +3,6 @@ import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 
-import { getBoardQueryOption } from "@/entities/board/server";
 import { getQueryClient } from "@/shared/api";
 import { auth } from "@/shared/auth";
 import {
@@ -12,6 +11,8 @@ import {
   cn,
 } from "@/shared/lib/utils";
 import type { BoardWithAccess, IGuestUserCookie } from "@/shared/types";
+
+import { getBoardQueryOption } from "@/entities/board/server";
 
 import type { UserAwareness } from "../model";
 import { generateWsToken } from "../model/lib/token";

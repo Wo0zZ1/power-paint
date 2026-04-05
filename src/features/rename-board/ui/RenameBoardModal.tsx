@@ -4,7 +4,8 @@ import { useTranslations } from "next-intl";
 import type { SubmitEvent } from "react";
 import { useEffect, useState } from "react";
 
-import { useUpdateBoardMutation } from "@/entities/board";
+import { cn } from "@/utils";
+
 import type { BoardWithAccess } from "@/shared/types";
 import {
   Label,
@@ -21,7 +22,9 @@ import {
   DialogDescription,
   Spinner,
 } from "@/shared/ui";
-import { cn } from "@/utils";
+
+import { useUpdateBoardMutation } from "@/entities/board";
+
 
 interface RenameBoardModalProps {
   board?: BoardWithAccess;

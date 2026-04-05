@@ -5,7 +5,6 @@ import { useTranslations } from "next-intl";
 import { useCallback } from "react";
 import { Controller, useFormContext, useFormState } from "react-hook-form";
 
-import { changeLocaleAction } from "@/features/switch-language";
 import type { SignupFormStep2Data } from "@/shared/config";
 import { DEFAULT_USER_COLORS } from "@/shared/constants";
 import type { SupportedLocaleCode } from "@/shared/i18n";
@@ -23,6 +22,8 @@ import {
   ColorButton,
 } from "@/shared/ui";
 import { ColorInput } from "@/shared/ui/ColorInput";
+
+import { changeLocaleAction } from "@/features/switch-language";
 
 export function SignupFormStep2() {
   const t = useTranslations();

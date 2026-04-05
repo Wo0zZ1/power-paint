@@ -2,8 +2,9 @@
 
 import { useTranslations } from "next-intl";
 
-import { DropdownMenuItem } from "@/shared/ui";
 import { cn } from "@/utils";
+
+import { DropdownMenuItem } from "@/shared/ui";
 
 
 import { ThemeSwitcher } from "./ThemeSwitcher";

@@ -2,8 +2,9 @@
 
 import { useTranslations } from "next-intl";
 
-import { Spinner } from "@/shared/ui";
 import { cn } from "@/utils";
+
+import { Spinner } from "@/shared/ui";
 
 
 interface LoadingWorkspaceGridProps {

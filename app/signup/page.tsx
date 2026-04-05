@@ -3,9 +3,11 @@ import Image from "next/image";
 import { redirect } from "next/navigation";
 
 import Wallpaper from "@/../public/assets/sign_in_wallpaper.jpg";
+
 import { auth } from "@/shared/auth";
 import { ROUTES } from "@/shared/config";
 import { VERIFICATION_COOKIE } from "@/shared/constants";
+
 import { SignupForm } from "@/widgets/signup-form";
 
 export default async function SignupPage() {

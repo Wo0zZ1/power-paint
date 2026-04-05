@@ -2,6 +2,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useCallback } from "react";
 import { useForm } from "react-hook-form";
 
+import { useMembersManagement } from "@/shared/lib/hooks";
+import type { PublicUser } from "@/shared/types";
+
 import {
   updateWorkspaceSchema,
   useUpdateWorkspaceMutation,
@@ -10,8 +13,6 @@ import type {
   UpdateWorkspaceData,
   WorkspaceWithAccess,
 } from "@/entities/workspace";
-import { useMembersManagement } from "@/shared/lib/hooks";
-import type { PublicUser } from "@/shared/types";
 
 interface UseChangeWorkspaceFormProps {
   workspace?: WorkspaceWithAccess;

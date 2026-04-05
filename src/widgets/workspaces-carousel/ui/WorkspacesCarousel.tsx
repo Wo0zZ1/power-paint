@@ -2,10 +2,6 @@
 
 import { useTranslations } from "next-intl";
 
-import { WorkspaceCard, useGetWorkspacesQuery } from "@/entities/workspace";
-import { ChangeWorkspaceAccessModal } from "@/features/change-workspace-access";
-import { DeleteWorkspaceModal } from "@/features/delete-workspace";
-import { RenameWorkspaceModal } from "@/features/rename-workspace";
 import {
   Carousel,
   CarouselItem,
@@ -13,6 +9,12 @@ import {
   CarouselContent,
   CarouselPrevious,
 } from "@/shared/ui";
+
+import { WorkspaceCard, useGetWorkspacesQuery } from "@/entities/workspace";
+
+import { ChangeWorkspaceAccessModal } from "@/features/change-workspace-access";
+import { DeleteWorkspaceModal } from "@/features/delete-workspace";
+import { RenameWorkspaceModal } from "@/features/rename-workspace";
 
 import { useWorkspacesCarousel } from "../model/useWorkspacesCarousel";
 

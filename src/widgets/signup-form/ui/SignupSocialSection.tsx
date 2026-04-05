@@ -3,6 +3,7 @@ import Link from "next/link";
 
 import Github from "@/../public/assets/github.svg";
 import Google from "@/../public/assets/google.png";
+
 import { ROUTES } from "@/shared/config";
 import { Button, Field, FieldDescription, Separator } from "@/shared/ui";
 

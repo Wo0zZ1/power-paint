@@ -2,8 +2,9 @@ import type { User } from "@prisma/client";
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
-import { getUserPublicInfo } from "@/entities/user";
 import { prisma } from "@/shared/lib/prisma";
+
+import { getUserPublicInfo } from "@/entities/user";
 
 export const GET = async (request: NextRequest) => {
   const query = request.nextUrl.searchParams.get("q");

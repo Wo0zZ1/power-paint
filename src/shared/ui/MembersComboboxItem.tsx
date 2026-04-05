@@ -3,6 +3,8 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 
+import { cn } from "@/utils";
+
 import { ROUTES } from "@/shared/config";
 import type { UserWithRole } from "@/shared/types";
 import {
@@ -13,7 +15,6 @@ import {
   ItemTitle,
   UserAvatar,
 } from "@/shared/ui";
-import { cn } from "@/utils";
 
 interface MembersComboboxItemProps {
   className?: string;

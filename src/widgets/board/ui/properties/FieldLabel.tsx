@@ -1,5 +1,6 @@
-import { Label } from "@/shared/ui";
 import { cn } from "@/utils";
+
+import { Label } from "@/shared/ui";
 
 interface FieldLabelProps {
   className?: string;

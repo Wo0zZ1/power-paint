@@ -3,9 +3,11 @@ import Image from "next/image";
 import { redirect } from "next/navigation";
 
 import Wallpaper from "@/../public/assets/sign_in_wallpaper.jpg";
+
 import { auth } from "@/shared/auth";
 import { ROUTES } from "@/shared/config";
 import { RESET_PASSWORD_COOKIE } from "@/shared/constants";
+
 import { ForgotPasswordForm } from "@/widgets/forgot-password-form";
 
 export default async function ForgotPasswordPage() {

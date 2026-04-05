@@ -3,11 +3,13 @@ import { cookies } from "next/headers";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 
-import type { WorkspaceWithAccess } from "@/entities/workspace";
-import { getWorkspacesQueryOption } from "@/entities/workspace/server";
 import { getQueryClient } from "@/shared/api";
 import { ROUTES } from "@/shared/config";
 import { Button } from "@/shared/ui";
+
+import type { WorkspaceWithAccess } from "@/entities/workspace";
+import { getWorkspacesQueryOption } from "@/entities/workspace/server";
+
 import { BoardsCarouselBlock } from "@/widgets/boards-carousel";
 import { WorkspacesCarouselBlock } from "@/widgets/workspaces-carousel";
 

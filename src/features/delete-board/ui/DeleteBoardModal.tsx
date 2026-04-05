@@ -5,7 +5,8 @@ import { useTranslations } from "next-intl";
 import type { SubmitEvent } from "react";
 import { useEffect, useState } from "react";
 
-import { useDeleteBoardMutation } from "@/entities/board/model/mutations";
+import { cn } from "@/utils";
+
 import type { BoardWithAccess } from "@/shared/types";
 import {
   Field,
@@ -26,7 +27,9 @@ import {
   EmptyTitle,
   EmptyDescription,
 } from "@/shared/ui";
-import { cn } from "@/utils";
+
+import { useDeleteBoardMutation } from "@/entities/board/model/mutations";
+
 
 interface DeleteBoardModalProps {
   board?: BoardWithAccess;

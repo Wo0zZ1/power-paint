@@ -3,14 +3,15 @@ import { forbidden, notFound } from "next/navigation";
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
-import {
-  updateWorkspaceSchema,
-  type WorkspaceWithAccess,
-} from "@/entities/workspace";
 import { auth } from "@/shared/auth";
 import { AccessRole } from "@/shared/constants";
 import { getAccessToWorkspace } from "@/shared/lib/auth";
 import { prisma } from "@/shared/lib/prisma";
+
+import {
+  updateWorkspaceSchema,
+  type WorkspaceWithAccess,
+} from "@/entities/workspace";
 
 export const GET = async (
   _request: NextRequest,

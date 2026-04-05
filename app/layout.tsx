@@ -4,10 +4,13 @@ import type { Metadata } from "next";
 import { getLocale, getMessages, getTimeZone } from "next-intl/server";
 import type { ReactNode } from "react";
 
-import { ClientProviders, QueryProvider } from "@/app/providers";
-import { ThemeScript } from "@/features/switch-theme/ui/ThemeScript";
 import { auth } from "@/shared/auth";
+
+import { ThemeScript } from "@/features/switch-theme/ui/ThemeScript";
+
 import { Header } from "@/widgets/header";
+
+import { ClientProviders, QueryProvider } from "@/app/providers";
 
 import { geistMono, geistSans, interSans } from "./fonts";
 

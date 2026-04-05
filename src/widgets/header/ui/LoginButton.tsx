@@ -4,8 +4,9 @@ import { LogIn } from "lucide-react";
 import { signIn } from "next-auth/react";
 import { useTranslations } from "next-intl";
 
-import { Button } from "@/shared/ui";
 import { cn } from "@/utils";
+
+import { Button } from "@/shared/ui";
 
 interface LoginButtonProps {
   className?: string;

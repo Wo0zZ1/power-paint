@@ -1,8 +1,9 @@
 import Link from "next/link";
 
+import { cn } from "@/utils";
+
 import { ROUTES } from "@/shared/config";
 import { Button, CardFooter } from "@/shared/ui";
-import { cn } from "@/utils";
 
 interface BoardCardFooterProps {
   className?: string;

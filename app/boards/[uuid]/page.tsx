@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 
 import { ROUTES } from "@/shared/config";
 import { prisma } from "@/shared/lib/prisma";
+
 import { Board } from "@/widgets/board";
 
 export async function generateMetadata({
