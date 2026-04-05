@@ -1,3 +1,4 @@
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata } from "next";
 import { getLocale, getMessages, getTimeZone } from "next-intl/server";
 import type { ReactNode } from "react";
@@ -16,7 +17,7 @@ export const metadata: Metadata = {
     template: "%s | Power Paint",
     default: "Power Paint",
   },
-  description: "A simple paint application built with React and TypeScript.",
+  description: "A simple paint application built with Next.js and TypeScript.",
 };
 
 export default async function RootLayout({
@@ -55,6 +56,7 @@ export default async function RootLayout({
             <div className="grow flex flex-col">{children}</div>
             {modal}
           </ClientProviders>
+          <SpeedInsights />
         </QueryProvider>
       </body>
     </html>
