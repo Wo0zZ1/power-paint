@@ -36,7 +36,7 @@ export const useBoardPreview = ({ ref, boardId }: UseBoardPreviewProps) => {
       await updateBoardPreviewAction(boardId, darkPreview, "dark");
     };
 
-    const intervalId = setInterval(sendPreview, 5 * 1000);
+    const intervalId = setInterval(sendPreview, 20 * 1000);
 
     return () => {
       clearInterval(intervalId);
