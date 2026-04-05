@@ -20,8 +20,6 @@ export function BoardCardImage({ className, boardId }: BoardCardImageProps) {
   const { themePreference } = useTheme();
 
   useEffect(() => {
-    console.log("Image useEffect");
-
     const targetTheme =
       themePreference === "system" ? getSystemTheme() : themePreference;
 

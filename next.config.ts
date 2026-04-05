@@ -27,6 +27,10 @@ const nextConfig: NextConfig = {
         protocol: "http",
         hostname: "localhost",
       },
+      {
+        protocol: "https",
+        hostname: new URL(process.env.NEXT_PUBLIC_BASE_URL!).hostname,
+      },
     ],
     qualities: [25, 50, 75, 100],
   },
