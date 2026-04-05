@@ -70,6 +70,14 @@ export function SignupForm({ className, verificationId }: SignupFormProps) {
           {step === 2 && <SignupFormStep2 />}
           {step === 3 && <SignupFormStep3 onNext={handleNext} />}
 
+          {methods.formState.errors.root?.message && (
+            <Field className="mt-0!">
+              <p className="text-destructive text-sm">
+                {t(methods.formState.errors.root.message)}
+              </p>
+            </Field>
+          )}
+
           <SignupPrimaryButton
             isLastStep={isLastStep}
             isSubmitting={isPending}

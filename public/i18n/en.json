@@ -64,10 +64,6 @@
         "label": "Email",
         "placeholder": "Enter your email"
       },
-      "phone": {
-        "label": "Phone Number",
-        "placeholder": "Enter your phone number"
-      },
       "password": {
         "label": "Password",
         "placeholder": "Enter your password"
@@ -75,6 +71,18 @@
       "confirm_password": {
         "label": "Confirm Password",
         "placeholder": "Re-enter your password"
+      },
+      "phone": {
+        "label": "Phone Number",
+        "placeholder": "Enter your phone number"
+      },
+      "preferred_color": {
+        "label": "Preferred Color",
+        "description": "It will be used to highlight your contributions"
+      },
+      "image": {
+        "label": "Profile Image",
+        "placeholder": "Drag and drop your profile image here"
       },
       "email_code": {
         "label": "Verification Code",

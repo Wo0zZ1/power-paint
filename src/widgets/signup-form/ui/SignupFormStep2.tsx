@@ -26,6 +26,7 @@ import { ColorInput } from "@/shared/ui/ColorInput";
 
 export function SignupFormStep2() {
   const t = useTranslations();
+  const tFields = useTranslations("auth.fields");
 
   const { register, control } = useFormContext<SignupFormStep2Data>();
 
@@ -101,10 +102,10 @@ export function SignupFormStep2() {
       </Field>
 
       <Field>
-        <FieldTitle>Preffered Color</FieldTitle>
+        <FieldTitle>{tFields("preferred_color.label")}</FieldTitle>
 
         <FieldDescription>
-          It will be used to highlight your contributions.
+          {tFields("preferred_color.description")}
         </FieldDescription>
 
         <div className="flex flex-wrap justify-between gap-4">
@@ -137,7 +138,10 @@ export function SignupFormStep2() {
         </div>
       </Field>
 
-      <Field>Image</Field>
+      {/* <Field>
+        <FieldTitle>{tFields("image.label")}</FieldTitle>
+        <FieldDescription>{tFields("image.placeholder")}</FieldDescription>
+      </Field> */}
     </>
   );
 }
