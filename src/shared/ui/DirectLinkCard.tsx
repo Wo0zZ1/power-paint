@@ -75,7 +75,7 @@ export function DirectLinkCard<M extends FieldValues>({
             <LinkIcon />
           </InputGroupAddon>
 
-          <InputGroupText className="text-sm leading-4 text-accent-foreground select-all line-clamp-1">
+          <InputGroupText className="text-sm leading-4 text-accent-foreground select-all break-all line-clamp-1">
             {link}
           </InputGroupText>
 
