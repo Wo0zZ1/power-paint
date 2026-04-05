@@ -2,11 +2,12 @@ import { notFound, forbidden } from "next/navigation";
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
-import { updateBoardSchema, type BoardWithAccess } from "@/entities/board";
+import { updateBoardSchema } from "@/entities/board";
 import { auth } from "@/shared/auth";
 import { AccessRole } from "@/shared/constants";
 import { getAccessToBoard } from "@/shared/lib/auth";
 import { prisma } from "@/shared/lib/prisma";
+import type { BoardWithAccess } from "@/shared/types";
 
 export const GET = async (
   _: NextRequest,
@@ -16,6 +17,10 @@ export const GET = async (
 
   const board = await prisma.board.findUnique({
     where: { id: uuid },
+    omit: {
+      darkPreview: true,
+      lightPreview: true,
+    },
     include: {
       members: {
         include: {
@@ -56,6 +61,10 @@ export const PATCH = async (
 
   const board = await prisma.board.findUnique({
     where: { id: uuid },
+    omit: {
+      darkPreview: true,
+      lightPreview: true,
+    },
   });
 
   if (!board) notFound();
@@ -73,6 +82,10 @@ export const PATCH = async (
 
   const updatedBoard = await prisma.board.update({
     where: { id: uuid },
+    omit: {
+      darkPreview: true,
+      lightPreview: true,
+    },
     data: {
       name,
       accessLevel,
@@ -122,6 +135,10 @@ export const DELETE = async (
 
   const updatedBoard = await prisma.board.delete({
     where: { id: uuid },
+    omit: {
+      darkPreview: true,
+      lightPreview: true,
+    },
     include: {
       members: {
         include: {

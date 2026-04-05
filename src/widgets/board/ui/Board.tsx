@@ -3,7 +3,6 @@ import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 
-import type { BoardWithAccess } from "@/entities/board";
 import { getBoardQueryOption } from "@/entities/board/server";
 import { getQueryClient } from "@/shared/api";
 import { auth } from "@/shared/auth";
@@ -12,7 +11,7 @@ import {
   generateRandomHslColor,
   cn,
 } from "@/shared/lib/utils";
-import type { IGuestUserCookie } from "@/shared/types";
+import type { BoardWithAccess, IGuestUserCookie } from "@/shared/types";
 
 import type { UserAwareness } from "../model";
 import { generateWsToken } from "../model/lib/token";

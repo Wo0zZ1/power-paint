@@ -5,8 +5,8 @@ import { useTranslations } from "next-intl";
 import type { SubmitEvent } from "react";
 import { useEffect, useState } from "react";
 
-import type { BoardWithAccess } from "@/entities/board";
 import { useDeleteBoardMutation } from "@/entities/board/model/mutations";
+import type { BoardWithAccess } from "@/shared/types";
 import {
   Field,
   Input,

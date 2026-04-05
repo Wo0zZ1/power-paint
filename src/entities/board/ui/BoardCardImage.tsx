@@ -1,68 +1,61 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
+import preview from "@/public/assets/preview1.jpeg";
 import { ROUTES } from "@/shared/config";
+import { getSystemTheme, useTheme } from "@/shared/lib/theme";
 import { cn } from "@/utils";
-
-import preview1 from "../../../../public/assets/preview1.jpeg";
 
 interface BoardCardImageProps {
   className?: string;
   boardId: string;
-  lightPreview: string | null;
-  darkPreview: string | null;
 }
 
-export function BoardCardImage({
-  className,
-  boardId,
-  lightPreview,
-  darkPreview,
-}: BoardCardImageProps) {
+export function BoardCardImage({ className, boardId }: BoardCardImageProps) {
+  const [imageUrl, setImageUrl] = useState<string>(preview.src);
+  const { themePreference } = useTheme();
+
+  useEffect(() => {
+    console.log("Image useEffect");
+
+    const targetTheme =
+      themePreference === "system" ? getSystemTheme() : themePreference;
+
+    if (targetTheme === "light") {
+      setImageUrl(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/boards/${boardId}/preview?theme=light`,
+      );
+    } else {
+      setImageUrl(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/boards/${boardId}/preview?theme=dark`,
+      );
+    }
+  }, [themePreference, boardId]);
+
+  const handleImageError = () => {
+    setImageUrl(preview.src);
+  };
+
   return (
     <div className={cn("", className)}>
       <Link
         className="relative w-full h-full block aspect-video"
         href={ROUTES.BOARD(boardId)}
       >
-        {lightPreview && (
-          <Image
-            className="relative dark:hidden"
-            loading="eager"
-            quality={25}
-            src={lightPreview}
-            alt="Board preview image"
-            fill
-            sizes="100vw"
-            unoptimized
-          />
-        )}
-
-        {darkPreview && (
-          <Image
-            className="relative not-dark:hidden"
-            loading="eager"
-            quality={25}
-            src={darkPreview}
-            alt="Board preview image"
-            fill
-            sizes="100vw"
-            unoptimized
-          />
-        )}
-
-        {!lightPreview && !darkPreview && (
-          <Image
-            className="relative"
-            loading="eager"
-            quality={25}
-            src={preview1}
-            alt="Board preview image"
-            fill
-            sizes="100vw"
-            unoptimized
-          />
-        )}
+        <Image
+          fill
+          quality={75}
+          sizes="100%"
+          loading="lazy"
+          src={imageUrl}
+          placeholder="blur"
+          blurDataURL={preview.src}
+          alt="Board preview image"
+          onError={handleImageError}
+        />
       </Link>
     </div>
   );

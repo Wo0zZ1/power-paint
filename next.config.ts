@@ -6,8 +6,14 @@ const nextConfig: NextConfig = {
   typedRoutes: false,
   experimental: {
     authInterrupts: true,
+    optimizeServerReact: true,
   },
   images: {
+    formats: ["image/webp"],
+    dangerouslyAllowLocalIP: true,
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256],
+    minimumCacheTTL: 365 * 24 * 60 * 60,
     remotePatterns: [
       {
         protocol: "https",
@@ -16,6 +22,10 @@ const nextConfig: NextConfig = {
       {
         protocol: "https",
         hostname: "lh3.googleusercontent.com",
+      },
+      {
+        protocol: "http",
+        hostname: "localhost",
       },
     ],
     qualities: [25, 50, 75, 100],

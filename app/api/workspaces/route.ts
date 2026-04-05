@@ -25,7 +25,27 @@ export const GET = async (
   const workspaces = await prisma.workspace.findMany({
     where: { ownerId: userId, type },
     include: {
-      boards: true,
+      boards: {
+        omit: {
+          darkPreview: true,
+          lightPreview: true,
+        },
+        include: {
+          members: {
+            include: {
+              user: {
+                select: {
+                  id: true,
+                  name: true,
+                  email: true,
+                  image: true,
+                  created_at: true,
+                },
+              },
+            },
+          },
+        },
+      },
       members: {
         include: {
           user: {
@@ -78,7 +98,27 @@ export const POST = async (
       ownerId: session.user.id,
     },
     include: {
-      boards: true,
+      boards: {
+        omit: {
+          darkPreview: true,
+          lightPreview: true,
+        },
+        include: {
+          members: {
+            include: {
+              user: {
+                select: {
+                  id: true,
+                  name: true,
+                  email: true,
+                  image: true,
+                  created_at: true,
+                },
+              },
+            },
+          },
+        },
+      },
       members: {
         include: {
           user: {

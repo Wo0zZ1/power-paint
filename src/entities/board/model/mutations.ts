@@ -1,9 +1,9 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { BOARDS_QUERY_KEY, WORKSPACES_QUERY_KEY } from "@/shared/constants";
+import type { BoardWithAccess } from "@/shared/types";
 
 import { BoardsApi } from "./api";
-import type { BoardWithAccess } from "./types";
 
 export const useCreateBoardMutation = () => {
   const queryClient = useQueryClient();

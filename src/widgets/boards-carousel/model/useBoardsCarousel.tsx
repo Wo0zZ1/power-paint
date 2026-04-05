@@ -1,9 +1,9 @@
 import { useState } from "react";
 
-import type { BoardWithAccess } from "@/entities/board";
 import { useChangeBoardAccess } from "@/features/change-board-access";
 import { useDeleteBoard } from "@/features/delete-board";
 import { useRenameBoard } from "@/features/rename-board";
+import type { BoardWithAccess } from "@/shared/types";
 
 export const useBoardsCarousel = () => {
   const [selectedBoard, setSelectedBoard] = useState<BoardWithAccess>();

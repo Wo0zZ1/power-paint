@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import type { BoardWithAccess } from "@/entities/board";
+import type { BoardWithAccess } from "@/shared/types";
 
 type setSelectedBoardFn = (board: BoardWithAccess) => void;
 

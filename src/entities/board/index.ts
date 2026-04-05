@@ -1,7 +1,5 @@
 export { BoardCard } from "./ui/BoardCard";
 
-export type { BoardWithAccess, Board } from "./model/types";
-
 export { useGetBoardsQuery, useGetBoardQuery } from "./model/queries";
 export {
   useCreateBoardMutation,

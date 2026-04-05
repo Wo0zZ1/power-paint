@@ -21,7 +21,27 @@ export const GET = async (
   const workspace = await prisma.workspace.findUnique({
     where: { id: uuid },
     include: {
-      boards: true,
+      boards: {
+        omit: {
+          darkPreview: true,
+          lightPreview: true,
+        },
+        include: {
+          members: {
+            include: {
+              user: {
+                select: {
+                  id: true,
+                  name: true,
+                  email: true,
+                  image: true,
+                  created_at: true,
+                },
+              },
+            },
+          },
+        },
+      },
       members: {
         include: {
           user: {
@@ -90,7 +110,27 @@ export const PATCH = async (
       },
     },
     include: {
-      boards: true,
+      boards: {
+        omit: {
+          darkPreview: true,
+          lightPreview: true,
+        },
+        include: {
+          members: {
+            include: {
+              user: {
+                select: {
+                  id: true,
+                  name: true,
+                  email: true,
+                  image: true,
+                  created_at: true,
+                },
+              },
+            },
+          },
+        },
+      },
       members: {
         include: {
           user: {
@@ -133,7 +173,27 @@ export const DELETE = async (
   const updatedWorkspace = await prisma.workspace.delete({
     where: { id: uuid },
     include: {
-      boards: true,
+      boards: {
+        omit: {
+          darkPreview: true,
+          lightPreview: true,
+        },
+        include: {
+          members: {
+            include: {
+              user: {
+                select: {
+                  id: true,
+                  name: true,
+                  email: true,
+                  image: true,
+                  created_at: true,
+                },
+              },
+            },
+          },
+        },
+      },
       members: {
         include: {
           user: {

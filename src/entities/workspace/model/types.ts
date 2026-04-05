@@ -1,11 +1,10 @@
 import type {
   Workspace as PrismaWorkspace,
-  Board,
   WorkspaceMember,
 } from "@prisma/client";
 
 import type { AccessRole } from "@/shared/constants";
-import type { PublicUser } from "@/shared/types";
+import type { Board, PublicUser } from "@/shared/types";
 
 export type WorkspaceMemberWithUser = WorkspaceMember & {
   user: PublicUser;

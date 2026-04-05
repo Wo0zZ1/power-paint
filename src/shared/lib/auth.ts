@@ -1,8 +1,9 @@
-import type { Board, Workspace } from "@prisma/client";
+import type { Workspace } from "@prisma/client";
 import { AccessLevel, MemberRole } from "@prisma/client";
 import type { Session } from "next-auth";
 
 import type { AccessRole } from "../constants";
+import type { Board } from "../types";
 
 import { prisma } from "./prisma";
 
@@ -45,7 +46,7 @@ export const getAccessToWorkspace = async (
 };
 
 export const getAccessToBoard = async (
-  board: Board,
+  board: Pick<Board, "id" | "workspaceId" | "ownerId" | "accessLevel">,
   user?: Session["user"],
 ): Promise<AccessRole> => {
   if (user && user.id === board.ownerId) return "OWNER";

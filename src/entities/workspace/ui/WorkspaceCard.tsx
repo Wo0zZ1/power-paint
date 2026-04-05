@@ -1,4 +1,3 @@
-import preview1 from "@/public/assets/preview1.jpeg"; // TODO Remove this hardcoded preview image
 import type { AccessRole } from "@/shared/constants";
 import { Card } from "@/shared/ui";
 import { cn } from "@/utils";
@@ -53,7 +52,7 @@ export function WorkspaceCard({
           }
         />
 
-        <WorkspaceCardImage workspaceId={workspace.id} imageProps={preview1} />
+        <WorkspaceCardImage workspaceId={workspace.id} />
 
         <WorkspaceCardHeader className="grow" name={workspace.name} />
 

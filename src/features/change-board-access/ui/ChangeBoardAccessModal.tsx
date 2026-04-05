@@ -2,10 +2,10 @@
 
 import { useTranslations } from "next-intl";
 
-import type { BoardWithAccess } from "@/entities/board";
 import { useUsersSearchQuery } from "@/entities/user";
 import { ROUTES } from "@/shared/config";
 import { AccessRole } from "@/shared/constants";
+import type { BoardWithAccess } from "@/shared/types";
 import {
   Field,
   Dialog,

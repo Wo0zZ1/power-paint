@@ -1,9 +1,9 @@
 import type { Board } from "@prisma/client";
 
 import { GET_BASE_API_URL, fetchInitWithCookies } from "@/shared/api";
+import type { BoardWithAccess } from "@/shared/types";
 
 import type { CreateBoardFormData, UpdateBoardData } from "./schemas";
-import type { BoardWithAccess } from "./types";
 
 const url = GET_BASE_API_URL() + "/boards";
 

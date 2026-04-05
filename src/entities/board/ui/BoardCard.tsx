@@ -1,8 +1,7 @@
 import { AccessRole } from "@/shared/constants";
+import type { Board, BoardWithAccess } from "@/shared/types";
 import { Card } from "@/shared/ui";
 import { cn } from "@/utils";
-
-import type { Board, BoardWithAccess } from "../model/types";
 
 import { BoardCardBadge } from "./BoardCardBadge";
 import { BoardCardFooter } from "./BoardCardFooter";
@@ -54,11 +53,7 @@ export function BoardCard({
           />
         )}
 
-        <BoardCardImage
-          boardId={board.id}
-          lightPreview={board.lightPreview}
-          darkPreview={board.darkPreview}
-        />
+        <BoardCardImage boardId={board.id} />
 
         <BoardCardHeader className="grow" name={board.name} />
 

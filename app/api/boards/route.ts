@@ -3,11 +3,12 @@ import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
-import { createBoardSchema, type BoardWithAccess } from "@/entities/board";
+import { createBoardSchema } from "@/entities/board";
 import { auth } from "@/shared/auth";
 import { AccessRole } from "@/shared/constants";
 import { getAccessToBoard, getAccessToWorkspace } from "@/shared/lib/auth";
 import { prisma } from "@/shared/lib/prisma";
+import type { BoardWithAccess } from "@/shared/types";
 
 export const GET = async (
   request: NextRequest,
@@ -21,6 +22,10 @@ export const GET = async (
     where: {
       ownerId: userId,
       workspaceId: workspaceId,
+    },
+    omit: {
+      darkPreview: true,
+      lightPreview: true,
     },
     include: {
       members: {
@@ -86,6 +91,10 @@ export const POST = async (
       workspaceId,
       accessLevel,
       ownerId: session.user.id,
+    },
+    omit: {
+      darkPreview: true,
+      lightPreview: true,
     },
     include: {
       members: {
