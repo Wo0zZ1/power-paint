@@ -1,3 +1,4 @@
+import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata } from "next";
 import { getLocale, getMessages, getTimeZone } from "next-intl/server";
@@ -57,6 +58,7 @@ export default async function RootLayout({
             {modal}
           </ClientProviders>
           <SpeedInsights />
+          <Analytics />
         </QueryProvider>
       </body>
     </html>
