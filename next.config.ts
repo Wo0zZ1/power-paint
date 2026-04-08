@@ -2,7 +2,8 @@ import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
 
 const nextConfig: NextConfig = {
-  reactCompiler: true,
+  reactCompiler: false,
+  poweredByHeader: false,
   typedRoutes: false,
   experimental: {
     authInterrupts: true,
