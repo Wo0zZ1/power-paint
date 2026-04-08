@@ -2,6 +2,7 @@
 
 import { useTranslations } from "next-intl";
 
+import { cn } from "@/shared/lib/utils";
 import {
   Carousel,
   CarouselItem,
@@ -21,7 +22,11 @@ import { useWorkspacesCarousel } from "../model/useWorkspacesCarousel";
 import { ErrorWorkspacesCarousel } from "./ErrorWorkspacesCarousel";
 import { LoadingWorkspacesCarousel } from "./LoadingWorkspacesCarousel";
 
-export function WorkspacesCarousel() {
+interface WorkspacesCarouselProps {
+  className?: string;
+}
+
+export function WorkspacesCarousel({ className }: WorkspacesCarouselProps) {
   const t = useTranslations();
 
   const { data, isLoading, isError, error } = useGetWorkspacesQuery({
@@ -47,7 +52,7 @@ export function WorkspacesCarousel() {
 
   return (
     <>
-      <Carousel>
+      <Carousel className={cn(className)}>
         {data && data?.length > 0 ? (
           <CarouselContent>
             {data.map(({ workspace, accessRole }) => (

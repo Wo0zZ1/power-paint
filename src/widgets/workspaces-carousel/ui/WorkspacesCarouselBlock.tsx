@@ -34,15 +34,17 @@ export async function WorkspacesCarouselBlock({
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <div className={cn("bg-accent -mx-5 p-5 rounded-2xl", className)}>
-        <div className="flex items-end mb-4">
-          <h2 className="mr-auto text-2xl font-semibold">{title}</h2>
+      <div className={cn("bg-accent p-3 xs:p-4 md:p-5 rounded-2xl", className)}>
+        <div className="flex flex-col-reverse sm:flex-row sm:items-end justify-between gap-4 mb-4">
+          <h2 className="text-xl sm:text-2xl font-semibold">{title}</h2>
 
-          <CreateWorkspaceButton size="sm" className="text-sm mr-4" />
-          {action}
+          <div className="flex gap-4 items-center sm:items-end self-end sm:self-auto">
+            <CreateWorkspaceButton size="sm" className="text-sm" />
+            {action}
+          </div>
         </div>
 
-        <WorkspacesCarousel />
+        <WorkspacesCarousel className="col-span-2" />
       </div>
     </HydrationBoundary>
   );
