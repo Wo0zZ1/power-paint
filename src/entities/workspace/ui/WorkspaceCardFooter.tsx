@@ -18,11 +18,7 @@ export function WorkspaceCardFooter({
 }: WorkspaceCardFooterProps) {
   return (
     <CardFooter className={cn(className, "")}>
-      <Button
-        asChild
-        variant="secondary"
-        className="w-full text-xs md:text-base"
-      >
+      <Button asChild variant="outline" className="w-full text-xs md:text-base">
         <Link href={ROUTES.DASHBOARD.WORKSPACE(workspaceId)}>{buttonText}</Link>
       </Button>
     </CardFooter>
