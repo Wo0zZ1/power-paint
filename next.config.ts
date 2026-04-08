@@ -7,7 +7,7 @@ const nextConfig: NextConfig = {
   typedRoutes: false,
   experimental: {
     authInterrupts: true,
-    optimizeServerReact: true,
+    optimizeServerReact: false,
   },
   images: {
     formats: ["image/webp"],
