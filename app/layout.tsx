@@ -62,10 +62,12 @@ export default async function RootLayout({
   children: ReactNode;
   modal: ReactNode;
 }>) {
-  const locale = await getLocale();
-  const messages = await getMessages({ locale });
-  const session = await auth();
-  const timeZone = await getTimeZone();
+  const [locale, messages, session, timeZone] = await Promise.all([
+    getLocale(),
+    getMessages(),
+    auth(),
+    getTimeZone(),
+  ]);
 
   const isQueryDevtoolsEnabled =
     process.env.REACT_QUERY_DEVTOOLS_ENABLED === "true";

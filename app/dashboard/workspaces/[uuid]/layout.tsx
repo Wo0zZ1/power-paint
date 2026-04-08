@@ -41,9 +41,8 @@ export default async function Boardslayout({
   children: ReactNode;
   params: Promise<{ uuid: string }>;
 }) {
-  const { uuid } = await params;
+  const [{ uuid }, cookieStore] = await Promise.all([params, cookies()]);
 
-  const cookieStore = await cookies();
   const queryClient = getQueryClient();
 
   let workspaceWithAccess: WorkspaceWithAccess;

@@ -8,9 +8,8 @@ export default async function ProfilePage({
 }: {
   params: Promise<{ uuid: number }>;
 }) {
-  const { uuid } = await params;
+  const [{ uuid }, cookieStore] = await Promise.all([params, cookies()]);
 
-  const cookieStore = await cookies();
   const cookieString = cookieStore.toString();
 
   const user = await fetch(

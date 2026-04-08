@@ -17,11 +17,12 @@ export default async function Workspace({
 }: {
   params: Promise<{ uuid: string }>;
 }) {
-  const { uuid } = await params;
+  const [{ uuid }, t, cookieStore] = await Promise.all([
+    params,
+    getTranslations("board"),
+    cookies(),
+  ]);
 
-  const t = await getTranslations();
-
-  const cookieStore = await cookies();
   const queryClient = getQueryClient();
 
   let workspaceWithAccess: WorkspaceWithAccess;
@@ -40,14 +41,14 @@ export default async function Workspace({
   return (
     <BoardsCarouselBlock
       className="mt-12"
-      title={t("board.plural")}
+      title={t("plural")}
       workspaceWithAccess={workspaceWithAccess}
       action={
         <Button variant="link" size="xs" className="text-sm" asChild>
           <Link
             href={ROUTES.DASHBOARD.BOARDS(workspaceWithAccess.workspace.id)}
           >
-            {t("board.all")}
+            {t("all")}
           </Link>
         </Button>
       }

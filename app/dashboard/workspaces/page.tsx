@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 };
 
 export default async function Workspaces() {
-  const t = await getTranslations();
+  const t = await getTranslations("workspace");
 
-  return <WorkspacesGridBlock title={t("workspace.plural")} />;
+  return <WorkspacesGridBlock title={t("plural")} />;
 }

@@ -23,9 +23,8 @@ export const metadata: Metadata = {
 };
 
 export default async function DashboardPage() {
-  const t = await getTranslations();
+  const [t, cookieStore] = await Promise.all([getTranslations(), cookies()]);
 
-  const cookieStore = await cookies();
   const queryClient = getQueryClient();
 
   let personalWorkspace: WorkspaceWithAccess;

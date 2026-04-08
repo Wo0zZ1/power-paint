@@ -11,20 +11,21 @@ export default async function DashboardLayout({
 }: {
   children: ReactNode;
 }) {
-  const t = await getTranslations();
-
-  const session = await auth();
+  const [t, session] = await Promise.all([
+    getTranslations("dashboard"),
+    auth(),
+  ]);
 
   if (!session) redirect(ROUTES.SIGNIN);
 
   return (
     <div className="flex flex-col grow container mx-auto my-8 px-4">
       <Link href={ROUTES.DASHBOARD.ROOT}>
-        <h1 className="text-4xl font-bold">{t("dashboard.title")}</h1>
+        <h1 className="text-4xl font-bold">{t("title")}</h1>
       </Link>
 
       <p className="font-mono text-md text-muted-foreground mt-2 mb-12">
-        {t("dashboard.welcome")}
+        {t("welcome")}
       </p>
       {children}
     </div>

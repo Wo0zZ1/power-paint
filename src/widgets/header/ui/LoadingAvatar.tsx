@@ -5,7 +5,7 @@ interface LoadingAvatarProps {
   className?: string;
 }
 
-export function LoadingAvatar({ className }: LoadingAvatarProps) {
+export async function LoadingAvatar({ className }: LoadingAvatarProps) {
   return (
     <Avatar
       className={cn("cursor-pointer animate-pulse", className)}

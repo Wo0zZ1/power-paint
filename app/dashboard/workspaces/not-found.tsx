@@ -21,7 +21,7 @@ export const metadata: Metadata = {
 };
 
 export default async function NotFoundPage() {
-  const t = await getTranslations();
+  const t = await getTranslations("workspace.notFound");
 
   return (
     <div className="grow grid">
@@ -30,10 +30,8 @@ export default async function NotFoundPage() {
           <EmptyMedia size="lg" variant="icon">
             <Folder />
           </EmptyMedia>
-          <EmptyTitle size="lg">{t("workspace.notFound.title")}</EmptyTitle>
-          <EmptyDescription size="lg">
-            {t("workspace.notFound.description")}
-          </EmptyDescription>
+          <EmptyTitle size="lg">{t("title")}</EmptyTitle>
+          <EmptyDescription size="lg">{t("description")}</EmptyDescription>
         </EmptyHeader>
         <EmptyContent size="lg">
           <GoBackButton size="lg" variant="secondary" />

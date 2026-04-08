@@ -1,20 +1,35 @@
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
-import { auth } from "@/shared/auth";
+import { ROUTES } from "@/shared/config";
+import { SESSION_ID_COOKIE_NAME } from "@/shared/constants";
 import {
   generateRandomUsername,
   generateRandomHexColor,
 } from "@/shared/lib/utils";
 import type { IGuestUserCookie } from "@/shared/types";
 
-export async function proxy() {
+const PRIVATE_ROUTES = [ROUTES.DASHBOARD.ROOT, ROUTES.SETTINGS] as string[];
+const MANUAL_REDIRECT_TO_DASHBOARD_ROUTES = [
+  ROUTES.SIGNIN,
+  ROUTES.SIGNUP,
+  ROUTES.RESET_PASSWORD,
+] as string[];
+
+export async function proxy(request: NextRequest) {
   const response = NextResponse.next();
 
-  const cookieState = await cookies();
-  const session = await auth();
+  const [cookieState] = await Promise.all([cookies()]);
 
-  if (!session) {
+  const sessionToken = request.cookies.get(SESSION_ID_COOKIE_NAME)?.value;
+
+  if (!sessionToken) {
+    if (PRIVATE_ROUTES.includes(request.nextUrl.pathname)) {
+      return redirect(ROUTES.SIGNIN);
+    }
+
     const guestUser = cookieState.get("guest-user")?.value;
 
     if (!guestUser) {
@@ -28,11 +43,17 @@ export async function proxy() {
         Buffer.from(JSON.stringify(guestUserCookie)).toString("base64"),
       );
     }
+  } else {
+    if (
+      MANUAL_REDIRECT_TO_DASHBOARD_ROUTES.includes(request.nextUrl.pathname)
+    ) {
+      return redirect(ROUTES.DASHBOARD.ROOT);
+    }
   }
 
   return response;
 }
 
 export const config = {
-  matcher: ["/boards/:path*"],
+  matcher: ["/((?!_next/static|_next/image|favicon.ico|public|api/public).*)"],
 };

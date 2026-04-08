@@ -12,7 +12,7 @@ import {
 import { GoBackButton } from "@/shared/ui/goBackButton";
 
 export default async function NotFoundPage() {
-  const t = await getTranslations();
+  const t = await getTranslations("board.notFound");
 
   return (
     <div className="grow grid">
@@ -21,10 +21,8 @@ export default async function NotFoundPage() {
           <EmptyMedia size="lg" variant="icon">
             <Folder />
           </EmptyMedia>
-          <EmptyTitle size="lg">{t("board.notFound.title")}</EmptyTitle>
-          <EmptyDescription size="lg">
-            {t("board.notFound.description")}
-          </EmptyDescription>
+          <EmptyTitle size="lg">{t("title")}</EmptyTitle>
+          <EmptyDescription size="lg">{t("description")}</EmptyDescription>
         </EmptyHeader>
         <EmptyContent size="lg">
           <GoBackButton size="lg" variant="secondary" />

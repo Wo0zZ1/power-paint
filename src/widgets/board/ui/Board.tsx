@@ -25,9 +25,8 @@ interface BoardProps {
 }
 
 export async function Board({ className, boardId }: BoardProps) {
-  const session = await auth();
+  const [session, cookieState] = await Promise.all([auth(), cookies()]);
 
-  const cookieState = await cookies();
   const cookieString = cookieState.toString();
 
   const queryClient = getQueryClient();

@@ -13,10 +13,12 @@ export default async function BoardsPage({
 }: {
   params: Promise<{ uuid: string }>;
 }) {
-  const t = await getTranslations();
-  const { uuid } = await params;
+  const [{ uuid }, t, cookieStore] = await Promise.all([
+    params,
+    getTranslations("board"),
+    cookies(),
+  ]);
 
-  const cookieStore = await cookies();
   const queryClient = getQueryClient();
 
   const workspaceWithAccess = await queryClient.fetchQuery(
@@ -29,7 +31,7 @@ export default async function BoardsPage({
   return (
     <BoardsGridBlock
       className="mt-12"
-      title={t("board.all")}
+      title={t("all")}
       workspaceWithAccess={workspaceWithAccess}
       action={<GoBackButton variant="link" size="xs" className="text-sm" />}
     />

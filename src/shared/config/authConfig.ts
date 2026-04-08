@@ -6,6 +6,7 @@ import Github from "next-auth/providers/github";
 import Google from "next-auth/providers/google";
 import z from "zod";
 
+import { SESSION_ID_COOKIE_NAME } from "../constants";
 import { prisma } from "../lib/prisma";
 import { compareHash } from "../lib/server";
 
@@ -96,7 +97,7 @@ export const AUTH_CONFIG = {
 
   cookies: {
     sessionToken: {
-      name: "sessionId",
+      name: SESSION_ID_COOKIE_NAME,
       options: {
         httpOnly: true,
         sameSite: "lax",
