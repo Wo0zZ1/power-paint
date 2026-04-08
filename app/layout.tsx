@@ -21,6 +21,37 @@ export const metadata: Metadata = {
     template: "%s | Power Paint",
     default: "Power Paint",
   },
+  icons: {
+    icon: "/assets/icon.png",
+  },
+  keywords: [
+    "paint",
+    "drawing",
+    "canvas",
+    "collaboration",
+    "next.js",
+    "typescript",
+  ],
+  robots: {
+    index: true,
+    follow: true,
+  },
+  category: "painting application",
+  applicationName: "Power Paint",
+  creator: "Wo0zZ1",
+  openGraph: {
+    title: "Power Paint",
+    description:
+      "A simple paint application built with Next.js and TypeScript.",
+    url: process.env.NEXT_PUBLIC_BASE_URL,
+    siteName: "Power Paint",
+    images: [
+      {
+        url: `${process.env.NEXT_PUBLIC_BASE_URL}/assets/power-paint-logo.png`,
+        alt: "Power Paint Open Graph Image",
+      },
+    ],
+  },
   description: "A simple paint application built with Next.js and TypeScript.",
 };
 

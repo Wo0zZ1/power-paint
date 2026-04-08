@@ -36,7 +36,7 @@ export async function generateMetadata({
   const previewDarkUrl = `${ORIGIN}/api/boards/${uuid}/preview?theme=dark`;
 
   return {
-    title: board.name,
+    title: `${board.name} - Board`,
     description: `Просмотр доски ${board.name}`,
     openGraph: {
       title: board.name,

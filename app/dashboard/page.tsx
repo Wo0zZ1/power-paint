@@ -1,4 +1,5 @@
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
+import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
@@ -12,6 +13,14 @@ import { getWorkspacesQueryOption } from "@/entities/workspace/server";
 
 import { BoardsCarouselBlock } from "@/widgets/boards-carousel";
 import { WorkspacesCarouselBlock } from "@/widgets/workspaces-carousel";
+
+export const metadata: Metadata = {
+  title: {
+    template: "%s | Power Paint",
+    default: "Dashboard",
+  },
+  description: "Your dashboard with all your boards and workspaces",
+};
 
 export default async function DashboardPage() {
   const t = await getTranslations();

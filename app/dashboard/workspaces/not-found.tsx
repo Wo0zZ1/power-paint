@@ -1,4 +1,5 @@
 import { Folder } from "lucide-react";
+import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 
 import {
@@ -10,6 +11,14 @@ import {
   EmptyTitle,
 } from "@/shared/ui";
 import { GoBackButton } from "@/shared/ui/goBackButton";
+
+export const metadata: Metadata = {
+  title: {
+    template: "%s | Power Paint",
+    default: "Workspace not found",
+  },
+  description: "The workspace you are looking for does not exist.",
+};
 
 export default async function NotFoundPage() {
   const t = await getTranslations();
