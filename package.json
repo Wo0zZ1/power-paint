@@ -1,5 +1,6 @@
 {
   "name": "power-paint-socket",
+  "packageManager": "yarn@4.13.0",
   "author": {
     "name": "Max",
     "email": "Mper06@mail.ru"

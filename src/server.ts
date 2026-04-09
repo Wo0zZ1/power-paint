@@ -1,5 +1,3 @@
-import "dotenv/config";
-
 import { hocuspocus } from "./hocuspocus";
 import {
   closePostgresStorage,

@@ -1,0 +1,54 @@
+# Зависимости
+node_modules
+**/node_modules
+
+# Сборка
+.next
+out
+dist
+build
+
+# Prisma (генерируется внутри)
+**/prisma/*.db
+**/prisma/*.db-journal
+
+# Локальные env-файлы
+.env
+.env.local
+.env.*.local
+
+# Кэш Yarn 4
+.yarn/cache
+.yarn/install-state.gz
+.pnp.*
+.yarn/unplugged
+
+# Системные файлы
+.git
+.gitignore
+.github
+.vscode
+.idea
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Логи
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Тесты
+**/__tests__
+**/*.test.ts
+**/*.spec.ts
+coverage
+.nyc_output
+
+# Документация
+README.md
+LICENSE
+docs
