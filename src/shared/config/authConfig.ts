@@ -33,6 +33,7 @@ export const AUTH_CONFIG = {
     }),
 
     Github({
+      issuer: "https://github.com/login/oauth",
       profile(profile) {
         return {
           id: profile.id.toString(),

@@ -2,6 +2,7 @@ import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
 
 const nextConfig: NextConfig = {
+  output: process.env.BUILD_MODE === "production" ? "standalone" : undefined,
   reactCompiler: false,
   poweredByHeader: false,
   typedRoutes: false,

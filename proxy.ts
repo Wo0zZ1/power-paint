@@ -1,5 +1,4 @@
 import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
@@ -12,11 +11,6 @@ import {
 import type { IGuestUserCookie } from "@/shared/types";
 
 const PRIVATE_ROUTES = [ROUTES.DASHBOARD.ROOT, ROUTES.SETTINGS] as string[];
-const MANUAL_REDIRECT_TO_DASHBOARD_ROUTES = [
-  ROUTES.SIGNIN,
-  ROUTES.SIGNUP,
-  ROUTES.RESET_PASSWORD,
-] as string[];
 
 export async function proxy(request: NextRequest) {
   const response = NextResponse.next();
@@ -27,7 +21,7 @@ export async function proxy(request: NextRequest) {
 
   if (!sessionToken) {
     if (PRIVATE_ROUTES.includes(request.nextUrl.pathname)) {
-      return redirect(ROUTES.SIGNIN);
+      return NextResponse.redirect(new URL(ROUTES.SIGNIN, request.url));
     }
 
     const guestUser = cookieState.get("guest-user")?.value;
@@ -42,12 +36,6 @@ export async function proxy(request: NextRequest) {
         "guest-user",
         Buffer.from(JSON.stringify(guestUserCookie)).toString("base64"),
       );
-    }
-  } else {
-    if (
-      MANUAL_REDIRECT_TO_DASHBOARD_ROUTES.includes(request.nextUrl.pathname)
-    ) {
-      return redirect(ROUTES.DASHBOARD.ROOT);
     }
   }
 
