@@ -1,0 +1,10 @@
+/*
+  Warnings:
+
+  - You are about to drop the column `emailVerified` on the `user` table. All the data in the column will be lost.
+
+*/
+-- AlterTable
+ALTER TABLE "user" DROP COLUMN "emailVerified",
+ADD COLUMN     "email_verified" TIMESTAMP(3),
+ALTER COLUMN "preferred_color" SET DEFAULT '#' || lpad(to_hex((random() * (2^24))::int), 6, '0');

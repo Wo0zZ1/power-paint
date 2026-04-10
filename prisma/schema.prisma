@@ -1,0 +1,205 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "./prisma/client"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id            String    @id @default(uuid())
+  name          String
+  email         String    @unique
+  emailVerified DateTime? @map("email_verified")
+  image         String?
+
+  password String?
+  role     Role    @default(User)
+
+  phone  String? @unique
+  locale Locale  @default(en)
+
+  preferredColor String @default(dbgenerated("'#' || lpad(to_hex((random() * (2^24))::int), 6, '0')")) @map("preferred_color")
+
+  board_members    BoardMember[]
+  workspace_member WorkspaceMember[]
+
+  boards_created   Board[]
+  workspaces_owned Workspace[]
+
+  sessions Session[]
+  accounts Account[]
+
+  updated_at    DateTime       @updatedAt
+  created_at    DateTime       @default(now())
+  passwordReset PasswordReset?
+
+  @@map("user")
+}
+
+model Session {
+  id           String   @id @default(uuid())
+  sessionToken String   @unique @map("session_token")
+  userId       String   @map("user_id")
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("session")
+}
+
+model Account {
+  id                       String  @id @default(uuid())
+  userId                   String  @map("user_id")
+  type                     String
+  provider                 String
+  providerAccountId        String  @map("provider_account_id")
+  access_token             String? @db.Text
+  refresh_token            String? @db.Text
+  refresh_token_expires_in Int?
+  expires_at               Int?
+  token_type               String?
+  scope                    String?
+  id_token                 String? @db.Text
+  session_state            String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("account")
+}
+
+model Workspace {
+  id          String        @id @default(uuid())
+  name        String
+  ownerId     String        @map("owner_id")
+  type        WorkspaceType @default(team)
+  accessLevel AccessLevel   @default(private) @map("access_level")
+  preview     String?
+
+  updatedAt DateTime @updatedAt @map("updated_at")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  owner   User              @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  boards  Board[]
+  members WorkspaceMember[]
+
+  @@map("workspace")
+}
+
+model Board {
+  id           String      @id @default(uuid())
+  name         String
+  workspaceId  String      @map("workspace_id")
+  ownerId      String      @map("owner_id")
+  accessLevel  AccessLevel @default(private) @map("access_level")
+  darkPreview  String?
+  lightPreview String?
+
+  updatedAt DateTime @updatedAt @map("updated_at")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  owner     User      @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  members BoardMember[]
+
+  @@map("board")
+}
+
+model BoardMember {
+  boardId String     @map("board_id")
+  userId  String     @map("user_id")
+  role    MemberRole
+
+  board Board @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([boardId, userId])
+  @@map("board_member")
+}
+
+model WorkspaceMember {
+  workspaceId String     @map("workspace_id")
+  userId      String     @map("user_id")
+  role        MemberRole
+
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  @@id([workspaceId, userId])
+  @@map("workspace_member")
+}
+
+model SignupVerification {
+  id             String   @id @default(uuid())
+  verificationId String   @unique @map("verification_id")
+  email          String   @unique
+  firstName      String   @map("first_name")
+  lastName       String   @map("last_name")
+  passwordHash   String   @map("password_hash")
+  phone          String?
+  preferredColor String?  @map("preferred_color")
+  image          String?
+  locale         Locale
+  codeHash       String   @map("code_hash")
+  expiresAt      DateTime @map("expires_at")
+  attempts       Int      @default(0)
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("signup_verification")
+}
+
+model PasswordReset {
+  id        String   @id @default(uuid())
+  userId    String   @unique @map("user_id")
+  codeHash  String   @map("code_hash")
+  expiresAt DateTime @map("expires_at")
+  attempts  Int      @default(0)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("password_reset")
+}
+
+model yjs_documents {
+  document_name String   @id
+  state         Bytes
+  created_at    DateTime @default(now()) @db.Timestamptz(6)
+  updated_at    DateTime @default(now()) @db.Timestamptz(6)
+}
+
+enum Role {
+  User
+  Admin
+}
+
+enum AccessLevel {
+  private
+  public_view
+  public_edit
+}
+
+enum MemberRole {
+  viewer
+  editor
+  admin
+}
+
+enum WorkspaceType {
+  personal
+  team
+}
+
+enum Locale {
+  en
+  ru
+  de
+  fr
+}
