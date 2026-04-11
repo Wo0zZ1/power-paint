@@ -1,10 +1,9 @@
 import { Pool, PoolConfig } from "pg";
 
 import {
-  PGSSLMODE,
-  DATABASE_URL,
-  DATABASE_SSL,
   DATABASE_SSL_REJECT_UNAUTHORIZED,
+  DATABASE_URL,
+  POSTGRES_SSLMODE,
 } from "./config";
 
 let pool: Pool | null = null;
@@ -15,10 +14,7 @@ function buildPoolConfig(): PoolConfig {
     connectionString: DATABASE_URL,
   };
 
-  const forceSsl =
-    DATABASE_SSL === "true" ||
-    PGSSLMODE === "require" ||
-    /sslmode=require/i.test(DATABASE_URL);
+  const forceSsl = POSTGRES_SSLMODE === "require";
 
   if (forceSsl) {
     config.ssl = {
