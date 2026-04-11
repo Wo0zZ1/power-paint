@@ -103,7 +103,7 @@ export const AUTH_CONFIG = {
         httpOnly: true,
         sameSite: "lax",
         path: "/",
-        secure: process.env.NODE_ENV === "production",
+        secure: false && process.env.NODE_ENV === "production", // TODO: Вынести в env
       },
     },
   },

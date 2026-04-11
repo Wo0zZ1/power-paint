@@ -4,7 +4,7 @@ export const VERIFICATION_COOKIE_SETTINGS = {
   httpOnly: true,
   sameSite: "lax",
   path: "/",
-  secure: process.env.NODE_ENV === "production",
+  secure: false && process.env.NODE_ENV === "production", // TODO: Вынести в env
   maxAge: Math.floor(VERIFICATION_TTL_MS / 1000),
 } as const;
 export const MAX_VERIFICATION_ATTEMPTS = 5;
