@@ -1,7 +1,9 @@
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 
-import { fetchInitWithCookies } from "@/shared/api";
+import { fetchInitWithCookies, GET_BASE_API_URL } from "@/shared/api";
+
+const url = GET_BASE_API_URL() + "/users";
 
 export default async function ProfilePage({
   params,
@@ -13,7 +15,7 @@ export default async function ProfilePage({
   const cookieString = cookieStore.toString();
 
   const user = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL}/api/users/${uuid}`,
+    `${url}/${uuid}`,
     fetchInitWithCookies(cookieString),
   ).then((res) => res.json());
 
