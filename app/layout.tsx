@@ -1,5 +1,5 @@
-import { Analytics } from "@vercel/analytics/next";
-import { SpeedInsights } from "@vercel/speed-insights/next";
+// import { Analytics } from "@vercel/analytics/next";
+// import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata } from "next";
 import { getLocale, getMessages, getTimeZone } from "next-intl/server";
 import type { ReactNode } from "react";
@@ -93,8 +93,8 @@ export default async function RootLayout({
             <div className="grow flex flex-col">{children}</div>
             {modal}
           </ClientProviders>
-          <SpeedInsights />
-          <Analytics />
+          {/* <SpeedInsights /> */}
+          {/* <Analytics /> */}
         </QueryProvider>
       </body>
     </html>

@@ -2,13 +2,12 @@ import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
 
 const nextConfig: NextConfig = {
-  output: process.env.BUILD_MODE === "production" ? "standalone" : undefined,
-  reactCompiler: false,
+  output: "standalone",
+  reactCompiler: true,
   poweredByHeader: false,
   typedRoutes: false,
   experimental: {
     authInterrupts: true,
-    optimizeServerReact: false,
   },
   images: {
     formats: ["image/webp"],
