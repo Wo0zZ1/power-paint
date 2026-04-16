@@ -89,7 +89,7 @@ export function MembersCombobox({
       />
 
       {selectedMembers.length === 0 ? (
-        <Empty size="sm" className="mt-2">
+        <Empty size="sm" className="mt-2 opacity-50">
           <EmptyHeader>
             <EmptyMedia variant="icon">
               <User2 />

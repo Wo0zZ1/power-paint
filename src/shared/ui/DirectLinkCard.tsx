@@ -22,9 +22,10 @@ import {
   InputGroup,
   InputGroupAddon,
   InputGroupText,
-  Button,
   AccessLevelSelect,
 } from "@/shared/ui";
+
+import { CopyButton } from "./CopyButton";
 
 interface DirectLinkCardProps<M extends FieldValues> {
   control: Control<M>;
@@ -80,17 +81,12 @@ export function DirectLinkCard<M extends FieldValues>({
             {link}
           </InputGroupText>
 
-          <Button
-            type="button"
-            onClick={() => {
-              navigator.clipboard.writeText(link);
-            }}
+          <CopyButton
+            content={link}
             className="ml-auto"
             variant="ghost"
             size="sm"
-          >
-            {t("copy")}
-          </Button>
+          />
         </InputGroup>
       </CardContent>
     </Card>
