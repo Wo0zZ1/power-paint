@@ -1,57 +1,78 @@
+import type Konva from "konva";
 import type { KonvaEventObject } from "konva/lib/Node";
 import type { Stage } from "konva/lib/Stage";
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, type RefObject } from "react";
 
 import { useThrottledCallback } from "@/shared/lib/hooks";
 
 import { useBoardStore } from "../core";
+import { screenToCanvas } from "../lib";
 
-export const useEraser = () => {
+interface UseEraserProps {
+  eraserLineRef: RefObject<Konva.Line | null>;
+}
+
+export const useEraser = ({ eraserLineRef }: UseEraserProps) => {
   const stageRef = useRef<Stage | null>(null);
   const stageRectRef = useRef<DOMRect | null>(null);
 
-  const originRef = useRef({ x: 0, y: 0 });
-
   const stopListeners = useRef(() => {});
+  const shrinkIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   // ── Pure core ──
 
   const beginErase = useCallback(
-    (_clientX: number, _clientY: number, stage: Stage) => {
+    (clientX: number, clientY: number, stage: Stage) => {
+      if (!eraserLineRef.current) return;
+
       const stageRect = stage.container().getBoundingClientRect();
       stageRef.current = stage;
       stageRectRef.current = stageRect;
 
-      const x = _clientX - stageRect.left;
-      const y = _clientY - stageRect.top;
-
-      originRef.current = { x, y };
-
-      const { clearSelection, setSelectionType } = useBoardStore.getState();
+      const { clearSelection, setSelectionType, viewport } =
+        useBoardStore.getState();
 
       clearSelection();
       setSelectionType("delete");
+
+      const x = clientX - stageRect.left;
+      const y = clientY - stageRect.top;
+      const [canvasX, canvasY] = screenToCanvas(x, y, viewport);
+
+      eraserLineRef.current.points([canvasX, canvasY]);
+      eraserLineRef.current.visible(true);
+
+      if (shrinkIntervalRef.current) clearInterval(shrinkIntervalRef.current);
+      shrinkIntervalRef.current = setInterval(() => {
+        const pts = eraserLineRef.current!.points();
+        const removeCount = Math.max(1, Math.floor(pts.length / 8)) * 2;
+        eraserLineRef.current!.points(pts.slice(removeCount));
+      }, 32); // ~30fps
     },
-    [],
+    [eraserLineRef],
   );
 
   const moveErase = useCallback(
     (clientX: number, clientY: number, altKey: boolean) => {
-      if (!stageRef.current) return;
+      if (!stageRef.current || !eraserLineRef.current) return;
 
-      const shapes = stageRef.current.getAllIntersections({
-        x: clientX - stageRectRef.current!.left,
-        y: clientY - stageRectRef.current!.top,
-      });
+      const x = clientX - stageRectRef.current!.left;
+      const y = clientY - stageRectRef.current!.top;
+
+      const shapes = stageRef.current.getAllIntersections({ x, y });
 
       const selectedIds = new Set(shapes.map((shape) => shape.id()));
 
-      const { selectMany, deselectMany } = useBoardStore.getState();
+      const { selectMany, deselectMany, viewport } = useBoardStore.getState();
 
       if (altKey) deselectMany(selectedIds);
       else selectMany(selectedIds);
+
+      const [canvasX, canvasY] = screenToCanvas(x, y, viewport);
+      const currentPoints = eraserLineRef.current.points();
+      eraserLineRef.current.points([...currentPoints, canvasX, canvasY]);
     },
-    [],
+    [eraserLineRef],
   );
 
   const endErase = useCallback(() => {
@@ -62,7 +83,13 @@ export const useEraser = () => {
     clearSelection();
     setSelectionType("none");
     stageRef.current = null;
-  }, []);
+
+    if (shrinkIntervalRef.current) clearInterval(shrinkIntervalRef.current);
+    if (eraserLineRef.current) {
+      eraserLineRef.current.visible(false);
+      eraserLineRef.current.points([]);
+    }
+  }, [eraserLineRef]);
 
   const cancelErase = useCallback(() => {
     const { clearSelection, setSelectionType } = useBoardStore.getState();
@@ -70,7 +97,13 @@ export const useEraser = () => {
     clearSelection();
     setSelectionType("none");
     stageRef.current = null;
-  }, []);
+
+    if (shrinkIntervalRef.current) clearInterval(shrinkIntervalRef.current);
+    if (eraserLineRef.current) {
+      eraserLineRef.current.visible(false);
+      eraserLineRef.current.points([]);
+    }
+  }, [eraserLineRef]);
 
   // ── Pointer (mouse/pen — touch фильтруется) ──
 

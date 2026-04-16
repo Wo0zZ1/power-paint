@@ -18,12 +18,13 @@ export function DeleteSelectionButton({
   className,
 }: DeleteSelectionButtonProps) {
   const selectedItems = useBoardStore(useShallow((s) => s.selectedIds));
+  const selectionType = useBoardStore((s) => s.selectionType);
 
   const handleClick = useCallback(() => {
     useBoardStore.getState().removeSelectedElements();
   }, []);
 
-  if (selectedItems.size === 0) return null;
+  if (selectionType !== "transform" || selectedItems.size === 0) return null;
 
   return (
     <Button

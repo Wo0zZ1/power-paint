@@ -1,6 +1,7 @@
 export * from "./CircleElement";
 export * from "./DrawElement";
 export * from "./Element";
+export * from "./EraserElement";
 export * from "./LayerContent";
 export * from "./RectElement";
 export * from "./SelectionElement";

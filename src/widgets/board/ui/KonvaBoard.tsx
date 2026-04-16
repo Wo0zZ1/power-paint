@@ -19,7 +19,7 @@ import {
 } from "../model";
 import { useBoardPreview } from "../model/core/useBoardPreview";
 
-import { LayerContent, TransformerTool, SelectionElement } from "./elements";
+import { LayerContent, TransformerTool, SelectionElement, EraserElement } from "./elements";
 import {
   UndoRedoControls,
   ZoomControls,
@@ -48,6 +48,7 @@ export function KonvaBoard({
   const contentLayerRef = useRef<Konva.Layer>(null);
   const boardRef = useRef<HTMLDivElement>(null);
   const selectionRectRef = useRef<Konva.Rect>(null);
+  const eraserLineRef = useRef<Konva.Line>(null);
 
   const globals = useBoardStore(useShallow((s) => s.globals));
   const viewport = useBoardStore(useShallow((s) => s.viewport));
@@ -67,7 +68,7 @@ export function KonvaBoard({
   const connectionStatus = useBoardStore((s) => s.connectionStatus);
 
   const { handlePointerDown, handleTouchStart, handleZoom } =
-    useBoardInteraction({ selectionRectRef, canEdit });
+    useBoardInteraction({ selectionRectRef, eraserLineRef, canEdit });
 
   return (
     <div className="w-full h-full min-w-0 min-h-0 overflow-hidden">
@@ -141,6 +142,7 @@ export function KonvaBoard({
               canEdit={canEdit}
             />
             <SelectionElement rectRef={selectionRectRef} />
+            <EraserElement eraserRef={eraserLineRef} />
           </Layer>
 
           <Layer>
