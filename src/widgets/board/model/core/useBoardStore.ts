@@ -1,4 +1,5 @@
 import { WebSocketStatus, type HocuspocusProvider } from "@hocuspocus/provider";
+import type { Stage } from "konva/lib/Stage";
 import type * as Y from "yjs";
 import { create } from "zustand";
 
@@ -18,6 +19,10 @@ interface BoardState {
   yElements: Y.Map<ElementType> | null;
   yGlobals: Y.Map<unknown> | null;
   undoManager: Y.UndoManager | null;
+
+  // ── Konva Stage ──
+  stage: Stage | null;
+  setStage: (stage: Stage | null) => void;
 
   // ── Undo / Redo ──
   canUndo: boolean;
@@ -45,7 +50,6 @@ interface BoardState {
   // ── Viewport ──
   viewport: Viewport;
   updateViewport: (updates: Partial<Viewport>) => void;
-  resetViewport: () => void;
 
   // ── Действия ──
   selectionType: SelectionType;
@@ -79,6 +83,9 @@ export const useBoardStore = create<BoardState>((set, get) => ({
   yElements: null,
   yGlobals: null,
   undoManager: null,
+
+  stage: null,
+  setStage: (stage) => set({ stage }),
 
   canUndo: false,
   canRedo: false,
@@ -168,11 +175,6 @@ export const useBoardStore = create<BoardState>((set, get) => ({
 
   updateViewport: (updates) =>
     set((state) => ({ viewport: { ...state.viewport, ...updates } })),
-
-  resetViewport: () => {
-    const viewport = get().viewport;
-    set({ viewport: { ...viewport, scale: 1 } });
-  },
 
   addElement: (el) => {
     get().yElements?.set(el.id, el);

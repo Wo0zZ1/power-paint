@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import { useCallback } from "react";
 import { useShallow } from "zustand/react/shallow";
 
-import { MAX_ZOOM, MIN_ZOOM } from "@/shared/config";
+import { MAX_ZOOM, MIN_ZOOM, ZOOM_SENSITIVITY } from "@/shared/config";
 import { cn } from "@/shared/lib/utils";
 import {
   Button,
@@ -17,7 +17,7 @@ import {
   TooltipTrigger,
 } from "@/shared/ui";
 
-import { useBoardStore } from "../../model";
+import { useBoardStore, zoomTowardsPoint } from "../../model";
 
 interface ZoomControlsProps {
   className?: string;
@@ -33,18 +33,50 @@ export function ZoomControls({
   const viewportScale = useBoardStore(useShallow((s) => s.viewport.scale));
   const zoomPercent = Math.round(viewportScale * 100);
 
-  const updateViewport = useBoardStore((s) => s.updateViewport);
-  const resetViewport = useBoardStore((s) => s.resetViewport);
+  const resetViewport = useCallback(() => {
+    const { stage, viewport, updateViewport } = useBoardStore.getState();
+
+    if (!stage) return;
+
+    const newViewport = zoomTowardsPoint(
+      stage.width() / 2,
+      stage.height() / 2,
+      viewport,
+      1 / viewport.scale,
+    );
+
+    updateViewport(newViewport);
+  }, []);
 
   const zoomIn = useCallback(() => {
-    const scale = Math.min(viewportScale * 1.2, MAX_ZOOM);
-    updateViewport({ scale });
-  }, [viewportScale, updateViewport]);
+    const { stage, viewport, updateViewport } = useBoardStore.getState();
+
+    if (!stage) return;
+
+    const newViewport = zoomTowardsPoint(
+      stage.width() / 2,
+      stage.height() / 2,
+      viewport,
+      ZOOM_SENSITIVITY,
+    );
+
+    updateViewport(newViewport);
+  }, []);
 
   const zoomOut = useCallback(() => {
-    const scale = Math.max(viewportScale / 1.2, MIN_ZOOM);
-    updateViewport({ scale });
-  }, [viewportScale, updateViewport]);
+    const { stage, viewport, updateViewport } = useBoardStore.getState();
+
+    if (!stage) return;
+
+    const newViewport = zoomTowardsPoint(
+      stage.width() / 2,
+      stage.height() / 2,
+      viewport,
+      1 / ZOOM_SENSITIVITY,
+    );
+
+    updateViewport(newViewport);
+  }, []);
 
   return (
     <ButtonGroup

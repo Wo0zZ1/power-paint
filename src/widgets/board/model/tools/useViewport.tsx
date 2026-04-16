@@ -1,10 +1,11 @@
 import type { KonvaEventObject } from "konva/lib/Node";
 import { useCallback, useEffect, useRef } from "react";
 
+import { ZOOM_SENSITIVITY } from "@/shared/config";
 import { useThrottledCallback } from "@/shared/lib/hooks";
 
 import { useBoardStore } from "../core";
-import { zoomTowardsMouse } from "../lib";
+import { zoomTowardsPoint } from "../lib";
 
 /**
  * Определяет, должен ли текущий mousedown начать pan (для pointer-событий).
@@ -71,7 +72,7 @@ export const useViewport = () => {
       const viewport = useBoardStore.getState().viewport;
 
       const scaleBy = dist / prev.dist;
-      const zoomed = zoomTowardsMouse(midX, midY, viewport, scaleBy);
+      const zoomed = zoomTowardsPoint(midX, midY, viewport, scaleBy);
 
       const dx = midX - prev.midX;
       const dy = midY - prev.midY;
@@ -97,7 +98,7 @@ export const useViewport = () => {
     if (e.evt.cancelable) e.evt.preventDefault();
     e.evt.stopPropagation();
 
-    const scaleBy = e.evt.deltaY < 0 ? 1.1 : 0.9;
+    const scaleBy = e.evt.deltaY < 0 ? ZOOM_SENSITIVITY : 1 / ZOOM_SENSITIVITY;
     const viewport = useBoardStore.getState().viewport;
 
     const stage = e.target.getStage();
@@ -105,10 +106,11 @@ export const useViewport = () => {
 
     const container = stage.container();
     const rect = container.getBoundingClientRect();
-    const mouseX = e.evt.clientX - rect.left;
-    const mouseY = e.evt.clientY - rect.top;
 
-    const newViewport = zoomTowardsMouse(mouseX, mouseY, viewport, scaleBy);
+    const x = e.evt.clientX - rect.left;
+    const y = e.evt.clientY - rect.top;
+
+    const newViewport = zoomTowardsPoint(x, y, viewport, scaleBy);
 
     useBoardStore.getState().updateViewport(newViewport);
   }, []);

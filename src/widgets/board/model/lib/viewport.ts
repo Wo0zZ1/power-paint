@@ -24,9 +24,9 @@ export const canvasToScreen = (
   return [screenX, screenY];
 };
 
-export function zoomTowardsMouse(
-  mouseScreenX: number,
-  mouseScreenY: number,
+export function zoomTowardsPoint(
+  pointScreenX: number,
+  pointScreenY: number,
   oldViewport: Viewport,
   scaleBy: number,
 ): Viewport {
@@ -38,8 +38,8 @@ export function zoomTowardsMouse(
   const actualScaleBy = newScale / oldViewport.scale;
 
   return {
-    x: mouseScreenX * (1 - actualScaleBy) + oldViewport.x * actualScaleBy,
-    y: mouseScreenY * (1 - actualScaleBy) + oldViewport.y * actualScaleBy,
+    x: pointScreenX * (1 - actualScaleBy) + oldViewport.x * actualScaleBy,
+    y: pointScreenY * (1 - actualScaleBy) + oldViewport.y * actualScaleBy,
     scale: newScale,
   };
 }

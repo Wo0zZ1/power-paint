@@ -1,7 +1,6 @@
 export { ROUTES } from "./routes";
 export { TOOLTIP_DELAY } from "./tooltip";
 export { queryClientOptions } from "./queryClientConfig";
-export { MIN_ZOOM, MAX_ZOOM } from "./zoom";
 export {
   getSigninSchema,
   getSignupCodeSchema,
@@ -19,3 +18,4 @@ export {
   type ResetPasswordData,
 } from "./authSchemas";
 export { DEFAULT_CAPTURE_TIMEOUT } from "./hocuspocus";
+export { ZOOM_SENSITIVITY, MIN_ZOOM, MAX_ZOOM } from "./viewport";

@@ -2,7 +2,7 @@
 
 import type { Board } from "@prisma/client";
 import type Konva from "konva";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { Layer, Stage } from "react-konva";
 import { useShallow } from "zustand/react/shallow";
 
@@ -19,7 +19,12 @@ import {
 } from "../model";
 import { useBoardPreview } from "../model/core/useBoardPreview";
 
-import { LayerContent, TransformerTool, SelectionElement, EraserElement } from "./elements";
+import {
+  LayerContent,
+  TransformerTool,
+  SelectionElement,
+  EraserElement,
+} from "./elements";
 import {
   UndoRedoControls,
   ZoomControls,
@@ -69,6 +74,10 @@ export function KonvaBoard({
 
   const { handlePointerDown, handleTouchStart, handleZoom } =
     useBoardInteraction({ selectionRectRef, eraserLineRef, canEdit });
+
+  useEffect(() => {
+    if (stageRef.current) useBoardStore.getState().setStage(stageRef.current);
+  }, [stageRef]);
 
   return (
     <div className="w-full h-full min-w-0 min-h-0 overflow-hidden">
