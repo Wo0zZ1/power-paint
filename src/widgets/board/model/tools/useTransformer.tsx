@@ -54,11 +54,11 @@ export const useTransformer = ({ canEdit }: UseTransformerProps) => {
             height: newHeight,
             radiusX: newWidth / 2,
             radiusY: newHeight / 2,
-            offsetX: -(newWidth / 2),
-            offsetY: -(newHeight / 2),
             scaleX: 1,
             scaleY: 1,
           });
+          node.attrs.width = newWidth;
+          node.attrs.height = newHeight;
         } else if (el?.type === "draw") {
           const oldPoints = node.getAttr("points") as number[];
           const newPoints = oldPoints.map((val, i) => {
