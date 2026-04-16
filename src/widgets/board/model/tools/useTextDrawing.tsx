@@ -77,13 +77,13 @@ export const useTextDrawing = () => {
     }
   }, []);
 
-  const containerRectRef = useRef<DOMRect | null>(null);
+  const stageRectRef = useRef<DOMRect | null>(null);
 
   const onPointerMove = useThrottledCallback((e: PointerEvent) => {
-    if (!containerRectRef.current) return;
+    if (!stageRectRef.current) return;
     moveDraw(
-      e.clientX - containerRectRef.current.left,
-      e.clientY - containerRectRef.current.top,
+      e.clientX - stageRectRef.current.left,
+      e.clientY - stageRectRef.current.top,
     );
   });
 
@@ -100,7 +100,7 @@ export const useTextDrawing = () => {
       if (!stage) return;
 
       const rect = stage.container().getBoundingClientRect();
-      containerRectRef.current = rect;
+      stageRectRef.current = rect;
 
       beginDraw(e.evt.clientX - rect.left, e.evt.clientY - rect.top);
 
@@ -122,10 +122,10 @@ export const useTextDrawing = () => {
       return;
     }
     const touch = e.touches[0];
-    if (!touch || !containerRectRef.current) return;
+    if (!touch || !stageRectRef.current) return;
     moveDraw(
-      touch.clientX - containerRectRef.current.left,
-      touch.clientY - containerRectRef.current.top,
+      touch.clientX - stageRectRef.current.left,
+      touch.clientY - stageRectRef.current.top,
     );
   });
 
@@ -138,12 +138,14 @@ export const useTextDrawing = () => {
     (e: KonvaEventObject<TouchEvent>) => {
       const touch = e.evt.touches[0];
       if (!touch) return;
+
       const stage = e.target.getStage();
       if (!stage) return;
-      const rect = stage.container().getBoundingClientRect();
-      containerRectRef.current = rect;
 
-      beginDraw(touch.clientX - rect.left, touch.clientY - rect.top);
+      const stageRect = stage.container().getBoundingClientRect();
+      stageRectRef.current = stageRect;
+
+      beginDraw(touch.clientX - stageRect.left, touch.clientY - stageRect.top);
 
       window.addEventListener("touchmove", onTouchDrawMove);
       window.addEventListener("touchend", onTouchDrawEnd);

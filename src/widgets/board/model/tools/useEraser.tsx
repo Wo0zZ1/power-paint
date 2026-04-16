@@ -8,14 +8,24 @@ import { useBoardStore } from "../core";
 
 export const useEraser = () => {
   const stageRef = useRef<Stage | null>(null);
+  const stageRectRef = useRef<DOMRect | null>(null);
+
+  const originRef = useRef({ x: 0, y: 0 });
 
   const stopListeners = useRef(() => {});
 
   // ── Pure core ──
 
   const beginErase = useCallback(
-    (_layerX: number, _layerY: number, stage: Stage) => {
+    (_clientX: number, _clientY: number, stage: Stage) => {
+      const stageRect = stage.container().getBoundingClientRect();
       stageRef.current = stage;
+      stageRectRef.current = stageRect;
+
+      const x = _clientX - stageRect.left;
+      const y = _clientY - stageRect.top;
+
+      originRef.current = { x, y };
 
       const { clearSelection, setSelectionType } = useBoardStore.getState();
 
@@ -26,12 +36,12 @@ export const useEraser = () => {
   );
 
   const moveErase = useCallback(
-    (layerX: number, layerY: number, altKey: boolean) => {
+    (clientX: number, clientY: number, altKey: boolean) => {
       if (!stageRef.current) return;
 
       const shapes = stageRef.current.getAllIntersections({
-        x: layerX,
-        y: layerY,
+        x: clientX - stageRectRef.current!.left,
+        y: clientY - stageRectRef.current!.top,
       });
 
       const selectedIds = new Set(shapes.map((shape) => shape.id()));
@@ -65,7 +75,7 @@ export const useEraser = () => {
   // ── Pointer (mouse/pen — touch фильтруется) ──
 
   const onPointerMove = useThrottledCallback((e: PointerEvent) => {
-    moveErase(e.layerX, e.layerY, e.altKey);
+    moveErase(e.clientX, e.clientY, e.altKey);
   });
 
   const onPointerUp = useCallback(() => {
@@ -80,9 +90,8 @@ export const useEraser = () => {
       const stage = e.target.getStage();
       if (!stage) return;
 
-      beginErase(e.evt.layerX, e.evt.layerY, stage);
-
-      // const rect = stage.container().getBoundingClientRect();
+      beginErase(e.evt.clientX, e.evt.clientY, stage);
+      moveErase(e.evt.clientX, e.evt.clientY, e.evt.altKey);
 
       window.addEventListener("pointermove", onPointerMove);
       window.addEventListener("pointerup", onPointerUp);
@@ -92,7 +101,7 @@ export const useEraser = () => {
         window.removeEventListener("pointerup", onPointerUp);
       };
     },
-    [beginErase, onPointerMove, onPointerUp],
+    [beginErase, moveErase, onPointerMove, onPointerUp],
   );
 
   // ── Touch ──
@@ -118,6 +127,15 @@ export const useEraser = () => {
     (e: KonvaEventObject<TouchEvent>) => {
       if (e.evt.cancelable) e.evt.preventDefault();
 
+      const touch = e.evt.touches[0];
+      if (!touch) return;
+
+      const stage = e.target.getStage();
+      if (!stage) return;
+
+      beginErase(touch.clientX, touch.clientY, stage);
+      moveErase(touch.clientX, touch.clientY, e.evt.altKey);
+
       window.addEventListener("touchmove", onTouchEraseMove);
       window.addEventListener("touchend", onTouchEraseEnd);
 
@@ -126,7 +144,7 @@ export const useEraser = () => {
         window.removeEventListener("touchend", onTouchEraseEnd);
       };
     },
-    [onTouchEraseMove, onTouchEraseEnd],
+    [beginErase, moveErase, onTouchEraseMove, onTouchEraseEnd],
   );
 
   useEffect(() => {

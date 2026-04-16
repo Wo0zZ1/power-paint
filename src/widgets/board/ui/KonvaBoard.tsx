@@ -20,7 +20,12 @@ import {
 import { useBoardPreview } from "../model/core/useBoardPreview";
 
 import { LayerContent, TransformerTool, SelectionElement } from "./elements";
-import { UndoRedoControls, ZoomControls, UserCursors } from "./overlay";
+import {
+  UndoRedoControls,
+  ZoomControls,
+  UserCursors,
+  DeleteSelectionButton,
+} from "./overlay";
 import { ActiveUsers } from "./overlay/ActiveUsers";
 import { ConnectionStatus } from "./overlay/ConnectionStatus";
 import { LeftSidebar } from "./sidebar";
@@ -74,60 +79,45 @@ export function KonvaBoard({
         className="w-full h-full min-w-0 min-h-0 relative select-none overflow-hidden touch-none"
       >
         <div className="absolute w-auto mx-auto inset-5 pointer-events-none z-11">
-          {/* Mobile */}
-          <div className="md:hidden">
-            <div className="absolute flex items-start gap-4 top-0 right-0">
-              <ConnectionStatus status={connectionStatus} />
-
-              <ActiveUsers className="pointer-events-auto" />
-            </div>
-
-            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 space-y-2">
-              <div className="flex gap-4">
-                <></>
-                {/* / */}
-                {canEdit && (
-                  <UndoRedoControls
-                    className="pointer-events-auto ml-auto"
-                    tooltipActive={false}
-                  />
-                )}
-              </div>
-
-              {
-                <BottomToolbar
-                  tooltipActive={false}
-                  tools={!canEdit ? ["select", "hand"] : undefined}
-                  className="pointer-events-auto"
-                />
-              }
-            </div>
+          {/* Top Right */}
+          <div className="absolute flex items-start gap-4 top-0 right-0">
+            <ConnectionStatus status={connectionStatus} />
+            <ActiveUsers className="pointer-events-auto" />
           </div>
 
-          {/* Desktop */}
-          <div className="not-md:hidden">
-            <div className="absolute flex items-start gap-4 top-0 right-0">
-              <ConnectionStatus status={connectionStatus} />
+          {/* Top Left */}
+          {canEdit && (
+            <LeftSidebar className="hidden md:block pointer-events-auto absolute top-0 left-0" />
+          )}
 
-              <ActiveUsers className="pointer-events-auto" />
+          {/* Bottom Left */}
+          <div className="absolute bottom-0 left-0 hidden md:flex gap-4">
+            <ZoomControls className="pointer-events-auto" />
+            {canEdit && <UndoRedoControls className="pointer-events-auto" />}
+          </div>
+
+          {/* Bottom Center */}
+          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 flex flex-col gap-2 md:block">
+            <div className="md:hidden flex">
+              {canEdit && (
+                <DeleteSelectionButton className="pointer-events-auto" />
+              )}
+
+              {canEdit && (
+                <UndoRedoControls
+                  className="pointer-events-auto ml-auto"
+                  tooltipActive={false}
+                />
+              )}
             </div>
 
-            {canEdit && (
-              <LeftSidebar className="pointer-events-auto absolute top-0 left-0" />
-            )}
-            {
-              <BottomToolbar
-                tools={!canEdit ? ["select", "hand"] : undefined}
-                className="pointer-events-auto absolute bottom-0 left-1/2 -translate-x-1/2"
-              />
-            }
-
-            <div className="absolute bottom-0 left-0 flex gap-4">
-              <ZoomControls className="pointer-events-auto" />
-              {canEdit && <UndoRedoControls className="pointer-events-auto" />}
-            </div>
+            <BottomToolbar
+              tools={!canEdit ? ["select", "hand"] : undefined}
+              className="pointer-events-auto"
+            />
           </div>
         </div>
+
         <Stage
           ref={stageRef}
           style={{ backgroundColor: activeColor }}
