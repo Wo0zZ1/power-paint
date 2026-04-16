@@ -1,9 +1,17 @@
 import { notFound } from "next/navigation";
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
+import z from "zod";
 
 import { prisma } from "@/shared/lib/prisma";
 import { isTheme, THEME_PREFERENCE } from "@/shared/lib/theme";
+
+const base64ImageSchema = z
+  .string()
+  .regex(
+    /^data:image\/(png|jpeg|jpg);base64,[A-Za-z0-9+/]+={0,2}$/,
+    "Invalid data URL for preview image",
+  );
 
 export const GET = async (
   request: NextRequest,
@@ -64,4 +72,44 @@ export const GET = async (
       "Cache-Control": "public, max-age=3600, stale-while-revalidate=86400",
     },
   });
+};
+
+export const PUT = async (
+  request: NextRequest,
+  { params }: { params: Promise<{ uuid: string }> },
+) => {
+  const { uuid } = await params;
+
+  try {
+    const body = await request.json();
+    const { previewDataUrl, theme } = body;
+
+    if (!previewDataUrl || !theme) {
+      return NextResponse.json(
+        { message: "Missing previewDataUrl or theme" },
+        { status: 400 },
+      );
+    }
+
+    base64ImageSchema.parse(previewDataUrl);
+
+    if (theme === "dark") {
+      await prisma.board.update({
+        where: { id: uuid },
+        data: { darkPreview: previewDataUrl },
+      });
+    } else {
+      await prisma.board.update({
+        where: { id: uuid },
+        data: { lightPreview: previewDataUrl },
+      });
+    }
+
+    return NextResponse.json({ success: true }, { status: 200 });
+  } catch (error) {
+    return NextResponse.json(
+      { message: "Failed to update preview", error },
+      { status: 500 },
+    );
+  }
 };

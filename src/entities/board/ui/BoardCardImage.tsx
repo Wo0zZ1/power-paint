@@ -13,9 +13,14 @@ import { getSystemTheme, useTheme } from "@/shared/lib/theme";
 interface BoardCardImageProps {
   className?: string;
   boardId: string;
+  updatedAt: Date | string;
 }
 
-export function BoardCardImage({ className, boardId }: BoardCardImageProps) {
+export function BoardCardImage({
+  className,
+  boardId,
+  updatedAt,
+}: BoardCardImageProps) {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [isImageLoaded, setIsImageLoaded] = useState(false);
 
@@ -27,17 +32,19 @@ export function BoardCardImage({ className, boardId }: BoardCardImageProps) {
     const targetTheme =
       themePreference === "system" ? getSystemTheme() : themePreference;
 
+    const cacheBuster = `&v=${new Date(updatedAt).getTime()}`;
+
     const newUrl =
       targetTheme === "light"
-        ? `${process.env.NEXT_PUBLIC_BASE_URL}/api/boards/${boardId}/preview?theme=light`
-        : `${process.env.NEXT_PUBLIC_BASE_URL}/api/boards/${boardId}/preview?theme=dark`;
+        ? `${process.env.NEXT_PUBLIC_BASE_URL}/api/boards/${boardId}/preview?theme=light${cacheBuster}`
+        : `${process.env.NEXT_PUBLIC_BASE_URL}/api/boards/${boardId}/preview?theme=dark${cacheBuster}`;
 
     if (newUrl === previousUrlRef.current) return;
 
     setIsImageLoaded(false);
     setImageUrl(newUrl);
     previousUrlRef.current = newUrl;
-  }, [themePreference, boardId]);
+  }, [themePreference, boardId, updatedAt]);
 
   return (
     <div className={cn("", className)}>

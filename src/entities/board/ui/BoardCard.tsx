@@ -54,7 +54,7 @@ export function BoardCard({
           />
         )}
 
-        <BoardCardImage boardId={board.id} />
+        <BoardCardImage boardId={board.id} updatedAt={board.updatedAt} />
 
         <BoardCardHeader className="grow" name={board.name} />
 
