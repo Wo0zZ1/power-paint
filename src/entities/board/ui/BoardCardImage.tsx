@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import preview from "@/public/assets/preview1.jpeg";
 import { cn } from "@/utils";
@@ -16,32 +16,33 @@ interface BoardCardImageProps {
 }
 
 export function BoardCardImage({ className, boardId }: BoardCardImageProps) {
-  const [imageUrl, setImageUrl] = useState<string>(preview.src);
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
+
+  const previousUrlRef = useRef<string | null>(null);
+
   const { themePreference } = useTheme();
 
   useEffect(() => {
     const targetTheme =
       themePreference === "system" ? getSystemTheme() : themePreference;
 
-    if (targetTheme === "light") {
-      setImageUrl(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/boards/${boardId}/preview?theme=light`,
-      );
-    } else {
-      setImageUrl(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/boards/${boardId}/preview?theme=dark`,
-      );
-    }
-  }, [themePreference, boardId]);
+    const newUrl =
+      targetTheme === "light"
+        ? `${process.env.NEXT_PUBLIC_BASE_URL}/api/boards/${boardId}/preview?theme=light`
+        : `${process.env.NEXT_PUBLIC_BASE_URL}/api/boards/${boardId}/preview?theme=dark`;
 
-  const handleImageError = () => {
-    setImageUrl(preview.src);
-  };
+    if (newUrl === previousUrlRef.current) return;
+
+    setIsImageLoaded(false);
+    setImageUrl(newUrl);
+    previousUrlRef.current = newUrl;
+  }, [themePreference, boardId]);
 
   return (
     <div className={cn("", className)}>
       <Link
-        className="relative w-full h-full block aspect-video"
+        className="relative w-full h-full block aspect-video overflow-hidden"
         href={ROUTES.BOARD(boardId)}
       >
         <Image
@@ -49,12 +50,30 @@ export function BoardCardImage({ className, boardId }: BoardCardImageProps) {
           quality={75}
           sizes="100%"
           loading="lazy"
-          src={imageUrl}
+          src={preview}
           placeholder="blur"
           blurDataURL={preview.src}
           alt="Board preview image"
-          onError={handleImageError}
+          className={cn("object-cover")}
         />
+
+        <div
+          className={cn(
+            "absolute inset-0 bg-card transition-opacity opacity-0",
+            { "opacity-100": isImageLoaded },
+          )}
+        >
+          <Image
+            fill
+            quality={75}
+            sizes="100%"
+            loading="lazy"
+            src={imageUrl || preview}
+            alt="Board preview image"
+            onLoad={() => setIsImageLoaded(true)}
+            className={cn("object-cover duration-500")}
+          />
+        </div>
       </Link>
     </div>
   );
