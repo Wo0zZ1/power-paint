@@ -2,21 +2,21 @@ import { useCallback } from "react";
 
 import { useBoardStore } from "../core";
 import {
+  clipboardToElements,
   duplicateElements,
-  elementsToJson,
+  elementsToClipboard,
   getElements,
   getElementsBounds,
-  jsonToElements,
   screenToCanvas,
 } from "../lib";
-import type { ElementType } from "../types";
+import { type ElementType } from "../types";
 
 export const useCopyPast = () => {
   const duplicate = (elements: ElementType[]) => {
-    const duplicatedElements = duplicateElements(elements);
-
     const { stage, viewport } = useBoardStore.getState();
-    if (!stage || duplicatedElements.length === 0) return;
+    if (!stage || elements.length === 0) return;
+
+    const duplicatedElements = duplicateElements(elements);
 
     const pos = stage.getPointerPosition();
     let shiftX = 20;
@@ -50,38 +50,44 @@ export const useCopyPast = () => {
   };
 
   const handleCopy = useCallback(async () => {
-    const { elements, selectedIds } = useBoardStore.getState();
-    if (selectedIds.size === 0) return;
+    const { elements, selectedIds, selectionType } = useBoardStore.getState();
+    if (selectedIds.size === 0 || selectionType !== "transform") return;
 
     const selectedElements = getElements(
       Array.from(elements.values()),
       Array.from(selectedIds),
     );
 
-    const json = elementsToJson(selectedElements);
+    const json = elementsToClipboard(selectedElements);
 
     const clipboard = navigator.clipboard;
     await clipboard.writeText(json);
   }, []);
 
   const handleCopyAsImage = useCallback(async () => {
-    const { selectedIds, stage } = useBoardStore.getState();
-    if (selectedIds.size === 0 || !stage) return;
+    const store = useBoardStore.getState();
+    if (store.selectedIds.size === 0 || !store.stage) return;
 
     // TODO: implement copy as image for multiple selection
   }, []);
 
   const handlePaste = useCallback(async () => {
-    const clipboardData = await navigator.clipboard.readText();
+    try {
+      const clipboardData = await navigator.clipboard.readText();
+      if (!clipboardData) return;
 
-    const data = jsonToElements(clipboardData);
+      const parsedData = clipboardToElements(clipboardData);
+      if (!parsedData) return;
 
-    duplicate(data);
+      duplicate(parsedData);
+    } catch (err) {
+      console.error("Paste failed:", err);
+    }
   }, []);
 
   const handleDuplicate = useCallback(() => {
-    const { elements, selectedIds } = useBoardStore.getState();
-    if (selectedIds.size === 0) return;
+    const { elements, selectedIds, selectionType } = useBoardStore.getState();
+    if (selectedIds.size === 0 || selectionType !== "transform") return;
 
     const selectedElements = getElements(
       Array.from(elements.values()),

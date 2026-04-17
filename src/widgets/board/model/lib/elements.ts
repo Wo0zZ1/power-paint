@@ -31,12 +31,37 @@ export const getElements = (
   return elements.filter((element) => ids.includes(element.id));
 };
 
-export const elementsToJson = (elements: ElementType[]): string => {
-  return JSON.stringify(elements);
+export const elementsToClipboard = (elements: ElementType[]): string => {
+  return JSON.stringify({
+    type: "power-paint-clipboard",
+    elements,
+  });
 };
 
-export const jsonToElements = (json: string): ElementType[] => {
-  return JSON.parse(json) as ElementType[];
+export const clipboardToElements = (
+  clipboard: string,
+): ElementType[] | null => {
+  try {
+    const parsed = JSON.parse(clipboard);
+    if (
+      parsed &&
+      typeof parsed === "object" &&
+      parsed.type === "power-paint-clipboard" &&
+      Array.isArray(parsed.elements) &&
+      parsed.elements.length > 0
+    ) {
+      return parsed.elements;
+    }
+  } catch {
+    const textElement = createText({
+      x: 0,
+      y: 0,
+      text: clipboard,
+      fontSize: 24,
+    });
+    return [textElement];
+  }
+  return null;
 };
 
 export const duplicateElements = (elements: ElementType[]): ElementType[] => {

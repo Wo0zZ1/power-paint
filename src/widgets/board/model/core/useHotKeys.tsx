@@ -8,12 +8,14 @@ export const useHotKeys = () => {
   const { copy, paste, duplicate } = useCopyPast();
 
   useEffect(() => {
-    const activeElement = document.activeElement;
-    const isInput =
-      activeElement instanceof HTMLInputElement ||
-      activeElement instanceof HTMLTextAreaElement;
-
     const handleKeyDown = (e: KeyboardEvent) => {
+      const activeElement = document.activeElement;
+      const isInput =
+        activeElement instanceof HTMLInputElement ||
+        activeElement instanceof HTMLTextAreaElement ||
+        (activeElement instanceof HTMLElement &&
+          activeElement.isContentEditable);
+
       if (e.key === " ") {
         useBoardStore.getState().setModifiers({ space: true });
       } else if (e.key === "Control") {
@@ -82,5 +84,5 @@ export const useHotKeys = () => {
       window.removeEventListener("blur", handleBlur);
       handleBlur();
     };
-  }, []);
+  }, [copy, paste, duplicate]);
 };
