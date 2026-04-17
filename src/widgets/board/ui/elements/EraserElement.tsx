@@ -3,13 +3,13 @@ import type { RefObject } from "react";
 import { Line } from "react-konva";
 
 interface EraserElementProps {
-  eraserRef: RefObject<Konva.Line | null>;
+  ref: RefObject<Konva.Line | null>;
 }
 
-export function EraserElement({ eraserRef }: EraserElementProps) {
+export function EraserElement({ ref }: EraserElementProps) {
   return (
     <Line
-      ref={eraserRef}
+      ref={ref}
       visible={false}
       stroke="rgba(255, 255, 255, 0.25)"
       strokeWidth={8}

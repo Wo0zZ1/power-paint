@@ -5,7 +5,7 @@ import { DEFAULT_CAPTURE_TIMEOUT } from "@/shared/config";
 import { useThrottledCallback } from "@/shared/lib/hooks";
 
 import { useBoardStore } from "../core";
-import { screenToCanvas, generateId } from "../lib";
+import { screenToCanvas } from "../lib";
 import { createCircle } from "../types";
 
 export const useCircleDrawing = () => {
@@ -23,12 +23,10 @@ export const useCircleDrawing = () => {
     }
 
     const [cx, cy] = screenToCanvas(layerX, layerY, viewport);
-
-    const id = generateId();
-    shapeIdRef.current = id;
     originRef.current = { x: cx, y: cy };
 
-    const shape = createCircle({ id, x: cx, y: cy, width: 0, height: 0 });
+    const shape = createCircle({ x: cx, y: cy, width: 0, height: 0 });
+    shapeIdRef.current = shape.id;
 
     useBoardStore.getState().addElement(shape);
   }, []);

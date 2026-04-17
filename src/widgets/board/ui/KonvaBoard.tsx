@@ -51,17 +51,18 @@ export function KonvaBoard({
 }: KonvaBoardProps) {
   const stageRef = useRef<Konva.Stage>(null);
   const contentLayerRef = useRef<Konva.Layer>(null);
-  const boardRef = useRef<HTMLDivElement>(null);
+  const transformerRef = useRef<Konva.Transformer>(null);
   const selectionRectRef = useRef<Konva.Rect>(null);
   const eraserLineRef = useRef<Konva.Line>(null);
 
   const globals = useBoardStore(useShallow((s) => s.globals));
   const viewport = useBoardStore(useShallow((s) => s.viewport));
+  const connectionStatus = useBoardStore((s) => s.connectionStatus);
 
   const canEdit = AccessRole[accessRole] >= AccessRole.EDITOR;
 
   useHotKeys();
-  useBoardPreview({ ref: contentLayerRef, boardId });
+  useBoardPreview({ boardId });
   useHocuspocus({ userAwareness, accessToken, boardId });
 
   const { width: windowWidth, height: windowHeight } = useWindowSize();
@@ -70,19 +71,31 @@ export function KonvaBoard({
   const { handleTouchMove, handlePointerMove, handlePointerLeave } =
     useMouseAwareness();
 
-  const connectionStatus = useBoardStore((s) => s.connectionStatus);
-
   const { handlePointerDown, handleTouchStart, handleZoom } =
-    useBoardInteraction({ selectionRectRef, eraserLineRef, canEdit });
+    useBoardInteraction({ canEdit });
 
   useEffect(() => {
     if (stageRef.current) useBoardStore.getState().setStage(stageRef.current);
   }, [stageRef]);
 
+  useEffect(() => {
+    if (contentLayerRef.current)
+      useBoardStore.getState().setContentLayer(contentLayerRef.current);
+  }, [contentLayerRef]);
+
+  useEffect(() => {
+    if (selectionRectRef.current)
+      useBoardStore.getState().setSelectionRect(selectionRectRef.current);
+  }, [selectionRectRef]);
+
+  useEffect(() => {
+    if (eraserLineRef.current)
+      useBoardStore.getState().setEraserLine(eraserLineRef.current);
+  }, [eraserLineRef]);
+
   return (
     <div className="w-full h-full min-w-0 min-h-0 overflow-hidden">
       <div
-        ref={boardRef}
         onTouchMove={handleTouchMove}
         onPointerMove={handlePointerMove}
         onPointerLeave={handlePointerLeave}
@@ -146,12 +159,9 @@ export function KonvaBoard({
           </Layer>
 
           <Layer>
-            <TransformerTool
-              contentLayerRef={contentLayerRef}
-              canEdit={canEdit}
-            />
-            <SelectionElement rectRef={selectionRectRef} />
-            <EraserElement eraserRef={eraserLineRef} />
+            <TransformerTool canEdit={canEdit} ref={transformerRef} />
+            <SelectionElement ref={selectionRectRef} />
+            <EraserElement ref={eraserLineRef} />
           </Layer>
 
           <Layer>

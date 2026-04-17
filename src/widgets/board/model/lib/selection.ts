@@ -35,7 +35,7 @@ const normalizeRect = (rect: Rectangle): Rectangle => {
 
 const degToRad = (deg: number) => (deg * Math.PI) / 180;
 
-const rotatePoint = (point: Point, angleRad: number): Point => {
+export const rotatePoint = (point: Point, angleRad: number): Point => {
   const cos = Math.cos(angleRad);
   const sin = Math.sin(angleRad);
 
@@ -56,7 +56,7 @@ const isPointInsideRect = (rect: Rectangle, point: Point): boolean => {
   );
 };
 
-const getRectCornerPoints = (element: RectElementType): Point[] => {
+export const getRectCornerPoints = (element: RectElementType): Point[] => {
   const width = element.width;
   const height = element.height;
   const angleRad = degToRad(element.rotation);
@@ -77,7 +77,9 @@ const getRectCornerPoints = (element: RectElementType): Point[] => {
   });
 };
 
-const getEllipseContourPoints = (element: CircleElementType): Point[] => {
+export const getEllipseContourPoints = (
+  element: CircleElementType,
+): Point[] => {
   const angleRad = degToRad(element.rotation);
   const rx = element.width / 2;
   const ry = element.height / 2;
@@ -100,7 +102,7 @@ const getEllipseContourPoints = (element: CircleElementType): Point[] => {
   });
 };
 
-const getStrokePoints = (element: DrawElementType): Point[] => {
+export const getStrokePoints = (element: DrawElementType): Point[] => {
   const angleRad = degToRad(element.rotation);
   const points: Point[] = [];
 
@@ -119,7 +121,7 @@ const getStrokePoints = (element: DrawElementType): Point[] => {
   return points;
 };
 
-const getTextCornerPoints = (element: TextElementType): Point[] => {
+export const getTextCornerPoints = (element: TextElementType): Point[] => {
   const width = element.width;
   const height = element.height;
 

@@ -1,4 +1,7 @@
 import { WebSocketStatus, type HocuspocusProvider } from "@hocuspocus/provider";
+import type { Layer } from "konva/lib/Layer";
+import type { Line } from "konva/lib/shapes/Line";
+import type { Rect } from "konva/lib/shapes/Rect";
 import type { Stage } from "konva/lib/Stage";
 import type * as Y from "yjs";
 import { create } from "zustand";
@@ -20,9 +23,17 @@ interface BoardState {
   yGlobals: Y.Map<unknown> | null;
   undoManager: Y.UndoManager | null;
 
-  // ── Konva Stage ──
+  // ── Konva Root Elements ──
   stage: Stage | null;
   setStage: (stage: Stage | null) => void;
+  contentLayer: Layer | null;
+  setContentLayer: (layer: Layer | null) => void;
+  transformer: Transformer | null;
+  setTransformer: (transformer: Transformer | null) => void;
+  selectionRect: Rect | null;
+  setSelectionRect: (rect: Rect | null) => void;
+  eraserLine: Line | null;
+  setEraserLine: (line: Line | null) => void;
 
   // ── Undo / Redo ──
   canUndo: boolean;
@@ -46,6 +57,11 @@ interface BoardState {
 
   // ── Модификаторы (зажатые клавиши) ──
   modifiers: { space: boolean; ctrl: boolean; shift: boolean };
+  setModifiers: (modifiers: {
+    space?: boolean;
+    ctrl?: boolean;
+    shift?: boolean;
+  }) => void;
 
   // ── Viewport ──
   viewport: Viewport;
@@ -67,6 +83,7 @@ interface BoardState {
 
   // ── Действия (пишут в Yjs → observe обновит React-state) ──
   addElement: (el: ElementType) => void;
+  addElements: (els: ElementType[]) => void;
   updateElement: <T extends Partial<ElementType>>(
     id: string,
     changes: Partial<T>,
@@ -86,6 +103,14 @@ export const useBoardStore = create<BoardState>((set, get) => ({
 
   stage: null,
   setStage: (stage) => set({ stage }),
+  contentLayer: null,
+  setContentLayer: (layer) => set({ contentLayer: layer }),
+  transformer: null,
+  setTransformer: (transformer) => set({ transformer }),
+  selectionRect: null,
+  setSelectionRect: (rect) => set({ selectionRect: rect }),
+  eraserLine: null,
+  setEraserLine: (line) => set({ eraserLine: line }),
 
   canUndo: false,
   canRedo: false,
@@ -103,6 +128,8 @@ export const useBoardStore = create<BoardState>((set, get) => ({
   tool: "select",
 
   modifiers: { space: false, ctrl: false, shift: false },
+  setModifiers: (modifiers) =>
+    set({ modifiers: { ...get().modifiers, ...modifiers } }),
 
   viewport: {
     x: 0,
@@ -177,7 +204,19 @@ export const useBoardStore = create<BoardState>((set, get) => ({
     set((state) => ({ viewport: { ...state.viewport, ...updates } })),
 
   addElement: (el) => {
-    get().yElements?.set(el.id, el);
+    const yElements = get().yElements;
+    if (!yElements) return;
+
+    yElements.set(el.id, el);
+  },
+
+  addElements: (els) => {
+    const yElements = get().yElements;
+    if (!yElements) return;
+
+    yElements.doc?.transact(() => {
+      els.forEach((el) => yElements.set(el.id, el));
+    });
   },
 
   updateElement: (id, changes) => {

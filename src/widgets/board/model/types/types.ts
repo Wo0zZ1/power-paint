@@ -87,8 +87,7 @@ export type ElementType =
 
 // ─── Фабричные функции ───────────────────────────────────────────────
 
-const baseDefaults = (): BaseElementType => ({
-  id: generateId(),
+const baseDefaults = (): Omit<BaseElementType, "id"> => ({
   x: 0,
   y: 0,
   rotation: 0,
@@ -96,11 +95,11 @@ const baseDefaults = (): BaseElementType => ({
 });
 
 export const createCircle = (
-  overrides: Partial<Omit<CircleElementType, "type">> = {},
+  overrides: Partial<Omit<CircleElementType, "type" | "id">> = {},
 ): CircleElementType => ({
   ...baseDefaults(),
-  width: 100,
-  height: 100,
+  width: 0,
+  height: 0,
   fillType: "none",
   fillGradientType: "linear",
   fillColor1: "#000000",
@@ -111,14 +110,15 @@ export const createCircle = (
   strokeType: "solid",
   ...overrides,
   type: "circle",
+  id: generateId(),
 });
 
 export const createRect = (
-  overrides: Partial<Omit<RectElementType, "type">> = {},
+  overrides: Partial<Omit<RectElementType, "type" | "id">> = {},
 ): RectElementType => ({
   ...baseDefaults(),
-  width: 100,
-  height: 100,
+  width: 0,
+  height: 0,
   fillType: "none",
   fillGradientType: "linear",
   fillColor1: "#000000",
@@ -129,10 +129,11 @@ export const createRect = (
   strokeType: "solid",
   ...overrides,
   type: "rect",
+  id: generateId(),
 });
 
 export const createDraw = (
-  overrides: Partial<Omit<DrawElementType, "type">> = {},
+  overrides: Partial<Omit<DrawElementType, "type" | "id">> = {},
 ): DrawElementType => ({
   ...baseDefaults(),
   points: [],
@@ -141,10 +142,11 @@ export const createDraw = (
   strokeType: "solid",
   ...overrides,
   type: "draw",
+  id: generateId(),
 });
 
 export const createText = (
-  overrides: Partial<Omit<TextElementType, "type">> = {},
+  overrides: Partial<Omit<TextElementType, "type" | "id">> = {},
 ): TextElementType => ({
   ...baseDefaults(),
   text: "",
@@ -157,6 +159,7 @@ export const createText = (
   height: 30,
   ...overrides,
   type: "text",
+  id: generateId(),
 });
 
 // ─── Type guards ─────────────────────────────────────────────────────

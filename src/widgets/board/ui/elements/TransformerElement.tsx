@@ -1,24 +1,22 @@
 "use client";
 
 import type Konva from "konva";
-import type { Layer } from "konva/lib/Layer";
-import type { RefObject } from "react";
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { Transformer } from "react-konva";
 import { useShallow } from "zustand/react/shallow";
 
-import { useBoardStore, useTransformer } from "../../model";
+import {
+  getKonvaNodesFromLayer,
+  useBoardStore,
+  useTransformer,
+} from "../../model";
 
 interface TransformerToolProps {
-  contentLayerRef: RefObject<Layer | null>;
   canEdit: boolean;
+  ref: React.RefObject<Konva.Transformer | null>;
 }
 
-export function TransformerTool({
-  contentLayerRef,
-  canEdit,
-}: TransformerToolProps) {
-  const transformerRef = useRef<Konva.Transformer>(null);
+export function TransformerTool({ canEdit, ref }: TransformerToolProps) {
   const selectedIds = useBoardStore(useShallow((s) => s.selectedIds));
   const selectionType = useBoardStore(useShallow((s) => s.selectionType));
   const viewportScale = useBoardStore((s) => s.viewport.scale);
@@ -41,21 +39,22 @@ export function TransformerTool({
   }
 
   useEffect(() => {
-    const transformer = transformerRef.current;
-    const layer = contentLayerRef.current;
-    if (!transformer || !layer) return;
+    const transformer = ref.current;
+    if (!transformer) return;
 
     if (selectionType !== "transform") return void transformer.nodes();
 
-    const nodes = Array.from(selectedIds)
-      .map((id) => layer.findOne(`#${id}`))
-      .filter((node) => !!node);
+    const contentLayer = useBoardStore.getState().contentLayer;
+    if (!contentLayer) return;
+
+    const nodes = getKonvaNodesFromLayer(contentLayer, Array.from(selectedIds));
 
     transformer.nodes(nodes);
-  }, [elements, contentLayerRef, selectedIds, selectionType]);
+  }, [ref, elements, selectedIds, selectionType]);
 
   return (
     <Transformer
+      ref={ref}
       id="transformer"
       keepRatio={keepRatio}
       enabledAnchors={enabledAnchors}
@@ -73,7 +72,6 @@ export function TransformerTool({
       ignoreStroke
       onTransformStart={handleTransformStart}
       onTransform={handleTransform}
-      ref={transformerRef}
     />
   );
 }

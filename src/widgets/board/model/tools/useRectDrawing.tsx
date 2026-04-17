@@ -5,7 +5,7 @@ import { DEFAULT_CAPTURE_TIMEOUT } from "@/shared/config";
 import { useThrottledCallback } from "@/shared/lib/hooks";
 
 import { useBoardStore } from "../core";
-import { screenToCanvas, generateId } from "../lib";
+import { screenToCanvas } from "../lib";
 import { createRect } from "../types";
 
 export const useRectDrawing = () => {
@@ -23,12 +23,10 @@ export const useRectDrawing = () => {
     }
 
     const [cx, cy] = screenToCanvas(layerX, layerY, viewport);
-
-    const id = generateId();
-    shapeIdRef.current = id;
     originRef.current = { x: cx, y: cy };
 
-    const shape = createRect({ id, x: cx, y: cy, width: 0, height: 0 });
+    const shape = createRect({ x: cx, y: cy, width: 0, height: 0 });
+    shapeIdRef.current = shape.id;
 
     useBoardStore.getState().addElement(shape);
   }, []);

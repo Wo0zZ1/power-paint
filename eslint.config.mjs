@@ -25,6 +25,7 @@ const eslintConfig = defineConfig([
     rules: {
       "@typescript-eslint/no-empty-object-type": "off",
       "@typescript-eslint/consistent-type-imports": "error",
+      "@typescript-eslint/no-unused-expressions": "off",
       "@typescript-eslint/no-unused-vars": [
         "error",
         {

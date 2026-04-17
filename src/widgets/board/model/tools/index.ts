@@ -9,3 +9,4 @@ export * from "./useTextDrawing";
 export * from "./useTextEditing";
 export * from "./useTransformer";
 export * from "./useViewport";
+export * from "./useCopyPast";

@@ -5,7 +5,7 @@ import { DEFAULT_CAPTURE_TIMEOUT } from "@/shared/config";
 import { useThrottledCallback } from "@/shared/lib/hooks";
 
 import { useBoardStore } from "../core";
-import { screenToCanvas, generateId } from "../lib";
+import { screenToCanvas } from "../lib";
 import { createText } from "../types";
 
 export const useTextDrawing = () => {
@@ -23,12 +23,10 @@ export const useTextDrawing = () => {
     }
 
     const [cx, cy] = screenToCanvas(layerX, layerY, viewport);
-
-    const id = generateId();
-    shapeIdRef.current = id;
     originRef.current = { x: cx, y: cy };
 
-    const shape = createText({ id, x: cx, y: cy, text: "Text", fontSize: 24 });
+    const shape = createText({ x: cx, y: cy, text: "Text", fontSize: 24 });
+    shapeIdRef.current = shape.id;
 
     useBoardStore.getState().addElement(shape);
   }, []);

@@ -5,7 +5,7 @@ import { DEFAULT_CAPTURE_TIMEOUT } from "@/shared/config";
 import { useThrottledCallback } from "@/shared/lib/hooks";
 
 import { useBoardStore } from "../core";
-import { screenToCanvas, generateId } from "../lib";
+import { screenToCanvas } from "../lib";
 import type { DrawElementType } from "../types";
 import { createDraw } from "../types";
 
@@ -29,12 +29,11 @@ export const useDrawing = () => {
 
     const [cx, cy] = screenToCanvas(layerX, layerY, viewport);
 
-    const id = generateId();
-    strokeIdRef.current = id;
     originRef.current = { x: cx, y: cy };
     pointsRef.current = [0, 0];
 
-    const draw = createDraw({ x: cx, y: cy, points: [0, 0], id });
+    const draw = createDraw({ x: cx, y: cy, points: [0, 0] });
+    strokeIdRef.current = draw.id;
 
     useBoardStore.getState().addElement(draw);
   }, []);

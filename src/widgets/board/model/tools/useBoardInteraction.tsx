@@ -1,5 +1,5 @@
 import type Konva from "konva";
-import { useCallback, type RefObject } from "react";
+import { useCallback } from "react";
 
 import { useBoardStore } from "../core";
 
@@ -15,25 +15,17 @@ import {
 } from ".";
 
 interface UseBoardInteractionProps {
-  selectionRectRef: RefObject<Konva.Rect | null>;
-  eraserLineRef: RefObject<Konva.Line | null>;
   canEdit?: boolean;
 }
 
-export const useBoardInteraction = ({
-  selectionRectRef,
-  eraserLineRef,
-  canEdit,
-}: UseBoardInteractionProps) => {
+export const useBoardInteraction = ({ canEdit }: UseBoardInteractionProps) => {
   const { handleZoom, startPointerPan, startTouchPan } = useViewport();
-  const { startPointerSelect, startTouchSelect } = useSelectionRect({
-    rectRef: selectionRectRef,
-  });
+  const { startPointerSelect, startTouchSelect } = useSelectionRect();
   const { startPointerDraw, startTouchDraw } = useDrawing();
   const { startPointerRectDraw, startTouchRectDraw } = useRectDrawing();
   const { startPointerCircleDraw, startTouchCircleDraw } = useCircleDrawing();
   const { startPointerTextDraw, startTouchTextDraw } = useTextDrawing();
-  const { startPointerErase, startTouchErase } = useEraser({eraserLineRef});
+  const { startPointerErase, startTouchErase } = useEraser();
 
   const handlePointerDown = useCallback(
     (e: Konva.KonvaEventObject<PointerEvent>) => {

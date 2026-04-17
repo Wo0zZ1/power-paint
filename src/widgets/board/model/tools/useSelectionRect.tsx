@@ -2,7 +2,6 @@ import type Konva from "konva";
 import type { KonvaEventObject } from "konva/lib/Node";
 import type { Transformer } from "konva/lib/shapes/Transformer";
 import type { Stage } from "konva/lib/Stage";
-import type { RefObject } from "react";
 import { useCallback, useEffect, useRef } from "react";
 
 import { useThrottledCallback } from "@/shared/lib/hooks";
@@ -10,15 +9,10 @@ import { useThrottledCallback } from "@/shared/lib/hooks";
 import { useBoardStore } from "../core";
 import { screenToCanvas, isElementFullyInsideRect } from "../lib";
 
-interface UseSelectionRectProps {
-  rectRef: RefObject<Konva.Rect | null>;
-}
-
 type SelectResult = "marquee" | "element" | "transformer";
 
-export const useSelectionRect = ({ rectRef }: UseSelectionRectProps) => {
+export const useSelectionRect = () => {
   const startRef = useRef<Konva.Vector2d | null>(null);
-  const containerRectRef = useRef<DOMRect | null>(null);
 
   const stopListeners = useRef(() => {});
 
@@ -31,15 +25,18 @@ export const useSelectionRect = ({ rectRef }: UseSelectionRectProps) => {
       stage: Stage,
       shift: boolean,
     ): SelectResult | null => {
-      if (!rectRef.current) return null;
+      const {
+        viewport,
+        selectedIds,
+        toggleSelect,
+        pureSelect,
+        clearSelection,
+        setSelectionType,
+      } = useBoardStore.getState();
 
-      useBoardStore.getState().setSelectionType("transform");
+      setSelectionType("transform");
 
-      const [x, y] = screenToCanvas(
-        layerX,
-        layerY,
-        useBoardStore.getState().viewport,
-      );
+      const [x, y] = screenToCanvas(layerX, layerY, viewport);
       startRef.current = { x, y };
 
       const shape = stage.getIntersection({ x: layerX, y: layerY });
@@ -48,22 +45,24 @@ export const useSelectionRect = ({ rectRef }: UseSelectionRectProps) => {
         if (transformer?.children.some((child) => child.id() === shape.id()))
           return "transformer";
 
-        const selected = useBoardStore.getState().selectedIds.has(shape.id());
-        if (shift) useBoardStore.getState().toggleSelect(shape.id());
-        else if (!selected) useBoardStore.getState().pureSelect(shape.id());
+        const isSelected = selectedIds.has(shape.id());
+        if (shift) toggleSelect(shape.id());
+        else if (!isSelected) pureSelect(shape.id());
 
         return "element";
       }
 
-      if (!shift) useBoardStore.getState().clearSelection();
+      if (!shift) clearSelection();
       return "marquee";
     },
-    [rectRef],
+    [],
   );
 
   const moveSelect = useCallback(
     (layerX: number, layerY: number, shift: boolean) => {
-      if (!startRef.current || !rectRef.current) return;
+      const { selectionRect } = useBoardStore.getState();
+
+      if (!startRef.current || !selectionRect) return;
 
       const [globalX, globalY] = screenToCanvas(
         layerX,
@@ -74,49 +73,52 @@ export const useSelectionRect = ({ rectRef }: UseSelectionRectProps) => {
       const width = globalX - startRef.current.x;
       const height = globalY - startRef.current.y;
 
-      const selectionRect = {
+      const newSelectionRectAttrs = {
         x: startRef.current.x,
         y: startRef.current.y,
         width,
         height,
       };
 
-      rectRef.current.setAttrs(selectionRect);
+      selectionRect.setAttrs(newSelectionRectAttrs);
 
       const elements = useBoardStore.getState().elements;
       const prevSelected = useBoardStore.getState().selectedIds;
       const selectedIds = new Set<string>();
 
       elements.forEach((element, id) => {
-        if (isElementFullyInsideRect(selectionRect, element)) {
+        if (isElementFullyInsideRect(newSelectionRectAttrs, element))
           selectedIds.add(id);
-        } else if (shift && prevSelected.has(id)) {
-          selectedIds.add(id);
-        }
+        else if (shift && prevSelected.has(id)) selectedIds.add(id);
       });
 
       useBoardStore.getState().pureSelectMany(selectedIds);
     },
-    [rectRef],
+    [],
   );
 
   const endSelect = useCallback(() => {
-    const rect = rectRef.current;
-    if (!rect) return;
+    const { selectionRect } = useBoardStore.getState();
 
-    rect.setAttrs({ x: 0, y: 0, width: 0, height: 0 });
-    rect.visible(false);
+    if (!selectionRect) return;
+
+    selectionRect.setAttrs({ x: 0, y: 0, width: 0, height: 0 });
+    selectionRect.visible(false);
 
     startRef.current = null;
-  }, [rectRef]);
+  }, []);
 
   // ── Pointer (mouse/pen — touch фильтруется) ──
 
   const onPointerMove = useThrottledCallback((e: PointerEvent) => {
-    if (!containerRectRef.current) return;
+    const stage = useBoardStore.getState().stage;
+    if (!stage) return;
+
+    const stageRect = stage.container().getBoundingClientRect();
+
     moveSelect(
-      e.clientX - containerRectRef.current.left,
-      e.clientY - containerRectRef.current.top,
+      e.clientX - stageRect.left,
+      e.clientY - stageRect.top,
       e.shiftKey,
     );
   });
@@ -130,16 +132,12 @@ export const useSelectionRect = ({ rectRef }: UseSelectionRectProps) => {
     (e: KonvaEventObject<PointerEvent>) => {
       if (e.evt.pointerType === "touch") return;
 
-      const rect = rectRef.current;
-      if (!rect) return;
+      const { stage, selectionRect } = useBoardStore.getState();
+      if (!selectionRect || !stage) return;
 
-      rect.visible(true);
-
-      const stage = rect.getStage();
-      if (!stage) return;
+      selectionRect.visible(true);
 
       const stageRect = stage.container().getBoundingClientRect();
-      containerRectRef.current = stageRect;
 
       const result = beginSelect(
         e.evt.clientX - stageRect.left,
@@ -157,7 +155,7 @@ export const useSelectionRect = ({ rectRef }: UseSelectionRectProps) => {
         window.removeEventListener("pointerup", onPointerUp);
       };
     },
-    [rectRef, beginSelect, onPointerMove, onPointerUp],
+    [beginSelect, onPointerMove, onPointerUp],
   );
 
   // ── Touch ──
@@ -170,11 +168,16 @@ export const useSelectionRect = ({ rectRef }: UseSelectionRectProps) => {
     }
 
     const touch = e.touches[0];
-    if (!touch || !containerRectRef.current) return;
+    if (!touch) return;
+
+    const stage = useBoardStore.getState().stage;
+    if (!stage) return;
+
+    const stageRect = stage.container().getBoundingClientRect();
 
     moveSelect(
-      touch.clientX - containerRectRef.current.left,
-      touch.clientY - containerRectRef.current.top,
+      touch.clientX - stageRect.left,
+      touch.clientY - stageRect.top,
       false,
     );
   });
@@ -188,16 +191,12 @@ export const useSelectionRect = ({ rectRef }: UseSelectionRectProps) => {
     (e: Konva.KonvaEventObject<TouchEvent>) => {
       const touch = e.evt.touches[0];
 
-      const rect = rectRef.current;
-      if (!rect) return;
+      const { stage, selectionRect } = useBoardStore.getState();
+      if (!selectionRect || !stage) return;
 
-      rect.visible(true);
-
-      const stage = rect.getStage();
-      if (!stage) return;
+      selectionRect.visible(true);
 
       const stageRect = stage.container().getBoundingClientRect();
-      containerRectRef.current = stageRect;
 
       const layerX = touch.clientX - stageRect.left;
       const layerY = touch.clientY - stageRect.top;
@@ -213,7 +212,7 @@ export const useSelectionRect = ({ rectRef }: UseSelectionRectProps) => {
         window.removeEventListener("touchend", onTouchSelectEnd);
       };
     },
-    [rectRef, beginSelect, onTouchSelectMove, onTouchSelectEnd],
+    [beginSelect, onTouchSelectMove, onTouchSelectEnd],
   );
 
   useEffect(() => {
