@@ -1,4 +1,4 @@
-import type Konva from "konva";
+import Konva from "konva";
 
 import {
   createCircle,
@@ -62,6 +62,73 @@ export const clipboardToElements = (
     return [textElement];
   }
   return null;
+};
+
+export const elementsToImage = async (
+  layer: Konva.Layer,
+  elements: ElementType[],
+  selectedIds: Set<string>,
+  options?: {
+    mimeType?: "image/png" | "image/jpeg";
+    backgroundColor?: string;
+  },
+): Promise<Blob | null> => {
+  if (elements.length === 0 || !layer) return null;
+
+  const offscreenLayer = layer.clone({ listening: false });
+
+  const nodesToRemove: Konva.Node[] = [];
+  offscreenLayer.children?.forEach((node) => {
+    if (!selectedIds.has(node.id())) {
+      nodesToRemove.push(node);
+    }
+  });
+  nodesToRemove.forEach((node) => node.destroy());
+
+  const clientRect = offscreenLayer.getClientRect({ skipTransform: false });
+
+  if (!clientRect || clientRect.width === 0 || clientRect.height === 0) {
+    offscreenLayer.destroy();
+    return null;
+  }
+
+  const padding = 0;
+  const width = clientRect.width + padding * 2;
+  const height = clientRect.height + padding * 2;
+
+  const mimeType = options?.mimeType || "image/png";
+
+  if (mimeType === "image/jpeg" || options?.backgroundColor) {
+    const bgRect = new Konva.Rect({
+      x: clientRect.x - padding,
+      y: clientRect.y - padding,
+      width,
+      height,
+      fill: options?.backgroundColor || "#ffffff",
+    });
+    offscreenLayer.add(bgRect);
+    bgRect.moveToBottom();
+  }
+
+  try {
+    const dataURL = offscreenLayer.toDataURL({
+      x: clientRect.x - padding,
+      y: clientRect.y - padding,
+      width,
+      height,
+      pixelRatio: window.devicePixelRatio || 2,
+      mimeType,
+    });
+
+    offscreenLayer.destroy();
+
+    const response = await fetch(dataURL);
+    return await response.blob();
+  } catch (err) {
+    console.error("Failed to convert elements to image:", err);
+    offscreenLayer.destroy();
+    return null;
+  }
 };
 
 export const duplicateElements = (elements: ElementType[]): ElementType[] => {

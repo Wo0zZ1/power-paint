@@ -17,7 +17,7 @@ export interface MenuItem {
 export const useContextMenuRegistry = () => {
   const t = useTranslations("board.context_menu");
 
-  const { copy, copyAsImage, paste, duplicate } = useCopyPast();
+  const { copy, copyAsImage, exportAsImage, paste, duplicate } = useCopyPast();
   const removeSelectedElements = useBoardStore((s) => s.removeSelectedElements);
   const closeMenu = useContextMenuStore((s) => s.closeMenu);
 
@@ -48,7 +48,29 @@ export const useContextMenuRegistry = () => {
           {
             label: t("copy_as_png"),
             action: () => {
-              copyAsImage();
+              copyAsImage("png");
+              closeMenu();
+            },
+          },
+          {
+            label: t("copy_as_jpeg"),
+            action: () => {
+              copyAsImage("jpeg");
+              closeMenu();
+            },
+          },
+          {
+            label: t("export_as_png"),
+            action: () => {
+              exportAsImage("png");
+              closeMenu();
+            },
+            separator: true,
+          },
+          {
+            label: t("export_as_jpeg"),
+            action: () => {
+              exportAsImage("jpeg");
               closeMenu();
             },
           },
@@ -60,6 +82,7 @@ export const useContextMenuRegistry = () => {
               paste({ x: stageX, y: stageY });
               closeMenu();
             },
+            separator: true,
           },
           {
             label: t("duplicate"),

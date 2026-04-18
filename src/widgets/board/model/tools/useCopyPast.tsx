@@ -3,6 +3,7 @@ import { useCallback } from "react";
 import { useBoardStore } from "../core";
 import {
   clipboardToElements,
+  elementsToImage,
   duplicateElements,
   elementsToClipboard,
   getElements,
@@ -71,12 +72,107 @@ export const useCopyPast = () => {
     await clipboard.writeText(json);
   }, []);
 
-  const handleCopyAsImage = useCallback(async () => {
-    const store = useBoardStore.getState();
-    if (store.selectedIds.size === 0 || !store.stage) return;
+  const handleCopyAsImage = useCallback(
+    async (format: "png" | "jpeg" = "png") => {
+      const store = useBoardStore.getState();
+      if (store.selectedIds.size === 0 || !store.contentLayer) return;
 
-    // TODO: implement copy as image for multiple selection
-  }, []);
+      const selectedElements = getElements(
+        Array.from(store.elements.values()),
+        Array.from(store.selectedIds),
+      );
+
+      let backgroundColor = undefined;
+
+      if (format === "jpeg") {
+        backgroundColor = "#ffffff"; // fallback
+        let currentElement: HTMLElement | null =
+          store.stage?.container() || null;
+        while (currentElement) {
+          const style = window.getComputedStyle(currentElement);
+          const bg = style.backgroundColor;
+          if (bg && bg !== "transparent") {
+            backgroundColor = bg;
+            break;
+          }
+          currentElement = currentElement.parentElement;
+        }
+      }
+
+      const blob = await elementsToImage(
+        store.contentLayer,
+        selectedElements,
+        store.selectedIds,
+        {
+          mimeType: "image/png",
+          backgroundColor,
+        },
+      );
+
+      if (blob) {
+        try {
+          const item = new ClipboardItem({ ["image/png"]: blob });
+          await navigator.clipboard.write([item]);
+        } catch (err) {
+          console.error("Failed to copy image blob to clipboard:", err);
+        }
+      }
+    },
+    [],
+  );
+
+  const handleExportAsImage = useCallback(
+    async (format: "png" | "jpeg" = "png") => {
+      const store = useBoardStore.getState();
+      if (store.selectedIds.size === 0 || !store.contentLayer) return;
+
+      const selectedElements = getElements(
+        Array.from(store.elements.values()),
+        Array.from(store.selectedIds),
+      );
+
+      let backgroundColor = undefined;
+      // Если это jpeg или фон прозрачный - ищем ближайший непрозрачный фон сцены
+      if (format === "jpeg") {
+        backgroundColor = "#ffffff"; // fallback
+        let currentElement: HTMLElement | null =
+          store.stage?.container() || null;
+        while (currentElement) {
+          const style = window.getComputedStyle(currentElement);
+          const bg = style.backgroundColor;
+          if (bg && bg !== "rgba(0, 0, 0, 0)" && bg !== "transparent") {
+            backgroundColor = bg;
+            break;
+          }
+          currentElement = currentElement.parentElement;
+        }
+      }
+
+      const blob = await elementsToImage(
+        store.contentLayer,
+        selectedElements,
+        store.selectedIds,
+        {
+          mimeType: format === "jpeg" ? "image/jpeg" : "image/png",
+          backgroundColor,
+        },
+      );
+
+      if (blob) {
+        try {
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = `export.${format}`;
+          a.click();
+          URL.revokeObjectURL(url);
+        } catch (err) {
+          console.error("Failed to export image:", err);
+        }
+      }
+    },
+    [],
+  );
 
   const handlePaste = useCallback(
     async (forcedPos?: { x: number; y: number }) => {
@@ -110,6 +206,7 @@ export const useCopyPast = () => {
   return {
     copy: handleCopy,
     copyAsImage: handleCopyAsImage,
+    exportAsImage: handleExportAsImage,
     paste: handlePaste,
     duplicate: handleDuplicate,
   };

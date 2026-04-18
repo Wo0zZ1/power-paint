@@ -242,6 +242,9 @@
     "context_menu": {
       "copy": "Copy",
       "copy_as_png": "Copy as PNG",
+      "copy_as_jpeg": "Copy as JPEG",
+      "export_as_png": "Export as PNG",
+      "export_as_jpeg": "Export as JPEG",
       "paste": "Paste",
       "duplicate": "Duplicate",
       "delete": "Delete"

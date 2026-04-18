@@ -245,6 +245,9 @@
     "context_menu": {
       "copy": "Копировать",
       "copy_as_png": "Копировать как PNG",
+      "copy_as_jpeg": "Копировать как JPEG",
+      "export_as_png": "Экспорт в PNG",
+      "export_as_jpeg": "Экспорт в JPEG",
       "paste": "Вставить",
       "duplicate": "Дублировать",
       "delete": "Удалить"
