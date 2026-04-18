@@ -5,6 +5,8 @@ import { useEffect } from "react";
 import { Transformer } from "react-konva";
 import { useShallow } from "zustand/react/shallow";
 
+import { MIN_TEXT_HEIGHT, MIN_TEXT_WIDTH } from "@/shared/constants";
+
 import {
   getKonvaNodesFromLayer,
   useBoardStore,
@@ -25,8 +27,10 @@ export function TransformerTool({ canEdit, ref }: TransformerToolProps) {
   const { handleTransformStart, handleTransform } = useTransformer({ canEdit });
 
   const elements = useBoardStore(useShallow((s) => s.elements));
-  const isTextSelected =
-    elements.get(Array.from(selectedIds)[0])?.type === "text";
+
+  const isTextSelected = Array.from(selectedIds).some(
+    (id) => elements.get(id)?.type === "text",
+  );
 
   const keepRatio = selectedIds.size > 1 || shiftPressed;
 
@@ -63,8 +67,19 @@ export function TransformerTool({ canEdit, ref }: TransformerToolProps) {
       rotationSnapTolerance={5}
       rotationSnaps={[0, 45, 90, 135, 180, 225, 270, 315]}
       boundBoxFunc={(oldBox, newBox) => {
-        if (isTextSelected && Math.abs(newBox.width) < 30 * viewportScale)
-          return oldBox;
+        if (isTextSelected) {
+          const minW = MIN_TEXT_WIDTH * viewportScale;
+          const minH = MIN_TEXT_HEIGHT * viewportScale;
+
+          if (Math.abs(newBox.width) < minW) {
+            newBox.width = oldBox.width;
+            newBox.x = oldBox.x;
+          }
+          if (Math.abs(newBox.height) < minH) {
+            newBox.height = oldBox.height;
+            newBox.y = oldBox.y;
+          }
+        }
 
         return newBox;
       }}

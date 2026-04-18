@@ -2,7 +2,7 @@
 
 import { useState, useRef, useCallback } from "react";
 
-import { TOOLTIP_DELAY } from "@/shared/config";
+import { TOOLTIP_DELAY } from "@/shared/constants";
 
 export const useTooltip = (delay: number = TOOLTIP_DELAY) => {
   const [tooltipOpen, setTooltipOpen] = useState<boolean>(false);

@@ -1,7 +1,7 @@
 import type { KonvaEventObject } from "konva/lib/Node";
 import { useCallback, useEffect, useRef } from "react";
 
-import { ZOOM_SENSITIVITY } from "@/shared/config";
+import { ZOOM_SENSITIVITY } from "@/shared/constants";
 import { useThrottledCallback } from "@/shared/lib/hooks";
 
 import { useBoardStore } from "../core";

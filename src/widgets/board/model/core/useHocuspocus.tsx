@@ -2,7 +2,7 @@ import { HocuspocusProvider, WebSocketStatus } from "@hocuspocus/provider";
 import { useEffect } from "react";
 import { UndoManager } from "yjs";
 
-import { DEFAULT_CAPTURE_TIMEOUT } from "@/shared/config";
+import { DEFAULT_CAPTURE_TIMEOUT } from "@/shared/constants";
 
 import {
   type UserAwareness,

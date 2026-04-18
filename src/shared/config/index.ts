@@ -1,5 +1,4 @@
 export { ROUTES } from "./routes";
-export { TOOLTIP_DELAY } from "./tooltip";
 export { queryClientOptions } from "./queryClientConfig";
 export {
   getSigninSchema,
@@ -17,5 +16,3 @@ export {
   type ForgotPasswordData,
   type ResetPasswordData,
 } from "./authSchemas";
-export { DEFAULT_CAPTURE_TIMEOUT } from "./hocuspocus";
-export { ZOOM_SENSITIVITY, MIN_ZOOM, MAX_ZOOM } from "./viewport";

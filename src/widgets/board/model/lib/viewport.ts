@@ -1,4 +1,4 @@
-import { MAX_ZOOM, MIN_ZOOM } from "@/shared/config";
+import { MAX_ZOOM, MIN_ZOOM } from "@/shared/constants";
 
 import type { Viewport } from "../types";
 

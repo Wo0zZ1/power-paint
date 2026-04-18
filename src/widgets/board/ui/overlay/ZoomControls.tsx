@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import { useCallback } from "react";
 import { useShallow } from "zustand/react/shallow";
 
-import { MAX_ZOOM, MIN_ZOOM, ZOOM_SENSITIVITY } from "@/shared/config";
+import { MAX_ZOOM, MIN_ZOOM, ZOOM_SENSITIVITY } from "@/shared/constants";
 import { cn } from "@/shared/lib/utils";
 import {
   Button,

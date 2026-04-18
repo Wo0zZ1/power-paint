@@ -3,7 +3,7 @@
 import { RotateCcw, RotateCw } from "lucide-react";
 import { useTranslations } from "next-intl";
 
-import { TOOLTIP_DELAY } from "@/shared/config";
+import { TOOLTIP_DELAY } from "@/shared/constants";
 import {
   Button,
   ButtonGroup,

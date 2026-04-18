@@ -5,6 +5,12 @@ import type { Session } from "next-auth";
 import type { ComponentProps } from "react";
 import type { KonvaNodeComponent } from "react-konva";
 
+import {
+  MAX_PASTE_TEXT_WIDTH,
+  MIN_TEXT_HEIGHT,
+  MIN_TEXT_WIDTH,
+} from "@/shared/constants";
+
 import { generateId } from "../lib/utils";
 
 export type BaseElementType = {
@@ -77,7 +83,6 @@ export type TextElementType = {
   textColor: string;
 } & BaseElementType &
   ISizable;
-// & IStrokable;
 
 export type ElementType =
   | CircleElementType
@@ -145,22 +150,68 @@ export const createDraw = (
   id: generateId(),
 });
 
+const measureTextSize = (
+  text: string,
+  fontSize: number,
+  fontFamily: string,
+  maxWidth: number,
+) => {
+  if (typeof document === "undefined")
+    return { width: MIN_TEXT_WIDTH, height: MIN_TEXT_HEIGHT };
+
+  const span = document.createElement("span");
+  span.style.font = `${fontSize}px ${fontFamily}`;
+  span.style.position = "absolute";
+  span.style.visibility = "hidden";
+  span.style.whiteSpace = "pre-wrap";
+  span.style.wordBreak = "break-word";
+  span.style.maxWidth = `${maxWidth}px`;
+  span.style.display = "inline-block";
+  span.style.lineHeight = "1.2";
+  span.innerText = text || " ";
+  document.body.appendChild(span);
+
+  const width = Math.max(Math.ceil(span.offsetWidth) + 10, MIN_TEXT_WIDTH);
+  const height = Math.max(Math.ceil(span.offsetHeight) + 10, MIN_TEXT_HEIGHT);
+
+  document.body.removeChild(span);
+  return { width, height };
+};
+
 export const createText = (
   overrides: Partial<Omit<TextElementType, "type" | "id">> = {},
-): TextElementType => ({
-  ...baseDefaults(),
-  text: "",
-  fontSize: 16,
-  fontFamily: "Arial, sans-serif",
-  textAlign: "left",
-  textVerticalAlign: "top",
-  textColor: "#000000",
-  width: 60,
-  height: 30,
-  ...overrides,
-  type: "text",
-  id: generateId(),
-});
+): TextElementType => {
+  let { width, height } = overrides;
+  const text = overrides.text || "";
+  const fontSize = overrides.fontSize || 16;
+  const fontFamily = overrides.fontFamily || "Arial, sans-serif";
+
+  if (!width || !height) {
+    const size = measureTextSize(
+      text,
+      fontSize,
+      fontFamily,
+      MAX_PASTE_TEXT_WIDTH,
+    );
+    if (!width) width = size.width;
+    if (!height) height = size.height;
+  }
+
+  return {
+    ...baseDefaults(),
+    text,
+    fontSize,
+    fontFamily,
+    textAlign: "left",
+    textVerticalAlign: "top",
+    textColor: "#000000",
+    width,
+    height,
+    ...overrides,
+    type: "text",
+    id: generateId(),
+  };
+};
 
 // ─── Type guards ─────────────────────────────────────────────────────
 
