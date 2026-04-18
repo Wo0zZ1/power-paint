@@ -84,7 +84,6 @@ export function TransformerTool({ canEdit, ref }: TransformerToolProps) {
         return newBox;
       }}
       flipEnabled={false}
-      ignoreStroke
       onTransformStart={handleTransformStart}
       onTransform={handleTransform}
     />
