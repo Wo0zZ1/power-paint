@@ -31,6 +31,7 @@ import {
   ZoomControls,
   UserCursors,
   DeleteSelectionButton,
+  BackToContentButton,
 } from "./overlay";
 import { ActiveUsers } from "./overlay/ActiveUsers";
 import { ConnectionStatus } from "./overlay/ConnectionStatus";
@@ -121,7 +122,11 @@ export function KonvaBoard({
           </div>
 
           {/* Bottom Center */}
-          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 flex flex-col gap-2 md:block">
+          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 flex flex-col gap-2">
+            <div className="flex justify-center mb-2">
+              <BackToContentButton className="pointer-events-auto" />
+            </div>
+
             <div className="md:hidden flex">
               {canEdit && (
                 <DeleteSelectionButton className="pointer-events-auto" />

@@ -43,3 +43,28 @@ export function zoomTowardsPoint(
     scale: newScale,
   };
 }
+
+export function getFitViewport(
+  stageWidth: number,
+  stageHeight: number,
+  box: { minX: number; minY: number; maxX: number; maxY: number } | null,
+): Viewport {
+  if (!box) return { x: stageWidth / 2, y: stageHeight / 2, scale: 1 };
+
+  const padding = 100;
+  const boxWidth = box.maxX - box.minX;
+  const boxHeight = box.maxY - box.minY;
+
+  let newScale = Math.min(
+    (stageWidth - padding * 2) / boxWidth,
+    (stageHeight - padding * 2) / boxHeight,
+    1,
+  );
+
+  newScale = Math.max(MIN_ZOOM, Math.min(newScale, MAX_ZOOM));
+
+  const newX = stageWidth / 2 - (box.minX + boxWidth / 2) * newScale;
+  const newY = stageHeight / 2 - (box.minY + boxHeight / 2) * newScale;
+
+  return { x: newX, y: newY, scale: newScale };
+}

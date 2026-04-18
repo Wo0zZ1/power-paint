@@ -326,7 +326,8 @@
     "zoom": {
       "in": "Zoom In",
       "out": "Zoom Out",
-      "reset": "Reset Zoom"
+      "reset": "Reset zoom",
+      "fit": "Fit to content"
     },
     "history": {
       "undo": "Undo",
