@@ -25,32 +25,25 @@
   "copied": "Copied",
   "or": "or",
   "direct_link": "Direct Link",
-
   "errors": {
     "unknown_error": "Something went wrong. Please try again.",
     "invalid_data": "Please fill in all required fields correctly.",
     "invalid_credentials": "Invalid email or password. Please try again.",
     "invalid_email": "Please enter a valid email."
   },
-
   "auth": {
     "signin_title": "Login to continue",
     "signin_description": "Use your email or another service to continue",
-
     "signup_title": "Create an account",
     "signup_description": "Fill in the details below to create a new account",
-
     "forgot_title": "Reset your password",
     "forgot_description": "Enter your email to receive a verification code.",
     "forgot_notice": "If the email is correct, you'll receive a reset code shortly.",
-
     "verify_title": "Verify your login",
     "verify_description": "Enter the verification code we sent to your email address.",
-
     "reset_title": "Set a new password",
     "reset_description": "Choose a new password to secure your account.",
     "reset_success": "Password updated. Sessions have been reset. You can now sign in.",
-
     "fields": {
       "first_name": {
         "label": "First Name",
@@ -89,63 +82,46 @@
         "placeholder": "Enter the code from your email"
       }
     },
-
     "accept_terms": "I accept terms and conditions",
-
     "errors": {
       "first_name_too_short": "Must be at least 1 character.",
       "first_name_too_long": "Must be less than 16 characters.",
-
       "last_name_too_short": "Must be at least 1 character.",
       "last_name_too_long": "Must be less than 16 characters.",
-
       "invalid_email": "Please enter a valid email.",
       "email_in_use": "An account with this email already exists.",
-
       "invalid_email_code": "Invalid verification code.",
       "code_expired": "Verification code has expired.",
       "compromised_email_code": "Too many attempts. Request a new code.",
-
       "password_too_short": "Password must be at least 6 characters.",
       "password_too_long": "Password must be less than 20 characters.",
-
       "passwords_do_not_match": "Passwords do not match.",
-
       "terms_required": "You must accept the terms and conditions.",
-
       "invalid_phone": "Please enter a valid phone number.",
       "phone_in_use": "An account with this phone number already exists.",
-
       "invalid_preferred_color": "Please enter a valid hex color code.",
-
       "invalid_image": "Please upload a valid image URL.",
-
       "invalid_locale": "Please select a valid language."
     },
-
     "sign_in": "Sign In",
     "sign_out": "Sign Out",
     "sign_up": "Sign Up",
-
     "already_have_account": "Already have an account?",
     "dont_have_account": "Don't have an account?",
     "forgot_password": "Forgot your Password?",
     "abort_registration": "Abort Registration",
     "abort_password_reset": "Abort Password Reset",
-
     "actions": {
       "resend_code": "Resend Code",
       "send_reset_code": "Send code",
       "verify_reset_code": "Verify code",
       "save_new_password": "Save new password"
     },
-
     "providers": {
       "github": "Sign In with GitHub",
       "google": "Sign In with Google"
     }
   },
-
   "connection": {
     "status": {
       "connecting": "Connecting to server...",
@@ -153,51 +129,42 @@
       "disconnected": "Connection lost, reconnecting..."
     }
   },
-
   "access_levels": {
     "private": "Private",
     "public_view": "Viewing",
     "public_edit": "Editing"
   },
-
   "member_roles": {
     "viewer": "Viewer",
     "editor": "Editor",
     "admin": "Admin"
   },
-
   "members": {
     "invite_title": "Invite to collaborate",
     "invite_description": "Add team members by username or email.",
     "invite_empty": "No users found",
     "no_members": "No members yet. Invite your team to collaborate!"
   },
-
   "account": "Account",
   "profile": "Profile",
-
   "settings": {
     "title": "Settings",
     "theme": "Theme",
     "language": "Language"
   },
-
   "dashboard": {
     "title": "Dashboard",
     "welcome": "Welcome to your Dashboard."
   },
-
   "workspace": {
     "plural": "Workspaces",
     "all": "All Workspaces",
     "empty": "No available workspaces",
     "settings": "Workspace Settings",
-
     "notFound": {
       "title": "Workspace not found",
       "description": "The workspace you are looking for does not exist or is inaccessible."
     },
-
     "create": {
       "action": "Create",
       "title": "Create New Workspace",
@@ -205,7 +172,6 @@
       "inputLabel": "Workspace Name",
       "inputPlaceholder": "Enter workspace name"
     },
-
     "rename": {
       "action": "Rename",
       "title": "Rename Workspace",
@@ -213,20 +179,16 @@
       "inputLabel": "Workspace Name",
       "inputPlaceholder": "Enter new workspace name"
     },
-
     "share": {
       "action": "Share",
-
       "title": "Share workspace and configure access",
       "description": "Configure access rights for this workspace and its contents.",
-
       "access_level": {
         "private_description": "Only invited members can access.",
         "public_view_description": "Anyone with the direct link can view.",
         "public_edit_description": "Anyone with the direct link can view and edit."
       }
     },
-
     "delete": {
       "action": "Delete",
       "title": "Delete Workspace",
@@ -237,7 +199,6 @@
       "inputPlaceholder": "Enter workspace name"
     }
   },
-
   "board": {
     "context_menu": {
       "copy": "Copy",
@@ -254,12 +215,10 @@
     "personal": "Personal Boards",
     "empty": "No available boards",
     "settings": "Board Settings",
-
     "notFound": {
       "title": "Board not found",
       "description": "The board you are looking for does not exist or is inaccessible."
     },
-
     "create": {
       "action": "Create",
       "title": "Create New Board",
@@ -269,7 +228,6 @@
       "workspaceInputLabel": "Workspace",
       "workspaceInputPlaceholder": "Select a workspace"
     },
-
     "rename": {
       "action": "Rename",
       "title": "Rename Board",
@@ -277,27 +235,21 @@
       "inputLabel": "Board Name",
       "inputPlaceholder": "Enter new board name"
     },
-
     "share": {
       "action": "Share",
-
       "title": "Share board and configure access",
       "description": "Configure access rights for this board.",
-
       "tabs": {
         "share": "Share",
         "export": "Export"
       },
-
       "access_level": {
         "private_description": "Only invited members can access.",
         "public_view_description": "Anyone with the direct link can view.",
         "public_edit_description": "Anyone with the direct link can view and edit."
       },
-
       "export_coming_soon": "Coming soon!"
     },
-
     "delete": {
       "action": "Delete",
       "title": "Delete Board",
@@ -308,21 +260,18 @@
       "inputPlaceholder": "Enter board name"
     }
   },
-
   "guestNameParts": {
     "Swift": "Swift",
     "Silent": "Silent",
     "Brave": "Brave",
     "Clever": "Clever",
     "Mighty": "Mighty",
-
     "Lion": "Lion",
     "Eagle": "Eagle",
     "Wolf": "Wolf",
     "Tiger": "Tiger",
     "Bear": "Bear"
   },
-
   "toolbar": {
     "tools": {
       "select": "Select",
@@ -375,13 +324,10 @@
       "stroke_solid": "Solid",
       "stroke_dashed": "Dashed",
       "stroke_dash_dotted": "Dash-Dotted",
-
       "multipleSelected": "{count} elements selected",
-
       "delete": "Delete Selected"
     }
   },
-
   "email": {
     "signup": {
       "subject": "Confirm your email address",
@@ -397,5 +343,39 @@
       "warning": "If you did not request a password reset, please ignore this email or contact support.",
       "rights": "© {year} Power Paint. All rights reserved."
     }
+  },
+  "help_dialog": {
+    "trigger_title": "Help and shortcuts",
+    "title": "Help and shortcuts",
+    "description": "List of all hotkeys and main features",
+    "tools": "Tools",
+    "tool_select": "Select",
+    "tool_hand": "Hand",
+    "tool_rect": "Rectangle",
+    "tool_circle": "Circle",
+    "tool_draw": "Draw",
+    "tool_eraser": "Eraser",
+    "tool_text": "Text",
+    "actions": "Actions",
+    "action_copy": "Copy",
+    "action_paste": "Paste",
+    "action_duplicate": "Duplicate",
+    "action_delete": "Delete selection",
+    "action_undo": "Undo",
+    "action_redo": "Redo",
+    "canvas": "Canvas controls",
+    "canvas_zoom": "Zoom",
+    "canvas_pan": "Pan",
+    "canvas_context_menu": "Context menu",
+    "canvas_multi_select": "Multi-selection",
+    "features": "Features",
+    "feature_smart_copy": "Smart copy",
+    "feature_export": "Export selection",
+    "feature_multiplayer": "Multiplayer",
+    "feature_smart_navigation": "Smart navigation",
+    "keys_mouse_wheel": "Mouse wheel",
+    "keys_lmb": "LMB",
+    "keys_rmb": "RMB",
+    "label_or": "or"
   }
 }

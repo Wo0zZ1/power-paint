@@ -32,6 +32,7 @@ import {
   UserCursors,
   DeleteSelectionButton,
   BackToContentButton,
+  HelpButton,
 } from "./overlay";
 import { ActiveUsers } from "./overlay/ActiveUsers";
 import { ConnectionStatus } from "./overlay/ConnectionStatus";
@@ -144,6 +145,11 @@ export function KonvaBoard({
               tools={!canEdit ? ["select", "hand"] : undefined}
               className="pointer-events-auto"
             />
+          </div>
+
+          {/* Bottom Right */}
+          <div className="absolute bottom-0 right-0 hidden md:flex items-end justify-end">
+            <HelpButton className="pointer-events-auto" />
           </div>
         </div>
 
