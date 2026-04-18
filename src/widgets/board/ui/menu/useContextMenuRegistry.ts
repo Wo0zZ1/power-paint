@@ -1,3 +1,5 @@
+import { useTranslations } from "next-intl";
+
 import {
   type ContextMenuType,
   useBoardStore,
@@ -13,6 +15,8 @@ export interface MenuItem {
 }
 
 export const useContextMenuRegistry = () => {
+  const t = useTranslations("board.context_menu");
+
   const { copy, copyAsImage, paste, duplicate } = useCopyPast();
   const removeSelectedElements = useBoardStore((s) => s.removeSelectedElements);
   const closeMenu = useContextMenuStore((s) => s.closeMenu);
@@ -22,7 +26,7 @@ export const useContextMenuRegistry = () => {
       case "canvas":
         return [
           {
-            label: "Вставить",
+            label: t("paste"),
             shortcut: "Ctrl+V",
             action: () => {
               paste();
@@ -33,7 +37,7 @@ export const useContextMenuRegistry = () => {
       case "element":
         return [
           {
-            label: "Копировать",
+            label: t("copy"),
             shortcut: "Ctrl+C",
             action: () => {
               copy();
@@ -41,14 +45,14 @@ export const useContextMenuRegistry = () => {
             },
           },
           {
-            label: "Копировать как PNG",
+            label: t("copy_as_png"),
             action: () => {
               copyAsImage();
               closeMenu();
             },
           },
           {
-            label: "Вставить",
+            label: t("paste"),
             shortcut: "Ctrl+V",
             action: () => {
               paste();
@@ -56,7 +60,7 @@ export const useContextMenuRegistry = () => {
             },
           },
           {
-            label: "Дублировать",
+            label: t("duplicate"),
             shortcut: "Ctrl+D",
             action: () => {
               duplicate();
@@ -65,7 +69,7 @@ export const useContextMenuRegistry = () => {
             separator: true,
           },
           {
-            label: "Удалить",
+            label: t("delete"),
             shortcut: "Del",
             action: () => {
               removeSelectedElements();

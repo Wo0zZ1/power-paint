@@ -239,6 +239,13 @@
   },
 
   "board": {
+    "context_menu": {
+      "copy": "Copy",
+      "copy_as_png": "Copy as PNG",
+      "paste": "Paste",
+      "duplicate": "Duplicate",
+      "delete": "Delete"
+    },
     "plural": "Boards",
     "all": "All Boards",
     "personal": "Personal Boards",
