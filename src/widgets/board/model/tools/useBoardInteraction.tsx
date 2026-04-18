@@ -1,7 +1,7 @@
 import type Konva from "konva";
 import { useCallback } from "react";
 
-import { useBoardStore } from "../core";
+import { useBoardStore, useContextMenuStore } from "../core";
 
 import { shouldPan, useViewport } from "./useViewport";
 
@@ -26,6 +26,33 @@ export const useBoardInteraction = ({ canEdit }: UseBoardInteractionProps) => {
   const { startPointerCircleDraw, startTouchCircleDraw } = useCircleDrawing();
   const { startPointerTextDraw, startTouchTextDraw } = useTextDrawing();
   const { startPointerErase, startTouchErase } = useEraser();
+
+  const handleContextMenu = (e: Konva.KonvaEventObject<MouseEvent>) => {
+    e.evt.preventDefault();
+    if (!canEdit) return;
+
+    const stage = e.target.getStage();
+    if (!stage) return;
+
+    let clickType: "canvas" | "element" = "element";
+
+    if (e.target === stage) {
+      clickType = "canvas";
+    } else {
+      const id = e.target.id();
+      const store = useBoardStore.getState();
+
+      if (!store.selectedIds.has(id)) {
+        store.setTool("select");
+        store.setSelectionType("transform");
+        store.pureSelectMany(new Set([id]));
+      }
+    }
+
+    useContextMenuStore
+      .getState()
+      .openMenu(e.evt.clientX, e.evt.clientY, clickType);
+  };
 
   const handlePointerDown = useCallback(
     (e: Konva.KonvaEventObject<PointerEvent>) => {
@@ -102,6 +129,7 @@ export const useBoardInteraction = ({ canEdit }: UseBoardInteractionProps) => {
   return {
     handlePointerDown,
     handleTouchStart,
+    handleContextMenu,
     handleZoom,
   };
 };

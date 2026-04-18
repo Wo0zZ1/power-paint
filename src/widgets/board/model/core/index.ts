@@ -1,4 +1,5 @@
 export * from "./useBoardStore";
+export * from "./useContextMenuStore";
 export * from "./useHocuspocus";
 export * from "./useHotKeys";
 export * from "./useMouseAwareness";

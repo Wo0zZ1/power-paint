@@ -25,6 +25,7 @@ import {
   SelectionElement,
   EraserElement,
 } from "./elements";
+import { BoardContextMenu } from "./menu/BoardContextMenu";
 import {
   UndoRedoControls,
   ZoomControls,
@@ -71,7 +72,7 @@ export function KonvaBoard({
   const { handleTouchMove, handlePointerMove, handlePointerLeave } =
     useMouseAwareness();
 
-  const { handlePointerDown, handleTouchStart, handleZoom } =
+  const { handlePointerDown, handleTouchStart, handleContextMenu, handleZoom } =
     useBoardInteraction({ canEdit });
 
   useEffect(() => {
@@ -153,6 +154,7 @@ export function KonvaBoard({
           onWheel={handleZoom}
           onPointerDown={handlePointerDown}
           onTouchStart={handleTouchStart}
+          onContextMenu={handleContextMenu}
         >
           <Layer ref={contentLayerRef}>
             <LayerContent canEdit={canEdit} />
@@ -168,6 +170,8 @@ export function KonvaBoard({
             <UserCursors />
           </Layer>
         </Stage>
+
+        <BoardContextMenu />
       </div>
     </div>
   );
