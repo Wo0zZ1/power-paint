@@ -2,11 +2,13 @@ import type Konva from "konva";
 import { useCallback } from "react";
 
 import { useBoardStore, useContextMenuStore } from "../core";
+import { getElements, getElementsBounds, screenToCanvas } from "../lib";
 
 import { shouldPan, useViewport } from "./useViewport";
 
 import {
   useCircleDrawing,
+  useDragElements,
   useDrawing,
   useEraser,
   useRectDrawing,
@@ -21,6 +23,9 @@ interface UseBoardInteractionProps {
 export const useBoardInteraction = ({ canEdit }: UseBoardInteractionProps) => {
   const { handleZoom, startPointerPan, startTouchPan } = useViewport();
   const { startPointerSelect, startTouchSelect } = useSelectionRect();
+  const { startPointerDrag, startTouchDrag } = useDragElements({
+    canEdit: canEdit || false,
+  });
   const { startPointerDraw, startTouchDraw } = useDrawing();
   const { startPointerRectDraw, startTouchRectDraw } = useRectDrawing();
   const { startPointerCircleDraw, startTouchCircleDraw } = useCircleDrawing();
@@ -35,17 +40,47 @@ export const useBoardInteraction = ({ canEdit }: UseBoardInteractionProps) => {
     if (!stage) return;
 
     let clickType: "canvas" | "element" = "element";
+    const store = useBoardStore.getState();
 
     if (e.target === stage) {
       clickType = "canvas";
+
+      const pos = stage.getPointerPosition();
+      if (
+        pos &&
+        store.selectedIds.size > 0 &&
+        store.selectionType === "transform"
+      ) {
+        const [targetX, targetY] = screenToCanvas(pos.x, pos.y, store.viewport);
+
+        const selectedElements = getElements(
+          Array.from(store.elements.values()),
+          Array.from(store.selectedIds),
+        );
+
+        const bounds = getElementsBounds(selectedElements);
+        if (bounds) {
+          if (
+            targetX >= bounds.minX &&
+            targetX <= bounds.maxX &&
+            targetY >= bounds.minY &&
+            targetY <= bounds.maxY
+          ) {
+            clickType = "element";
+          } else {
+            store.deselectMany(store.selectedIds);
+          }
+        }
+      } else {
+        store.deselectMany(store.selectedIds);
+      }
     } else {
       const id = e.target.id();
-      const store = useBoardStore.getState();
 
       if (!store.selectedIds.has(id)) {
         store.setTool("select");
         store.setSelectionType("transform");
-        store.pureSelectMany(new Set([id]));
+        store.pureSelect(id);
       }
     }
 
@@ -58,13 +93,50 @@ export const useBoardInteraction = ({ canEdit }: UseBoardInteractionProps) => {
     (e: Konva.KonvaEventObject<PointerEvent>) => {
       if (e.evt.pointerType === "touch") return;
 
-      const { tool, clearSelection } = useBoardStore.getState();
+      const {
+        tool,
+        viewport,
+        elements,
+        selectedIds,
+        selectionType,
+        clearSelection,
+      } = useBoardStore.getState();
 
       if (tool === "hand" || shouldPan(e.evt)) return startPointerPan(e);
 
       if (e.evt.button !== 0) return;
 
-      if (tool === "select") return startPointerSelect(e);
+      if (tool === "select") {
+        const stage = e.target.getStage();
+        if (
+          stage &&
+          e.target === stage &&
+          selectedIds.size > 0 &&
+          selectionType === "transform"
+        ) {
+          const pos = stage.getPointerPosition();
+          if (pos) {
+            const [targetX, targetY] = screenToCanvas(pos.x, pos.y, viewport);
+            const selectedElements = getElements(
+              Array.from(elements.values()),
+              Array.from(selectedIds),
+            );
+
+            const bounds = getElementsBounds(selectedElements);
+            if (
+              bounds &&
+              targetX >= bounds.minX &&
+              targetX <= bounds.maxX &&
+              targetY >= bounds.minY &&
+              targetY <= bounds.maxY
+            ) {
+              return startPointerDrag(e);
+            }
+          }
+        }
+
+        return startPointerSelect(e);
+      }
 
       clearSelection();
 
@@ -82,6 +154,7 @@ export const useBoardInteraction = ({ canEdit }: UseBoardInteractionProps) => {
       canEdit,
       startPointerPan,
       startPointerSelect,
+      startPointerDrag,
       startPointerDraw,
       startPointerRectDraw,
       startPointerCircleDraw,
@@ -94,13 +167,49 @@ export const useBoardInteraction = ({ canEdit }: UseBoardInteractionProps) => {
     (e: Konva.KonvaEventObject<TouchEvent>): void => {
       if (e.evt.cancelable) e.evt.preventDefault();
 
-      const { tool, clearSelection } = useBoardStore.getState();
+      const {
+        tool,
+        clearSelection,
+        viewport,
+        elements,
+        selectedIds,
+        selectionType,
+      } = useBoardStore.getState();
 
       if (tool === "hand" || e.evt.touches.length >= 2) return startTouchPan(e);
 
       if (e.evt.touches.length > 1) return;
 
-      if (tool === "select") return startTouchSelect(e);
+      if (tool === "select") {
+        const stage = e.target.getStage();
+        if (
+          stage &&
+          e.target === stage &&
+          selectedIds.size > 0 &&
+          selectionType === "transform"
+        ) {
+          const pos = stage.getPointerPosition();
+          if (pos) {
+            const [targetX, targetY] = screenToCanvas(pos.x, pos.y, viewport);
+            const selectedElements = getElements(
+              Array.from(elements.values()),
+              Array.from(selectedIds),
+            );
+
+            const bounds = getElementsBounds(selectedElements);
+            if (
+              bounds &&
+              targetX >= bounds.minX &&
+              targetX <= bounds.maxX &&
+              targetY >= bounds.minY &&
+              targetY <= bounds.maxY
+            ) {
+              return startTouchDrag(e);
+            }
+          }
+        }
+        return startTouchSelect(e);
+      }
 
       clearSelection();
 
@@ -118,6 +227,7 @@ export const useBoardInteraction = ({ canEdit }: UseBoardInteractionProps) => {
       canEdit,
       startTouchPan,
       startTouchSelect,
+      startTouchDrag,
       startTouchDraw,
       startTouchRectDraw,
       startTouchCircleDraw,
