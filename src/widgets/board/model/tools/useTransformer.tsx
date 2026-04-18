@@ -26,7 +26,13 @@ export const useTransformer = ({ canEdit }: UseTransformerProps) => {
     [canEdit],
   );
 
-  const handleTransform = useThrottledCallback(
+  const throttledStoreUpdate = useThrottledCallback(
+    (updates: Map<string, Record<string, unknown>>) => {
+      useBoardStore.getState().updateElements(updates);
+    },
+  );
+
+  const handleTransform = useCallback(
     (e: KonvaEventObject<PointerEvent, Node<NodeConfig>>) => {
       const transformer = e.currentTarget as unknown as Transformer;
       const elements = useBoardStore.getState().elements;
@@ -85,9 +91,11 @@ export const useTransformer = ({ canEdit }: UseTransformerProps) => {
         updates.set(node.id(), node.getAttrs());
       });
 
-      useBoardStore.getState().updateElements(updates);
       transformer.forceUpdate();
+
+      throttledStoreUpdate(updates);
     },
+    [throttledStoreUpdate],
   );
 
   return { handleTransformStart, handleTransform };
