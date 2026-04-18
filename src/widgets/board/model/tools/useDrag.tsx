@@ -54,6 +54,7 @@ export const useDragElements = ({ canEdit }: UseDragElementsProps) => {
     (e: Konva.KonvaEventObject<PointerEvent>) => {
       if (e.evt.pointerType === "touch") return;
       if (!canEdit || shouldPan(e.evt)) return;
+      if (e.evt.button !== 0) return;
 
       const { tool } = useBoardStore.getState();
       if (tool !== "select") return;
