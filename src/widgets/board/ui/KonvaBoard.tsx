@@ -161,8 +161,8 @@ export function KonvaBoard({
           </Layer>
 
           <Layer>
-            <TransformerTool canEdit={canEdit} ref={transformerRef} />
             <SelectionElement ref={selectionRectRef} />
+            <TransformerTool canEdit={canEdit} ref={transformerRef} />
             <EraserElement ref={eraserLineRef} />
           </Layer>
 
