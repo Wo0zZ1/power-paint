@@ -29,7 +29,8 @@ export const useContextMenuRegistry = () => {
             label: t("paste"),
             shortcut: "Ctrl+V",
             action: () => {
-              paste();
+              const { stageX, stageY } = useContextMenuStore.getState();
+              paste({ x: stageX, y: stageY });
               closeMenu();
             },
           },
@@ -55,7 +56,8 @@ export const useContextMenuRegistry = () => {
             label: t("paste"),
             shortcut: "Ctrl+V",
             action: () => {
-              paste();
+              const { stageX, stageY } = useContextMenuStore.getState();
+              paste({ x: stageX, y: stageY });
               closeMenu();
             },
           },

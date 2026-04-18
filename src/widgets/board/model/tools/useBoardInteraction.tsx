@@ -84,9 +84,11 @@ export const useBoardInteraction = ({ canEdit }: UseBoardInteractionProps) => {
       }
     }
 
+    const pos = stage.getPointerPosition();
+
     useContextMenuStore
       .getState()
-      .openMenu(e.evt.clientX, e.evt.clientY, clickType);
+      .openMenu(e.evt.clientX, e.evt.clientY, clickType, pos?.x, pos?.y);
   };
 
   const handlePointerDown = useCallback(

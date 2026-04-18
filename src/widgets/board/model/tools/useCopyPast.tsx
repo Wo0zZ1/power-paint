@@ -12,17 +12,24 @@ import {
 import { type ElementType } from "../types";
 
 export const useCopyPast = () => {
-  const duplicate = (elements: ElementType[]) => {
+  const duplicate = (
+    elements: ElementType[],
+    options?: {
+      forcedPos?: { x: number; y: number };
+      useOffsetOnly?: boolean;
+    },
+  ) => {
     const { stage, viewport } = useBoardStore.getState();
     if (!stage || elements.length === 0) return;
 
     const duplicatedElements = duplicateElements(elements);
 
-    const pos = stage.getPointerPosition();
+    const pos = options?.forcedPos || stage.getPointerPosition();
+    const useOffsetOnly = options?.useOffsetOnly || false;
     let shiftX = 20;
     let shiftY = 20;
 
-    if (pos) {
+    if (pos && !useOffsetOnly) {
       const [targetX, targetY] = screenToCanvas(pos.x, pos.y, viewport);
 
       const bounds = getElementsBounds(elements);
@@ -71,19 +78,22 @@ export const useCopyPast = () => {
     // TODO: implement copy as image for multiple selection
   }, []);
 
-  const handlePaste = useCallback(async () => {
-    try {
-      const clipboardData = await navigator.clipboard.readText();
-      if (!clipboardData) return;
+  const handlePaste = useCallback(
+    async (forcedPos?: { x: number; y: number }) => {
+      try {
+        const clipboardData = await navigator.clipboard.readText();
+        if (!clipboardData) return;
 
-      const parsedData = clipboardToElements(clipboardData);
-      if (!parsedData) return;
+        const parsedData = clipboardToElements(clipboardData);
+        if (!parsedData) return;
 
-      duplicate(parsedData);
-    } catch (err) {
-      console.error("Paste failed:", err);
-    }
-  }, []);
+        duplicate(parsedData, { forcedPos });
+      } catch (err) {
+        console.error("Paste failed:", err);
+      }
+    },
+    [],
+  );
 
   const handleDuplicate = useCallback(() => {
     const { elements, selectedIds, selectionType } = useBoardStore.getState();
@@ -94,7 +104,7 @@ export const useCopyPast = () => {
       Array.from(selectedIds),
     );
 
-    duplicate(selectedElements);
+    duplicate(selectedElements, { useOffsetOnly: true });
   }, []);
 
   return {
