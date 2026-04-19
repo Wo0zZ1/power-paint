@@ -21,12 +21,12 @@ interface TransformerToolProps {
 export function TransformerTool({ canEdit, ref }: TransformerToolProps) {
   const selectedIds = useBoardStore(useShallow((s) => s.selectedIds));
   const selectionType = useBoardStore(useShallow((s) => s.selectionType));
+  const elements = useBoardStore(useShallow((s) => s.elements));
+
   const viewportScale = useBoardStore((s) => s.viewport.scale);
   const shiftPressed = useBoardStore((s) => s.modifiers.shift);
 
   const { handleTransformStart, handleTransform } = useTransformer({ canEdit });
-
-  const elements = useBoardStore(useShallow((s) => s.elements));
 
   const isTextSelected = Array.from(selectedIds).some(
     (id) => elements.get(id)?.type === "text",
@@ -42,6 +42,11 @@ export function TransformerTool({ canEdit, ref }: TransformerToolProps) {
     enabledAnchors = ["top-left", "top-right", "bottom-left", "bottom-right"];
   }
 
+  const presentSelectedIds = Array.from(selectedIds)
+    .filter((id) => elements.has(id))
+    .sort()
+    .join(",");
+
   useEffect(() => {
     const transformer = ref.current;
     if (!transformer) return;
@@ -51,10 +56,11 @@ export function TransformerTool({ canEdit, ref }: TransformerToolProps) {
     const contentLayer = useBoardStore.getState().contentLayer;
     if (!contentLayer) return;
 
-    const nodes = getKonvaNodesFromLayer(contentLayer, Array.from(selectedIds));
+    const validIds = presentSelectedIds ? presentSelectedIds.split(",") : [];
+    const nodes = getKonvaNodesFromLayer(contentLayer, validIds);
 
     transformer.nodes(nodes);
-  }, [ref, elements, selectedIds, selectionType]);
+  }, [ref, selectionType, presentSelectedIds]);
 
   return (
     <Transformer
