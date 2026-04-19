@@ -1,5 +1,5 @@
 import type Konva from "konva";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 
 import { useBoardStore, useContextMenuStore } from "../core";
 import { getElements, getElementsBounds, screenToCanvas } from "../lib";
@@ -31,6 +31,21 @@ export const useBoardInteraction = ({ canEdit }: UseBoardInteractionProps) => {
   const { startPointerCircleDraw, startTouchCircleDraw } = useCircleDrawing();
   const { startPointerTextDraw, startTouchTextDraw } = useTextDrawing();
   const { startPointerErase, startTouchErase } = useEraser();
+
+  useEffect(() => {
+    const handleCancel = () => {
+      window.dispatchEvent(new PointerEvent("pointerup"));
+      window.dispatchEvent(new TouchEvent("touchend"));
+    };
+
+    window.addEventListener("blur", handleCancel);
+    document.addEventListener("visibilitychange", handleCancel);
+
+    return () => {
+      window.removeEventListener("blur", handleCancel);
+      document.removeEventListener("visibilitychange", handleCancel);
+    };
+  }, []);
 
   const handleContextMenu = (e: Konva.KonvaEventObject<MouseEvent>) => {
     e.evt.preventDefault();
