@@ -7,6 +7,19 @@ import { Input } from "@/shared/ui";
 
 import { useNumberInput } from "../lib/hooks";
 
+interface NumberFieldProps extends Omit<
+  ComponentProps<typeof Input>,
+  "value" | "onChange"
+> {
+  label?: ReactNode;
+  value: number | string;
+  modulo?: number;
+  isFloat?: boolean;
+  requireInteger?: boolean;
+  onChange: (v: number) => void;
+  onFocus?: (e: React.FocusEvent<HTMLInputElement>) => void;
+}
+
 export function NumberField({
   className,
   label,
@@ -14,28 +27,27 @@ export function NumberField({
   min,
   max,
   modulo,
+  isFloat = false,
   onChange,
   onFocus,
   ...props
-}: {
-  label?: ReactNode;
-  value: number | string;
-  modulo?: number;
-  onChange: (v: number) => void;
-} & Omit<ComponentProps<typeof Input>, "value" | "onChange">) {
+}: NumberFieldProps) {
+  const processedValue =
+    value !== "mixed" && !isFloat ? Math.round(Number(value)) : value;
+
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   const { handleChange } = useNumberInput({
-    value,
+    value: processedValue,
     onChange,
     inputRef,
     min,
     max,
     modulo,
+    isFloat,
   });
 
-  const isMixed = value === "mixed";
-  const normalizedType = isMixed ? "text" : "number";
+  const normalizedType = processedValue === "mixed" ? "text" : "number";
 
   return (
     <div className="flex items-center gap-2">
@@ -44,7 +56,7 @@ export function NumberField({
       <Input
         ref={inputRef}
         type={normalizedType}
-        defaultValue={value}
+        defaultValue={processedValue}
         onChange={handleChange}
         onFocus={(e) => {
           e.target.select();

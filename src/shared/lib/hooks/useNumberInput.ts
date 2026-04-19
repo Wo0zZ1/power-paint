@@ -22,6 +22,7 @@ interface UseNumberInputOptions {
   min?: number | string;
   max?: number | string;
   modulo?: number;
+  isFloat?: boolean;
 }
 
 export function useNumberInput({
@@ -31,6 +32,7 @@ export function useNumberInput({
   min,
   max,
   modulo,
+  isFloat,
 }: UseNumberInputOptions) {
   useEffect(() => {
     const newValue = initValue(value, modulo);
@@ -54,13 +56,13 @@ export function useNumberInput({
 
       if (!NUMBER_REGEX.test(v)) return;
 
-      const n = Number(v);
+      const n = isFloat ? Number(v) : Math.round(Number(v));
 
       if (isNaN(n)) return;
 
       throttledOnChange(n);
     },
-    [throttledOnChange],
+    [isFloat, throttledOnChange],
   );
 
   return {
