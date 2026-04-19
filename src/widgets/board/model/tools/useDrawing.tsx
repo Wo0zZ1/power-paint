@@ -5,7 +5,7 @@ import { DEFAULT_CAPTURE_TIMEOUT } from "@/shared/constants";
 import { useThrottledCallback } from "@/shared/lib/hooks";
 
 import { useBoardStore } from "../core";
-import { screenToCanvas } from "../lib";
+import { getDrawElementLocalBounds, screenToCanvas } from "../lib";
 import type { DrawElementType } from "../types";
 import { createDraw } from "../types";
 
@@ -67,10 +67,7 @@ export const useDrawing = () => {
       return;
     }
 
-    const xs = points.filter((_, i) => i % 2 === 0);
-    const ys = points.filter((_, i) => i % 2 === 1);
-    const minX = Math.min(...xs);
-    const minY = Math.min(...ys);
+    const { minX, minY } = getDrawElementLocalBounds(points);
 
     const normalizedPoints = points.map((v, i) =>
       i % 2 === 0 ? v - minX : v - minY,

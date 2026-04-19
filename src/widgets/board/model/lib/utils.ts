@@ -6,6 +6,7 @@ import { degToRad } from "@/shared/lib/utils";
 
 import type {
   CircleElementType,
+  ElementType,
   FillType,
   GradientType,
   RectElementType,
@@ -140,5 +141,74 @@ export const getTextHitFunc = () => {
     context.rect(0, 0, shape.width(), shape.height());
     context.closePath();
     context.fillStrokeShape(shape);
+  };
+};
+
+// Draw Element
+
+export const getDrawElementLocalBounds = (
+  points: number[],
+): { minX: number; minY: number; maxX: number; maxY: number } => {
+  let minX = Infinity;
+  let minY = Infinity;
+  let maxX = -Infinity;
+  let maxY = -Infinity;
+
+  for (let i = 0; i < points.length; i += 2) {
+    if (points[i] < minX) minX = points[i];
+    if (points[i] > maxX) maxX = points[i];
+    if (points[i + 1] < minY) minY = points[i + 1];
+    if (points[i + 1] > maxY) maxY = points[i + 1];
+  }
+
+  if (minX === Infinity) return { minX: 0, minY: 0, maxX: 0, maxY: 0 };
+
+  return { minX, minY, maxX, maxY };
+};
+
+// Rotation util
+
+export const rotateElementAroundCenter = (
+  element: ElementType,
+  newRotation: number,
+): Partial<ElementType> => {
+  let cx_local = 0;
+  let cy_local = 0;
+
+  if ("width" in element && "height" in element) {
+    cx_local = element.width / 2;
+    cy_local = element.height / 2;
+  } else if (element.type === "draw") {
+    const { minX, minY, maxX, maxY } = getDrawElementLocalBounds(
+      element.points,
+    );
+    cx_local = (minX + maxX) / 2;
+    cy_local = (minY + maxY) / 2;
+  } else {
+    return { rotation: newRotation };
+  }
+
+  const rad1 = element.rotation * (Math.PI / 180);
+  const rad2 = newRotation * (Math.PI / 180);
+
+  // Вычисляем глобальный центр элемента до поворота
+  const global_cx =
+    element.x + cx_local * Math.cos(rad1) - cy_local * Math.sin(rad1);
+  const global_cy =
+    element.y + cx_local * Math.sin(rad1) + cy_local * Math.cos(rad1);
+
+  // Вычисляем новый x, y, чтобы глобальный центр остался тем же самым
+  const new_x =
+    global_cx - (cx_local * Math.cos(rad2) - cy_local * Math.sin(rad2));
+  const new_y =
+    global_cy - (cx_local * Math.sin(rad2) + cy_local * Math.cos(rad2));
+
+  // Нормализуем значение rotation для результата: от 0 до 359.99...
+  const finalRotation = ((newRotation % 360) + 360) % 360;
+
+  return {
+    x: new_x,
+    y: new_y,
+    rotation: finalRotation,
   };
 };

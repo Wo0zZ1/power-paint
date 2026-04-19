@@ -2,6 +2,7 @@
 
 import { RotateCcw, RotateCw } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { useCallback } from "react";
 
 import { TOOLTIP_DELAY } from "@/shared/constants";
 import {
@@ -14,7 +15,10 @@ import {
 } from "@/shared/ui";
 
 import type { PropertySectionProps } from "../../model";
-import { getCommonElementProperties } from "../../model";
+import {
+  getCommonElementProperties,
+  rotateElementAroundCenter,
+} from "../../model";
 import { SidebarBlock } from "../sidebar";
 
 import { PropertiesRow } from "./PropertiesRow";
@@ -28,6 +32,24 @@ export function RotationSection({ elements, update }: PropertySectionProps) {
     "mixed",
   );
 
+  const handleRotate = useCallback(
+    (rotation: number = 0) => {
+      update((prev) => rotateElementAroundCenter(prev, rotation));
+    },
+    [update],
+  );
+
+  const handleRotateDiff = useCallback(
+    (rotationDiff: number = 0) => {
+      update((prev) =>
+        rotateElementAroundCenter(prev, prev.rotation + rotationDiff),
+      );
+    },
+    [update],
+  );
+
+  if (elements.length > 1) return null;
+
   return (
     <SidebarBlock title={t("rotation")}>
       <PropertiesRow>
@@ -35,15 +57,13 @@ export function RotationSection({ elements, update }: PropertySectionProps) {
           label={"°"}
           value={elementsRotation}
           modulo={360}
-          onChange={(v) => update({ rotation: v })}
+          onChange={handleRotate}
         />
         <ButtonGroup>
           <Tooltip delayDuration={TOOLTIP_DELAY} disableHoverableContent>
             <TooltipTrigger asChild>
               <Button
-                onClick={() =>
-                  update((prev) => ({ rotation: prev.rotation - 45 }))
-                }
+                onClick={() => handleRotateDiff(-45)}
                 variant="outline"
                 size="icon-sm"
               >
@@ -56,7 +76,7 @@ export function RotationSection({ elements, update }: PropertySectionProps) {
           <Tooltip delayDuration={TOOLTIP_DELAY} disableHoverableContent>
             <TooltipTrigger asChild>
               <Button
-                onClick={() => update({ rotation: 0 })}
+                onClick={() => handleRotate(0)}
                 variant="outline"
                 size="sm"
               >
@@ -69,9 +89,7 @@ export function RotationSection({ elements, update }: PropertySectionProps) {
           <Tooltip delayDuration={TOOLTIP_DELAY} disableHoverableContent>
             <TooltipTrigger asChild>
               <Button
-                onClick={() =>
-                  update((prev) => ({ rotation: prev.rotation + 45 }))
-                }
+                onClick={() => handleRotateDiff(45)}
                 variant="outline"
                 size="icon-sm"
               >

@@ -148,7 +148,7 @@ export function KonvaBoard({
           </div>
 
           {/* Bottom Right */}
-          <div className="absolute bottom-0 right-0 hidden md:flex items-end justify-end">
+          <div className="absolute bottom-0 right-0">
             <HelpButton className="pointer-events-auto" />
           </div>
         </div>
