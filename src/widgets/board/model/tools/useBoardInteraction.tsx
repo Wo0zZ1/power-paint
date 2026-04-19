@@ -93,6 +93,8 @@ export const useBoardInteraction = ({ canEdit }: UseBoardInteractionProps) => {
 
   const handlePointerDown = useCallback(
     (e: Konva.KonvaEventObject<PointerEvent>) => {
+      window.getSelection()?.removeAllRanges();
+
       if (e.evt.pointerType === "touch") return;
 
       const {
@@ -167,6 +169,8 @@ export const useBoardInteraction = ({ canEdit }: UseBoardInteractionProps) => {
 
   const handleTouchStart = useCallback(
     (e: Konva.KonvaEventObject<TouchEvent>): void => {
+      window.getSelection()?.removeAllRanges();
+
       if (e.evt.cancelable) e.evt.preventDefault();
 
       const {
