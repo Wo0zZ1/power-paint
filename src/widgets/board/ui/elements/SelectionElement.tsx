@@ -15,9 +15,9 @@ export function SelectionElement({ ref }: SelectionElementProps) {
     <Rect
       ref={ref}
       visible={false}
-      fill="rgba(0, 0, 255, 0.1)"
-      stroke="blue"
-      strokeWidth={1 / viewportScale}
+      fill="rgba(180, 176, 255, 0.15)"
+      stroke="#B4B0FF"
+      strokeWidth={0.5 / viewportScale}
       listening={false}
     />
   );
