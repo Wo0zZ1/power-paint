@@ -39,7 +39,6 @@ import {
 } from "@/entities/board";
 import { useGetWorkspacesQuery } from "@/entities/workspace";
 
-
 interface CreateBoardModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -120,9 +119,9 @@ export function CreateBoardModal({
                 id="board-name"
                 {...register("name", { required: true })}
               />
-              {errors.name && (
+              {errors.name?.message && (
                 <span className="text-sm text-destructive">
-                  {errors.name.message}
+                  {t(errors.name.message)}
                 </span>
               )}
             </Field>
@@ -146,9 +145,9 @@ export function CreateBoardModal({
                         </SelectItem>
                       ))}
                     </SelectContent>
-                    {errors.workspaceId && (
+                    {errors.workspaceId?.message && (
                       <span className="text-sm text-destructive">
-                        {errors.workspaceId.message}
+                        {t(errors.workspaceId.message)}
                       </span>
                     )}
                   </Select>

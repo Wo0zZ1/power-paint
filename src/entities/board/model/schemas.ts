@@ -6,24 +6,24 @@ import { accessLevelSchema } from "@/shared/lib/schemas";
 
 const boardNameSchema = z
   .string()
-  .min(3, "Name must be at least 3 characters long")
-  .max(25, "Name must be less than 25 characters long");
+  .min(3, "board.errors.name_too_short")
+  .max(25, "board.errors.name_too_long");
 
 const getWorkspaceIdSchema = (workspaceIds: Workspace["id"][]) => {
   const validWorkspaceIds = new Set(workspaceIds);
 
   return z
-    .uuid("Invalid workspace ID format")
+    .uuid("workspace.errors.invalid_id")
     .refine(
       (id) => validWorkspaceIds.size === 0 || validWorkspaceIds.has(id),
-      "Selected workspace does not exist or you don't have access",
+      "workspace.errors.not_found_or_no_access",
     );
 };
 
 const boardMemberSchema = z.object({
   userId: z.uuid(),
   role: z.enum(MemberRole, {
-    error: "Invalid member role",
+    error: "board.errors.invalid_member_role",
   }),
 });
 

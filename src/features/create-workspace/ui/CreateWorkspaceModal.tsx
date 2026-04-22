@@ -8,29 +8,25 @@ import { useForm } from "react-hook-form";
 
 import { cn } from "@/utils";
 
-import { ROUTES } from "@/shared/config";
+import { ROUTES } from "@/shared/config/routes";
+import { Button } from "@/shared/ui/button";
 import {
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogDescription,
-  FieldGroup,
-  Field,
-  Input,
   DialogFooter,
   DialogClose,
-  Button,
-  Spinner,
   Dialog,
-  Label,
-} from "@/shared/ui";
+} from "@/shared/ui/dialog";
+import { FieldGroup, Field } from "@/shared/ui/field";
+import { Input } from "@/shared/ui/input";
+import { Label } from "@/shared/ui/label";
+import { Spinner } from "@/shared/ui/spinner";
 
-import type { CreateWorkspaceFormData } from "@/entities/workspace";
-import {
-  createWorkspaceFormSchema,
-  useCreateWorkspaceMutation,
-} from "@/entities/workspace";
-
+import { useCreateWorkspaceMutation } from "@/entities/workspace/model/mutations";
+import { createWorkspaceFormSchema } from "@/entities/workspace/model/schemas";
+import type { CreateWorkspaceFormData } from "@/entities/workspace/model/schemas";
 
 interface CreateWorkspaceModalProps {
   open: boolean;
@@ -54,7 +50,7 @@ export function CreateWorkspaceModal({
     disabled: createWorkspaceMutation.isPending,
   });
 
-  const { isValid, isSubmitting } = formState;
+  const { isValid, errors, disabled } = formState;
 
   useEffect(() => {
     if (open) reset();
@@ -85,15 +81,16 @@ export function CreateWorkspaceModal({
               <Label htmlFor="workspace-name">
                 {t("workspace.create.inputLabel")}
               </Label>
+
               <Input
                 autoComplete="off"
                 placeholder={t("workspace.create.inputPlaceholder")}
                 id="workspace-name"
                 {...register("name", { required: true })}
               />
-              {formState.errors.name && (
+              {errors.name?.message && (
                 <span className="text-sm text-destructive">
-                  {formState.errors.name.message}
+                  {t(errors.name.message)}
                 </span>
               )}
             </Field>
@@ -105,13 +102,13 @@ export function CreateWorkspaceModal({
             </DialogClose>
 
             <Button
-              disabled={isSubmitting || !isValid}
+              disabled={disabled || !isValid}
               className="transition-colors"
               data-icon="inline-start"
               type="submit"
             >
-              {isSubmitting && <Spinner />}
-              {isSubmitting ? t("creating") : t("create")}
+              {disabled && <Spinner />}
+              <span>{disabled ? t("creating") : t("create")}</span>
             </Button>
           </DialogFooter>
         </form>

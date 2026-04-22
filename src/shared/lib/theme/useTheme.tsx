@@ -2,7 +2,7 @@
 
 import { useLayoutEffect } from "react";
 
-import { useLocalStorage } from "@/shared/lib/hooks";
+import { useLocalStorage } from "@/shared/lib/hooks/useLocalStorage";
 
 import type { Theme } from "./config";
 import { DEFAULT_THEME, THEME_PREFERENCE_STORAGE_KEY } from "./config";

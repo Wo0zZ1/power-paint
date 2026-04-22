@@ -1,19 +1,17 @@
-import { AccessLevel, MemberRole } from "@prisma/client";
+import { MemberRole } from "@prisma/client";
 import { z } from "zod";
+
+import { accessLevelSchema } from "@/shared/lib/schemas";
 
 const workspaceNameSchema = z
   .string()
-  .min(3, "Name must be at least 3 characters long")
-  .max(25, "Name must be less than 25 characters long");
-
-const workspaceAccessLevelSchema = z.enum(AccessLevel, {
-  error: "Invalid access level",
-});
+  .min(3, "workspace.errors.name_too_short")
+  .max(25, "workspace.errors.name_too_long");
 
 export const workspaceMemberSchema = z.object({
   userId: z.uuid(),
   role: z.enum(MemberRole, {
-    error: "Invalid member role",
+    error: "workspace.errors.invalid_member_role",
   }),
 });
 
@@ -25,7 +23,7 @@ export type CreateWorkspaceFormData = z.infer<typeof createWorkspaceFormSchema>;
 
 export const createWorkspaceSchema = createWorkspaceFormSchema.and(
   z.object({
-    accessLevel: workspaceAccessLevelSchema.optional(),
+    accessLevel: accessLevelSchema.optional(),
   }),
 );
 
@@ -34,7 +32,7 @@ export type CreateWorkspaceData = z.infer<typeof createWorkspaceSchema>;
 export const updateWorkspaceSchema = z.object({
   ownerId: z.uuid().optional(),
   name: workspaceNameSchema.optional(),
-  accessLevel: workspaceAccessLevelSchema.optional(),
+  accessLevel: accessLevelSchema.optional(),
   members: z.array(workspaceMemberSchema).optional(),
 });
 

@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-import { WORKSPACES_QUERY_KEY } from "@/shared/constants";
+import { WORKSPACES_QUERY_KEY } from "@/shared/constants/queryKeys";
 
 import { WorkspacesApi } from "./api";
 import type { WorkspaceWithAccess } from "./types";

@@ -157,6 +157,14 @@
     "welcome": "Welcome to your Dashboard."
   },
   "workspace": {
+    "errors": {
+      "name_too_short": "Name must be at least 3 characters long",
+      "name_too_long": "Name must be less than 25 characters long",
+      "invalid_access_level": "Invalid access level",
+      "invalid_member_role": "Invalid member role",
+      "invalid_id": "Invalid workspace ID format",
+      "not_found_or_no_access": "Selected workspace does not exist or you don't have access"
+    },
     "plural": "Workspaces",
     "all": "All Workspaces",
     "empty": "No available workspaces",
@@ -200,6 +208,11 @@
     }
   },
   "board": {
+    "errors": {
+      "name_too_short": "Name must be at least 3 characters long",
+      "name_too_long": "Name must be less than 25 characters long",
+      "invalid_member_role": "Invalid member role"
+    },
     "context_menu": {
       "copy": "Copy",
       "copy_as_png": "Copy as PNG",
