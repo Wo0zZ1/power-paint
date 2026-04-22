@@ -1,12 +1,13 @@
 "use client";
 
 import type { ChangeEvent, ComponentProps, ReactNode } from "react";
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useId, useMemo, useRef, useState } from "react";
 
-import { useOnClickOutside } from "@/lib/hooks";
+import { useOnClickOutside } from "@/lib/hooks/useOnClickOutside";
 
 import { cn } from "@/shared/lib/utils";
-import { InputGroup, InputGroupAddon, InputGroupInput } from "@/shared/ui";
+
+import { InputGroup, InputGroupAddon, InputGroupInput } from "./input-group";
 
 type ComboboxProps<T> = {
   items?: T[];
@@ -44,6 +45,8 @@ export function Combobox<T>({
   EmptyItem,
   renderItem,
 }: ComboboxProps<T>) {
+  const listboxId = useId();
+
   const rootRef = useRef<HTMLDivElement>(null);
 
   const [isFocused, setIsFocused] = useState(false);
@@ -105,6 +108,9 @@ export function Combobox<T>({
     <div ref={rootRef} className={cn("relative w-full", className)}>
       <InputGroup className="h-full px-2">
         <InputGroupInput
+          role="combobox"
+          aria-expanded={isFocused}
+          aria-controls={isFocused ? listboxId : undefined}
           type={type}
           name={name}
           value={input}
@@ -123,9 +129,11 @@ export function Combobox<T>({
 
       {isFocused && (
         <div className="absolute z-50 max-h-56 overflow-y-auto w-full mt-1 rounded-lg border border-border bg-popover shadow-lg text-sm">
-          <ul>
+          <ul id={listboxId} role="listbox">
             {visibleItems?.map((item, index) => (
               <li
+                role="option"
+                aria-selected={index === highlightedIndex}
                 key={index}
                 className={cn("cursor-pointer hover:bg-muted", {
                   "bg-muted": index === highlightedIndex,
