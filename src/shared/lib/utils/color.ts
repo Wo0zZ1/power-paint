@@ -157,7 +157,7 @@ export const hslToHex = (hsl: string): string => {
 };
 
 export const normalizeHexColor = (hex: string): string => {
-  if (!hexColorRegex.test(hex)) throw new Error("Invalid hex color format");
+  if (!hexColorRegex.test(hex)) return hex;
 
   if (!hex.startsWith("#")) hex = `#${hex}`;
 

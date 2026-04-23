@@ -21,10 +21,15 @@ describe("normalizeHexColor function", () => {
     expect(normalizeHexColor(hexColor)).toBe("#aabbcc");
   });
 
-  test("Должна бросить ошибку, если передан некорректный hex цвет", () => {
+  test("Должна вернуть исходную строку, если передан некорректный hex цвет", () => {
     const invalidHexColor = "red";
-    expect(() => normalizeHexColor(invalidHexColor)).toThrow(
-      "Invalid hex color format",
-    );
+    expect(normalizeHexColor(invalidHexColor)).toBe(invalidHexColor);
   });
+
+  // test("Должна бросить ошибку, если передан некорректный hex цвет", () => {
+  //   const invalidHexColor = "red";
+  //   expect(() => normalizeHexColor(invalidHexColor)).toThrow(
+  //     "Invalid hex color format",
+  //   );
+  // });
 });

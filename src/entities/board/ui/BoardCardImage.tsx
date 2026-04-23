@@ -77,6 +77,7 @@ export function BoardCardImage({
             loading="lazy"
             src={imageUrl || preview}
             alt="Board preview image"
+            unoptimized={true}
             onLoad={() => setIsImageLoaded(true)}
             className={cn("object-cover duration-500")}
           />
