@@ -14,12 +14,14 @@ export default async function ProfilePage({
 
   const cookieString = cookieStore.toString();
 
-  const user = await fetch(
+  const userData = await fetch(
     `${url}/${uuid}`,
     fetchInitWithCookies(cookieString),
-  ).then((res) => res.json());
+  );
 
-  if (!user || user.error) notFound();
+  if (!userData.ok) notFound();
+
+  const user = await userData.json();
 
   return <div>{JSON.stringify(user)}</div>;
 
