@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import { redirect } from "next/navigation";
 
@@ -7,6 +8,10 @@ import { auth } from "@/shared/auth";
 import { ROUTES } from "@/shared/config";
 
 import { SigninForm } from "@/widgets/signin-form";
+
+export const metadata: Metadata = {
+  title: "Sign In",
+};
 
 export default async function SigninPage() {
   const session = await auth();

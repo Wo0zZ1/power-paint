@@ -55,7 +55,7 @@ export function AuthenticatedMenu({ session }: AuthenticatedMenuProps) {
             {t("profile")}
           </DropdownMenuLinkItem>
 
-          <DropdownMenuLinkItem disabled href={ROUTES.SETTINGS}>
+          <DropdownMenuLinkItem href="#" disabled>
             {t("settings.title")}
           </DropdownMenuLinkItem>
         </DropdownMenuGroup>

@@ -79,6 +79,7 @@ export function BoardCardImage({
             alt="Board preview image"
             unoptimized={true}
             onLoad={() => setIsImageLoaded(true)}
+            onError={() => setIsImageLoaded(false)}
             className={cn("object-cover duration-500")}
           />
         </div>

@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import Image from "next/image";
 import { redirect } from "next/navigation";
@@ -9,6 +10,10 @@ import { ROUTES } from "@/shared/config";
 import { RESET_PASSWORD_COOKIE } from "@/shared/constants";
 
 import { ForgotPasswordForm } from "@/widgets/forgot-password-form";
+
+export const metadata: Metadata = {
+  title: "Reset Password",
+};
 
 export default async function ForgotPasswordPage() {
   const [session, cookieState] = await Promise.all([auth(), cookies()]);

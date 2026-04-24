@@ -10,7 +10,7 @@ import {
 } from "@/shared/lib/utils";
 import type { IGuestUserCookie } from "@/shared/types";
 
-const PRIVATE_ROUTES = [ROUTES.DASHBOARD.ROOT, ROUTES.SETTINGS] as string[];
+const PRIVATE_ROUTES = [ROUTES.DASHBOARD.ROOT] as string[];
 
 export async function proxy(request: NextRequest) {
   const response = NextResponse.next();

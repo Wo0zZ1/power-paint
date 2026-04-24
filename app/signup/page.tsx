@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import Image from "next/image";
 import { redirect } from "next/navigation";
@@ -9,6 +10,10 @@ import { ROUTES } from "@/shared/config";
 import { VERIFICATION_COOKIE } from "@/shared/constants";
 
 import { SignupForm } from "@/widgets/signup-form";
+
+export const metadata: Metadata = {
+  title: "Sign Up",
+};
 
 export default async function SignupPage() {
   const [session, cookieStore] = await Promise.all([auth(), cookies()]);
