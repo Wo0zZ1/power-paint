@@ -6,8 +6,7 @@ export default defineConfig({
 	timeout: 30000,
 	retries: 0,
 	use: {
-		baseURL:
-			`http://${process.env.WEB_HOST}:${process.env.WEB_PORT}` || 'http://web:3000',
+		baseURL: process.env.WEB_URL,
 		trace: 'on-first-retry',
 	},
 	reporter: [['html', { outputFolder: 'playwright-report', open: 'never' }]],
