@@ -6,6 +6,8 @@
 	"scripts": {
 		"test": "playwright test",
 		"test:ui": "playwright test --ui",
+		"test:deps": "playwright install --with-deps",
+		"test:setup": "playwright test tests/setup.spec.ts",
 		"test:headed": "playwright test --headed",
 		"test:codegen": "playwright codegen"
 	},

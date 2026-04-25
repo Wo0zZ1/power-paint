@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test'
 import { describe } from 'node:test'
+
 import { authedTest } from './fixtures'
 
 describe('Smoke tests', () => {

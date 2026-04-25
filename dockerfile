@@ -5,8 +5,8 @@ COPY package.json yarn.lock .yarnrc.yml ./
 
 RUN corepack enable && yarn install --frozen-lockfile
 
-RUN yarn playwright install --with-deps
+RUN yarn test:deps
 
 COPY . .
 
-CMD ["yarn", "test"]
+CMD ["sh", "-c", "yarn test:setup && yarn test"]

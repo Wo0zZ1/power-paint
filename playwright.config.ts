@@ -2,7 +2,7 @@ import 'dotenv/config'
 import { defineConfig } from '@playwright/test'
 
 export default defineConfig({
-	testDir: './tests',
+	testDir: './src/tests',
 	timeout: 30000,
 	retries: 0,
 	use: {

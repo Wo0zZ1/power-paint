@@ -1,7 +1,7 @@
 import { expect, test as setup } from '@playwright/test'
 import path from 'path'
 
-const authFile = path.join(__dirname, '../playwright/.auth/user1.json')
+const authFile = path.join(__dirname, '../../playwright/.auth/user1.json')
 
 setup('authenticate', async ({ page }) => {
 	await page.goto('/signin')
