@@ -4,11 +4,11 @@
 	"private": true,
 	"packageManager": "yarn@4.13.0",
 	"scripts": {
-		"test": "playwright test",
+		"test": "playwright test ./src/**/*.test.ts",
 		"test:ui": "playwright test --ui",
 		"test:deps": "playwright install --with-deps",
 		"test:setup": "playwright test tests/setup.spec.ts",
-		"test:headed": "playwright test --headed",
+		"test:headed": "playwright test --headed ./src/**/*.test.ts",
 		"test:codegen": "playwright codegen"
 	},
 	"devDependencies": {
