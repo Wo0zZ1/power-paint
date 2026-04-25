@@ -117,12 +117,12 @@ describe('Board tests', () => {
 
 		await expect(page.getByRole('button', { name: 'Save Changes' })).toBeDisabled()
 
-		const url = await page.getByText('http://localhost/boards/').textContent()
-		expect(url).toMatch(/http:\/\/localhost\/boards\/[a-f0-9-]+/)
+		const url = await page.getByText(`${process.env.WEB_URL}/boards/`).textContent()
+		expect(url).toMatch(new RegExp(`${process.env.WEB_URL}/boards/[a-f0-9-]+`))
 
 		await page
 			.getByRole('group')
-			.filter({ hasText: 'http://localhost/boards/' })
+			.filter({ hasText: `${process.env.WEB_URL}/boards/` })
 			.getByRole('button')
 			.click()
 

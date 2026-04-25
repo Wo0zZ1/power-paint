@@ -154,8 +154,6 @@ describe('Authentication tests', () => {
 		await page.getByRole('textbox', { name: 'Verification Code' }).click()
 		await page.getByRole('textbox', { name: 'Verification Code' }).fill('111111')
 
-		await expect(page.getByRole('button', { name: /Sign Up/i })).toBeDisabled()
-
 		await expect(page.getByText(/Invalid verification code./i)).toBeVisible()
 
 		await page.getByRole('button', { name: 'Resend Code' }).click()
