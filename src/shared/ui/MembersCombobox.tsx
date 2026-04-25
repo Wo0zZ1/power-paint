@@ -98,41 +98,42 @@ export function MembersCombobox({
           </EmptyHeader>
         </Empty>
       ) : (
-        <div
+        <ul
           className="mt-2 overflow-y-auto snap-y"
           style={{
             maxHeight: `${55.25 * 3}px`,
           }}
         >
           {selectedMembers.map((member) => (
-            <MembersComboboxItem
-              withLink
-              key={member.user.id}
-              member={member}
-              className="snap-start"
-              actions={
-                <ItemActions>
-                  <MemberRoleSelect
-                    disabled={disabled}
-                    role={member.role}
-                    onSelectRole={(r) => updateMemberRole(member.user.id, r)}
-                    className="border-none"
-                  />
+            <li key={member.user.id}>
+              <MembersComboboxItem
+                withLink
+                member={member}
+                className="snap-start"
+                actions={
+                  <ItemActions>
+                    <MemberRoleSelect
+                      disabled={disabled}
+                      role={member.role}
+                      onSelectRole={(r) => updateMemberRole(member.user.id, r)}
+                      className="border-none"
+                    />
 
-                  <Button
-                    disabled={disabled}
-                    variant="destructive"
-                    type="button"
-                    size="icon-sm"
-                    onClick={() => removeMember(member.user.id)}
-                  >
-                    <Trash2 className="size-4" />
-                  </Button>
-                </ItemActions>
-              }
-            />
+                    <Button
+                      disabled={disabled}
+                      variant="destructive"
+                      type="button"
+                      size="icon-sm"
+                      onClick={() => removeMember(member.user.id)}
+                    >
+                      <Trash2 className="size-4" />
+                    </Button>
+                  </ItemActions>
+                }
+              />
+            </li>
           ))}
-        </div>
+        </ul>
       )}
     </>
   );

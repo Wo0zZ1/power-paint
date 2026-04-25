@@ -31,7 +31,7 @@ export function WorkspaceCard({
   className,
 }: WorkspaceCardProps) {
   return (
-    <div className="p-0.5 h-full">
+    <article className="p-0.5 h-full">
       <Card
         className={cn(
           "select-text relative h-full overflow-hidden pt-0",
@@ -62,6 +62,6 @@ export function WorkspaceCard({
           workspaceId={workspace.id}
         />
       </Card>
-    </div>
+    </article>
   );
 }

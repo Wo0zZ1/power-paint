@@ -30,7 +30,7 @@ export function BoardCard({
   className,
 }: BoardCardProps) {
   return (
-    <div className="p-0.5 h-full">
+    <article className="p-0.5 h-full">
       <Card
         className={cn(
           "select-text relative h-full overflow-hidden pt-0",
@@ -60,6 +60,6 @@ export function BoardCard({
 
         <BoardCardFooter buttonText={buttonText} boardId={board.id} />
       </Card>
-    </div>
+    </article>
   );
 }

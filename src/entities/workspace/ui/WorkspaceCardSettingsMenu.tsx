@@ -36,9 +36,11 @@ export function WorkspaceCardSettingsMenu({
         <Button
           size="icon-sm"
           variant="secondary"
+          title={t("settings")}
           className="absolute z-10 top-4 right-4"
         >
           <Settings />
+          <span className="sr-only">{t("settings")}</span>
         </Button>
       </DropdownMenuTrigger>
 

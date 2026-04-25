@@ -55,7 +55,7 @@ export function BoardsCarousel({ workspace }: BoardsCarouselProps) {
 
   return (
     <>
-      <Carousel>
+      <Carousel opts={{ align: "start", skipSnaps: true }}>
         {boards && boards.length > 0 ? (
           <CarouselContent>
             {boards.map(({ board, accessRole }) => (

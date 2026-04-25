@@ -52,7 +52,10 @@ export function WorkspacesCarousel({ className }: WorkspacesCarouselProps) {
 
   return (
     <>
-      <Carousel className={cn(className)}>
+      <Carousel
+        opts={{ align: "start", skipSnaps: true }}
+        className={cn(className)}
+      >
         {data && data?.length > 0 ? (
           <CarouselContent>
             {data.map(({ workspace, accessRole }) => (
