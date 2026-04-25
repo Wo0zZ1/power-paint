@@ -13,10 +13,10 @@ function decodeQuotedPrintable(str: string) {
 		.replace(/=([A-Fa-f0-9]{2})/g, (m, hex) => String.fromCharCode(parseInt(hex, 16)))
 }
 
-export async function getVerificationCode(): Promise<string> {
+export async function getVerificationCode(query: string): Promise<string> {
 	const url = getBaseUrl()
 	const res = await fetch(
-		`${url}/search?kind=containing&query=Verify%20your%20email&start=0&limit=1`,
+		`${url}/search?kind=containing&query=${encodeURIComponent(query)}&start=0&limit=1`,
 	)
 	if (!res.ok) throw new Error(`Failed to fetch emails: ${res.status} ${res.statusText}`)
 
