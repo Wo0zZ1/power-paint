@@ -28,7 +28,10 @@ export const SignupAction = async (formData: SignupFormData) => {
 
     const user = await prisma.user.findFirst({
       where: {
-        OR: [{ email: data.email }, { phone: data.phone }],
+        OR: [
+          { email: data.email },
+          { phone: data.phone, NOT: { phone: null } },
+        ],
       },
     });
 

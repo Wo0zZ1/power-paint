@@ -39,8 +39,7 @@ export function EmailCodeCard({
 }: EmailCodeCardProps) {
   const t = useTranslations();
 
-  const { control, trigger, setValue, setError } =
-    useFormContext<SignupCodeData>();
+  const { control, setValue, setError } = useFormContext<SignupCodeData>();
   const { errors } = useFormState({ control });
 
   const handleChange = useCallback(
@@ -49,13 +48,13 @@ export function EmailCodeCard({
         const value = e.replace(REGEXP_ONLY_DIGITS, "");
 
         fn(value);
-        const isValid = await trigger("emailCode");
-
+        const isValid = /^\d{6}$/.test(value);
         if (!isValid) return;
+
         await onValidSubmit?.(value);
       };
     },
-    [onValidSubmit, trigger],
+    [onValidSubmit],
   );
 
   const handleResend = useCallback(() => {

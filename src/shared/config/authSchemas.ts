@@ -149,6 +149,7 @@ export const getSignupFormStep2Schema = ({
       .refine((value) => value === "" || phoneRegex.test(value), {
         error: invalidPhone,
       })
+      .transform((v) => (v === "" ? null : v))
       .optional(),
     locale: z
       .string()
@@ -163,6 +164,7 @@ export const getSignupFormStep2Schema = ({
       .refine((value) => value === "" || isValidUrl(value), {
         error: invalidImage,
       })
+      .transform((v) => (v === "" ? null : v))
       .optional(),
   });
 };
@@ -185,7 +187,7 @@ interface SignupCodeSchemaProps {
   invalidEmailCode?: string;
 }
 
-const emailCodeRegex = /^\d{6}$/;
+const emailCodeRegex = /^\d*$/;
 
 export const getSignupCodeSchema = ({
   invalidEmailCode = "Invalid verification code",
