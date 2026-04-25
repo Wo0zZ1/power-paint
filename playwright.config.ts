@@ -8,6 +8,7 @@ export default defineConfig({
 	use: {
 		baseURL: process.env.WEB_URL,
 		trace: 'on-first-retry',
+		permissions: ['clipboard-read', 'clipboard-write'],
 	},
 	reporter: [['html', { outputFolder: 'playwright-report', open: 'never' }]],
 })

@@ -2,14 +2,14 @@ import test, { expect, Page } from '@playwright/test'
 import { describe } from 'node:test'
 import { getVerificationCode } from '../email/mailhog'
 
-async function login(page: Page) {
+async function login(page: Page, email = 'Mper06@mail.ru', password = 'qweqwe') {
 	await page.goto('/signin')
 
 	await page.getByRole('textbox', { name: 'Email' }).click()
-	await page.getByRole('textbox', { name: 'Email' }).fill('Mper06@mail.ru')
+	await page.getByRole('textbox', { name: 'Email' }).fill(email)
 
 	await page.getByRole('textbox', { name: 'Password' }).click()
-	await page.getByRole('textbox', { name: 'Password' }).fill('qweqwe')
+	await page.getByRole('textbox', { name: 'Password' }).fill(password)
 
 	await page.locator('form').getByRole('button', { name: 'Sign In', exact: true }).click()
 
@@ -223,5 +223,51 @@ describe('Authentication tests', () => {
 		await expect(page.getByRole('button', { name: /Зарегистрироваться/i })).toBeDisabled()
 
 		await expect(page).toHaveURL(/dashboard/)
+	})
+
+	test('Успешное восстановление пароля', async ({ page }) => {
+		await page.goto('/reset-password')
+
+		await page.getByRole('textbox', { name: 'Email' }).click()
+		await page.getByRole('textbox', { name: 'Email' }).fill('alexey@example.com')
+
+		await page.getByRole('button', { name: 'Send code' }).click()
+
+		await page.waitForTimeout(3000)
+		const verificationCode = await getVerificationCode('Reset your password')
+
+		await page.getByRole('textbox', { name: 'Verification Code' }).click()
+		await page.getByRole('textbox', { name: 'Verification Code' }).fill(verificationCode)
+
+		await page.getByRole('textbox', { name: 'Password', exact: true }).click()
+		await page.getByRole('textbox', { name: 'Password', exact: true }).fill('password')
+
+		await page.getByRole('textbox', { name: 'Confirm Password' }).click()
+		await page
+			.getByRole('textbox', { name: 'Confirm Password' })
+			.fill('password_not_match')
+
+		await page.getByRole('button', { name: 'Save new password' }).click()
+
+		await expect(page.getByText('Passwords do not match.')).toBeVisible()
+
+		await page.getByRole('textbox', { name: 'Confirm Password' }).click()
+		await page.getByRole('textbox', { name: 'Confirm Password' }).fill('password')
+
+		await page.getByRole('button', { name: 'Save new password' }).click()
+
+		await expect(page).toHaveURL('/signin')
+
+		await login(page, 'alexey@example.com', 'password')
+
+		await expect(page.getByRole('link', { name: 'Dashboard' })).toBeVisible()
+
+		await page.getByRole('button', { name: 'User avatar' }).click()
+
+		const userMenu = page.getByRole('menu', { name: 'User avatar' })
+
+		await expect(userMenu).toBeVisible()
+
+		await expect(userMenu.getByText('alexey@example.com')).toBeVisible()
 	})
 })
