@@ -4,7 +4,11 @@ import { useCopyPast } from "../tools";
 
 import { useBoardStore } from "./useBoardStore";
 
-export const useHotKeys = () => {
+interface UseHotKeysProps {
+  canEdit?: boolean;
+}
+
+export const useHotKeys = ({ canEdit = false }: UseHotKeysProps) => {
   const { copy, paste, duplicate } = useCopyPast();
 
   useEffect(() => {
@@ -29,32 +33,32 @@ export const useHotKeys = () => {
       const { setTool, removeSelectedElements, undo, redo } =
         useBoardStore.getState();
 
-      if (e.ctrlKey && e.code === "KeyZ") {
+      if (e.ctrlKey && e.code === "KeyZ" && canEdit) {
         e.shiftKey ? redo() : undo();
-      } else if (e.ctrlKey && e.code === "KeyY") {
+      } else if (e.ctrlKey && e.code === "KeyY" && canEdit) {
         redo();
       } else if (e.ctrlKey && e.code === "KeyC") {
         copy();
-      } else if (e.ctrlKey && e.code === "KeyV") {
+      } else if (e.ctrlKey && e.code === "KeyV" && canEdit) {
         paste();
-      } else if (e.ctrlKey && e.code === "KeyD") {
+      } else if (e.ctrlKey && e.code === "KeyD" && canEdit) {
         e.preventDefault();
         duplicate();
-      } else if (e.code === "Delete" || e.code === "Backspace") {
+      } else if ((e.code === "Delete" || e.code === "Backspace") && canEdit) {
         removeSelectedElements();
       } else if (e.code === "KeyS") {
         setTool("select");
       } else if (e.code === "KeyH") {
         setTool("hand");
-      } else if (e.code === "KeyR") {
+      } else if (e.code === "KeyR" && canEdit) {
         setTool("rect");
-      } else if (e.code === "KeyC") {
+      } else if (e.code === "KeyC" && canEdit) {
         setTool("circle");
-      } else if (e.code === "KeyD") {
+      } else if (e.code === "KeyD" && canEdit) {
         setTool("draw");
-      } else if (e.code === "KeyE") {
+      } else if (e.code === "KeyE" && canEdit) {
         setTool("eraser");
-      } else if (e.code === "KeyT") {
+      } else if (e.code === "KeyT" && canEdit) {
         setTool("text");
       }
     };
@@ -84,5 +88,5 @@ export const useHotKeys = () => {
       window.removeEventListener("blur", handleBlur);
       handleBlur();
     };
-  }, [copy, paste, duplicate]);
+  }, [canEdit, copy, paste, duplicate]);
 };

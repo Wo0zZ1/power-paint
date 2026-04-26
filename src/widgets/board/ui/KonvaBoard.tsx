@@ -64,8 +64,8 @@ export function KonvaBoard({
 
   const canEdit = AccessRole[accessRole] >= AccessRole.EDITOR;
 
-  useHotKeys();
-  useBoardPreview({ boardId });
+  useHotKeys({ canEdit });
+  useBoardPreview({ boardId, canEdit });
   useHocuspocus({ userAwareness, accessToken, boardId });
 
   const { width: windowWidth, height: windowHeight } = useWindowSize();
@@ -107,7 +107,10 @@ export function KonvaBoard({
         <div className="absolute w-auto mx-auto inset-5 pointer-events-none z-11">
           {/* Top Right */}
           <div className="absolute flex items-start gap-4 top-0 right-0">
-            <ConnectionStatus status={connectionStatus} />
+            <ConnectionStatus
+              className="pointer-events-auto"
+              status={connectionStatus}
+            />
             <ActiveUsers className="pointer-events-auto" />
           </div>
 

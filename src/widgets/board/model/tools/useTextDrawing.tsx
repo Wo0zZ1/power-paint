@@ -1,7 +1,11 @@
 import type { KonvaEventObject } from "konva/lib/Node";
 import { useCallback, useEffect, useRef } from "react";
 
-import { DEFAULT_CAPTURE_TIMEOUT } from "@/shared/constants";
+import {
+  DEFAULT_CAPTURE_TIMEOUT,
+  MIN_TEXT_HEIGHT,
+  MIN_TEXT_WIDTH,
+} from "@/shared/constants";
 import { useThrottledCallback } from "@/shared/lib/hooks";
 
 import { useBoardStore } from "../core";
@@ -25,24 +29,42 @@ export const useTextDrawing = () => {
     const [cx, cy] = screenToCanvas(layerX, layerY, viewport);
     originRef.current = { x: cx, y: cy };
 
-    const shape = createText({ x: cx, y: cy, text: "Text", fontSize: 24 });
+    const shape = createText({ x: cx, y: cy });
     shapeIdRef.current = shape.id;
 
     useBoardStore.getState().addElement(shape);
   }, []);
 
-  const moveDraw = useCallback((layerX: number, layerY: number) => {
-    if (!shapeIdRef.current) return;
+  const moveDraw = useCallback(
+    (layerX: number, layerY: number, shiftKey: boolean) => {
+      if (!shapeIdRef.current) return;
 
-    const viewport = useBoardStore.getState().viewport;
-    const [cx, cy] = screenToCanvas(layerX, layerY, viewport);
+      const viewport = useBoardStore.getState().viewport;
+      const [cx, cy] = screenToCanvas(layerX, layerY, viewport);
 
-    // Allow slight movement before unclicking
-    useBoardStore.getState().updateElement(shapeIdRef.current, {
-      x: cx,
-      y: cy,
-    });
-  }, []);
+      const origin = originRef.current;
+
+      let width = Math.abs(cx - origin.x);
+      let height = Math.abs(cy - origin.y);
+
+      if (shiftKey) {
+        const size = Math.max(width, height);
+        width = size;
+        height = size;
+      }
+
+      const minX = cx < origin.x ? origin.x - width : origin.x;
+      const minY = cy < origin.y ? origin.y - height : origin.y;
+
+      useBoardStore.getState().updateElement(shapeIdRef.current, {
+        x: minX,
+        y: minY,
+        width: Math.max(width, MIN_TEXT_WIDTH),
+        height: Math.max(height, MIN_TEXT_HEIGHT),
+      });
+    },
+    [],
+  );
 
   const endDraw = useCallback(() => {
     if (!shapeIdRef.current) return;
@@ -82,6 +104,7 @@ export const useTextDrawing = () => {
     moveDraw(
       e.clientX - stageRectRef.current.left,
       e.clientY - stageRectRef.current.top,
+      e.shiftKey,
     );
   });
 
@@ -124,6 +147,7 @@ export const useTextDrawing = () => {
     moveDraw(
       touch.clientX - stageRectRef.current.left,
       touch.clientY - stageRectRef.current.top,
+      false,
     );
   });
 

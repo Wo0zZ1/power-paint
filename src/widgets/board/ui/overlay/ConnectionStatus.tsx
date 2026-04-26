@@ -29,6 +29,8 @@ export function ConnectionStatus({
 
   return (
     <Badge
+      role="status"
+      aria-label="Connection status"
       variant="outline"
       className={cn(
         "flex gap-1.5 px-2.5 py-1 bg-background/80 backdrop-blur-md shadow-sm",

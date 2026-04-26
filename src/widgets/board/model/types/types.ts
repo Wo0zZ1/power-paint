@@ -182,8 +182,8 @@ export const createText = (
   overrides: Partial<Omit<TextElementType, "type" | "id">> = {},
 ): TextElementType => {
   let { width, height } = overrides;
-  const text = overrides.text || "";
-  const fontSize = overrides.fontSize || 16;
+  const text = overrides.text || "Text";
+  const fontSize = overrides.fontSize || 24;
   const fontFamily = overrides.fontFamily || "Arial, sans-serif";
 
   if (!width || !height) {

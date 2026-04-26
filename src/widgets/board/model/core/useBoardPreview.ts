@@ -28,12 +28,18 @@ const updatePreview = async (
 
 interface UseBoardPreviewProps {
   boardId: string;
+  canEdit?: boolean;
 }
 
-export const useBoardPreview = ({ boardId }: UseBoardPreviewProps) => {
+export const useBoardPreview = ({
+  boardId,
+  canEdit = false,
+}: UseBoardPreviewProps) => {
   const { themePreference } = useTheme();
 
   useEffect(() => {
+    if (!canEdit) return;
+
     const sendPreview = async () => {
       const contentLayerRef = useBoardStore.getState().contentLayer;
 
@@ -62,5 +68,5 @@ export const useBoardPreview = ({ boardId }: UseBoardPreviewProps) => {
     return () => {
       clearInterval(intervalId);
     };
-  }, [boardId, themePreference]);
+  }, [boardId, canEdit, themePreference]);
 };
