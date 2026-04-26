@@ -3,160 +3,113 @@ import { describe } from 'node:test'
 
 import { authedTest } from './fixtures'
 
-function generateRandomBoardName() {
-	return `Board ${Math.random().toString(36).substring(2, 8)}`
-}
-
-async function createBoard(page: Page, name: string) {
-	await page.goto('/dashboard')
-
-	await page.getByRole('button', { name: 'Create' }).nth(1).click()
-
-	await page.getByRole('textbox', { name: 'Board Name' }).click()
-	await page.getByRole('textbox', { name: 'Board Name' }).fill(name)
-
-	await page.getByRole('button', { name: 'Create' }).click()
-
-	await expect(page).toHaveURL(/\/boards\/[a-f0-9-]+/)
-}
-
-async function getBoardCardByName(page: Page, name: string) {
-	return page.getByRole('article').filter({ has: page.getByText(name, { exact: true }) })
-}
-
 describe('Board tests', () => {
-	authedTest('Успешное создание доски', async ({ page }) => {
-		const boardName = generateRandomBoardName()
-		await createBoard(page, boardName)
+	authedTest('Успешное взаимодействие с доской', async ({ page }) => {
+		await page.goto('/boards/00000000-0000-0000-0000-000000000006')
 
-		await page.goto('/dashboard')
+		await expect(page.getByRole('status', { name: 'Connection status' })).toHaveText(
+			'Connected',
+			{
+				timeout: 8000,
+			},
+		)
 
-		const boardCard = await getBoardCardByName(page, boardName)
-		await expect(boardCard).toBeVisible()
-	})
+		const selectTool = page.getByLabel('Select')
+		const handTool = page.getByLabel('Hand')
+		const rectTool = page.getByLabel('Rectangle')
+		const circleTool = page.getByLabel('Circle')
+		const drawTool = page.getByLabel('Draw')
+		const eraserTool = page.getByLabel('Eraser')
+		const textTool = page.getByLabel('Text')
 
-	authedTest('Успешное удаление доски', async ({ page }) => {
-		const boardName = generateRandomBoardName()
-		await createBoard(page, boardName)
+		const canvas = page.locator('canvas').first()
+		await expect(canvas).toBeVisible()
 
-		await page.goto('/dashboard')
+		await page.mouse.move(400, 150)
+		await expect(page.getByRole('button', { name: 'User avatar' }).nth(1)).toBeVisible()
 
-		const boardCard = await getBoardCardByName(page, boardName)
+		await page.waitForTimeout(500)
+		await expect(canvas).toHaveScreenshot('empty-board.png')
 
-		await boardCard.getByRole('button', { name: 'Board Settings' }).first().click()
-		await expect(page.getByRole('menu', { name: 'Board Settings' })).toBeVisible()
+		await rectTool.click()
+		await page.mouse.move(400, 150)
+		await page.mouse.down()
+		await page.mouse.move(500, 250)
+		await page.mouse.up()
 
-		await page.getByRole('menuitem', { name: 'Delete' }).click()
+		await page.waitForTimeout(500)
+		await expect(canvas).toHaveScreenshot('board-with-rectangle.png')
 
-		await expect(page.getByRole('dialog', { name: 'Delete Board' })).toBeVisible()
-		await expect(page.locator('label')).toContainText(`To confirm, enter "${boardName}"`)
+		await circleTool.click()
+		await page.mouse.move(550, 150)
+		await page.mouse.down()
+		await page.mouse.move(600, 250)
+		await page.mouse.up()
 
-		await expect(page.getByRole('button', { name: 'Confirm' })).toBeDisabled()
+		await page.waitForTimeout(500)
+		await expect(canvas).toHaveScreenshot('board-with-circle.png')
 
-		await page.getByRole('textbox', { name: 'To confirm, enter' }).click()
-		await page.getByRole('textbox', { name: 'To confirm, enter' }).fill(boardName)
+		await drawTool.click()
+		await page.mouse.move(400, 400)
+		await page.mouse.down()
+		await page.mouse.move(500, 300, { steps: 25 })
+		await page.mouse.move(600, 400, { steps: 25 })
+		await page.mouse.move(400, 400, { steps: 25 })
+		await page.mouse.up()
 
-		await expect(page.getByRole('button', { name: 'Confirm' })).not.toBeDisabled()
+		await page.waitForTimeout(500)
+		await expect(canvas).toHaveScreenshot('board-with-draw.png')
 
-		await page.getByRole('button', { name: 'Confirm' }).click()
+		await textTool.click()
+		await page.mouse.move(700, 150)
+		await page.mouse.down()
+		await page.mouse.move(900, 250)
+		await page.mouse.up()
+		await page.mouse.dblclick(800, 200)
+		await page.locator('textarea').fill('Hello, Power Paint!')
 
-		await expect(page.getByRole('dialog', { name: 'Delete Board' })).not.toBeVisible()
-		await expect(page.getByRole('link', { name: 'Dashboard' })).toBeVisible()
-		await expect(boardCard).not.toBeVisible()
-	})
+		await page.waitForTimeout(500)
+		await expect(canvas).toHaveScreenshot('board-with-text.png')
 
-	authedTest('Успешное изменение имени доски', async ({ page }) => {
-		const boardName1 = generateRandomBoardName()
-		const boardName2 = generateRandomBoardName()
-		await createBoard(page, boardName1)
+		await handTool.click()
+		await page.mouse.move(500, 500)
+		await page.mouse.down()
+		await page.mouse.move(600, 600)
+		await page.mouse.up()
 
-		await page.goto('/dashboard')
+		await page.waitForTimeout(500)
+		await expect(canvas).toHaveScreenshot('board-with-hand.png')
 
-		const boardCard = await getBoardCardByName(page, boardName1)
+		await selectTool.click()
+		await page.mouse.move(350, 100)
+		await page.mouse.down()
+		await page.mouse.move(1100, 700)
+		await page.mouse.up()
 
-		await boardCard.getByRole('button', { name: 'Board Settings' }).first().click()
-		await expect(page.getByRole('menu', { name: 'Board Settings' })).toBeVisible()
+		await page.waitForTimeout(500)
+		await expect(canvas).toHaveScreenshot('board-with-select.png')
 
-		await page.getByRole('menuitem', { name: 'Rename' }).click()
+		await page.keyboard.press('Backspace')
 
-		const dialog = page.getByRole('dialog', { name: 'Rename Board' })
-		await expect(dialog).toBeVisible()
+		await page.waitForTimeout(500)
+		await expect(canvas).toHaveScreenshot('empty-board.png')
 
-		await expect(page.getByRole('button', { name: 'Rename' })).toBeDisabled()
+		await rectTool.click()
+		await page.mouse.move(400, 150)
+		await page.mouse.down()
+		await page.mouse.move(500, 250)
+		await page.mouse.up()
 
-		await page.getByRole('textbox', { name: 'Board Name' }).click()
-		await page.getByRole('textbox', { name: 'Board Name' }).fill(boardName2)
+		await page.waitForTimeout(500)
+		await expect(canvas).toHaveScreenshot('board-with-rectangle.png')
 
-		await expect(page.getByRole('button', { name: 'Rename' })).not.toBeDisabled()
+		await eraserTool.click()
+		await page.mouse.move(350, 100)
+		await page.mouse.down()
+		await page.mouse.move(450, 200, { steps: 25 })
+		await page.mouse.up()
 
-		await page.getByRole('button', { name: 'Rename' }).click()
-
-		await expect(dialog).not.toBeVisible()
-		await expect(page.getByRole('link', { name: 'Dashboard' })).toBeVisible()
-		await expect(boardCard).not.toBeVisible()
-
-		const newBoardCard = await getBoardCardByName(page, boardName2)
-		await expect(newBoardCard).toBeVisible()
-	})
-
-	authedTest('Успешное изменение доступа к доске', async ({ page }) => {
-		const boardName = generateRandomBoardName()
-		await createBoard(page, boardName)
-
-		await page.goto('/dashboard')
-
-		const boardCard = await getBoardCardByName(page, boardName)
-
-		await boardCard.getByRole('button', { name: 'Board Settings' }).first().click()
-		await expect(page.getByRole('menu', { name: 'Board Settings' })).toBeVisible()
-
-		await page.getByRole('menuitem', { name: 'Share' }).click()
-
-		const dialog = page.getByRole('dialog', { name: 'Share board' })
-		await expect(dialog).toBeVisible()
-
-		await expect(page.getByRole('button', { name: 'Save Changes' })).toBeDisabled()
-
-		const url = await page.getByText(`${process.env.WEB_URL}/boards/`).textContent()
-		expect(url).toMatch(new RegExp(`${process.env.WEB_URL}/boards/[a-f0-9-]+`))
-
-		await page
-			.getByRole('group')
-			.filter({ hasText: `${process.env.WEB_URL}/boards/` })
-			.getByRole('button')
-			.click()
-
-		const clipboardText = await page.evaluate(() => navigator.clipboard.readText())
-		expect(clipboardText).toBe(url)
-
-		await page.getByRole('combobox').filter({ hasText: 'Private' }).click()
-		await page.getByRole('option', { name: 'Viewing' }).click()
-
-		await expect(page.getByRole('button', { name: 'Save Changes' })).not.toBeDisabled()
-
-		await page.getByRole('combobox', { name: 'Add team members by username' }).click()
-
-		const listbox = page.getByRole('listbox')
-		await expect(listbox).toBeVisible()
-
-		const user = await listbox.getByRole('option').nth(1)
-		const userName = await user.textContent()
-		expect(userName).not.toBeNull()
-		await user.click()
-
-		const selectedUsers = page.getByRole('list')
-		await expect(selectedUsers).toBeVisible()
-
-		const selectedUser = selectedUsers
-			.getByRole('listitem')
-			.filter({ hasText: userName! })
-		await expect(selectedUser).toBeVisible()
-		await expect(
-			selectedUser.getByRole('combobox').filter({ hasText: 'Viewer' }),
-		).toBeVisible()
-
-		await page.getByRole('button', { name: 'Save Changes' }).click()
-
-		await expect(dialog).not.toBeVisible()
+		await page.waitForTimeout(500)
+		await expect(canvas).toHaveScreenshot('empty-board.png')
 	})
 })

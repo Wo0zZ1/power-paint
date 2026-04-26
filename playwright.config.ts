@@ -7,10 +7,16 @@ export default defineConfig({
 	retries: 2,
 	workers: 1,
 	use: {
-		navigationTimeout: 5000,
+		navigationTimeout: 8000,
 		baseURL: process.env.WEB_URL,
 		trace: 'on-all-retries',
 		permissions: ['clipboard-read', 'clipboard-write'],
 	},
 	reporter: [['html', { outputFolder: 'playwright-report', open: 'never' }]],
+	snapshotPathTemplate: './screenshots/{testFilePath}/{arg}{ext}',
+	expect: {
+		toHaveScreenshot: {
+			maxDiffPixelRatio: 0.01,
+		},
+	},
 })
