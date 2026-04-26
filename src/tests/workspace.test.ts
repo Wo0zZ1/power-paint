@@ -129,12 +129,16 @@ describe('Workspace tests', () => {
 
 		await expect(page.getByRole('button', { name: 'Save Changes' })).toBeDisabled()
 
-		const url = await page.getByText(`${process.env.WEB_URL}/dashboard/`).textContent()
-		expect(url).toMatch(new RegExp(`${process.env.WEB_URL}/dashboard/[a-f0-9-]+`))
+		const url = await page
+			.getByText(`${process.env.WEB_URL}/dashboard/workspaces/`)
+			.textContent()
+		expect(url).toMatch(
+			new RegExp(`${process.env.WEB_URL}/dashboard/workspaces/[a-f0-9-]+`),
+		)
 
 		await page
 			.getByRole('group')
-			.filter({ hasText: `${process.env.WEB_URL}/dashboard/` })
+			.filter({ hasText: `${process.env.WEB_URL}/dashboard/workspaces/` })
 			.getByRole('button')
 			.click()
 
