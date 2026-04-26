@@ -66,18 +66,21 @@ async function main() {
 	await prisma.board.createMany({
 		data: [
 			{
+				id: '00000000-0000-0000-0000-000000000001',
 				ownerId: user1.id,
 				name: "Макс Wo0zZ1's private board",
 				workspaceId: user1_personal_workspace.id,
 				accessLevel: AccessLevel.private,
 			},
 			{
+				id: '00000000-0000-0000-0000-000000000002',
 				ownerId: user1.id,
 				name: "Макс Wo0zZ1's public view board",
 				workspaceId: user1_personal_workspace.id,
 				accessLevel: AccessLevel.public_view,
 			},
 			{
+				id: '00000000-0000-0000-0000-000000000003',
 				ownerId: user1.id,
 				name: "Макс Wo0zZ1's public edit board",
 				workspaceId: user1_personal_workspace.id,
@@ -130,19 +133,21 @@ async function main() {
 	await prisma.board.createMany({
 		data: [
 			{
+				id: '00000000-0000-0000-0000-000000000004',
 				name: "Алексей's private board",
 				ownerId: user2.id,
 				workspaceId: user2_personal_workspace.id,
 				accessLevel: AccessLevel.private,
 			},
-
 			{
+				id: '00000000-0000-0000-0000-000000000005',
 				name: "Алексей's public view board",
 				ownerId: user2.id,
 				workspaceId: user2_personal_workspace.id,
 				accessLevel: AccessLevel.public_view,
 			},
 			{
+				id: '00000000-0000-0000-0000-000000000006',
 				name: "Алексей's public edit board",
 				ownerId: user2.id,
 				workspaceId: user2_personal_workspace.id,
@@ -153,6 +158,7 @@ async function main() {
 
 	const user2_private_board_with_viewer = await prisma.board.create({
 		data: {
+			id: '00000000-0000-0000-0000-000000000007',
 			name: "Алексей's private board with viewer",
 			ownerId: user2.id,
 			workspaceId: user2_personal_workspace.id,
@@ -162,6 +168,7 @@ async function main() {
 
 	const user2_private_board_with_editor = await prisma.board.create({
 		data: {
+			id: '00000000-0000-0000-0000-000000000008',
 			name: "Алексей's private board with editor",
 			ownerId: user2.id,
 			workspaceId: user2_personal_workspace.id,
@@ -171,6 +178,7 @@ async function main() {
 
 	const user2_private_board_with_admin = await prisma.board.create({
 		data: {
+			id: '00000000-0000-0000-0000-000000000009',
 			name: "Алексей's private board with admin",
 			ownerId: user2.id,
 			workspaceId: user2_personal_workspace.id,
