@@ -13,6 +13,7 @@
     "prisma:seed": "prisma db seed",
     "prisma:studio": "prisma studio",
     "email:dev": "email dev",
+    "docs:generate": "npx typedoc --entryPointStrategy Expand src --out docs/generated",
     "lint": "eslint",
     "test": "jest",
     "test:watch": "jest --watch",
@@ -88,6 +89,7 @@
     "shadcn": "^3.8.4",
     "tailwindcss": "^4",
     "tw-animate-css": "^1.4.0",
+    "typedoc": "^0.28.19",
     "typescript": "5.9.3"
   },
   "resolutions": {
