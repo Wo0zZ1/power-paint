@@ -41,14 +41,12 @@ import { BottomToolbar } from "./toolbar";
 
 interface KonvaBoardProps {
   userAwareness: UserAwareness;
-  accessToken: string;
   boardId: Board["id"];
   accessRole: AccessRole;
 }
 
 export function KonvaBoard({
   userAwareness,
-  accessToken,
   boardId,
   accessRole,
 }: KonvaBoardProps) {
@@ -66,7 +64,7 @@ export function KonvaBoard({
 
   useHotKeys({ canEdit });
   useBoardPreview({ boardId, canEdit });
-  useHocuspocus({ userAwareness, accessToken, boardId });
+  useHocuspocus({ userAwareness, boardId });
 
   const { width: windowWidth, height: windowHeight } = useWindowSize();
   const { activeColor } = useInvertableColor(globals.backgroundColor, true);

@@ -8,13 +8,14 @@ import { PrismaService } from '../prisma.service'
 
 import { BoardRepository } from './board.repository'
 import { BoardsController } from './boards.controller'
+import { InternalBoardsController } from './internal.controller'
 import { BoardsService } from './boards.service'
 import { PreviewController } from './preview.controller'
 import { PreviewService } from './preview.service'
 
 @Module({
 	imports: [EventsModule],
-	controllers: [BoardsController, PreviewController],
+	controllers: [BoardsController, InternalBoardsController, PreviewController],
 	providers: [
 		PrismaService,
 		AccessService,

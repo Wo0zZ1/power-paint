@@ -15,13 +15,11 @@ import { useBoardStore } from "./useBoardStore";
 
 interface UseHocuspocusProps {
   userAwareness: UserAwareness;
-  accessToken: string;
   boardId: string;
 }
 
 export const useHocuspocus = ({
   userAwareness,
-  accessToken,
   boardId,
 }: UseHocuspocusProps) => {
   useEffect(() => {
@@ -30,7 +28,6 @@ export const useHocuspocus = ({
     const provider = new HocuspocusProvider({
       url: process.env.NEXT_PUBLIC_WS_URL!,
       name: boardId,
-      token: accessToken,
       onStatus: ({ status }: { status: WebSocketStatus }) => {
         useBoardStore.setState({ connectionStatus: status });
       },
@@ -102,5 +99,5 @@ export const useHocuspocus = ({
       provider.destroy();
       useBoardStore.getState().reset();
     };
-  }, [boardId, userAwareness, accessToken]);
+  }, [boardId, userAwareness]);
 };

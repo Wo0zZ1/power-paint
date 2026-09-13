@@ -15,7 +15,6 @@ import type { BoardWithAccess, IGuestUserCookie } from "@/shared/types";
 import { getBoardQueryOption } from "@/entities/board/server";
 
 import type { UserAwareness } from "../model";
-import { generateWsToken } from "../model/lib/token";
 
 import { KonvaBoard } from "./KonvaBoard";
 
@@ -59,16 +58,6 @@ export async function Board({ className, boardId }: BoardProps) {
   } satisfies UserAwareness;
 
   const { accessRole } = boardWithAccess;
-  const accessToken = await generateWsToken({
-    user: {
-      name: userAwareness.name,
-      color: userAwareness.color,
-      id: session?.id,
-      email: session?.email,
-      image: session?.image,
-    },
-    accessRole,
-  });
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
@@ -76,7 +65,6 @@ export async function Board({ className, boardId }: BoardProps) {
         <div className="w-full h-full min-w-0 min-h-0">
           <KonvaBoard
             userAwareness={userAwareness}
-            accessToken={accessToken}
             boardId={boardId}
             accessRole={accessRole}
           />

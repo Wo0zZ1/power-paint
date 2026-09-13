@@ -10,21 +10,24 @@ export const EVENT_CHANNELS = {
   BOARD_ACCESS_CHANGED: "board.access_changed",
 } as const;
 
+// z.guid, а не z.uuid: последний проверяет версию UUID, и события про сущности
+// с идентификаторами иной формы молча отбрасывались бы. Контракту события важна
+// форма идентификатора, а не то, каким алгоритмом он выдан.
 export const userCreatedSchema = z.object({
-  userId: z.uuid(),
+  userId: z.guid(),
   name: z.string(),
 });
 
 export const userDeletedSchema = z.object({
-  userId: z.uuid(),
+  userId: z.guid(),
 });
 
 export const boardDeletedSchema = z.object({
-  boardId: z.uuid(),
+  boardId: z.guid(),
 });
 
 export const boardAccessChangedSchema = z.object({
-  boardId: z.uuid(),
+  boardId: z.guid(),
 });
 
 export type UserCreatedEvent = z.infer<typeof userCreatedSchema>;
