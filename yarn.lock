@@ -3364,6 +3364,29 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@power-paint/users@workspace:apps/users":
+  version: 0.0.0-use.local
+  resolution: "@power-paint/users@workspace:apps/users"
+  dependencies:
+    "@nestjs/cli": "npm:^11.0.10"
+    "@nestjs/common": "npm:^11.1.6"
+    "@nestjs/core": "npm:^11.1.6"
+    "@nestjs/platform-express": "npm:^11.1.6"
+    "@nestjs/schematics": "npm:^11.0.8"
+    "@nestjs/swagger": "npm:^11.2.0"
+    "@power-paint/contracts": "workspace:*"
+    "@power-paint/db": "workspace:*"
+    "@types/express": "npm:^5.0.0"
+    "@types/node": "npm:^25.6.0"
+    dotenv: "npm:^17.4.1"
+    nestjs-zod: "npm:^5.0.1"
+    reflect-metadata: "npm:^0.2.2"
+    rxjs: "npm:^7.8.1"
+    typescript: "npm:^6.0.2"
+    zod: "npm:^4.3.6"
+  languageName: unknown
+  linkType: soft
+
 "@power-paint/web@workspace:apps/web":
   version: 0.0.0-use.local
   resolution: "@power-paint/web@workspace:apps/web"
