@@ -11,7 +11,13 @@
 		"experimentalDecorators": true,
 		"outDir": "./dist",
 		"rootDir": "./src",
-		"types": ["node"]
+		"types": [
+			"node"
+		],
+		"jsx": "react-jsx",
+		"resolveJsonModule": true
 	},
-	"include": ["src/**/*"]
+	"include": [
+		"src/**/*"
+	]
 }
