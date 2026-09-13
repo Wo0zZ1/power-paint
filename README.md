@@ -16,15 +16,25 @@
 
 ## 🏗 Архитектура
 
-Проект построен как **монорепозиторий**, включающий несколько независимых сервисов:
+Монорепозиторий на yarn workspaces. Клиент общается только со шлюзом, сервисы между собой - по HTTP и через события Redis.
 
 ```
-- nginx
-- Power-Paint-E2E
-- Power-Paint-Migrator
-- Power-Paint-Socket
-- Power-Paint-Web
+apps/
+├── web        Next.js - интерфейс и серверный рендеринг, своей API-логики нет
+├── gateway    Express - единая точка входа, rate limit и проверка сессии
+├── auth       NestJS - регистрация, вход, OAuth, сброс пароля, интроспекция
+├── users      NestJS - профили пользователей
+├── boards     NestJS - доски, рабочие области и права доступа
+├── collab     Hocuspocus - WebSocket и синхронизация рисунка через CRDT
+└── migrator   миграции Prisma, применяются до старта остальных сервисов
+
+packages/
+├── contracts  zod-схемы и типы, общие для сервисов и фронтенда
+├── db         клиент Prisma и схема базы
+└── events     публикация и подписка на события через Redis Pub/Sub
 ```
+
+Каждый сервис работает со своей схемой PostgreSQL и не читает чужие таблицы - данные соседнего домена запрашиваются по HTTP. Шлюз отвечает на вопрос «кто ты», сервис - на вопрос «что тебе можно».
 
 ## 🧩 Технологический стек
 
@@ -41,10 +51,14 @@
 ### Backend / Infra
 
 - [Node.js](https://nodejs.org)
+- [NestJS](https://nestjs.com)
+- [Express](https://expressjs.com)
 - [WebSocket](https://en.wikipedia.org/wiki/WebSocket)
-- [Yjs](https://yjs.dev)
+- [Yjs](https://yjs.dev) + [Hocuspocus](https://tiptap.dev/docs/hocuspocus)
 - [PostgreSQL](https://www.postgresql.org)
 - [Prisma ORM](https://www.prisma.io)
+- [Redis](https://redis.io)
+- [Zod](https://zod.dev)
 
 ### [Email](#-email-система)
 
@@ -68,7 +82,7 @@
 ### 📦 1. Клонирование репозитория
 
 ```bash
-git clone --recurse-submodules https://github.com/Wo0zZ1/Power-Paint
+git clone https://github.com/Wo0zZ1/power-paint
 ```
 
 ### ⚙️ 2. Настройка переменных окружения
@@ -79,7 +93,7 @@ Cкопируй и заполни корневой `.env` файл.
 cp .env.example .env
 ```
 
-> TIP: Если же хочешь запускать сервисы по отдельности, то переменные окружения для каждого сервиса находятся в соответствующих папках (например, `Power-Paint-Web/.env`).
+> TIP: `.env` в корне - единственный источник переменных: docker compose раздаёт их сервисам сам.
 
 ### 🐋 3. Запуск в Docker
 
@@ -95,45 +109,31 @@ docker compose -f docker-compose.yml --env-file .env up -d --build
 docker compose -f docker-compose.web-dev.yml --env-file .env.dev up -d --build
 ```
 
-Для запуска E2E тестов:
-
-```bash
-./run-e2e-tests.sh
-```
-
-> TIP: Если хочешь запустить E2E тесты в Windows, используй `run-e2e-tests.bat`.
-
 ## 🧪 Тестирование
 
 ### Unit + Integration
 
-Запуск внутри `Power-Paint-Web`:
+Запуск из корня монорепозитория:
 
 ```bash
 yarn test
 ```
 
-### E2E тесты
-
-Запуск из корневой директории монорепозитория:
-
-> Linux / MacOS:
+Тесты, которым нужны Redis и Postgres, по умолчанию пропускаются. Чтобы прогнать и их:
 
 ```bash
-./run-e2e-tests.sh
+RUN_INTEGRATION_TESTS=true yarn test
 ```
 
-> Windows:
+### E2E тесты
 
-```bat
-run-e2e-tests.bat
-```
+Переносятся на новую структуру монорепозитория.
 
 ## 🌐 Деплой
 
 Вся инфраструктура веб-приложения развёрнута на [VPS](https://beget.com/ru)
 
-## 📂 Структура `Power-Paint-Web`
+## 📂 Структура `apps/web`
 
 Структура фронтенд-приложения построена по принципам Feature-Sliced Design, что обеспечивает высокую масштабируемость и поддерживаемость кода.
 
