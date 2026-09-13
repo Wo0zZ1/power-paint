@@ -4,8 +4,8 @@ import { redirect } from "next/navigation";
 
 import Wallpaper from "@/../public/assets/sign_in_wallpaper.jpg";
 
-import { getSession } from "@/shared/session/server";
 import { ROUTES } from "@/shared/config";
+import { getSession } from "@/shared/session/server";
 
 import { SigninForm } from "@/widgets/signin-form";
 

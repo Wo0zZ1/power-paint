@@ -1,11 +1,10 @@
 "use client";
 
 import type { SessionUser } from "@power-paint/contracts";
-
-import { SessionProvider } from "@/shared/session";
 import { NextIntlClientProvider } from "next-intl";
 
 import { getMessageFallback } from "@/shared/i18n";
+import { SessionProvider } from "@/shared/session";
 import { Toaster } from "@/shared/ui/sonner";
 import { TooltipProvider } from "@/shared/ui/tooltip";
 

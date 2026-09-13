@@ -1,7 +1,7 @@
 "use client";
 
-import { LogOut } from "lucide-react";
 import type { SessionUser } from "@power-paint/contracts";
+import { LogOut } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 import { ROUTES } from "@/shared/config";

@@ -1,0 +1,76 @@
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: [main]
+
+jobs:
+  check:
+    name: Типы, сборка и тесты
+    runs-on: ubuntu-latest
+
+    services:
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 5
+
+    env:
+      # Значения-заглушки: на этом шаге к базе никто не подключается, но Prisma
+      # и next.config требуют переменные на этапе генерации и сборки.
+      DATABASE_URL: postgresql://ci:ci@localhost:5432/ci
+      REDIS_URL: redis://localhost:6379
+      GATEWAY_URL: http://localhost:3001
+      NEXT_PUBLIC_BASE_URL: http://localhost
+      NEXT_PUBLIC_BASE_DEPLOY_URL: http://localhost
+      NEXT_PUBLIC_WS_URL: ws://localhost/collab
+      NEXT_TELEMETRY_DISABLED: 1
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Включить Corepack
+        run: corepack enable
+
+      - name: Установить зависимости
+        run: yarn install --immutable
+
+      - name: Собрать общие пакеты
+        run: yarn packages:build
+
+      - name: Проверить типы
+        run: yarn typecheck
+
+      - name: Линтер фронтенда
+        run: yarn web lint
+
+      - name: Юнит-тесты
+        run: yarn test
+
+      - name: Интеграционные тесты (нужен Redis)
+        env:
+          RUN_INTEGRATION_TESTS: "true"
+        run: yarn gateway test
+
+      - name: Сборка сервисов
+        run: |
+          yarn auth build
+          yarn users build
+          yarn boards build
+          yarn gateway build
+          yarn collab build
+          yarn migrator build
+
+      - name: Сборка фронтенда
+        run: yarn web build

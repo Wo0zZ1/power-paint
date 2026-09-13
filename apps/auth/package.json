@@ -6,7 +6,8 @@
 	"scripts": {
 		"dev": "nest start --watch",
 		"build": "nest build && node -e \"require('fs').cpSync('src/email/i18n','dist/email/i18n',{recursive:true})\"",
-		"start": "node dist/main.js"
+		"start": "node dist/main.js",
+		"typecheck": "tsc --noEmit"
 	},
 	"dependencies": {
 		"@auth/core": "0.41.1",

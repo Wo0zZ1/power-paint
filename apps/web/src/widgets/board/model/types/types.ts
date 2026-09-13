@@ -1,7 +1,7 @@
 // ─── Элементы ────────────────────────────────────────────────────────
 
-import type { Node, NodeConfig } from "konva/lib/Node";
 import type { SessionUser } from "@power-paint/contracts";
+import type { Node, NodeConfig } from "konva/lib/Node";
 import type { ComponentProps } from "react";
 import type { KonvaNodeComponent } from "react-konva";
 

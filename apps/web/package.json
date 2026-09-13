@@ -6,18 +6,13 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "prisma:push": "prisma db push",
-    "prisma:migrate:dev": "prisma migrate dev",
-    "prisma:migrate:deploy": "prisma migrate deploy",
-    "prisma:generate": "prisma generate",
-    "prisma:seed": "prisma db seed",
-    "prisma:studio": "prisma studio",
     "email:dev": "email dev",
     "docs:generate": "npx typedoc --entryPointStrategy Expand src --out docs/generated",
     "lint": "eslint",
     "test": "jest",
     "test:watch": "jest --watch",
-    "postinstall": "patch-package"
+    "postinstall": "patch-package",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@hocuspocus/provider": "^3.4.4",

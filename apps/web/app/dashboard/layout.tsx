@@ -3,8 +3,8 @@ import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import type { ReactNode } from "react";
 
-import { getSession } from "@/shared/session/server";
 import { ROUTES } from "@/shared/config";
+import { getSession } from "@/shared/session/server";
 
 export default async function DashboardLayout({
   children,

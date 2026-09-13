@@ -5,9 +5,9 @@ import { redirect } from "next/navigation";
 
 import Wallpaper from "@/../public/assets/sign_in_wallpaper.jpg";
 
-import { getSession } from "@/shared/session/server";
 import { ROUTES } from "@/shared/config";
 import { RESET_PASSWORD_COOKIE } from "@/shared/constants";
+import { getSession } from "@/shared/session/server";
 
 import { ForgotPasswordForm } from "@/widgets/forgot-password-form";
 

@@ -4,12 +4,12 @@ import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 
 import { getQueryClient } from "@/shared/api";
-import { getSession } from "@/shared/session/server";
 import {
   generateRandomUsername,
   generateRandomHslColor,
   cn,
 } from "@/shared/lib/utils";
+import { getSession } from "@/shared/session/server";
 import type { BoardWithAccess, IGuestUserCookie } from "@/shared/types";
 
 import { getBoardQueryOption } from "@/entities/board/server";

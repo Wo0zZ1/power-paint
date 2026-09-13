@@ -41,6 +41,16 @@ const eslintConfig = defineConfig([
       "react/no-unstable-nested-components": "error",
     },
   },
+
+  {
+    // Примитивы shadcn вендорятся как есть и написаны до появления этого правила
+    // в react-hooks. Переписывать чужой код под новое правило дороже, чем
+    // исключить сам каталог: своего кода здесь нет.
+    files: ["src/shared/ui/**"],
+    rules: {
+      "react-hooks/set-state-in-effect": "off",
+    },
+  },
 ]);
 
 export default eslintConfig;
