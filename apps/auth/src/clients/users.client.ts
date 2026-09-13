@@ -3,6 +3,13 @@ import type { Locale } from '@power-paint/db'
 
 import { CONFIG } from '../config'
 
+interface InternalProfile {
+	userId: string
+	name: string
+	email: string
+	locale: Locale
+}
+
 interface CreateProfilePayload {
 	userId: string
 	email: string
@@ -17,6 +24,15 @@ interface CreateProfilePayload {
 export class UsersClient {
 	private url(path: string) {
 		return `${CONFIG.USERS_SERVICE_URL}${path}`
+	}
+
+	// Имя и язык нужны для писем, но принадлежат users - auth их только читает.
+	async getProfile(userId: string): Promise<InternalProfile | null> {
+		const response = await fetch(this.url(`/internal/profiles/${userId}`))
+
+		if (!response.ok) return null
+
+		return response.json() as Promise<InternalProfile>
 	}
 
 	async createProfile(payload: CreateProfilePayload) {

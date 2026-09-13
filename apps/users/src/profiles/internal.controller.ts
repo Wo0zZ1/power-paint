@@ -1,4 +1,12 @@
-import { Body, Controller, Delete, Param, Post } from '@nestjs/common'
+import {
+	Body,
+	Controller,
+	Delete,
+	Get,
+	NotFoundException,
+	Param,
+	Post,
+} from '@nestjs/common'
 import { ApiExcludeController } from '@nestjs/swagger'
 
 import { CreateProfileDto } from './profile.dto'
@@ -19,6 +27,16 @@ export class InternalProfilesController {
 	@Post()
 	create(@Body() body: CreateProfileDto) {
 		return this.profiles.create(body)
+	}
+
+	// Профиль целиком, а не PublicUser: сервисам нужны поля вроде locale,
+	// которые наружу не отдаются.
+	@Get(':id')
+	async getOne(@Param('id') id: string) {
+		const profile = await this.repository.findById(id)
+		if (!profile) throw new NotFoundException('Profile not found')
+
+		return profile
 	}
 
 	@Delete(':id')
