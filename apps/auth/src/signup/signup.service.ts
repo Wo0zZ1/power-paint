@@ -8,7 +8,7 @@ import { CONFIG } from '../config'
 import { MailerService } from '../email/mailer.service'
 import { EventsService } from '../events.service'
 import { SignupEmail } from '../email/templates/signup'
-import { compareHash, hashValue } from '../lib/hash'
+import { compareHash, hashPassword, hashValue } from '../lib/hash'
 import { SessionService } from '../session/session.service'
 
 import { SignupRepository } from './signup.repository'
@@ -37,7 +37,7 @@ export class SignupService {
 			email: data.email,
 			firstName: data.firstName,
 			lastName: data.lastName,
-			passwordHash: hashValue(data.password),
+			passwordHash: await hashPassword(data.password),
 			phone: data.phone ?? null,
 			locale: data.locale,
 			preferredColor: data.preferredColor ?? null,

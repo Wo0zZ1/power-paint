@@ -6,7 +6,7 @@ import { UsersClient } from '../clients/users.client'
 import { CONFIG } from '../config'
 import { MailerService } from '../email/mailer.service'
 import { ResetPasswordEmail } from '../email/templates/reset'
-import { compareHash, hashValue } from '../lib/hash'
+import { compareHash, hashPassword, hashValue } from '../lib/hash'
 
 import { ResetRepository } from './reset.repository'
 
@@ -96,7 +96,7 @@ export class ResetService {
 		await this.resets.applyNewPassword(
 			record.id,
 			record.userId,
-			hashValue(password),
+			await hashPassword(password),
 		)
 
 		return { ok: true }

@@ -12,12 +12,16 @@
 		"outDir": "./dist",
 		"rootDir": "./src",
 		"types": [
-			"node"
+			"node",
+			"jest"
 		],
 		"jsx": "react-jsx",
 		"resolveJsonModule": true
 	},
 	"include": [
 		"src/**/*"
+	],
+	"exclude": [
+		"src/**/*.spec.ts"
 	]
 }
