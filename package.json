@@ -18,8 +18,5 @@
     "typecheck": "yarn workspaces foreach -A --exclude power-paint --exclude @power-paint/e2e run typecheck",
     "users": "yarn workspace @power-paint/users",
     "web": "yarn workspace @power-paint/web"
-  },
-  "resolutions": {
-    "@auth/core": "0.41.1"
   }
 }

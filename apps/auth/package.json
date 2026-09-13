@@ -10,7 +10,6 @@
 		"typecheck": "tsc --noEmit"
 	},
 	"dependencies": {
-		"@auth/core": "0.41.1",
 		"@nestjs/common": "^11.1.6",
 		"@nestjs/core": "^11.1.6",
 		"@nestjs/platform-express": "^11.1.6",

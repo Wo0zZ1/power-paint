@@ -26,7 +26,6 @@ COPY apps/migrator/package.json apps/migrator/
 COPY apps/users/package.json apps/users/
 COPY apps/web/package.json apps/web/
 COPY apps/e2e/package.json apps/e2e/
-COPY apps/web/patches apps/web/patches
 RUN yarn install --immutable
 
 FROM deps AS builder
