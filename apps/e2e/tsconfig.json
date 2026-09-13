@@ -1,0 +1,12 @@
+{
+	"compilerOptions": {
+		"target": "ES6",
+		"module": "commonjs",
+		"strict": true,
+		"esModuleInterop": true,
+		"outDir": "./dist",
+		"types": ["node", "@playwright/test"],
+		"skipLibCheck": true
+	},
+	"include": ["src/tests/**/*", "playwright.config.ts", "src/email/**/*"]
+}

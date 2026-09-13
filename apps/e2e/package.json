@@ -1,0 +1,22 @@
+{
+	"name": "power-paint-e2e",
+	"version": "1.0.0",
+	"private": true,
+	"packageManager": "yarn@4.13.0",
+	"scripts": {
+		"test": "playwright test ./src/**/*.test.ts",
+		"test:ui": "playwright test --ui",
+		"test:deps": "playwright install --with-deps",
+		"test:setup": "playwright test tests/setup.spec.ts",
+		"test:headed": "playwright test --headed ./src/**/*.test.ts",
+		"test:codegen": "playwright codegen"
+	},
+	"devDependencies": {
+		"@playwright/test": "^1.43.0",
+		"@types/node": "^25.6.0",
+		"typescript": "^6.0.3"
+	},
+	"dependencies": {
+		"dotenv": "^17.4.2"
+	}
+}
