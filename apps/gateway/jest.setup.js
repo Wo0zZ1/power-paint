@@ -1,0 +1,7 @@
+process.env.REDIS_URL ??= 'redis://localhost:6379'
+process.env.AUTH_SERVICE_URL ??= 'http://auth'
+process.env.USERS_SERVICE_URL ??= 'http://users'
+process.env.BOARDS_SERVICE_URL ??= 'http://boards'
+process.env.COLLAB_SERVICE_URL ??= 'http://collab'
+process.env.WEB_SERVICE_URL ??= 'http://web'
+process.env.TRUSTED_PROXIES ??= '10.0.0.1,10.0.0.2'

@@ -14,7 +14,8 @@
     "packages:build": "yarn workspace @power-paint/db generate && yarn workspace @power-paint/db build && yarn workspace @power-paint/contracts build",
     "auth": "yarn workspace @power-paint/auth",
     "users": "yarn workspace @power-paint/users",
-    "boards": "yarn workspace @power-paint/boards"
+    "boards": "yarn workspace @power-paint/boards",
+    "gateway": "yarn workspace @power-paint/gateway"
   },
   "resolutions": {
     "@auth/core": "0.41.1"
