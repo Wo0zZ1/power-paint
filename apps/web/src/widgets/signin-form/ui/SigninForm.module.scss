@@ -1,0 +1,16 @@
+@use "../../../shared/ui//index.module.scss" as s;
+
+.forgot {
+  margin-left: auto;
+  display: inline-block;
+  font-size: var(--text-sm);
+  color: var(--accent-foreground) !important;
+
+  @include s.underline;
+}
+
+.sign_up {
+  color: var(--accent-foreground) !important;
+
+  @include s.underline(2px);
+}

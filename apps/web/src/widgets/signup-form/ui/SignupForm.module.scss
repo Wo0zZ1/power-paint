@@ -1,0 +1,9 @@
+@use "../../../shared/ui/index.module.scss" as s;
+
+.link {
+  position: relative;
+  text-decoration: none;
+  color: var(--accent-foreground) !important;
+
+  @include s.underline(2px);
+}
