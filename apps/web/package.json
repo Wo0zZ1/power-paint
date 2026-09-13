@@ -11,7 +11,7 @@
     "lint": "eslint",
     "test": "jest",
     "test:watch": "jest --watch",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "next typegen && tsc --noEmit"
   },
   "dependencies": {
     "@hocuspocus/provider": "^3.4.4",
