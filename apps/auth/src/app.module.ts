@@ -3,12 +3,13 @@ import { APP_PIPE } from '@nestjs/core'
 import { ZodValidationPipe } from 'nestjs-zod'
 
 import { AuthModule } from './auth/auth.module'
+import { OauthModule } from './oauth/oauth.module'
 import { ResetModule } from './reset/reset.module'
 import { SessionModule } from './session/session.module'
 import { SignupModule } from './signup/signup.module'
 
 @Module({
-	imports: [AuthModule, ResetModule, SessionModule, SignupModule],
+	imports: [AuthModule, OauthModule, ResetModule, SessionModule, SignupModule],
 	providers: [{ provide: APP_PIPE, useClass: ZodValidationPipe }],
 })
 export class AppModule {}
