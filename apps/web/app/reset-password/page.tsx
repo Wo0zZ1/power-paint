@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 
 import Wallpaper from "@/../public/assets/sign_in_wallpaper.jpg";
 
-import { auth } from "@/shared/auth";
+import { getSession } from "@/shared/session/server";
 import { ROUTES } from "@/shared/config";
 import { RESET_PASSWORD_COOKIE } from "@/shared/constants";
 
@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 };
 
 export default async function ForgotPasswordPage() {
-  const [session, cookieState] = await Promise.all([auth(), cookies()]);
+  const [session, cookieState] = await Promise.all([getSession(), cookies()]);
 
   if (session) redirect(ROUTES.DASHBOARD.ROOT);
 

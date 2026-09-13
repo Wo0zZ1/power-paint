@@ -1,5 +1,5 @@
 import { encode } from "jwt-simple";
-import type { Session } from "next-auth";
+import type { SessionUser } from "@power-paint/contracts";
 
 import type { AccessRole } from "@/shared/constants";
 import { fromDate } from "@/shared/lib/utils";
@@ -9,9 +9,9 @@ import type { UserAwareness } from "../types";
 interface GenerateWsTokenParams {
   user?: Partial<
     {
-      id: Session["user"]["id"];
-      email: Session["user"]["email"];
-      image: Session["user"]["image"];
+      id: SessionUser["id"];
+      email: SessionUser["email"];
+      image: SessionUser["image"];
     } & UserAwareness
   >;
   accessRole: AccessRole;

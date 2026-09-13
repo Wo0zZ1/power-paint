@@ -156,17 +156,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@auth/prisma-adapter@npm:^2.11.1":
-  version: 2.11.3
-  resolution: "@auth/prisma-adapter@npm:2.11.3"
-  dependencies:
-    "@auth/core": "npm:0.41.3"
-  peerDependencies:
-    "@prisma/client": ">=2.26.0 || >=3 || >=4 || >=5 || >=6"
-  checksum: 10c0/812647c27c38c081d0fe3300c685079a744675afa57fdaa4a7f17759c8868c7b6b971c91f00e7969671b239924f561653e243af711a99dd5c6df94bf9bad9395
-  languageName: node
-  linkType: hard
-
 "@babel/code-frame@npm:^7.0.0, @babel/code-frame@npm:^7.10.4, @babel/code-frame@npm:^7.16.7, @babel/code-frame@npm:^7.26.2, @babel/code-frame@npm:^7.27.1, @babel/code-frame@npm:^7.29.7":
   version: 7.29.7
   resolution: "@babel/code-frame@npm:7.29.7"
@@ -3451,7 +3440,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@power-paint/web@workspace:apps/web"
   dependencies:
-    "@auth/prisma-adapter": "npm:^2.11.1"
     "@feature-sliced/eslint-config": "npm:^0.1.1"
     "@hocuspocus/provider": "npm:^3.4.4"
     "@hookform/resolvers": "npm:^5.2.2"
@@ -3494,7 +3482,6 @@ __metadata:
     konva: "npm:^10.2.0"
     lucide-react: "npm:^0.563.0"
     next: "npm:16.1.6"
-    next-auth: "npm:^5.0.0-beta.30"
     next-intl: "npm:^4.8.2"
     nodemailer: "npm:^8.0.3"
     patch-package: "npm:^8.0.1"
@@ -13876,28 +13863,6 @@ __metadata:
     "@nestjs/swagger":
       optional: true
   checksum: 10c0/210b76bc6eafa7eb3463971b07954a37db9a63a9787d9bdd5a3efce11d4c771966b939276a90aa1a0d73391f612968af4d19a7e9424d98382a50bf518286544e
-  languageName: node
-  linkType: hard
-
-"next-auth@npm:^5.0.0-beta.30":
-  version: 5.0.0-beta.32
-  resolution: "next-auth@npm:5.0.0-beta.32"
-  dependencies:
-    "@auth/core": "npm:0.41.3"
-  peerDependencies:
-    "@simplewebauthn/browser": ^9.0.1
-    "@simplewebauthn/server": ^9.0.2
-    next: ^14.0.0-0 || ^15.0.0 || ^16.0.0
-    nodemailer: ^7.0.7 || ^8.0.5
-    react: ^18.2.0 || ^19.0.0
-  peerDependenciesMeta:
-    "@simplewebauthn/browser":
-      optional: true
-    "@simplewebauthn/server":
-      optional: true
-    nodemailer:
-      optional: true
-  checksum: 10c0/f3000d6a412eab0e8cfb992eeed88882f15a2672cda3ffeda235f335a1f0809f385bf0d6f2fc58b4cb16e3d5e270124d40a9a952a3f5eca6e111bb7a7e1d2215
   languageName: node
   linkType: hard
 

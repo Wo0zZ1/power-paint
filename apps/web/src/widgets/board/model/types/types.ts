@@ -1,7 +1,7 @@
 // ─── Элементы ────────────────────────────────────────────────────────
 
 import type { Node, NodeConfig } from "konva/lib/Node";
-import type { Session } from "next-auth";
+import type { SessionUser } from "@power-paint/contracts";
 import type { ComponentProps } from "react";
 import type { KonvaNodeComponent } from "react-konva";
 
@@ -261,7 +261,7 @@ export type UserAwareness = {
   name: string[];
   color: string;
   image: string | null;
-  id: Session["user"]["id"] | null;
+  id: SessionUser["id"] | null;
 };
 
 export type AwarenessState = {

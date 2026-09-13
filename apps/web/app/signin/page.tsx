@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 
 import Wallpaper from "@/../public/assets/sign_in_wallpaper.jpg";
 
-import { auth } from "@/shared/auth";
+import { getSession } from "@/shared/session/server";
 import { ROUTES } from "@/shared/config";
 
 import { SigninForm } from "@/widgets/signin-form";
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 };
 
 export default async function SigninPage() {
-  const session = await auth();
+  const session = await getSession();
 
   if (session) redirect(ROUTES.DASHBOARD.ROOT);
 

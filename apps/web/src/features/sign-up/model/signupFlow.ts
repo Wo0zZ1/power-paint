@@ -18,17 +18,9 @@ export type SignupFormValues = SignupFormData & SignupCodeData;
 interface buildSignupFlowProps {
   locale: SupportedLocaleCode;
   router: ReturnType<typeof useRouter>;
-  signInWithCredentials: (data: {
-    email: string;
-    password: string;
-  }) => Promise<{ ok: boolean; url?: string; error?: string }>;
 }
 
-export const buildSignupFlow = ({
-  locale,
-  router,
-  signInWithCredentials,
-}: buildSignupFlowProps) => {
+export const buildSignupFlow = ({ locale, router }: buildSignupFlowProps) => {
   const schemas = {
     step1: getSignupFormStep1Schema({
       firstNameTooShort: "auth.errors.first_name_too_short",
@@ -79,18 +71,18 @@ export const buildSignupFlow = ({
             case "auth.errors.email_in_use":
               setError("email", {
                 type: "manual",
-                message: result.error,
+                message: result.error ?? undefined,
               });
               goTo(1);
             case "auth.errors.phone_in_use":
               setError("phone", {
                 type: "manual",
-                message: result.error,
+                message: result.error ?? undefined,
               });
             default:
               setError("root", {
                 type: "manual",
-                message: result.error,
+                message: result.error ?? undefined,
               });
           }
           return false;
@@ -113,27 +105,14 @@ export const buildSignupFlow = ({
               setValue("emailCode", "");
               setError("emailCode", {
                 type: "manual",
-                message: result.error,
+                message: result.error ?? undefined,
               });
           }
           return false;
         }
 
-        const { email, password } = data;
-
-        const signin = await signInWithCredentials({ email, password });
-
-        if (!signin.ok) {
-          setError("root", {
-            type: "manual",
-            message: signin.error,
-          });
-          router.push(ROUTES.SIGNIN);
-          router.refresh();
-          return false;
-        }
-
-        router.push(signin.url ?? ROUTES.DASHBOARD.ROOT);
+        // Подтверждение кода в auth сразу выдаёт сессию, отдельный вход не нужен.
+        router.push(ROUTES.DASHBOARD.ROOT);
         router.refresh();
         return true;
       },

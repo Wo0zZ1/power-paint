@@ -1,20 +1,25 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { signIn } from "next-auth/react";
 import { useCallback, useState } from "react";
 
+import { ROUTES } from "@/shared/config";
 import type { SigninData } from "@/shared/config/authSchemas";
-
-import { signInWithCredentials } from "./actions";
+import { useSignIn } from "@/shared/session";
 
 interface UseSignInHandlersResult {
   signinError: string | null;
   handleCredentialsSignIn: (data: SigninData) => Promise<void>;
-  handleGithubSignIn: () => Promise<void>;
-  handleGoogleSignIn: () => Promise<void>;
+  handleGithubSignIn: () => void;
+  handleGoogleSignIn: () => void;
   resetSigninError: () => void;
 }
+
+// Вход через провайдера - обычный переход по адресу шлюза, а не вызов из
+// JavaScript: поток кода авторизации требует полноценных редиректов браузера.
+const goToProvider = (provider: "github" | "google") => {
+  window.location.href = `/api/auth/oauth/${provider}`;
+};
 
 export function useSignInHandlers(): UseSignInHandlersResult {
   const router = useRouter();
@@ -22,32 +27,30 @@ export function useSignInHandlers(): UseSignInHandlersResult {
 
   const resetSigninError = useCallback(() => setSigninError(null), []);
 
+  const { mutateAsync: signIn } = useSignIn();
+
   const handleCredentialsSignIn = useCallback(
     async (data: SigninData) => {
       resetSigninError();
-      const { ok, error, url } = await signInWithCredentials(data);
 
-      if (error) {
-        setSigninError(error);
-        return;
-      }
-
-      if (ok && url) {
-        router.push(url);
-        router.refresh();
+      try {
+        await signIn(data);
+        router.push(ROUTES.DASHBOARD.ROOT);
+      } catch {
+        setSigninError("errors.invalid_credentials");
       }
     },
-    [router, resetSigninError],
+    [router, resetSigninError, signIn],
   );
 
-  const handleGithubSignIn = useCallback(async () => {
+  const handleGithubSignIn = useCallback(() => {
     resetSigninError();
-    await signIn("github", { redirect: true });
+    goToProvider("github");
   }, [resetSigninError]);
 
-  const handleGoogleSignIn = useCallback(async () => {
+  const handleGoogleSignIn = useCallback(() => {
     resetSigninError();
-    await signIn("google", { redirect: true });
+    goToProvider("google");
   }, [resetSigninError]);
 
   return {

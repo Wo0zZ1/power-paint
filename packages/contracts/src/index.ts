@@ -3,7 +3,12 @@ export type { AccessRoleValue } from "./accessRole";
 
 export { accessLevelSchema } from "./accessLevel";
 
-export type { PublicUser, UserWithRole } from "./user";
+export type {
+  Identity,
+  PublicUser,
+  SessionUser,
+  UserWithRole,
+} from "./user";
 
 export {
   createBoardSchema,

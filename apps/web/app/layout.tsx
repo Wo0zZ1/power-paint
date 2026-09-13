@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 import { getLocale, getMessages, getTimeZone } from "next-intl/server";
 import type { ReactNode } from "react";
 
-import { auth } from "@/shared/auth";
+import { getSession } from "@/shared/session/server";
 
 import { ThemeScript } from "@/features/switch-theme/ui/ThemeScript";
 
@@ -65,7 +65,7 @@ export default async function RootLayout({
   const [locale, messages, session, timeZone] = await Promise.all([
     getLocale(),
     getMessages(),
-    auth(),
+    getSession(),
     getTimeZone(),
   ]);
 
@@ -86,7 +86,7 @@ export default async function RootLayout({
           <ClientProviders
             locale={locale}
             messages={messages}
-            session={session}
+            user={session}
             timeZone={timeZone}
           >
             <Header />

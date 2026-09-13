@@ -1,12 +1,12 @@
-import { auth } from "@/shared/auth";
+import { getSession } from "@/shared/session/server";
 
 import { AuthenticatedMenu } from "./AuthenticatedMenu";
 import { UnauthenticatedMenu } from "./UnauthenticatedMenu";
 
 export async function HeaderActions() {
-  const session = await auth();
+  const user = await getSession();
 
-  if (!session) return <UnauthenticatedMenu />;
+  if (!user) return <UnauthenticatedMenu />;
 
-  return <AuthenticatedMenu session={session} />;
+  return <AuthenticatedMenu user={user} />;
 }

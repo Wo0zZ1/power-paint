@@ -1,7 +1,7 @@
 import { isServer } from "@tanstack/react-query";
 
-export const GET_BASE_API_URL = () => {
-  if (isServer) return `http://127.0.0.1:${process.env.WEB_PORT || 3000}/api`;
-
-  return "/api";
-};
+// В браузере путь относительный: шлюз отдаёт и страницы, и API с одного origin,
+// поэтому кука уходит сама. На сервере origin'а нет, запрос идёт прямо в шлюз
+// по внутреннему адресу, а куку приходится прокидывать вручную.
+export const GET_BASE_API_URL = () =>
+  isServer ? `${process.env.GATEWAY_URL}/api` : "/api";

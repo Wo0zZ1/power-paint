@@ -1,12 +1,12 @@
 "use client";
 
 import { LogOut } from "lucide-react";
-import type { Session } from "next-auth";
-import { signOut } from "next-auth/react";
+import type { SessionUser } from "@power-paint/contracts";
 import { useTranslations } from "next-intl";
 
 import { ROUTES } from "@/shared/config";
 import { shortenEmail } from "@/shared/lib/utils";
+import { useSignOut } from "@/shared/session";
 import {
   DropdownMenuTrigger,
   DropdownMenuContent,
@@ -23,26 +23,27 @@ import { LanguageSwitcherMenuItem } from "@/features/switch-language";
 import { ThemeSwitcherMenuItem } from "@/features/switch-theme";
 
 interface AuthenticatedMenuProps {
-  session: Session;
+  user: SessionUser;
 }
 
-export function AuthenticatedMenu({ session }: AuthenticatedMenuProps) {
+export function AuthenticatedMenu({ user }: AuthenticatedMenuProps) {
   const t = useTranslations();
+  const { mutate: signOut } = useSignOut();
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
         <UserAvatar
           status="online"
-          fallback={session.user.email}
-          src={session.user.image}
+          fallback={user.email}
+          src={user.image}
         />
       </DropdownMenuTrigger>
 
       <DropdownMenuContent align="end">
         <DropdownMenuGroup>
           <DropdownMenuLabel>
-            {shortenEmail(session.user.email, 8)}
+            {shortenEmail(user.email, 8)}
           </DropdownMenuLabel>
         </DropdownMenuGroup>
 
@@ -51,7 +52,7 @@ export function AuthenticatedMenu({ session }: AuthenticatedMenuProps) {
         <DropdownMenuGroup>
           <DropdownMenuLabel>{t("account")}</DropdownMenuLabel>
 
-          <DropdownMenuLinkItem href={ROUTES.PROFILE(session.user.id)}>
+          <DropdownMenuLinkItem href={ROUTES.PROFILE(user.id)}>
             {t("profile")}
           </DropdownMenuLinkItem>
 
@@ -73,7 +74,7 @@ export function AuthenticatedMenu({ session }: AuthenticatedMenuProps) {
         <Separator className="my-1" />
 
         <DropdownMenuItem
-          onSelect={() => signOut({ callbackUrl: ROUTES.SIGNIN })}
+          onSelect={() => signOut()}
           variant="destructive"
         >
           <LogOut />

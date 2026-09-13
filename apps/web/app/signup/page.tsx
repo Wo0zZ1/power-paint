@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 
 import Wallpaper from "@/../public/assets/sign_in_wallpaper.jpg";
 
-import { auth } from "@/shared/auth";
+import { getSession } from "@/shared/session/server";
 import { ROUTES } from "@/shared/config";
 import { VERIFICATION_COOKIE } from "@/shared/constants";
 
@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 };
 
 export default async function SignupPage() {
-  const [session, cookieStore] = await Promise.all([auth(), cookies()]);
+  const [session, cookieStore] = await Promise.all([getSession(), cookies()]);
 
   if (session) redirect(ROUTES.DASHBOARD.ROOT);
 

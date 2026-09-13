@@ -1,7 +1,8 @@
 "use client";
 
-import type { Session } from "next-auth";
-import { SessionProvider } from "next-auth/react";
+import type { SessionUser } from "@power-paint/contracts";
+
+import { SessionProvider } from "@/shared/session";
 import { NextIntlClientProvider } from "next-intl";
 
 import { getMessageFallback } from "@/shared/i18n";
@@ -13,7 +14,7 @@ import { WindowSizeProvider } from "./WindowSizeProvider";
 
 interface ClientProvidersProps {
   children: React.ReactNode;
-  session: Session | null;
+  user: SessionUser | null;
   locale: string;
   messages: Record<string, unknown>;
   timeZone: string;
@@ -21,13 +22,13 @@ interface ClientProvidersProps {
 
 export function ClientProviders({
   children,
-  session,
+  user,
   locale,
   messages,
   timeZone,
 }: ClientProvidersProps) {
   return (
-    <SessionProvider session={session}>
+    <SessionProvider user={user}>
       <NextIntlClientProvider
         locale={locale}
         messages={messages}

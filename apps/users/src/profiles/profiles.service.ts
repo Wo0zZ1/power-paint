@@ -10,8 +10,16 @@ const toPublicUser = ({
 	name,
 	image,
 	email,
+	preferredColor,
 	created_at,
-}: Profile): PublicUser => ({ id: userId, name, image, email, created_at })
+}: Profile): PublicUser => ({
+	id: userId,
+	name,
+	image,
+	email,
+	preferredColor,
+	created_at,
+})
 
 @Injectable()
 export class ProfilesService {

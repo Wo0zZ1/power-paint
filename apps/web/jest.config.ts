@@ -17,6 +17,10 @@ const config: Config = {
   // Файл(ы) настройки, выполняющиеся перед тестами (например, импорт jest-dom)
   setupFilesAfterEnv: ["<rootDir>/jest.setup.ts"],
 
+  // Сборка Next кладёт копию package.json в .next/standalone, и Jest считает её
+  // вторым пакетом с тем же именем.
+  modulePathIgnorePatterns: ["<rootDir>/.next/"],
+
   // Задание путей, аналогично tsconfig paths
   moduleNameMapper: {
     "^@/(.*)$": "<rootDir>/src/$1",

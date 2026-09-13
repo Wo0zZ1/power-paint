@@ -4,7 +4,7 @@ import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 
 import { getQueryClient } from "@/shared/api";
-import { auth } from "@/shared/auth";
+import { getSession } from "@/shared/session/server";
 import {
   generateRandomUsername,
   generateRandomHslColor,
@@ -25,7 +25,7 @@ interface BoardProps {
 }
 
 export async function Board({ className, boardId }: BoardProps) {
-  const [session, cookieState] = await Promise.all([auth(), cookies()]);
+  const [session, cookieState] = await Promise.all([getSession(), cookies()]);
 
   const cookieString = cookieState.toString();
 
@@ -52,10 +52,10 @@ export async function Board({ className, boardId }: BoardProps) {
   const guestColor = parsedGuestUser?.color ?? generateRandomHslColor();
 
   const userAwareness = {
-    name: session ? [session.user.name] : guestName,
-    image: session?.user.image ?? null,
-    color: session?.user.preferredColor ?? guestColor,
-    id: session?.user.id ?? null,
+    name: session ? [session.name] : guestName,
+    image: session?.image ?? null,
+    color: session?.preferredColor ?? guestColor,
+    id: session?.id ?? null,
   } satisfies UserAwareness;
 
   const { accessRole } = boardWithAccess;
@@ -63,9 +63,9 @@ export async function Board({ className, boardId }: BoardProps) {
     user: {
       name: userAwareness.name,
       color: userAwareness.color,
-      id: session?.user.id,
-      email: session?.user.email,
-      image: session?.user.image,
+      id: session?.id,
+      email: session?.email,
+      image: session?.image,
     },
     accessRole,
   });

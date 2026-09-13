@@ -11,7 +11,7 @@ import { useMultiStepForm } from "@/shared/lib/hooks";
 import { cn } from "@/shared/lib/utils";
 import { Button, Field } from "@/shared/ui";
 
-import { useSignInHandlers, signInWithCredentials } from "@/features/sign-in";
+import { useSignInHandlers } from "@/features/sign-in";
 import { buildSignupFlow, AbortSignupAction } from "@/features/sign-up";
 
 import { SignupFormStep1 } from "./SignupFormStep1";
@@ -34,7 +34,7 @@ export function SignupForm({ className, verificationId }: SignupFormProps) {
     useSignInHandlers();
 
   const { defaultValues, steps } = useMemo(
-    () => buildSignupFlow({ locale, router, signInWithCredentials }),
+    () => buildSignupFlow({ locale, router }),
     [locale, router],
   );
 
