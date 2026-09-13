@@ -1,0 +1,25 @@
+{
+	"compilerOptions": {
+		"target": "ES2022",
+		"module": "commonjs",
+		"moduleResolution": "bundler",
+		"strict": true,
+		"strictPropertyInitialization": false,
+		"esModuleInterop": true,
+		"skipLibCheck": true,
+		"emitDecoratorMetadata": true,
+		"experimentalDecorators": true,
+		"outDir": "./dist",
+		"rootDir": "./src",
+		"types": [
+			"node",
+			"jest"
+		]
+	},
+	"include": [
+		"src/**/*"
+	],
+	"exclude": [
+		"src/**/*.spec.ts"
+	]
+}
