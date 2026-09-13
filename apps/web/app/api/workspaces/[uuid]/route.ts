@@ -1,4 +1,4 @@
-import { WorkspaceType } from "@prisma/client";
+import { WorkspaceType } from "@power-paint/db";
 import { forbidden, notFound } from "next/navigation";
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";

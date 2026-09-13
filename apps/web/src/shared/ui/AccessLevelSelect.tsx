@@ -1,6 +1,6 @@
 "use client";
 
-import type { AccessLevel } from "@prisma/client";
+import type { AccessLevel } from "@power-paint/db";
 import { useTranslations } from "next-intl";
 import type { ComponentProps } from "react";
 

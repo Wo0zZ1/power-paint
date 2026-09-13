@@ -1,4 +1,4 @@
-import { MemberRole } from "@prisma/client";
+import { MemberRole } from "@power-paint/db";
 
 interface MemberRoleItem {
   value: MemberRole;

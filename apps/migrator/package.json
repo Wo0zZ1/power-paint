@@ -4,20 +4,16 @@
 	"description": "Database migrator for Power Paint",
 	"main": "dist/index.js",
 	"scripts": {
-		"generate": "npx prisma generate && shx cp -r ./prisma/.prisma ./node_modules/",
 		"build": "tsc",
 		"start": "node dist/index.js"
 	},
 	"dependencies": {
-		"@prisma/adapter-pg": "^7.4.0",
-		"@prisma/client": "^7.4.0",
+		"@power-paint/db": "workspace:*",
 		"dotenv": "^17.4.1",
-		"pg": "^8.13.1",
-		"prisma": "^7.7.0"
+		"prisma": "^7.4.2"
 	},
 	"devDependencies": {
 		"@types/node": "^25.6.0",
-		"shx": "^0.4.0",
 		"typescript": "^6.0.2"
 	}
 }

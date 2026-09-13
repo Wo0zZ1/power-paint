@@ -1,6 +1,6 @@
 "use client";
 
-import type { MemberRole } from "@prisma/client";
+import type { MemberRole } from "@power-paint/db";
 import { useTranslations } from "next-intl";
 import type { ComponentProps } from "react";
 

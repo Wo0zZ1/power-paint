@@ -1,5 +1,5 @@
 import "next-auth";
-import type { Role } from "@prisma/client";
+import type { Role } from "@power-paint/db";
 
 declare module "next-auth" {
   interface Session {

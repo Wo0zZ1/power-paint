@@ -1,4 +1,4 @@
-import type { Board } from "@prisma/client";
+import type { Board } from "@power-paint/db";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";

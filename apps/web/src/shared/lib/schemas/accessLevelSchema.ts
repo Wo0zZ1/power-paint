@@ -1,6 +1,1 @@
-import { AccessLevel } from "@prisma/client";
-import z from "zod";
-
-export const accessLevelSchema = z.enum(AccessLevel, {
-  error: "workspace.errors.invalid_access_level",
-});
+export { accessLevelSchema } from "@power-paint/contracts";

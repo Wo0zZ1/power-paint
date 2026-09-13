@@ -1,4 +1,4 @@
-import type { Board } from "@prisma/client";
+import type { Board } from "@power-paint/db";
 
 import { GET_BASE_API_URL, fetchInitWithCookies } from "@/shared/api";
 import type { BoardWithAccess } from "@/shared/types";

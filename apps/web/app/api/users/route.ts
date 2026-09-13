@@ -1,4 +1,4 @@
-import type { User } from "@prisma/client";
+import type { User } from "@power-paint/db";
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 

@@ -1,5 +1,5 @@
 import { PrismaAdapter } from "@auth/prisma-adapter";
-import { AccessLevel, Role, WorkspaceType } from "@prisma/client";
+import { AccessLevel, Role, WorkspaceType } from "@power-paint/db";
 import type { NextAuthConfig } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import Github from "next-auth/providers/github";

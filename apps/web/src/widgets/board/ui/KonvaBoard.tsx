@@ -1,6 +1,6 @@
 "use client";
 
-import type { Board } from "@prisma/client";
+import type { Board } from "@power-paint/db";
 import type Konva from "konva";
 import { useEffect, useRef } from "react";
 import { Layer, Stage } from "react-konva";

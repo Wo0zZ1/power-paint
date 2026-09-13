@@ -1,4 +1,4 @@
-import { WorkspaceType } from "@prisma/client";
+import { WorkspaceType } from "@power-paint/db";
 
 import type { useGetWorkspacesQuery } from "./queries";
 

@@ -1,6 +1,6 @@
 "use client";
 
-import type { MemberRole } from "@prisma/client";
+import type { MemberRole } from "@power-paint/db";
 import { CornerDownLeft, Trash2, User2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 

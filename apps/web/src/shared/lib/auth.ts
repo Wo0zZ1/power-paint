@@ -1,5 +1,5 @@
-import type { Workspace } from "@prisma/client";
-import { AccessLevel, MemberRole } from "@prisma/client";
+import type { Workspace } from "@power-paint/db";
+import { AccessLevel, MemberRole } from "@power-paint/db";
 import type { Session } from "next-auth";
 
 import type { AccessRole } from "../constants";

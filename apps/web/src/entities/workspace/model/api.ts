@@ -1,4 +1,4 @@
-import type { Workspace, WorkspaceType } from "@prisma/client";
+import type { Workspace, WorkspaceType } from "@power-paint/db";
 
 import { GET_BASE_API_URL, fetchInitWithCookies } from "@/shared/api";
 

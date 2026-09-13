@@ -1,6 +1,6 @@
 "use client";
 
-import type { Workspace } from "@prisma/client";
+import type { Workspace } from "@power-paint/db";
 import type { VariantProps } from "class-variance-authority";
 import { useTranslations } from "next-intl";
 import { useState } from "react";

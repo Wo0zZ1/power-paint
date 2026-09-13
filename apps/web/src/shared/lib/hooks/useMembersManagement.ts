@@ -1,4 +1,4 @@
-import { MemberRole } from "@prisma/client";
+import { MemberRole } from "@power-paint/db";
 import { useState, useCallback } from "react";
 
 import type { PublicUser } from "@/shared/types";

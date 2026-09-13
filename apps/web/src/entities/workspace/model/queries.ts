@@ -1,4 +1,4 @@
-import type { WorkspaceType } from "@prisma/client";
+import type { WorkspaceType } from "@power-paint/db";
 import { useQuery } from "@tanstack/react-query";
 
 import { WORKSPACES_QUERY_KEY } from "@/shared/constants";

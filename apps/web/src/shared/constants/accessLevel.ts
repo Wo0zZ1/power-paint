@@ -1,4 +1,4 @@
-import { AccessLevel } from "@prisma/client";
+import { AccessLevel } from "@power-paint/db";
 
 interface AccessLevelItem {
   value: AccessLevel;
