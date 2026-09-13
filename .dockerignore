@@ -1,0 +1,29 @@
+# Зависимости ставятся внутри образа. Копирование хостовых затирает симлинки
+# на workspace-пакеты, созданные yarn - и сборка перестаёт их находить.
+node_modules
+**/node_modules
+
+# Результаты сборки собираются заново
+dist
+**/dist
+.next
+**/.next
+**/src/generated
+
+.git
+.github
+.yarn/cache
+.yarn/install-state.gz
+
+# Секреты в образ не попадают
+.env
+.env.*
+!.env.example
+
+# Не нужно для сборки
+docs
+*.md
+!README.md
+**/coverage
+**/test-results
+**/playwright-report
