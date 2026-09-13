@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common'
 
 import { AccessService } from '../access/access.service'
+import { EventsModule } from '../events/events.module'
 import { UsersClient } from '../clients/users.client'
 import { MembersService } from '../members.service'
 import { PrismaService } from '../prisma.service'
@@ -12,6 +13,7 @@ import { PreviewController } from './preview.controller'
 import { PreviewService } from './preview.service'
 
 @Module({
+	imports: [EventsModule],
 	controllers: [BoardsController, PreviewController],
 	providers: [
 		PrismaService,

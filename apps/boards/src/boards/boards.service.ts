@@ -7,6 +7,7 @@ import { AccessRole } from '@power-paint/contracts'
 import type { BoardWithAccess } from '@power-paint/contracts'
 
 import { AccessService } from '../access/access.service'
+import { EventsService } from '../events/events.service'
 import { MembersService } from '../members.service'
 import { PrismaService } from '../prisma.service'
 
@@ -20,6 +21,7 @@ export class BoardsService {
 		private readonly access: AccessService,
 		private readonly members: MembersService,
 		private readonly prisma: PrismaService,
+		private readonly events: EventsService,
 	) {}
 
 	async getAll(filters: { ownerId?: string; workspaceId?: string }, userId?: string) {
@@ -92,6 +94,11 @@ export class BoardsService {
 
 		const [members] = await this.members.enrich([updated.members])
 
+		// Права могли измениться - подключённые к холсту должны узнать об этом,
+		// иначе исключённый участник продолжит рисовать до разрыва соединения.
+		if (data.members || data.accessLevel)
+			await this.events.boardAccessChanged({ boardId: id })
+
 		return { board: { ...updated, members }, accessRole }
 	}
 
@@ -102,7 +109,7 @@ export class BoardsService {
 
 		const [members] = await this.members.enrich([removed.members])
 
-		// TODO: опубликовать board.deleted, чтобы collab разорвал соединения (2.7)
+		await this.events.boardDeleted({ boardId: id })
 
 		return { board: { ...removed, members }, accessRole }
 	}

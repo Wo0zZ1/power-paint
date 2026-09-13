@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common'
 
 import { UsersClient } from '../clients/users.client'
 import { MailerService } from '../email/mailer.service'
+import { EventsService } from '../events.service'
 import { PrismaService } from '../prisma.service'
 import { SessionModule } from '../session/session.module'
 
@@ -16,6 +17,7 @@ import { SignupService } from './signup.service'
 		PrismaService,
 		SignupRepository,
 		SignupService,
+		EventsService,
 		MailerService,
 		UsersClient,
 	],

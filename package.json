@@ -11,7 +11,7 @@
     "socket": "yarn workspace @power-paint/socket",
     "migrator": "yarn workspace @power-paint/migrator",
     "e2e": "yarn workspace @power-paint/e2e",
-    "packages:build": "yarn workspace @power-paint/db generate && yarn workspace @power-paint/db build && yarn workspace @power-paint/contracts build",
+    "packages:build": "yarn workspace @power-paint/db generate && yarn workspace @power-paint/db build && yarn workspace @power-paint/contracts build && yarn workspace @power-paint/events build",
     "auth": "yarn workspace @power-paint/auth",
     "users": "yarn workspace @power-paint/users",
     "boards": "yarn workspace @power-paint/boards",

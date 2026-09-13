@@ -16,6 +16,7 @@
 		"@nestjs/swagger": "^11.2.0",
 		"@power-paint/contracts": "workspace:*",
 		"@power-paint/db": "workspace:*",
+		"@power-paint/events": "workspace:*",
 		"@react-email/components": "^1.0.10",
 		"cookie": "^1.1.1",
 		"cookie-parser": "^1.4.7",

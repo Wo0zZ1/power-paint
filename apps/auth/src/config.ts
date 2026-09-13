@@ -13,6 +13,7 @@ const envSchema = z.object({
 	EMAIL_LOGIN: z.string().min(1),
 	EMAIL_PASSWORD: z.string().min(1),
 	USERS_SERVICE_URL: z.string().min(1),
+	REDIS_URL: z.string().min(1),
 	PUBLIC_BASE_URL: z.string().min(1),
 	PORT: z.coerce.number().default(3002),
 	SESSION_COOKIE_NAME: z.string().default('authjs.session-token'),

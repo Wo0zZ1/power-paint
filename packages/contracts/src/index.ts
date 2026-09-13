@@ -57,3 +57,17 @@ export type {
   SignupFormStep1Data,
   SignupFormStep2Data,
 } from "./auth";
+
+export {
+  boardAccessChangedSchema,
+  boardDeletedSchema,
+  EVENT_CHANNELS,
+  userCreatedSchema,
+  userDeletedSchema,
+} from "./events";
+export type {
+  BoardAccessChangedEvent,
+  BoardDeletedEvent,
+  UserCreatedEvent,
+  UserDeletedEvent,
+} from "./events";

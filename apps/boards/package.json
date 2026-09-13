@@ -16,6 +16,7 @@
 		"@nestjs/swagger": "^11.2.0",
 		"@power-paint/contracts": "workspace:*",
 		"@power-paint/db": "workspace:*",
+		"@power-paint/events": "workspace:*",
 		"dotenv": "^17.4.1",
 		"nestjs-zod": "^5.0.1",
 		"reflect-metadata": "^0.2.2",

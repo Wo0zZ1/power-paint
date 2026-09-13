@@ -16,6 +16,17 @@ services:
     networks:
       - power-paint-network
 
+  redis:
+    image: redis:7-alpine
+    command: ["redis-server", "--appendonly", "no"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    networks:
+      - power-paint-network
+
   migrator:
     build:
       context: ./Power-Paint-Migrator

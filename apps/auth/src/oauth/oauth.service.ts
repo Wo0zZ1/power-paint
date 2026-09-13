@@ -2,6 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common'
 
 import { UsersClient } from '../clients/users.client'
 import { CONFIG } from '../config'
+import { EventsService } from '../events.service'
 import { SessionService } from '../session/session.service'
 
 import { OauthRepository } from './oauth.repository'
@@ -18,6 +19,7 @@ export class OauthService {
 		private readonly accounts: OauthRepository,
 		private readonly users: UsersClient,
 		private readonly sessions: SessionService,
+		private readonly events: EventsService,
 	) {}
 
 	getProvider(id: string): OAuthProvider {
@@ -122,7 +124,7 @@ export class OauthService {
 			throw error
 		}
 
-		// TODO: опубликовать user.created, чтобы boards завёл персональную область (2.7)
+		await this.events.userCreated({ userId: user.id, name: profile.name })
 
 		return user.id
 	}

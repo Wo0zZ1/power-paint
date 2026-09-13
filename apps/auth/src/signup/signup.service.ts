@@ -6,6 +6,7 @@ import type { SignupFormData } from '@power-paint/contracts'
 import { UsersClient } from '../clients/users.client'
 import { CONFIG } from '../config'
 import { MailerService } from '../email/mailer.service'
+import { EventsService } from '../events.service'
 import { SignupEmail } from '../email/templates/signup'
 import { compareHash, hashValue } from '../lib/hash'
 import { SessionService } from '../session/session.service'
@@ -21,6 +22,7 @@ export class SignupService {
 		private readonly mailer: MailerService,
 		private readonly users: UsersClient,
 		private readonly sessions: SessionService,
+		private readonly events: EventsService,
 	) {}
 
 	async start(data: SignupFormData) {
@@ -102,7 +104,12 @@ export class SignupService {
 
 		await this.signups.deletePending(verificationId)
 
-		// TODO: опубликовать user.created, чтобы boards завёл персональную область (2.7)
+		// Персональную область заводит boards, получив это событие. Асинхронно,
+		// потому что вход не должен ждать чужой записи и падать из-за неё.
+		await this.events.userCreated({
+			userId: account.id,
+			name: `${pending.firstName} ${pending.lastName}`,
+		})
 
 		return this.sessions.create(account.id)
 	}
