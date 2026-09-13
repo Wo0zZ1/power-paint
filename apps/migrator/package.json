@@ -1,5 +1,5 @@
 {
-	"name": "power-paint-migrator",
+	"name": "@power-paint/migrator",
 	"version": "1.0.0",
 	"description": "Database migrator for Power Paint",
 	"main": "dist/index.js",

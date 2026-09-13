@@ -1,7 +1,0 @@
-.env
-.env.dev
-
-database.sqlite
-
-node_modules
-dist
