@@ -1,5 +1,10 @@
-import 'dotenv/config'
+import path from 'node:path'
+
+import { config } from 'dotenv'
 import { defineConfig, env } from 'prisma/config'
+
+// Переменные окружения общие для всей монорепы и лежат в корне.
+config({ path: path.resolve(__dirname, '../../.env') })
 
 export default defineConfig({
 	schema: 'prisma/schema.prisma',
