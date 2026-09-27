@@ -7,6 +7,10 @@ import { closePool, getPool } from "../pool";
 // Таблицу создаёт миграция в packages/db. Раньше сервис делал это сам через
 // CREATE TABLE IF NOT EXISTS - то есть обходил миграции и мог с ними разойтись.
 
+// Отложенное сохранение, запланированное до удаления доски, иначе вернуло бы
+// строку в таблицу уже после DELETE.
+const deletedDocuments = new Set<string>();
+
 async function fetchDocument({
   documentName,
 }: fetchPayload): Promise<Uint8Array | null> {
@@ -22,6 +26,8 @@ async function storeDocument({
   documentName,
   state,
 }: storePayload): Promise<void> {
+  if (deletedDocuments.has(documentName)) return;
+
   await getPool().query(
     `
       INSERT INTO ${CONFIG.DOCUMENTS_TABLE} (document_name, state)
@@ -39,5 +45,14 @@ export const postgresDatabase = new Database({
   fetch: fetchDocument,
   store: storeDocument,
 });
+
+export const deleteDocument = async (documentName: string) => {
+  deletedDocuments.add(documentName);
+
+  await getPool().query(
+    `DELETE FROM ${CONFIG.DOCUMENTS_TABLE} WHERE document_name = $1`,
+    [documentName],
+  );
+};
 
 export const closePostgresStorage = () => closePool();
