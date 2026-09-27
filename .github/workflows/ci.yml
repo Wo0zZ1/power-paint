@@ -12,6 +12,20 @@ jobs:
     runs-on: ubuntu-latest
 
     services:
+      postgres:
+        image: postgres:15-alpine
+        env:
+          POSTGRES_USER: ci
+          POSTGRES_PASSWORD: ci
+          POSTGRES_DB: ci
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U ci"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 5
+
       redis:
         image: redis:7-alpine
         ports:
@@ -23,8 +37,8 @@ jobs:
           --health-retries 5
 
     env:
-      # Значения-заглушки: на этом шаге к базе никто не подключается, но Prisma
-      # и next.config требуют переменные на этапе генерации и сборки.
+      # База настоящая только для интеграционных тестов, остальные адреса -
+      # заглушки: next.config требует переменные на этапе сборки.
       DATABASE_URL: postgresql://ci:ci@localhost:5432/ci
       REDIS_URL: redis://localhost:6379
       GATEWAY_URL: http://localhost:3001
@@ -58,10 +72,16 @@ jobs:
       - name: Юнит-тесты
         run: yarn test
 
-      - name: Интеграционные тесты (нужен Redis)
+      - name: Применить миграции
+        run: yarn workspace @power-paint/db migrate:deploy
+
+      - name: Интеграционные тесты (нужны Redis и Postgres)
         env:
           RUN_INTEGRATION_TESTS: "true"
-        run: yarn gateway test
+        run: |
+          yarn gateway test
+          yarn events test
+          yarn boards test
 
       - name: Сборка сервисов
         run: |

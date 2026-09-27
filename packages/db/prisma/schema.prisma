@@ -1,238 +1,240 @@
 generator client {
-	provider = "prisma-client-js"
-	output   = "../src/generated"
+  provider        = "prisma-client-js"
+  previewFeatures = ["partialIndexes"]
+  output          = "../src/generated"
 }
 
 datasource db {
-	provider = "postgresql"
-	schemas  = ["auth", "users", "boards", "collab"]
+  provider = "postgresql"
+  schemas  = ["auth", "users", "boards", "collab"]
 }
 
 // Границы схем совпадают с границами сервисов. Внешних ключей через границу нет:
-// связи boards.* -> auth.user и users.profile -> auth.user только логические,
-// целостность поддерживается событием об удалении пользователя.
+// связи с auth.user только логические. Удаления пользователя в системе нет,
+// поэтому висячих ссылок на него не возникает.
 
 model User {
-	id            String    @id @default(uuid())
-	email         String    @unique
-	emailVerified DateTime? @map("email_verified")
-	password      String?
-	role          Role      @default(User)
+  id            String    @id @default(uuid())
+  email         String    @unique
+  emailVerified DateTime? @map("email_verified")
+  password      String?
+  role          Role      @default(User)
 
-	sessions      Session[]
-	accounts      Account[]
-	passwordReset PasswordReset?
+  sessions      Session[]
+  accounts      Account[]
+  passwordReset PasswordReset?
 
-	updated_at DateTime @updatedAt
-	created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  created_at DateTime @default(now())
 
-	@@map("user")
-	@@schema("auth")
+  @@map("user")
+  @@schema("auth")
 }
 
 model Session {
-	id           String   @id @default(uuid())
-	sessionToken String   @unique @map("session_token")
-	userId       String   @map("user_id")
-	expires      DateTime
+  id           String   @id @default(uuid())
+  sessionToken String   @unique @map("session_token")
+  userId       String   @map("user_id")
+  expires      DateTime
 
-	user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-	@@map("session")
-	@@schema("auth")
+  @@map("session")
+  @@schema("auth")
 }
 
 model Account {
-	id                       String  @id @default(uuid())
-	userId                   String  @map("user_id")
-	type                     String
-	provider                 String
-	providerAccountId        String  @map("provider_account_id")
-	access_token             String? @db.Text
-	refresh_token            String? @db.Text
-	refresh_token_expires_in Int?
-	expires_at               Int?
-	token_type               String?
-	scope                    String?
-	id_token                 String? @db.Text
-	session_state            String?
+  id                       String  @id @default(uuid())
+  userId                   String  @map("user_id")
+  type                     String
+  provider                 String
+  providerAccountId        String  @map("provider_account_id")
+  access_token             String? @db.Text
+  refresh_token            String? @db.Text
+  refresh_token_expires_in Int?
+  expires_at               Int?
+  token_type               String?
+  scope                    String?
+  id_token                 String? @db.Text
+  session_state            String?
 
-	user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-	@@unique([provider, providerAccountId])
-	@@map("account")
-	@@schema("auth")
+  @@unique([provider, providerAccountId])
+  @@map("account")
+  @@schema("auth")
 }
 
 model PasswordReset {
-	id        String   @id @default(uuid())
-	userId    String   @unique @map("user_id")
-	codeHash  String   @map("code_hash")
-	expiresAt DateTime @map("expires_at")
-	attempts  Int      @default(0)
+  id        String   @id @default(uuid())
+  userId    String   @unique @map("user_id")
+  codeHash  String   @map("code_hash")
+  expiresAt DateTime @map("expires_at")
+  attempts  Int      @default(0)
 
-	user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-	created_at DateTime @default(now())
-	updated_at DateTime @updatedAt
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
-	@@map("password_reset")
-	@@schema("auth")
+  @@map("password_reset")
+  @@schema("auth")
 }
 
 // Незавершённая регистрация держит и учётные данные, и будущий профиль.
-// Живёт в auth, потому что содержит password_hash; профиль создаётся в users
-// только после подтверждения кода.
+// Профиль создаётся в users только после подтверждения кода.
 model SignupVerification {
-	id             String   @id @default(uuid())
-	verificationId String   @unique @map("verification_id")
-	email          String   @unique
-	firstName      String   @map("first_name")
-	lastName       String   @map("last_name")
-	passwordHash   String   @map("password_hash")
-	phone          String?
-	preferredColor String?  @map("preferred_color")
-	image          String?
-	locale         Locale
-	codeHash       String   @map("code_hash")
-	expiresAt      DateTime @map("expires_at")
-	attempts       Int      @default(0)
+  id             String   @id @default(uuid())
+  verificationId String   @unique @map("verification_id")
+  email          String   @unique
+  firstName      String   @map("first_name")
+  lastName       String   @map("last_name")
+  passwordHash   String   @map("password_hash")
+  phone          String?
+  preferredColor String?  @map("preferred_color")
+  image          String?
+  locale         Locale
+  codeHash       String   @map("code_hash")
+  expiresAt      DateTime @map("expires_at")
+  attempts       Int      @default(0)
 
-	created_at DateTime @default(now())
-	updated_at DateTime @updatedAt
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
-	@@map("signup_verification")
-	@@schema("auth")
+  @@map("signup_verification")
+  @@schema("auth")
 }
 
 model Profile {
-	userId String  @id @map("user_id")
-	name   String
-	image  String?
-	phone  String? @unique
-	locale Locale  @default(en)
+  userId String  @id @map("user_id")
+  name   String
+  image  String?
+  phone  String? @unique
+  locale Locale  @default(en)
 
-	// Денормализованная копия auth.user.email для отображения в списках участников.
-	// Источник истины - auth, который шлёт событие при смене адреса. Не unique:
-	// на время рассинхрона допускается дубль.
-	email String
+  // Денормализованная копия auth.user.email для отображения в списках участников.
+  // Смены адреса в системе нет, поэтому копия, снятая при регистрации, не устаревает.
+  email String
 
-	preferredColor String @default(dbgenerated("'#' || lpad(to_hex((random() * (2^24))::int), 6, '0')")) @map("preferred_color")
+  preferredColor String @default(dbgenerated("'#' || lpad(to_hex((random() * (2^24))::int), 6, '0')")) @map("preferred_color")
 
-	updated_at DateTime @updatedAt
-	created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  created_at DateTime @default(now())
 
-	@@index([email])
-	@@map("profile")
-	@@schema("users")
+  @@index([email])
+  @@map("profile")
+  @@schema("users")
 }
 
 model Workspace {
-	id          String        @id @default(uuid())
-	name        String
-	ownerId     String        @map("owner_id")
-	type        WorkspaceType @default(team)
-	accessLevel AccessLevel   @default(private) @map("access_level")
-	preview     String?
+  id          String        @id @default(uuid())
+  name        String
+  ownerId     String        @map("owner_id")
+  type        WorkspaceType @default(team)
+  accessLevel AccessLevel   @default(private) @map("access_level")
+  preview     String?
 
-	updatedAt DateTime @updatedAt @map("updated_at")
-	createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  createdAt DateTime @default(now()) @map("created_at")
 
-	boards  Board[]
-	members WorkspaceMember[]
+  boards  Board[]
+  members WorkspaceMember[]
 
-	@@map("workspace")
-	@@schema("boards")
+  // Событие о новом пользователе может прийти повторно, а второй личной области
+  // быть не должно. Проверка в обработчике гонку двух доставок не закрывает.
+  @@unique([ownerId], map: "workspace_personal_owner_key", where: raw("type = 'personal'"))
+  @@map("workspace")
+  @@schema("boards")
 }
 
 model Board {
-	id           String      @id @default(uuid())
-	name         String
-	workspaceId  String      @map("workspace_id")
-	ownerId      String      @map("owner_id")
-	accessLevel  AccessLevel @default(private) @map("access_level")
-	darkPreview  String?
-	lightPreview String?
+  id           String      @id @default(uuid())
+  name         String
+  workspaceId  String      @map("workspace_id")
+  ownerId      String      @map("owner_id")
+  accessLevel  AccessLevel @default(private) @map("access_level")
+  darkPreview  String?
+  lightPreview String?
 
-	updatedAt DateTime @updatedAt @map("updated_at")
-	createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  createdAt DateTime @default(now()) @map("created_at")
 
-	workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
 
-	members BoardMember[]
+  members BoardMember[]
 
-	@@map("board")
-	@@schema("boards")
+  @@map("board")
+  @@schema("boards")
 }
 
 model BoardMember {
-	boardId String     @map("board_id")
-	userId  String     @map("user_id")
-	role    MemberRole
+  boardId String     @map("board_id")
+  userId  String     @map("user_id")
+  role    MemberRole
 
-	board Board @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  board Board @relation(fields: [boardId], references: [id], onDelete: Cascade)
 
-	@@unique([boardId, userId])
-	@@map("board_member")
-	@@schema("boards")
+  @@unique([boardId, userId])
+  @@map("board_member")
+  @@schema("boards")
 }
 
 model WorkspaceMember {
-	workspaceId String     @map("workspace_id")
-	userId      String     @map("user_id")
-	role        MemberRole
+  workspaceId String     @map("workspace_id")
+  userId      String     @map("user_id")
+  role        MemberRole
 
-	workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
 
-	@@id([workspaceId, userId])
-	@@map("workspace_member")
-	@@schema("boards")
+  @@id([workspaceId, userId])
+  @@map("workspace_member")
+  @@schema("boards")
 }
 
 model yjs_documents {
-	document_name String   @id
-	state         Bytes
-	created_at    DateTime @default(now()) @db.Timestamptz(6)
-	updated_at    DateTime @default(now()) @db.Timestamptz(6)
+  document_name String   @id
+  state         Bytes
+  created_at    DateTime @default(now()) @db.Timestamptz(6)
+  updated_at    DateTime @default(now()) @db.Timestamptz(6)
 
-	@@schema("collab")
+  @@schema("collab")
 }
 
 enum Role {
-	User
-	Admin
+  User
+  Admin
 
-	@@schema("auth")
+  @@schema("auth")
 }
 
 enum Locale {
-	en
-	ru
-	de
-	fr
+  en
+  ru
+  de
+  fr
 
-	@@schema("users")
+  @@schema("users")
 }
 
 enum AccessLevel {
-	private
-	public_view
-	public_edit
+  private
+  public_view
+  public_edit
 
-	@@schema("boards")
+  @@schema("boards")
 }
 
 enum MemberRole {
-	viewer
-	editor
-	admin
+  viewer
+  editor
+  admin
 
-	@@schema("boards")
+  @@schema("boards")
 }
 
 enum WorkspaceType {
-	personal
-	team
+  personal
+  team
 
-	@@schema("boards")
+  @@schema("boards")
 }
