@@ -9,6 +9,7 @@ import { WorkspaceType } from '@power-paint/db'
 import type { Workspace as PrismaWorkspace, WorkspaceType as WorkspaceTypeValue } from '@power-paint/db'
 
 import { AccessService } from '../access/access.service'
+import { EventsService } from '../events/events.service'
 import { MembersService } from '../members.service'
 
 import { WorkspaceRepository } from './workspace.repository'
@@ -25,6 +26,7 @@ export class WorkspacesService {
 		private readonly workspaces: WorkspaceRepository,
 		private readonly access: AccessService,
 		private readonly members: MembersService,
+		private readonly events: EventsService,
 	) {}
 
 	async getAll(
@@ -102,6 +104,12 @@ export class WorkspacesService {
 			data.members,
 		)
 
+		// Доски наследуют права области, поэтому её участники, уровень доступа и
+		// владелец - это права каждой её доски, и подключённые к холстам должны узнать.
+		if (data.members || data.accessLevel || data.ownerId)
+			for (const { id: boardId } of updated.boards)
+				this.events.boardAccessChanged({ boardId })
+
 		return {
 			workspace: await this.enrich(updated as WorkspaceRow),
 			accessRole,
@@ -112,6 +120,11 @@ export class WorkspacesService {
 		const accessRole = await this.requireRole(id, userId, AccessRole.OWNER)
 
 		const removed = await this.workspaces.remove(id)
+
+		// Доски удаляются каскадом в БД, минуя BoardsService, и событие за них
+		// не отправит никто, кроме области.
+		for (const { id: boardId } of removed.boards)
+			this.events.boardDeleted({ boardId })
 
 		return {
 			workspace: await this.enrich(removed as WorkspaceRow),

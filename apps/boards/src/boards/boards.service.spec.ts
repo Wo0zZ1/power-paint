@@ -27,4 +27,22 @@ describe('BoardsService', () => {
 		)
 	})
 
+	test('Смена владельца доски сообщает о смене прав', async () => {
+		const board = { id: 'b1', members: [] }
+		const events = { boardAccessChanged: jest.fn() }
+		const service = new BoardsService(
+			{
+				findById: jest.fn().mockResolvedValue(board),
+				update: jest.fn().mockResolvedValue(board),
+			} as never,
+			{ toBoard: jest.fn().mockResolvedValue('OWNER') } as never,
+			{ enrich: jest.fn(async (groups: unknown[]) => groups) } as never,
+			{} as never,
+			events as never,
+		)
+
+		await service.update('b1', { ownerId: 'u2' }, 'u1')
+
+		expect(events.boardAccessChanged).toHaveBeenCalledWith({ boardId: 'b1' })
+	})
 })

@@ -103,7 +103,7 @@ export class BoardsService {
 
 		// Права могли измениться - подключённые к холсту должны узнать об этом,
 		// иначе исключённый участник продолжит рисовать до разрыва соединения.
-		if (data.members || data.accessLevel)
+		if (data.members || data.accessLevel || data.ownerId)
 			this.events.boardAccessChanged({ boardId: id })
 
 		return { board: { ...updated, members }, accessRole }
