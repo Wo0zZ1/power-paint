@@ -12,13 +12,12 @@ import {
 	UnauthorizedException,
 } from '@nestjs/common'
 import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger'
+import { MAX_USERS_BATCH_SIZE } from '@power-paint/contracts'
 
 import { CurrentUserId } from '../currentUserId.decorator'
 
 import { UpdateProfileDto } from './profile.dto'
 import { ProfilesService } from './profiles.service'
-
-const MAX_BATCH_SIZE = 100
 
 @ApiTags('users')
 @Controller('api/users')
@@ -40,8 +39,10 @@ export class ProfilesController {
 		if (ids) {
 			const userIds = ids.split(',').filter(Boolean)
 
-			if (userIds.length > MAX_BATCH_SIZE)
-				throw new BadRequestException(`At most ${MAX_BATCH_SIZE} ids per request`)
+			if (userIds.length > MAX_USERS_BATCH_SIZE)
+				throw new BadRequestException(
+					`At most ${MAX_USERS_BATCH_SIZE} ids per request`,
+				)
 
 			return this.profiles.getMany(userIds)
 		}
@@ -54,7 +55,7 @@ export class ProfilesController {
 
 		if (limit < 1) throw new BadRequestException('limit must be positive')
 
-		return this.profiles.search(query, Math.min(limit, MAX_BATCH_SIZE))
+		return this.profiles.search(query, Math.min(limit, MAX_USERS_BATCH_SIZE))
 	}
 
 	@Get(':id')

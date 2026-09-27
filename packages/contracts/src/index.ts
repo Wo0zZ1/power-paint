@@ -3,6 +3,7 @@ export type { AccessRoleValue } from "./accessRole";
 
 export { accessLevelSchema } from "./accessLevel";
 
+export { MAX_USERS_BATCH_SIZE } from "./user";
 export type {
   Identity,
   PublicUser,

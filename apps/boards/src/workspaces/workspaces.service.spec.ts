@@ -1,4 +1,4 @@
-import { NotFoundException } from '@nestjs/common'
+import { ForbiddenException, NotFoundException } from '@nestjs/common'
 
 import { WorkspacesService } from './workspaces.service'
 
@@ -14,7 +14,7 @@ const makeService = (workspace: { name: string } | null) => {
 }
 
 // Область с двумя досками, где пользователь - администратор
-const makeWritableService = () => {
+const makeWritableService = (role = 'OWNER') => {
 	const workspace = {
 		id: 'w1',
 		type: 'team',
@@ -31,7 +31,7 @@ const makeWritableService = () => {
 			update: jest.fn().mockResolvedValue(workspace),
 			remove: jest.fn().mockResolvedValue(workspace),
 		} as never,
-		{ toWorkspace: jest.fn().mockResolvedValue('OWNER') } as never,
+		{ toWorkspace: jest.fn().mockResolvedValue(role) } as never,
 		{ enrich: jest.fn(async (groups: unknown[]) => groups) } as never,
 		events as never,
 	)
@@ -88,5 +88,13 @@ describe('WorkspacesService', () => {
 			[{ boardId: 'b1' }],
 			[{ boardId: 'b2' }],
 		])
+	})
+
+	test('Администратор не может передать область - иначе сделает владельцем себя', async () => {
+		const { service } = makeWritableService('ADMIN')
+
+		await expect(
+			service.update('w1', { ownerId: 'u2' }, 'u1'),
+		).rejects.toBeInstanceOf(ForbiddenException)
 	})
 })

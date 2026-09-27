@@ -98,6 +98,11 @@ export class WorkspacesService {
 	): Promise<WorkspaceWithAccess> {
 		const accessRole = await this.requireRole(id, userId, AccessRole.ADMIN)
 
+		// Передать область может только владелец: иначе администратор назначил бы
+		// владельцем себя и получил право удаления.
+		if (data.ownerId && AccessRole[accessRole] < AccessRole.OWNER)
+			throw new ForbiddenException()
+
 		const updated = await this.workspaces.update(
 			id,
 			{ name: data.name, accessLevel: data.accessLevel, ownerId: data.ownerId },

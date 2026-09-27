@@ -1,4 +1,4 @@
-import { NotFoundException } from '@nestjs/common'
+import { ForbiddenException, NotFoundException } from '@nestjs/common'
 
 import { BoardsService } from './boards.service'
 
@@ -44,5 +44,22 @@ describe('BoardsService', () => {
 		await service.update('b1', { ownerId: 'u2' }, 'u1')
 
 		expect(events.boardAccessChanged).toHaveBeenCalledWith({ boardId: 'b1' })
+	})
+
+	test('Администратор не может передать доску - иначе сделает владельцем себя', async () => {
+		const board = { id: 'b1', members: [] }
+		const update = jest.fn().mockResolvedValue(board)
+		const service = new BoardsService(
+			{ findById: jest.fn().mockResolvedValue(board), update } as never,
+			{ toBoard: jest.fn().mockResolvedValue('ADMIN') } as never,
+			{} as never,
+			{} as never,
+			{} as never,
+		)
+
+		await expect(
+			service.update('b1', { ownerId: 'u1' }, 'u1'),
+		).rejects.toBeInstanceOf(ForbiddenException)
+		expect(update).not.toHaveBeenCalled()
 	})
 })

@@ -3,6 +3,10 @@ import type { MemberRole, Role } from "@power-paint/db";
 // Форма ответа сервиса users. Собирается из users.profile и не повторяет
 // структуру таблицы: email здесь - денормализованная копия из auth.
 // preferredColor публичен намеренно: это цвет курсора, его видят соавторы.
+// Потолок пачки профилей за один запрос: users его проверяет, boards по нему
+// режет список участников.
+export const MAX_USERS_BATCH_SIZE = 100;
+
 export interface PublicUser {
   id: string;
   name: string;
