@@ -67,6 +67,7 @@ const createWorkspace = async (
   const response = await fetch(url, {
     ...fetchInitWithCookies(),
     method: "POST",
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(workspace),
   });
 
@@ -85,6 +86,7 @@ const updateWorkspace = async ({
   const response = await fetch(`${url}/${workspaceId}`, {
     ...fetchInitWithCookies(),
     method: "PATCH",
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
   });
 

@@ -72,6 +72,7 @@ const createBoard = async (
   const response = await fetch(url, {
     ...fetchInitWithCookies(),
     method: "POST",
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(board),
   });
 
@@ -90,6 +91,7 @@ const updateBoard = async ({
   const response = await fetch(`${url}/${boardId}`, {
     ...fetchInitWithCookies(),
     method: "PATCH",
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
   });
 
