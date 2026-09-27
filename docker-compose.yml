@@ -170,7 +170,9 @@ services:
     container_name: power-paint-nginx
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./nginx/templates:/etc/nginx/templates:ro
+      # Под именем default.conf шаблон заменяет одноимённый конфиг образа: иначе тот
+      # со своим server_name localhost перехватывал бы запросы на localhost.
+      - ./nginx/templates/power-paint.conf.template:/etc/nginx/templates/default.conf.template:ro
     environment:
       DOMAIN: $DOMAIN
       GATEWAY_HOST: gateway
