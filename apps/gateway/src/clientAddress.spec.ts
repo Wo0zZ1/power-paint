@@ -14,10 +14,22 @@ describe('clientAddress', () => {
 		expect(clientAddress(request('203.0.113.9', '1.1.1.1'))).toBe('203.0.113.9')
 	})
 
-	test('От доверенного прокси берётся первый адрес из X-Forwarded-For', () => {
-		expect(clientAddress(request('10.0.0.1', '203.0.113.9, 10.0.0.1'))).toBe(
+	test('От доверенного прокси берётся адрес клиента из X-Forwarded-For', () => {
+		expect(clientAddress(request('10.0.0.1', '203.0.113.9'))).toBe(
 			'203.0.113.9',
 		)
+	})
+
+	test('Подделанный клиентом адрес в начале X-Forwarded-For игнорируется', () => {
+		expect(clientAddress(request('10.0.0.1', '6.6.6.6, 203.0.113.9'))).toBe(
+			'203.0.113.9',
+		)
+	})
+
+	test('Доверенные прокси в конце цепочки пропускаются', () => {
+		expect(
+			clientAddress(request('172.18.0.5', '6.6.6.6, 203.0.113.9, 10.0.0.1')),
+		).toBe('203.0.113.9')
 	})
 
 	test('Доверенный прокси без X-Forwarded-For остаётся собой', () => {
