@@ -6,11 +6,11 @@ import { UsersClient } from '../clients/users.client'
 import { CONFIG } from '../config'
 import { MailerService } from '../email/mailer.service'
 import { ResetPasswordEmail } from '../email/templates/reset'
+import { EventsService } from '../events.service'
+import { generateCode } from '../lib/code'
 import { compareHash, hashPassword, hashValue } from '../lib/hash'
 
 import { ResetRepository } from './reset.repository'
-
-const generateCode = () => String(Math.floor(100000 + Math.random() * 900000))
 
 @Injectable()
 export class ResetService {
@@ -18,6 +18,7 @@ export class ResetService {
 		private readonly resets: ResetRepository,
 		private readonly mailer: MailerService,
 		private readonly users: UsersClient,
+		private readonly events: EventsService,
 	) {}
 
 	// Всегда возвращает один и тот же resetId, даже если такого email нет:
@@ -38,7 +39,11 @@ export class ResetService {
 			expiresAt,
 		)
 
-		await this.sendCode(account.id, account.email, code)
+		// Письмо уходит в фоне: SMTP отвечает секундами, и ожидание выдало бы
+		// по времени ответа, что адрес зарегистрирован.
+		this.sendCode(account.id, account.email, code).catch(error =>
+			console.error('Failed to send reset code:', error),
+		)
 
 		return { resetId: record.id }
 	}
@@ -93,11 +98,13 @@ export class ResetService {
 		if (!compareHash(resetToken, record.codeHash))
 			throw new BadRequestException('errors.unknown_error')
 
-		await this.resets.applyNewPassword(
+		const sessionTokens = await this.resets.applyNewPassword(
 			record.id,
 			record.userId,
 			await hashPassword(password),
 		)
+
+		if (sessionTokens.length) this.events.sessionsRevoked({ sessionTokens })
 
 		return { ok: true }
 	}

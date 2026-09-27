@@ -34,6 +34,7 @@ const authorizedFetch = async <T>(url: string, accessToken: string) => {
 interface GoogleUserInfo {
 	sub: string
 	email: string
+	email_verified?: boolean
 	name?: string
 	picture?: string
 }
@@ -63,6 +64,10 @@ const google: OAuthProvider = {
 			'https://openidconnect.googleapis.com/v1/userinfo',
 			accessToken,
 		)
+
+		// Вход привязывается к учётной записи с тем же email, и неподтверждённый
+		// адрес открыл бы чужую учётную запись.
+		if (!info.email_verified) throw new Error('Google email is not verified')
 
 		return {
 			providerAccountId: info.sub,

@@ -2,6 +2,7 @@ import { createHash } from 'node:crypto'
 
 import { UnauthorizedException } from '@nestjs/common'
 
+import * as hash from '../lib/hash'
 import { hashPassword } from '../lib/hash'
 
 import { AuthService } from './auth.service'
@@ -74,5 +75,18 @@ describe('AuthService sign in', () => {
 		await expect(
 			service.signIn({ email: 'nobody@example.com', password: PASSWORD }),
 		).rejects.toThrow('Invalid credentials')
+	})
+
+	test('Должен считать хеш и на неизвестный email - иначе время ответа выдаёт адрес', async () => {
+		const verify = jest.spyOn(hash, 'verifyPassword')
+		const { service, accounts } = build(legacyHash(PASSWORD))
+		accounts.findByEmail.mockResolvedValue(null)
+
+		await expect(
+			service.signIn({ email: 'nobody@example.com', password: PASSWORD }),
+		).rejects.toThrow('Invalid credentials')
+
+		expect(verify).toHaveBeenCalled()
+		verify.mockRestore()
 	})
 })

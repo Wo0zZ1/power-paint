@@ -77,7 +77,7 @@ export class OauthService {
 
 	// Три случая: аккаунт уже привязан; есть пользователь с таким email, но без
 	// привязки; пользователя нет вовсе. Привязка по совпадающему email допустима,
-	// потому что оба провайдера отдают только подтверждённые адреса.
+	// потому что провайдеры отдают только подтверждённые адреса (см. providers.ts).
 	private async resolveUser(providerId: string, profile: OAuthProfile) {
 		const linked = await this.accounts.findAccount(
 			providerId,
@@ -105,7 +105,7 @@ export class OauthService {
 		const user = await this.accounts.createUser(profile.email)
 
 		// Та же компенсация, что и при обычной регистрации: профиль в другом
-		// сервисе, общей транзакции нет.
+		// сервисе, общей транзакции нет, и при таймауте он мог создаться.
 		try {
 			await this.accounts.linkAccount(
 				user.id,
@@ -120,6 +120,7 @@ export class OauthService {
 				image: profile.image,
 			})
 		} catch (error) {
+			await this.users.deleteProfile(user.id)
 			await this.accounts.deleteUser(user.id)
 			throw error
 		}

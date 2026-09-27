@@ -14,6 +14,7 @@ import {
 } from './identity.middleware'
 import { authRateLimit, generalRateLimit } from './rateLimit'
 import { connectRedis } from './redis'
+import { listenSessionRevoked } from './sessionRevoked.listener'
 
 const app = express()
 
@@ -85,3 +86,4 @@ server.on('upgrade', async (request, socket, head) => {
 })
 
 void connectRedis()
+listenSessionRevoked()

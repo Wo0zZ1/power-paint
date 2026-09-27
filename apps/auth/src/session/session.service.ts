@@ -3,6 +3,7 @@ import { randomUUID } from 'node:crypto'
 import { Injectable } from '@nestjs/common'
 
 import { CONFIG } from '../config'
+import { EventsService } from '../events.service'
 import { PrismaService } from '../prisma.service'
 
 export interface SessionIdentity {
@@ -13,7 +14,10 @@ export interface SessionIdentity {
 
 @Injectable()
 export class SessionService {
-	constructor(private readonly prisma: PrismaService) {}
+	constructor(
+		private readonly prisma: PrismaService,
+		private readonly events: EventsService,
+	) {}
 
 	async create(userId: string) {
 		const sessionToken = randomUUID()
@@ -48,6 +52,12 @@ export class SessionService {
 	}
 
 	async revoke(sessionToken: string) {
-		await this.prisma.client.session.deleteMany({ where: { sessionToken } })
+		const { count } = await this.prisma.client.session.deleteMany({
+			where: { sessionToken },
+		})
+
+		// Шлюз кэширует личность по токену и без события пускал бы по отозванной
+		// сессии до конца TTL кэша.
+		if (count) this.events.sessionsRevoked({ sessionTokens: [sessionToken] })
 	}
 }

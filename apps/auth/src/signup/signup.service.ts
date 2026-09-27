@@ -8,12 +8,11 @@ import { CONFIG } from '../config'
 import { MailerService } from '../email/mailer.service'
 import { EventsService } from '../events.service'
 import { SignupEmail } from '../email/templates/signup'
+import { generateCode } from '../lib/code'
 import { compareHash, hashPassword, hashValue } from '../lib/hash'
 import { SessionService } from '../session/session.service'
 
 import { SignupRepository } from './signup.repository'
-
-const generateCode = () => String(Math.floor(100000 + Math.random() * 900000))
 
 @Injectable()
 export class SignupService {
@@ -86,7 +85,8 @@ export class SignupService {
 
 		// Профиль живёт в другом сервисе, поэтому общей транзакции нет.
 		// Если он не создался - откатываем учётную запись вручную, иначе останется
-		// пользователь, которого не видно в интерфейсе.
+		// пользователь, которого не видно в интерфейсе. Профиль убираем тоже:
+		// при таймауте users мог его создать, просто ответ до нас не дошёл.
 		try {
 			await this.users.createProfile({
 				userId: account.id,
@@ -98,6 +98,7 @@ export class SignupService {
 				preferredColor: pending.preferredColor ?? undefined,
 			})
 		} catch (error) {
+			await this.users.deleteProfile(account.id)
 			await this.signups.deleteAccount(account.id)
 			throw error
 		}

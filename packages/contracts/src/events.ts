@@ -7,6 +7,7 @@ export const EVENT_STREAMS = {
   USER_CREATED: "user.created",
   BOARD_DELETED: "board.deleted",
   BOARD_ACCESS_CHANGED: "board.access_changed",
+  SESSION_REVOKED: "session.revoked",
 } as const;
 
 // z.guid, а не z.uuid: последний проверяет версию UUID, и события про сущности
@@ -25,6 +26,13 @@ export const boardAccessChangedSchema = z.object({
   boardId: z.guid(),
 });
 
+// Токены в событии уже отозваны и ни на что не годны, а шлюзу нужен именно
+// токен: по нему он кэширует личность.
+export const sessionRevokedSchema = z.object({
+  sessionTokens: z.array(z.string()).min(1),
+});
+
 export type UserCreatedEvent = z.infer<typeof userCreatedSchema>;
 export type BoardDeletedEvent = z.infer<typeof boardDeletedSchema>;
 export type BoardAccessChangedEvent = z.infer<typeof boardAccessChangedSchema>;
+export type SessionRevokedEvent = z.infer<typeof sessionRevokedSchema>;

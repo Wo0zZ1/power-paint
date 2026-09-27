@@ -1,6 +1,9 @@
 import { Injectable, OnModuleDestroy } from '@nestjs/common'
 import { EVENT_STREAMS } from '@power-paint/contracts'
-import type { UserCreatedEvent } from '@power-paint/contracts'
+import type {
+	SessionRevokedEvent,
+	UserCreatedEvent,
+} from '@power-paint/contracts'
 import { createPublisher } from '@power-paint/events'
 
 import { CONFIG } from './config'
@@ -11,6 +14,10 @@ export class EventsService implements OnModuleDestroy {
 
 	userCreated(payload: UserCreatedEvent) {
 		this.publisher.publish(EVENT_STREAMS.USER_CREATED, payload)
+	}
+
+	sessionsRevoked(payload: SessionRevokedEvent) {
+		this.publisher.publish(EVENT_STREAMS.SESSION_REVOKED, payload)
 	}
 
 	onModuleDestroy() {

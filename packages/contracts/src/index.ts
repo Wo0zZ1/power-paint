@@ -62,10 +62,12 @@ export {
   boardAccessChangedSchema,
   boardDeletedSchema,
   EVENT_STREAMS,
+  sessionRevokedSchema,
   userCreatedSchema,
 } from "./events";
 export type {
   BoardAccessChangedEvent,
   BoardDeletedEvent,
+  SessionRevokedEvent,
   UserCreatedEvent,
 } from "./events";
