@@ -33,6 +33,12 @@ export class WorkspacesController {
 		return this.workspaces.getAll({ ownerId, type }, actorId)
 	}
 
+	@Get(':id/meta')
+	@ApiOperation({ summary: 'Название области для метаданных страницы' })
+	getMeta(@Param('id') id: string) {
+		return this.workspaces.getMeta(id)
+	}
+
 	@Get(':id')
 	@ApiOperation({ summary: 'Область с ролью текущего пользователя' })
 	getOne(@Param('id') id: string, @OptionalUserId() actorId?: string) {

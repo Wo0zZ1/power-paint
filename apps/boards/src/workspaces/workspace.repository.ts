@@ -23,6 +23,13 @@ export class WorkspaceRepository {
 		})
 	}
 
+	findMeta(id: string) {
+		return this.prisma.client.workspace.findUnique({
+			where: { id },
+			select: { name: true },
+		})
+	}
+
 	findById(id: string) {
 		return this.prisma.client.workspace.findUnique({
 			where: { id },

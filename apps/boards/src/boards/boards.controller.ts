@@ -32,6 +32,12 @@ export class BoardsController {
 		return this.boards.getAll({ ownerId, workspaceId }, actorId)
 	}
 
+	@Get(':id/meta')
+	@ApiOperation({ summary: 'Название доски для метаданных страницы' })
+	getMeta(@Param('id') id: string) {
+		return this.boards.getMeta(id)
+	}
+
 	@Get(':id')
 	@ApiOperation({ summary: 'Доска с ролью текущего пользователя' })
 	getOne(@Param('id') id: string, @OptionalUserId() actorId?: string) {

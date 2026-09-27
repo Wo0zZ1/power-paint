@@ -59,6 +59,13 @@ export class BoardRepository {
 		})
 	}
 
+	findMeta(id: string) {
+		return this.prisma.client.board.findUnique({
+			where: { id },
+			select: { name: true },
+		})
+	}
+
 	findPreviews(id: string) {
 		return this.prisma.client.board.findUnique({
 			where: { id },

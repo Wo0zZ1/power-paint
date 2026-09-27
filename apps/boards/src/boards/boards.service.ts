@@ -44,6 +44,13 @@ export class BoardsService {
 		)
 	}
 
+	async getMeta(id: string) {
+		const board = await this.boards.findMeta(id)
+		if (!board) throw new NotFoundException('Board not found')
+
+		return board
+	}
+
 	async getOne(id: string, userId?: string): Promise<BoardWithAccess> {
 		const board = await this.boards.findById(id)
 		if (!board) throw new NotFoundException('Board not found')

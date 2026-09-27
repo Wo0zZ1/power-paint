@@ -52,6 +52,13 @@ export class WorkspacesService {
 		)
 	}
 
+	async getMeta(id: string) {
+		const workspace = await this.workspaces.findMeta(id)
+		if (!workspace) throw new NotFoundException('Workspace not found')
+
+		return workspace
+	}
+
 	async getOne(id: string, userId?: string): Promise<WorkspaceWithAccess> {
 		const workspace = await this.workspaces.findById(id)
 		if (!workspace) throw new NotFoundException('Workspace not found')
