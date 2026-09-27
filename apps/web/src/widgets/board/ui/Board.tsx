@@ -4,13 +4,15 @@ import { cookies, headers } from "next/headers";
 import { notFound } from "next/navigation";
 
 import { getQueryClient } from "@/shared/api";
+import { GUEST_USER_COOKIE_NAME } from "@/shared/constants";
 import {
   generateRandomUsername,
   generateRandomHslColor,
   cn,
+  parseGuestUserCookie,
 } from "@/shared/lib/utils";
 import { getSession } from "@/shared/session/server";
-import type { BoardWithAccess, IGuestUserCookie } from "@/shared/types";
+import type { BoardWithAccess } from "@/shared/types";
 
 import { getBoardQueryOption } from "@/entities/board/server";
 
@@ -48,12 +50,9 @@ export async function Board({ className, boardId }: BoardProps) {
     notFound();
   }
 
-  const guestUser = cookieState.get("guest-user")?.value;
-  const parsedGuestUser = guestUser
-    ? (JSON.parse(
-        Buffer.from(guestUser, "base64").toString(),
-      ) as IGuestUserCookie)
-    : null;
+  const parsedGuestUser = parseGuestUserCookie(
+    cookieState.get(GUEST_USER_COOKIE_NAME)?.value,
+  );
 
   const guestName = parsedGuestUser?.name ?? generateRandomUsername();
   const guestColor = parsedGuestUser?.color ?? generateRandomHslColor();

@@ -1,43 +1,41 @@
-import { cookies } from "next/headers";
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
 import { ROUTES } from "@/shared/config";
-import { SESSION_ID_COOKIE_NAME } from "@/shared/constants";
 import {
+  GUEST_USER_COOKIE_NAME,
+  SESSION_ID_COOKIE_NAME,
+} from "@/shared/constants";
+import {
+  encodeGuestUserCookie,
   generateRandomUsername,
   generateRandomHexColor,
+  parseGuestUserCookie,
 } from "@/shared/lib/utils";
-import type { IGuestUserCookie } from "@/shared/types";
 
 const PRIVATE_ROUTES = [ROUTES.DASHBOARD.ROOT] as string[];
 
-export async function proxy(request: NextRequest) {
-  const response = NextResponse.next();
-
-  const [cookieState] = await Promise.all([cookies()]);
-
+export function proxy(request: NextRequest) {
   const sessionToken = request.cookies.get(SESSION_ID_COOKIE_NAME)?.value;
+  if (sessionToken) return NextResponse.next();
 
-  if (!sessionToken) {
-    if (PRIVATE_ROUTES.includes(request.nextUrl.pathname)) {
-      return NextResponse.redirect(new URL(ROUTES.SIGNIN, request.url));
-    }
+  if (PRIVATE_ROUTES.includes(request.nextUrl.pathname))
+    return NextResponse.redirect(new URL(ROUTES.SIGNIN, request.url));
 
-    const guestUser = cookieState.get("guest-user")?.value;
+  const guestUser = request.cookies.get(GUEST_USER_COOKIE_NAME)?.value;
+  if (parseGuestUserCookie(guestUser)) return NextResponse.next();
 
-    if (!guestUser) {
-      const guestUserCookie = {
-        name: generateRandomUsername(),
-        color: generateRandomHexColor(),
-      } satisfies IGuestUserCookie;
+  const guestUserCookie = encodeGuestUserCookie({
+    name: generateRandomUsername(),
+    color: generateRandomHexColor(),
+  });
 
-      response.cookies.set(
-        "guest-user",
-        Buffer.from(JSON.stringify(guestUserCookie)).toString("base64"),
-      );
-    }
-  }
+  // Кука кладётся и в сам запрос: страница рендерится в этом же запросе и иначе
+  // придумала бы гостю другое имя, чем сохранено в куке.
+  request.cookies.set(GUEST_USER_COOKIE_NAME, guestUserCookie);
+
+  const response = NextResponse.next({ request: { headers: request.headers } });
+  response.cookies.set(GUEST_USER_COOKIE_NAME, guestUserCookie);
 
   return response;
 }
