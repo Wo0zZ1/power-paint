@@ -1,3 +1,5 @@
+import type { Socket } from 'node:net'
+
 import cookieParser from 'cookie-parser'
 import express from 'express'
 import { createProxyMiddleware } from 'http-proxy-middleware'
@@ -5,6 +7,7 @@ import { createProxyMiddleware } from 'http-proxy-middleware'
 import { CONFIG } from './config'
 import {
 	attachIdentity,
+	identifyUpgrade,
 	stripForgedIdentity,
 	USER_ID_HEADER,
 	USER_ROLE_HEADER,
@@ -48,8 +51,8 @@ app.use(proxyTo(CONFIG.AUTH_SERVICE_URL, '/api/auth/**'))
 app.use(proxyTo(CONFIG.USERS_SERVICE_URL, '/api/users/**'))
 app.use(proxyTo(CONFIG.BOARDS_SERVICE_URL, ['/api/boards/**', '/api/workspaces/**']))
 
-// Совместное редактирование: апгрейд до WebSocket пропускается только с личностью,
-// права на конкретный документ проверяет сам collab по заголовку.
+// Совместное редактирование: гость без сессии тоже проходит - публичную доску
+// можно смотреть и править без входа, права на документ решает collab.
 const collabProxy = createProxyMiddleware({
 	target: CONFIG.COLLAB_SERVICE_URL,
 	pathFilter: '/collab/**',
@@ -64,13 +67,6 @@ const collabProxy = createProxyMiddleware({
 	},
 })
 
-app.use('/collab', (request, response, next) => {
-	if (!request.identity)
-		return response.status(401).json({ message: 'Unauthorized' })
-
-	return next()
-})
-
 app.use(collabProxy)
 
 // Всё остальное - фронтенду. Он получает ту же личность, чтобы не разбирать куку
@@ -81,6 +77,11 @@ const server = app.listen(CONFIG.PORT, () => {
 	console.log(`Gateway listening on ${CONFIG.PORT}`)
 })
 
-server.on('upgrade', collabProxy.upgrade)
+server.on('upgrade', async (request, socket, head) => {
+	await identifyUpgrade(request)
+
+	// Node типизирует сокет апгрейда как Duplex, но у HTTP-сервера это всегда net.Socket.
+	collabProxy.upgrade(request, socket as Socket, head)
+})
 
 void connectRedis()

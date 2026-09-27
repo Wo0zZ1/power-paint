@@ -11,6 +11,7 @@
 		"typecheck": "tsc --noEmit"
 	},
 	"dependencies": {
+		"cookie": "^1.1.1",
 		"cookie-parser": "^1.4.7",
 		"dotenv": "^17.4.1",
 		"express": "^5.1.0",
