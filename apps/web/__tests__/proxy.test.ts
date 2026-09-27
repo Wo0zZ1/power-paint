@@ -22,6 +22,22 @@ describe("proxy", () => {
     expect(forwardedCookie(response)).toBe(encodeURIComponent(issued!));
   });
 
+  test("Должен пускать на дашборд с кукой сессии, которую ставит сервис auth", async () => {
+    const request = new NextRequest("http://localhost/dashboard", {
+      headers: { cookie: "authjs.session-token=session" },
+    });
+
+    const response = await proxy(request);
+
+    expect(response.headers.get("location")).toBeNull();
+  });
+
+  test("Должен отправлять на вход с дашборда без сессии", async () => {
+    const response = await proxy(new NextRequest("http://localhost/dashboard"));
+
+    expect(response.headers.get("location")).toBe("http://localhost/signin");
+  });
+
   test("Битую куку гостя proxy должен заменить", async () => {
     const request = new NextRequest("http://localhost/boards/1", {
       headers: { cookie: `${GUEST_USER_COOKIE_NAME}=broken` },

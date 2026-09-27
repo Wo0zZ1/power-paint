@@ -14,5 +14,7 @@ export const RESET_PASSWORD_TTL_MS = VERIFICATION_TTL_MS;
 export const RESET_PASSWORD_COOKIE_SETTINGS = VERIFICATION_COOKIE_SETTINGS;
 export const MAX_RESET_PASSWORD_ATTEMPTS = MAX_VERIFICATION_ATTEMPTS;
 
-export const SESSION_ID_COOKIE_NAME = "sessionId";
+// Куку ставит сервис auth, Web лишь проверяет её наличие: имя обязано совпадать
+// с SESSION_COOKIE_NAME в auth и gateway.
+export const SESSION_ID_COOKIE_NAME = "authjs.session-token";
 export const GUEST_USER_COOKIE_NAME = "guest-user";
