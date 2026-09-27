@@ -14,7 +14,9 @@ export const useGetUsersQuery = ({
 }: UseGetUsersQueryProps = {}) => {
   return useQuery<PublicUser[]>({
     queryKey: [USERS_QUERY_KEY, query],
-    queryFn: () => UsersApi.getAll({ q: query }),
+    queryFn: () => UsersApi.getAll({ query }),
+    // Без строки users отвечает 400: список всех пользователей не отдаётся.
+    enabled: query.length > 0,
     staleTime: 1000 * 60,
   });
 };

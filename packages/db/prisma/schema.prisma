@@ -109,7 +109,9 @@ model Profile {
   userId String  @id @map("user_id")
   name   String
   image  String?
-  phone  String? @unique
+  // Не уникален: телефон не подтверждается, и уникальность позволила бы занять
+  // чужой номер и сорвать его владельцу регистрацию.
+  phone  String?
   locale Locale  @default(en)
 
   // Денормализованная копия auth.user.email для отображения в списках участников.

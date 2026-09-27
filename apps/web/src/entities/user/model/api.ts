@@ -3,11 +3,11 @@ import type { PublicUser } from "@/shared/types";
 
 const url = GET_BASE_API_URL() + "/users";
 
-const getAllUsers = async ({ q }: { q?: string } = {}): Promise<
-  PublicUser[]
-> => {
+const getAllUsers = async ({
+  query,
+}: { query?: string } = {}): Promise<PublicUser[]> => {
   const params = new URLSearchParams();
-  if (q) params.set("q", q);
+  if (query) params.set("query", query);
 
   const response = await fetch(
     `${url}?${params.toString()}`,

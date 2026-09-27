@@ -4,10 +4,12 @@ import {
 	Controller,
 	DefaultValuePipe,
 	Get,
+	Headers,
 	Param,
 	ParseIntPipe,
 	Patch,
 	Query,
+	UnauthorizedException,
 } from '@nestjs/common'
 import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger'
 
@@ -25,7 +27,7 @@ export class ProfilesController {
 
 	@Get()
 	@ApiOperation({
-		summary: 'Профили пачкой по списку id либо поиск по имени и email',
+		summary: 'Профили пачкой по списку id либо поиск по имени или точному email',
 	})
 	@ApiQuery({ name: 'ids', required: false })
 	@ApiQuery({ name: 'query', required: false })
@@ -33,6 +35,7 @@ export class ProfilesController {
 		@Query('ids') ids?: string,
 		@Query('query') query?: string,
 		@Query('limit', new DefaultValuePipe(20), ParseIntPipe) limit = 20,
+		@Headers('x-user-id') actorId?: string,
 	) {
 		if (ids) {
 			const userIds = ids.split(',').filter(Boolean)
@@ -43,9 +46,15 @@ export class ProfilesController {
 			return this.profiles.getMany(userIds)
 		}
 
-		if (query) return this.profiles.search(query, Math.min(limit, MAX_BATCH_SIZE))
+		if (!query) throw new BadRequestException('Either ids or query is required')
 
-		throw new BadRequestException('Either ids or query is required')
+		// Поиск - только для вошедших: в выдаче есть email. Пачка по ids открыта,
+		// потому что её зовёт boards без личности, а id не перебрать.
+		if (!actorId) throw new UnauthorizedException()
+
+		if (limit < 1) throw new BadRequestException('limit must be positive')
+
+		return this.profiles.search(query, Math.min(limit, MAX_BATCH_SIZE))
 	}
 
 	@Get(':id')

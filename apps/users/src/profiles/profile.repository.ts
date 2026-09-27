@@ -22,7 +22,8 @@ export class ProfileRepository {
 			where: {
 				OR: [
 					{ name: { contains: query, mode: 'insensitive' } },
-					{ email: { contains: query, mode: 'insensitive' } },
+					// Email только целиком: подстрока позволила бы выгрузить адреса перебором букв.
+					{ email: { equals: query, mode: 'insensitive' } },
 				],
 			},
 			orderBy: { name: 'asc' },
