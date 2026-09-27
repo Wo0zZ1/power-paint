@@ -46,4 +46,8 @@ ENV SERVICE=${SERVICE}
 
 COPY --from=builder /app ./
 
+# Сервису не нужно писать в образ, поэтому root ему ни к чему: взлом процесса
+# не должен давать права суперпользователя в контейнере.
+USER node
+
 CMD yarn workspace @power-paint/${SERVICE} start
