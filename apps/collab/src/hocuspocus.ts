@@ -1,11 +1,10 @@
 import { Redis } from "@hocuspocus/extension-redis";
 import { Server } from "@hocuspocus/server";
+import RedisClient from "ioredis";
 
 import { CONFIG } from "./config";
 import { onAuthenticate } from "./extensions/auth";
 import { postgresDatabase } from "./extensions/database";
-
-const redisUrl = new URL(CONFIG.REDIS_URL);
 
 // Redis-расширение синхронизирует изменения между экземплярами: соавторы одного
 // холста могут попасть на разные экземпляры при переподключении или fail-over.
@@ -16,10 +15,9 @@ export const hocuspocus = new Server(
 
     extensions: [
       postgresDatabase,
-      new Redis({
-        host: redisUrl.hostname,
-        port: Number(redisUrl.port || 6379),
-      }),
+      // Клиент строится из полного адреса: из хоста и порта пропали бы пароль
+      // и номер базы, и синхронизация молча не работала бы там, где они есть.
+      new Redis({ createClient: () => new RedisClient(CONFIG.REDIS_URL) }),
     ],
 
     onAuthenticate,

@@ -6,6 +6,7 @@ const envSchema = z.object({
   REDIS_URL: z.string().min(1),
   BOARDS_SERVICE_URL: z.string().min(1),
   PORT: z.coerce.number().default(3005),
+  ACCESS_CHECK_TIMEOUT_MS: z.coerce.number().default(3000),
   // Схема collab принадлежит этому сервису, поэтому таблица квалифицирована ею.
   DOCUMENTS_TABLE: z.string().default("collab.yjs_documents"),
   DATABASE_SSL_REJECT_UNAUTHORIZED: z

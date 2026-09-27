@@ -1,5 +1,6 @@
 import type { Context, onAuthenticatePayload } from "@hocuspocus/server";
 import type { AccessRole } from "@power-paint/contracts";
+import { z } from "zod";
 
 import { CONFIG } from "../config";
 
@@ -21,10 +22,20 @@ const fetchAccessRole = async (
   boardId: string,
   userId?: string,
 ): Promise<AccessRole> => {
-  const query = userId ? `?userId=${encodeURIComponent(userId)}` : "";
-  const url = `${CONFIG.BOARDS_SERVICE_URL}/internal/boards/${boardId}/access${query}`;
+  // Имя документа присылает клиент, а попадает оно в путь запроса: строка вида
+  // "<id>/access?userId=<чужой id>#" подменила бы пользователя.
+  if (!z.guid().safeParse(boardId).success) return "NONE";
 
-  const response = await fetch(url).catch(() => null);
+  const url = new URL(
+    `/internal/boards/${boardId}/access`,
+    CONFIG.BOARDS_SERVICE_URL,
+  );
+  if (userId) url.searchParams.set("userId", userId);
+
+  // Без тайм-аута зависший boards держал бы открытыми все новые подключения.
+  const response = await fetch(url, {
+    signal: AbortSignal.timeout(CONFIG.ACCESS_CHECK_TIMEOUT_MS),
+  }).catch(() => null);
 
   if (!response?.ok) return "NONE";
 
