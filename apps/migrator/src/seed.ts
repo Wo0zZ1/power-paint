@@ -60,16 +60,19 @@ const createWorkspaces = (ownerId: string, items: SeedWorkspace[]) =>
 async function main() {
 	await prisma.$connect()
 
-	// Удаление workspace каскадом уносит доски и участников; связи с user больше нет,
-	// поэтому схемы чистим по отдельности.
-	await prisma.workspace.deleteMany()
-	await prisma.profile.deleteMany()
-	await prisma.user.deleteMany()
+	// Сид только на пустую базу: раньше он её очищал, и случайный RUN_SEED=true
+	// стёр бы настоящих пользователей.
+	if ((await prisma.user.count()) > 0) {
+		console.log('Seed skipped: database is not empty')
+		return
+	}
 
 	const user1 = await createUser({
 		name: 'Макс Wo0zZ1',
-		email: 'mper06@mail.ru',
+		email: 'max@example.com',
 		image: 'https://avatars.githubusercontent.com/u/98224112?v=4',
+		// sha256 пароля qweqwe - старый формат: вход этим пользователем проверяет
+		// ленивое перехеширование в scrypt.
 		password: '3cc849279ba298b587a34cabaeffc5ecb3a044bbf97c516fab7ede9d1af77cfa',
 		locale: Locale.ru,
 		preferredColor: '#6128a5',

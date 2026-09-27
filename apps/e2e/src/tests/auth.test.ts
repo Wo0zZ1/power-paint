@@ -2,7 +2,7 @@ import test, { expect, Page } from '@playwright/test'
 import { describe } from 'node:test'
 import { getVerificationCode } from '../email/mailhog'
 
-async function login(page: Page, email = 'Mper06@mail.ru', password = 'qweqwe') {
+async function login(page: Page, email = 'Max@example.com', password = 'qweqwe') {
 	await page.goto('/signin')
 
 	await page.getByRole('textbox', { name: 'Email' }).click()
@@ -28,14 +28,14 @@ describe('Authentication tests', () => {
 
 		await expect(userMenu).toBeVisible()
 
-		await expect(userMenu.getByText('mper06@mail.ru')).toBeVisible()
+		await expect(userMenu.getByText('max@example.com')).toBeVisible()
 	})
 
 	test('Неверные учетные данные', async ({ page }) => {
 		await page.goto('/signin')
 
 		await page.getByRole('textbox', { name: 'Email' }).click()
-		await page.getByRole('textbox', { name: 'Email' }).fill('Mper06@mail.ru')
+		await page.getByRole('textbox', { name: 'Email' }).fill('Max@example.com')
 
 		await page.getByRole('textbox', { name: 'Password' }).click()
 		await page.getByRole('textbox', { name: 'Password' }).fill('wrongpassword')

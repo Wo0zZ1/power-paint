@@ -7,7 +7,7 @@ setup('authenticate', async ({ page }) => {
 	await page.goto('/signin')
 
 	await page.getByRole('textbox', { name: 'Email' }).click()
-	await page.getByRole('textbox', { name: 'Email' }).fill('Mper06@mail.ru')
+	await page.getByRole('textbox', { name: 'Email' }).fill('Max@example.com')
 
 	await page.getByRole('textbox', { name: 'Password' }).click()
 	await page.getByRole('textbox', { name: 'Password' }).fill('qweqwe')
