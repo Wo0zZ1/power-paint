@@ -14,9 +14,13 @@ services:
       retries: 5
     networks: [power-paint-network]
 
+  # Потоки событий живут в Redis, и без журнала рестарт контейнера стёр бы
+  # ещё не обработанные события.
   redis:
     image: redis:7-alpine
-    command: ["redis-server", "--appendonly", "no"]
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redisdata:/data
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 5s
@@ -174,3 +178,4 @@ networks:
 
 volumes:
   pgdata:
+  redisdata:

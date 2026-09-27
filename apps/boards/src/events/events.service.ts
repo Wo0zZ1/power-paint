@@ -1,5 +1,5 @@
 import { Injectable, OnModuleDestroy } from '@nestjs/common'
-import { EVENT_CHANNELS } from '@power-paint/contracts'
+import { EVENT_STREAMS } from '@power-paint/contracts'
 import type {
 	BoardAccessChangedEvent,
 	BoardDeletedEvent,
@@ -13,11 +13,11 @@ export class EventsService implements OnModuleDestroy {
 	private readonly publisher = createPublisher(CONFIG.REDIS_URL)
 
 	boardDeleted(payload: BoardDeletedEvent) {
-		return this.publisher.publish(EVENT_CHANNELS.BOARD_DELETED, payload)
+		this.publisher.publish(EVENT_STREAMS.BOARD_DELETED, payload)
 	}
 
 	boardAccessChanged(payload: BoardAccessChangedEvent) {
-		return this.publisher.publish(EVENT_CHANNELS.BOARD_ACCESS_CHANGED, payload)
+		this.publisher.publish(EVENT_STREAMS.BOARD_ACCESS_CHANGED, payload)
 	}
 
 	onModuleDestroy() {

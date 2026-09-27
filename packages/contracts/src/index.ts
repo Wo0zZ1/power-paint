@@ -61,13 +61,11 @@ export type {
 export {
   boardAccessChangedSchema,
   boardDeletedSchema,
-  EVENT_CHANNELS,
+  EVENT_STREAMS,
   userCreatedSchema,
-  userDeletedSchema,
 } from "./events";
 export type {
   BoardAccessChangedEvent,
   BoardDeletedEvent,
   UserCreatedEvent,
-  UserDeletedEvent,
 } from "./events";

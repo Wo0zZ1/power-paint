@@ -106,7 +106,7 @@ export class SignupService {
 
 		// Персональную область заводит boards, получив это событие. Асинхронно,
 		// потому что вход не должен ждать чужой записи и падать из-за неё.
-		await this.events.userCreated({
+		this.events.userCreated({
 			userId: account.id,
 			name: `${pending.firstName} ${pending.lastName}`,
 		})

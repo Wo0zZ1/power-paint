@@ -24,7 +24,7 @@ async function shutdown(signal: NodeJS.Signals) {
 }
 
 async function main() {
-  await startInvalidationListener();
+  startInvalidationListener();
   await hocuspocus.listen(CONFIG.PORT);
 
   console.log(`[listen] port: ${CONFIG.PORT}`);

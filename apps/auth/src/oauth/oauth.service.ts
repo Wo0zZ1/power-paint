@@ -124,7 +124,7 @@ export class OauthService {
 			throw error
 		}
 
-		await this.events.userCreated({ userId: user.id, name: profile.name })
+		this.events.userCreated({ userId: user.id, name: profile.name })
 
 		return user.id
 	}

@@ -11,10 +11,11 @@
     "boards": "yarn workspace @power-paint/boards",
     "collab": "yarn workspace @power-paint/collab",
     "e2e": "yarn workspace @power-paint/e2e",
+    "events": "yarn workspace @power-paint/events",
     "gateway": "yarn workspace @power-paint/gateway",
     "migrator": "yarn workspace @power-paint/migrator",
     "packages:build": "yarn workspace @power-paint/db generate && yarn workspace @power-paint/db build && yarn workspace @power-paint/contracts build && yarn workspace @power-paint/events build",
-    "test": "yarn auth test && yarn boards test && yarn gateway test && yarn web test",
+    "test": "yarn auth test && yarn boards test && yarn events test && yarn gateway test && yarn web test",
     "typecheck": "yarn workspaces foreach -A --exclude power-paint --exclude @power-paint/e2e run typecheck",
     "users": "yarn workspace @power-paint/users",
     "web": "yarn workspace @power-paint/web"
