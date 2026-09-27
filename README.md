@@ -103,12 +103,6 @@ cp .env.example .env
 docker compose -f docker-compose.yml --env-file .env up -d --build
 ```
 
-Для запуска системы в dev-режиме и дальнейшей разработки фронтенда, развёрнутого на localhost:
-
-```bash
-docker compose -f docker-compose.web-dev.yml --env-file .env.dev up -d --build
-```
-
 ## 🧪 Тестирование
 
 ### Unit + Integration
