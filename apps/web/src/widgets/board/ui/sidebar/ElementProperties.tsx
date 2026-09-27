@@ -17,6 +17,8 @@ import {
   TextSection,
 } from "../properties";
 
+import { GroupingSection } from "./GroupingSection";
+
 export function ElementProperties() {
   const selectedElementIds = useBoardStore(useShallow((s) => s.selectedIds));
   const selectionType = useBoardStore((s) => s.selectionType);
@@ -50,6 +52,7 @@ export function ElementProperties() {
     <>
       <Separator />
 
+      <GroupingSection elements={selectedElements} update={update} />
       <PositionSection elements={selectedElements} update={update} />
       <SizeSection elements={selectedElements} update={update} />
       <RotationSection elements={selectedElements} update={update} />

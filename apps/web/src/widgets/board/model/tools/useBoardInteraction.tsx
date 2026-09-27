@@ -11,22 +11,22 @@ import {
   useDragElements,
   useDrawing,
   useEraser,
+  useImageDrawing,
   useRectDrawing,
   useSelectionRect,
   useTextDrawing,
 } from ".";
 
 interface UseBoardInteractionProps {
-  canEdit?: boolean;
+  canEdit: boolean;
 }
 
 export const useBoardInteraction = ({ canEdit }: UseBoardInteractionProps) => {
   const { handleZoom, startPointerPan, startTouchPan } = useViewport();
   const { startPointerSelect, startTouchSelect } = useSelectionRect();
-  const { startPointerDrag, startTouchDrag } = useDragElements({
-    canEdit: canEdit || false,
-  });
+  const { startPointerDrag, startTouchDrag } = useDragElements({ canEdit });
   const { startPointerDraw, startTouchDraw } = useDrawing();
+  const { startPointerImageDraw, startTouchImageDraw } = useImageDrawing();
   const { startPointerRectDraw, startTouchRectDraw } = useRectDrawing();
   const { startPointerCircleDraw, startTouchCircleDraw } = useCircleDrawing();
   const { startPointerTextDraw, startTouchTextDraw } = useTextDrawing();
@@ -53,6 +53,11 @@ export const useBoardInteraction = ({ canEdit }: UseBoardInteractionProps) => {
 
     const stage = e.target.getStage();
     if (!stage) return;
+
+    const pos = stage.getPointerPosition();
+    if (!pos) return;
+    const { x: stageX, y: stageY } = pos;
+    const { x, y } = e.evt;
 
     let clickType: "canvas" | "element" = "element";
     const store = useBoardStore.getState();
@@ -99,11 +104,13 @@ export const useBoardInteraction = ({ canEdit }: UseBoardInteractionProps) => {
       }
     }
 
-    const pos = stage.getPointerPosition();
-
-    useContextMenuStore
-      .getState()
-      .openMenu(e.evt.clientX, e.evt.clientY, clickType, pos?.x, pos?.y);
+    useContextMenuStore.getState().openMenu({
+      x,
+      y,
+      stageX,
+      stageY,
+      type: clickType,
+    });
   };
 
   const handlePointerDown = useCallback(
@@ -162,6 +169,7 @@ export const useBoardInteraction = ({ canEdit }: UseBoardInteractionProps) => {
       if (!canEdit) return;
 
       if (tool === "draw") return startPointerDraw(e);
+      if (tool === "image") return startPointerImageDraw(e);
       if (tool === "rect") return startPointerRectDraw(e);
       if (tool === "circle") return startPointerCircleDraw(e);
       if (tool === "text") return startPointerTextDraw(e);
@@ -175,6 +183,7 @@ export const useBoardInteraction = ({ canEdit }: UseBoardInteractionProps) => {
       startPointerSelect,
       startPointerDrag,
       startPointerDraw,
+      startPointerImageDraw,
       startPointerRectDraw,
       startPointerCircleDraw,
       startPointerTextDraw,
@@ -237,6 +246,7 @@ export const useBoardInteraction = ({ canEdit }: UseBoardInteractionProps) => {
       if (!canEdit) return;
 
       if (tool === "draw") return startTouchDraw(e);
+      if (tool === "image") return startTouchImageDraw(e);
       if (tool === "rect") return startTouchRectDraw(e);
       if (tool === "circle") return startTouchCircleDraw(e);
       if (tool === "text") return startTouchTextDraw(e);
@@ -250,6 +260,7 @@ export const useBoardInteraction = ({ canEdit }: UseBoardInteractionProps) => {
       startTouchSelect,
       startTouchDrag,
       startTouchDraw,
+      startTouchImageDraw,
       startTouchRectDraw,
       startTouchCircleDraw,
       startTouchTextDraw,

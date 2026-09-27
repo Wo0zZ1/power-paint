@@ -5,6 +5,7 @@ import { useDragElements } from "../../model";
 
 import { CircleElement } from "./CircleElement";
 import { DrawElement } from "./DrawElement";
+import { ImageElement } from "./ImageElement";
 import { RectElement } from "./RectElement";
 import { TextElement } from "./TextElement";
 
@@ -22,6 +23,15 @@ export function Element({ element, canEdit }: ElementProps) {
   } satisfies BaseElementProps;
 
   switch (element.type) {
+    case "image":
+      return (
+        <ImageElement
+          key={element.id}
+          {...commonProps}
+          element={element}
+          canEdit={canEdit}
+        />
+      );
     case "rect":
       return (
         <RectElement

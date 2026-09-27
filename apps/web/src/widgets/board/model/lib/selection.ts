@@ -4,6 +4,7 @@ import type {
   DrawElementType,
   TextElementType,
   ElementType,
+  ImageElementType,
 } from "../types";
 
 type Rectangle = {
@@ -56,7 +57,9 @@ const isPointInsideRect = (rect: Rectangle, point: Point): boolean => {
   );
 };
 
-export const getRectCornerPoints = (element: RectElementType): Point[] => {
+export const getRectCornerPoints = (
+  element: RectElementType | ImageElementType,
+): Point[] => {
   const width = element.width;
   const height = element.height;
   const angleRad = degToRad(element.rotation);
@@ -148,6 +151,7 @@ export const isElementFullyInsideRect = (
   element: ElementType,
 ): boolean => {
   switch (element.type) {
+    case "image":
     case "rect":
       const corners = getRectCornerPoints(element);
       return corners.every((point) => isPointInsideRect(selectionRect, point));

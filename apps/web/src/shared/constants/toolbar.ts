@@ -6,6 +6,7 @@ import {
   Pencil,
   Eraser,
   Type,
+  Image,
 } from "lucide-react";
 import type { ElementType } from "react";
 
@@ -15,8 +16,9 @@ export type Tool =
   | "rect"
   | "circle"
   | "draw"
-  | "eraser"
-  | "text";
+  | "text"
+  | "image"
+  | "eraser";
 
 export const TOOLS: { tool: Tool; Icon: ElementType; shortcut: string }[] = [
   { tool: "select", Icon: MousePointer2, shortcut: "S" },
@@ -24,6 +26,7 @@ export const TOOLS: { tool: Tool; Icon: ElementType; shortcut: string }[] = [
   { tool: "rect", Icon: Square, shortcut: "R" },
   { tool: "circle", Icon: Circle, shortcut: "C" },
   { tool: "draw", Icon: Pencil, shortcut: "D" },
-  { tool: "eraser", Icon: Eraser, shortcut: "E" },
   { tool: "text", Icon: Type, shortcut: "T" },
+  { tool: "image", Icon: Image, shortcut: "I" },
+  { tool: "eraser", Icon: Eraser, shortcut: "E" },
 ];

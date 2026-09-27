@@ -23,6 +23,7 @@ interface ColorFieldProps {
   value: string;
   exceptionValues?: string[];
   preview?: boolean;
+  showInput?: boolean;
 }
 
 function Component({
@@ -32,6 +33,7 @@ function Component({
   value,
   exceptionValues,
   preview = false,
+  showInput = true,
   ...props
 }: ColorFieldProps & Omit<ComponentProps<"input">, keyof ColorFieldProps>) {
   const colorPickerRef = useRef<HTMLInputElement>(null);
@@ -60,25 +62,27 @@ function Component({
             invertable
           />
         )}
-        <Hash className="size-3.5" />
+        {showInput && <Hash className="size-3.5" />}
       </InputGroupAddon>
 
-      <InputGroupInput
-        ref={colorInputRef}
-        autoComplete="off"
-        type="text"
-        maxLength={6}
-        aria-invalid={!isValid}
-        defaultValue={defaultValue}
-        className="invalid:border-destructive focus:invalid:ring-destructive font-mono min-w-16"
-        onChange={handleInputChange}
-        onFocus={(e) => {
-          e.target.select();
-          onFocus?.(e);
-        }}
-        onBlur={handleInputBlur}
-        {...props}
-      />
+      {showInput && (
+        <InputGroupInput
+          ref={colorInputRef}
+          autoComplete="off"
+          type="text"
+          maxLength={6}
+          aria-invalid={!isValid}
+          defaultValue={defaultValue}
+          className="invalid:border-destructive focus:invalid:ring-destructive font-mono min-w-16"
+          onChange={handleInputChange}
+          onFocus={(e) => {
+            e.target.select();
+            onFocus?.(e);
+          }}
+          onBlur={handleInputBlur}
+          {...props}
+        />
+      )}
 
       <InputGroupAddon className="gap-1" align="inline-end">
         <Separator orientation="vertical" className="h-5!" />

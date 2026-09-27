@@ -20,7 +20,8 @@ export const useDrawing = () => {
   // ── Pure core ──
 
   const beginDraw = useCallback((layerX: number, layerY: number) => {
-    const { viewport, undoManager } = useBoardStore.getState();
+    const { viewport, undoManager, currentStrokeColor, currentStrokeWidth } =
+      useBoardStore.getState();
 
     if (undoManager) {
       undoManager.stopCapturing();
@@ -32,7 +33,13 @@ export const useDrawing = () => {
     originRef.current = { x: cx, y: cy };
     pointsRef.current = [0, 0];
 
-    const draw = createDraw({ x: cx, y: cy, points: [0, 0] });
+    const draw = createDraw({
+      x: cx,
+      y: cy,
+      points: [0, 0],
+      strokeColor: currentStrokeColor,
+      strokeWidth: currentStrokeWidth,
+    });
     strokeIdRef.current = draw.id;
 
     useBoardStore.getState().addElement(draw);

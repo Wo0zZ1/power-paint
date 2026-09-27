@@ -1,4 +1,6 @@
 import type { KonvaEventObject } from "konva/lib/Node";
+import type { Node as KonvaNode } from "konva/lib/Node";
+import type { Vector2d } from "konva/lib/types";
 import { useCallback, useEffect, useRef } from "react";
 
 import { useThrottledCallback } from "@/shared/lib/hooks";
@@ -6,8 +8,40 @@ import { useThrottledCallback } from "@/shared/lib/hooks";
 import { useBoardStore } from "../core";
 import { screenToCanvas } from "../lib";
 
+const modifiedNodes = new Set<KonvaNode>();
+
+export const resetEraserListening = () => {
+  modifiedNodes.forEach((node) => node.listening(true));
+  modifiedNodes.clear();
+};
+
+const interpolatePoints = (
+  point1: Vector2d,
+  point2: Vector2d,
+  maxCount: number,
+) => {
+  const dx = point2.x - point1.x;
+  const dy = point2.y - point1.y;
+  const dist = Math.hypot(dx, dy);
+
+  const STEP = 5;
+  const desired = Math.ceil(dist / STEP);
+  const count = Math.min(maxCount, Math.max(0, desired));
+  if (count <= 0) return [];
+
+  const out: Vector2d[] = new Array(count);
+  const inv = 1 / (count + 1);
+  let t = inv;
+
+  for (let i = 0; i < count; i++, t += inv)
+    out[i] = { x: point1.x + dx * t, y: point1.y + dy * t };
+
+  return out;
+};
+
 export const useEraser = () => {
   const stopListeners = useRef(() => {});
+  const prefPosRef = useRef<{ x: number; y: number } | null>(null);
   const shrinkIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   // ── Pure core ──
@@ -18,17 +52,18 @@ export const useEraser = () => {
 
     if (!eraserLine || !stage) return;
 
-    const stageRect = stage.container().getBoundingClientRect();
-
     clearSelection();
     setSelectionType("delete");
 
+    const stageRect = stage.container().getBoundingClientRect();
     const x = clientX - stageRect.left;
     const y = clientY - stageRect.top;
     const [canvasX, canvasY] = screenToCanvas(x, y, viewport);
 
     eraserLine.points([canvasX, canvasY]);
     eraserLine.visible(true);
+
+    prefPosRef.current = { x, y };
 
     if (shrinkIntervalRef.current) clearInterval(shrinkIntervalRef.current);
     shrinkIntervalRef.current = setInterval(() => {
@@ -40,25 +75,46 @@ export const useEraser = () => {
 
   const moveErase = useCallback(
     (clientX: number, clientY: number, altKey: boolean) => {
-      const { stage, eraserLine, selectMany, deselectMany, viewport } =
-        useBoardStore.getState();
+      const {
+        stage,
+        contentLayer,
+        eraserLine,
+        selectMany,
+        deselectMany,
+        viewport,
+      } = useBoardStore.getState();
 
-      if (!stage || !eraserLine) return;
+      if (!stage || !contentLayer || !eraserLine || !prefPosRef.current) return;
 
       const stageRect = stage.container().getBoundingClientRect();
       const x = clientX - stageRect.left;
       const y = clientY - stageRect.top;
 
-      const shapes = stage.getAllIntersections({ x, y });
-
-      const selectedIds = new Set(shapes.map((shape) => shape.id()));
-
-      if (altKey) deselectMany(selectedIds);
-      else selectMany(selectedIds);
-
       const [canvasX, canvasY] = screenToCanvas(x, y, viewport);
-      const currentPoints = eraserLine.points();
-      eraserLine.points([...currentPoints, canvasX, canvasY]);
+
+      const prev = prefPosRef.current;
+      prefPosRef.current = { x, y };
+      const points = interpolatePoints(prev, { x, y }, 100);
+
+      const idsToSelect = new Set<string>();
+      const idsToDeselect = new Set<string>();
+
+      for (const p of points) {
+        const shape = contentLayer.getIntersection({ x: p.x, y: p.y });
+        if (!shape) continue;
+
+        const id = shape.id();
+        if (altKey) idsToDeselect.add(id);
+        else idsToSelect.add(id);
+
+        shape.listening(false);
+        modifiedNodes.add(shape);
+      }
+
+      if (altKey) deselectMany(idsToDeselect);
+      else selectMany(idsToSelect);
+
+      eraserLine.points(eraserLine.points().concat([canvasX, canvasY]));
     },
     [],
   );
@@ -71,11 +127,11 @@ export const useEraser = () => {
       setSelectionType,
     } = useBoardStore.getState();
 
+    resetEraserListening();
     removeSelectedElements();
     clearSelection();
     setSelectionType("none");
 
-    if (shrinkIntervalRef.current) clearInterval(shrinkIntervalRef.current);
     if (eraserLine) {
       eraserLine.visible(false);
       eraserLine.points([]);
@@ -85,10 +141,10 @@ export const useEraser = () => {
     const { eraserLine, clearSelection, setSelectionType } =
       useBoardStore.getState();
 
+    resetEraserListening();
     clearSelection();
     setSelectionType("none");
 
-    if (shrinkIntervalRef.current) clearInterval(shrinkIntervalRef.current);
     if (eraserLine) {
       eraserLine.visible(false);
       eraserLine.points([]);

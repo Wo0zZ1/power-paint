@@ -13,7 +13,10 @@ export function EraserElement({ ref }: EraserElementProps) {
 
   return (
     <Line
-      ref={ref}
+      ref={(e) => {
+        e?.listening(false);
+        ref.current = e;
+      }}
       visible={false}
       stroke="rgba(255, 255, 255, 0.25)"
       strokeWidth={8 / viewportScale}

@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 
 import { useCopyPast } from "../tools";
+import { resetEraserListening } from "../tools/useEraser";
 
 import { useBoardStore } from "./useBoardStore";
 
@@ -12,6 +13,10 @@ export const useHotKeys = ({ canEdit = false }: UseHotKeysProps) => {
   const { copy, paste, duplicate } = useCopyPast();
 
   useEffect(() => {
+    const resetEraserIfActive = () => {
+      if (useBoardStore.getState().tool === "eraser") resetEraserListening();
+    };
+
     const handleKeyDown = (e: KeyboardEvent) => {
       const activeElement = document.activeElement;
       const isInput =
@@ -26,12 +31,22 @@ export const useHotKeys = ({ canEdit = false }: UseHotKeysProps) => {
         useBoardStore.getState().setModifiers({ ctrl: true });
       } else if (e.key === "Shift") {
         useBoardStore.getState().setModifiers({ shift: true });
+      } else if (e.key === "Alt") {
+        e.preventDefault();
+        useBoardStore.getState().setModifiers({ alt: true });
+        resetEraserIfActive();
       }
 
       if (isInput) return;
 
-      const { setTool, removeSelectedElements, undo, redo } =
-        useBoardStore.getState();
+      const {
+        setTool,
+        removeSelectedElements,
+        undo,
+        redo,
+        groupSelected,
+        ungroupSelected,
+      } = useBoardStore.getState();
 
       if (e.ctrlKey && e.code === "KeyZ" && canEdit) {
         e.shiftKey ? redo() : undo();
@@ -44,6 +59,12 @@ export const useHotKeys = ({ canEdit = false }: UseHotKeysProps) => {
       } else if (e.ctrlKey && e.code === "KeyD" && canEdit) {
         e.preventDefault();
         duplicate();
+      } else if (e.ctrlKey && e.shiftKey && e.code === "KeyG" && canEdit) {
+        e.preventDefault();
+        ungroupSelected();
+      } else if (e.ctrlKey && e.code === "KeyG" && canEdit) {
+        e.preventDefault();
+        groupSelected();
       } else if ((e.code === "Delete" || e.code === "Backspace") && canEdit) {
         removeSelectedElements();
       } else if (e.code === "KeyS") {
@@ -60,6 +81,8 @@ export const useHotKeys = ({ canEdit = false }: UseHotKeysProps) => {
         setTool("eraser");
       } else if (e.code === "KeyT" && canEdit) {
         setTool("text");
+      } else if (e.code === "KeyI" && canEdit) {
+        setTool("image");
       }
     };
 
@@ -70,12 +93,18 @@ export const useHotKeys = ({ canEdit = false }: UseHotKeysProps) => {
         useBoardStore.getState().setModifiers({ ctrl: false });
       if (e.key === "Shift")
         useBoardStore.getState().setModifiers({ shift: false });
+      if (e.key === "Alt") {
+        e.preventDefault();
+        useBoardStore.getState().setModifiers({ alt: false });
+        resetEraserIfActive();
+      }
     };
 
     const handleBlur = () => {
       useBoardStore
         .getState()
-        .setModifiers({ space: false, ctrl: false, shift: false });
+        .setModifiers({ space: false, ctrl: false, shift: false, alt: false });
+      resetEraserIfActive();
     };
 
     window.addEventListener("keydown", handleKeyDown);

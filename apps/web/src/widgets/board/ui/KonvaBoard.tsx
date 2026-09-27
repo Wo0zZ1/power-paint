@@ -33,6 +33,8 @@ import {
   DeleteSelectionButton,
   BackToContentButton,
   HelpButton,
+  ToolMenu,
+  BoardPreferences,
 } from "./overlay";
 import { ActiveUsers } from "./overlay/ActiveUsers";
 import { ConnectionStatus } from "./overlay/ConnectionStatus";
@@ -52,7 +54,6 @@ export function KonvaBoard({
 }: KonvaBoardProps) {
   const stageRef = useRef<Konva.Stage>(null);
   const contentLayerRef = useRef<Konva.Layer>(null);
-  const transformerRef = useRef<Konva.Transformer>(null);
   const selectionRectRef = useRef<Konva.Rect>(null);
   const eraserLineRef = useRef<Konva.Line>(null);
 
@@ -67,7 +68,7 @@ export function KonvaBoard({
   useHocuspocus({ userAwareness, boardId });
 
   const { width: windowWidth, height: windowHeight } = useWindowSize();
-  const { activeColor } = useInvertableColor(globals.backgroundColor, true);
+  const { activeColor } = useInvertableColor(globals.backgroundColor);
 
   const { handleTouchMove, handlePointerMove, handlePointerLeave } =
     useMouseAwareness();
@@ -125,21 +126,25 @@ export function KonvaBoard({
 
           {/* Bottom Center */}
           <div className="absolute bottom-0 left-1/2 -translate-x-1/2 flex flex-col gap-2">
-            <div className="flex justify-center mb-2">
-              <BackToContentButton className="pointer-events-auto" />
+            <div className="flex justify-center items-end">
+              <BackToContentButton className="pointer-events-auto mb-2 mx-auto" />
             </div>
 
-            <div className="md:hidden flex">
-              {canEdit && (
-                <DeleteSelectionButton className="pointer-events-auto" />
-              )}
+            <div className="flex gap-x-2">
+              <ToolMenu className="pointer-events-auto" />
 
-              {canEdit && (
-                <UndoRedoControls
-                  className="pointer-events-auto ml-auto"
-                  tooltipActive={false}
-                />
-              )}
+              <div className="flex items-center gap-x-2 md:hidden ml-auto">
+                {canEdit && (
+                  <>
+                    <DeleteSelectionButton className="ml-auto md:hidden pointer-events-auto" />
+
+                    <UndoRedoControls
+                      className="pointer-events-auto"
+                      tooltipActive={false}
+                    />
+                  </>
+                )}
+              </div>
             </div>
 
             <BottomToolbar
@@ -150,7 +155,10 @@ export function KonvaBoard({
 
           {/* Bottom Right */}
           <div className="absolute bottom-0 right-0">
-            <HelpButton className="pointer-events-auto" />
+            <div className="flex flex-col justfy-end gap-2">
+              <BoardPreferences className="pointer-events-auto" />
+              <HelpButton className="pointer-events-auto" />
+            </div>
           </div>
         </div>
 
@@ -174,7 +182,7 @@ export function KonvaBoard({
 
           <Layer>
             <SelectionElement ref={selectionRectRef} />
-            <TransformerTool canEdit={canEdit} ref={transformerRef} />
+            <TransformerTool canEdit={canEdit} />
             <EraserElement ref={eraserLineRef} />
           </Layer>
 

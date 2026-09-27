@@ -15,7 +15,14 @@ export const useCircleDrawing = () => {
   const stopListeners = useRef(() => {});
 
   const beginDraw = useCallback((layerX: number, layerY: number) => {
-    const { viewport, undoManager } = useBoardStore.getState();
+    const {
+      viewport,
+      undoManager,
+      currentStrokeColor,
+      currentStrokeWidth,
+      currentFillEnabled,
+      currentFillColor,
+    } = useBoardStore.getState();
 
     if (undoManager) {
       undoManager.stopCapturing();
@@ -25,7 +32,17 @@ export const useCircleDrawing = () => {
     const [cx, cy] = screenToCanvas(layerX, layerY, viewport);
     originRef.current = { x: cx, y: cy };
 
-    const shape = createCircle({ x: cx, y: cy, width: 0, height: 0 });
+    const shape = createCircle({
+      x: cx,
+      y: cy,
+      width: 0,
+      height: 0,
+      strokeColor: currentStrokeColor,
+      strokeWidth: currentStrokeWidth,
+      fillType: currentFillEnabled ? "color" : "none",
+      fillColor1: currentFillColor,
+      fillColor2: currentFillColor,
+    });
     shapeIdRef.current = shape.id;
 
     useBoardStore.getState().addElement(shape);

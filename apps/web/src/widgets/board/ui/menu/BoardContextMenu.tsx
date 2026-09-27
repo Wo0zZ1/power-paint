@@ -10,17 +10,22 @@ import {
   DropdownMenuTrigger,
 } from "@/shared/ui/dropdown-menu";
 
-import { useContextMenuStore } from "../../model/core";
+import { useContextMenuStore, useGroupingState } from "../../model/core";
 
 import { useContextMenuRegistry } from "./useContextMenuRegistry";
 
 export const BoardContextMenu = () => {
   const { isOpen, x, y, type, closeMenu } = useContextMenuStore();
+  const { canGroup, canUngroup } = useGroupingState();
   const { getItems } = useContextMenuRegistry();
 
   if (!isOpen || !type) return null;
 
-  const items = getItems(type);
+  const items = getItems({
+    type,
+    canGroup,
+    canUngroup,
+  });
 
   return (
     <DropdownMenu
@@ -45,6 +50,7 @@ export const BoardContextMenu = () => {
             {item.separator && <DropdownMenuSeparator />}
 
             <DropdownMenuItem
+              disabled={item.disabled}
               onClick={(e) => {
                 e.stopPropagation();
                 item.action();

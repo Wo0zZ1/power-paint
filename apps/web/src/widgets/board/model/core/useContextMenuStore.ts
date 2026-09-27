@@ -9,13 +9,17 @@ interface ContextMenuState {
   stageX: number;
   stageY: number;
   type: ContextMenuType;
-  openMenu: (
-    x: number,
-    y: number,
-    type: ContextMenuType,
-    stageX?: number,
-    stageY?: number,
-  ) => void;
+  // multipleSelection: boolean;
+  // hasGroup: boolean;
+  openMenu: (props: {
+    x: number;
+    y: number;
+    type: ContextMenuType;
+    stageX?: number;
+    stageY?: number;
+    // multipleSelection?: boolean;
+    // hasGroup?: boolean;
+  }) => void;
   closeMenu: () => void;
 }
 
@@ -26,7 +30,18 @@ export const useContextMenuStore = create<ContextMenuState>((set) => ({
   stageX: 0,
   stageY: 0,
   type: null,
-  openMenu: (x, y, type, stageX = 0, stageY = 0) =>
-    set({ isOpen: true, x, y, stageX, stageY, type }),
-  closeMenu: () => set({ isOpen: false, type: null }),
+  openMenu: ({ x, y, type, stageX, stageY }) =>
+    set({
+      isOpen: true,
+      x,
+      y,
+      stageX,
+      stageY,
+      type,
+    }),
+  closeMenu: () =>
+    set({
+      isOpen: false,
+      type: null,
+    }),
 }));

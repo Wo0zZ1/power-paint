@@ -21,14 +21,16 @@ export function UserAvatar({
   status,
 }: UserAvatarProps) {
   return (
-    <Avatar className={cn("", className)} size={size}>
+    <Avatar className={cn("relative", className)} size={size}>
       {src && (
         <AvatarImage
+          fill
           src={src}
+          sizes="100%"
           loading="eager"
-          width={40}
-          height={40}
           alt="User avatar"
+          unoptimized={/\.ufs\.sh\//.test(src)}
+          className="absolute object-cover w-full h-full"
         />
       )}
       <AvatarFallback>{fallback.slice(0, 2)}</AvatarFallback>

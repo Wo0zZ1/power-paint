@@ -18,6 +18,11 @@ interface UseHocuspocusProps {
   boardId: string;
 }
 
+const normalizeElement = (element: ElementType): ElementType => ({
+  ...element,
+  zIndex: element.zIndex ?? 0,
+});
+
 export const useHocuspocus = ({
   userAwareness,
   boardId,
@@ -42,7 +47,14 @@ export const useHocuspocus = ({
 
     // ── Синхронизация элементов ──
     const onElementsChange = () => {
-      useBoardStore.setState({ elements: new Map(yElements) });
+      const normalizedElements = new Map(
+        Array.from(yElements, ([id, element]) => [
+          id,
+          normalizeElement(element),
+        ]),
+      );
+
+      useBoardStore.setState({ elements: normalizedElements });
     };
     yElements.observe(onElementsChange);
     onElementsChange();

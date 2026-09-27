@@ -75,7 +75,10 @@
       },
       "image": {
         "label": "Profile Image",
-        "placeholder": "Drag and drop your profile image here"
+        "placeholder": "Drag and drop your profile image here",
+        "uploading": "Uploading...",
+        "empty": "Drag and drop or click to upload",
+        "preview": "Preview"
       },
       "email_code": {
         "label": "Verification Code",
@@ -221,6 +224,12 @@
       "export_as_jpeg": "Export as JPEG",
       "paste": "Paste",
       "duplicate": "Duplicate",
+      "group": "Group",
+      "ungroup": "Ungroup",
+      "bring_to_front": "Bring to Front",
+      "bring_forward": "Bring Forward",
+      "send_backward": "Send Backward",
+      "send_to_back": "Send to Back",
       "delete": "Delete"
     },
     "plural": "Boards",
@@ -228,6 +237,11 @@
     "personal": "Personal Boards",
     "empty": "No available boards",
     "settings": "Board Settings",
+    "preferences": {
+      "title": "Preferences",
+      "show_cursors": "Show cursors",
+      "show_offscreen_cursors": "Show offscreen cursors"
+    },
     "notFound": {
       "title": "Board not found",
       "description": "The board you are looking for does not exist or is inaccessible."
@@ -292,8 +306,9 @@
       "rect": "Rectangle",
       "circle": "Circle",
       "draw": "Draw",
-      "eraser": "Eraser",
-      "text": "Text"
+      "text": "Text",
+      "image": "Image",
+      "eraser": "Eraser"
     },
     "zoom": {
       "in": "Zoom In",
@@ -308,6 +323,16 @@
     "sidebar": {
       "backgroundColor": "Canvas Background",
       "hexCode": "Hex code",
+      "grouping": "Grouping",
+      "order": "Order",
+      "groups": "Groups",
+      "group": "Group",
+      "ungroup": "Ungroup",
+      "groups_empty": "No groups yet",
+      "bring_to_front": "Bring to Front",
+      "bring_forward": "Bring Forward",
+      "send_backward": "Send Backward",
+      "send_to_back": "Send to Back",
       "position": "Position",
       "size": "Size",
       "rotation": "Rotation",
@@ -390,5 +415,76 @@
     "keys_lmb": "LMB",
     "keys_rmb": "RMB",
     "label_or": "or"
+  },
+  "Landing": {
+    "Hero": {
+      "title": "Power Paint",
+      "description": "An infinite whiteboard for collaboration. Draw, plan, and bring ideas to life with your team in real time.",
+      "start_free": "Start for free"
+    },
+    "Features": {
+      "infinite_canvas_title": "Infinite canvas",
+      "infinite_canvas_description": "Work on a canvas that never ends.",
+      "multiplayer_title": "Multiplayer",
+      "multiplayer_description": "Collaborate while seeing every cursor movement of your colleagues.",
+      "custom_tools_title": "Custom tools",
+      "custom_tools_description": "Create and use your own drawing tools.",
+      "role_system_title": "Role system",
+      "role_system_description": "Manage access and user permissions.",
+      "open_source_title": "Open source",
+      "open_source_description": "Use and contribute to open source code.",
+      "cloud_storage_title": "Cloud storage",
+      "cloud_storage_description": "Store your work in the cloud and access it from anywhere."
+    },
+    "feature_cards": {
+      "return_to_focus": "Return to Focus",
+      "return_to_focus_desc": "Jump back to the right spot on the canvas when you get lost in zoom or movement.",
+      "smart_eraser": "Smart Eraser",
+      "smart_eraser_desc": "Remove brush strokes in a single motion, or hold Alt to quickly clear selection without breaking your flow.",
+      "role_based_access": "Role-based Access",
+      "role_based_access_desc": "Control who can view, edit, or manage the board without adding complexity.",
+      "collaborative_editing": "Collaborative Editing",
+      "collaborative_editing_desc": "Let multiple people work at once without stepping on each other’s ideas.",
+      "more_than_board": "More than a board for any task",
+      "more_than_board_desc": "Use advanced capabilities—from real-time collaboration and flexible editing to access control and other tools designed for any workflow."
+    },
+    "Comparison": {
+      "why_title": "Why Power Paint?",
+      "why_desc": "Compare us with other popular solutions on the market.",
+      "headers": {
+        "analog": "Alternative",
+        "drawback": "Drawback",
+        "advantage": "Advantage"
+      },
+      "excalidraw": {
+        "drawback": "No role model",
+        "advantage": "Full session control"
+      },
+      "drawio": {
+        "drawback": "Slow synchronization",
+        "advantage": "Instant synchronization"
+      },
+      "figma": {
+        "drawback": "Proprietary",
+        "advantage": "Open source and customizable"
+      },
+      "doubt_title": "Still in doubt?",
+      "doubt_desc": "Here is a detailed comparison of Power Paint's key features with other tools.",
+      "col_feature": "Feature",
+      "features": {
+        "quick_sketches": "Quick sketches and ideas",
+        "real_time": "Real-time collaborative editing",
+        "distributed": "Working in distributed teams",
+        "access_control": "Access control (roles, permissions)",
+        "self_hosted": "Self-hosted deployment",
+        "education": "Use in education / teaching",
+        "brainstorming": "Brainstorming / whiteboard sessions"
+      }
+    },
+    "CTA": {
+      "ready_title": "Ready to start?",
+      "ready_desc": "Join thousands of teams already using Power Paint to visualize their ideas.",
+      "start_free": "Start for free"
+    }
   }
 }

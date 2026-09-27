@@ -8,12 +8,14 @@ interface ColorSwatchProps {
   className?: string;
   color: string;
   invertable?: boolean;
+  opacity?: number;
 }
 
 export function ColorSwatch({
   className,
   color,
   invertable = false,
+  opacity,
 }: ColorSwatchProps) {
   const { activeColor, isLoading } = useInvertableColor(color, invertable);
 
@@ -22,7 +24,7 @@ export function ColorSwatch({
   return (
     <div
       className={cn("aspect-square", className)}
-      style={{ backgroundColor: activeColor }}
+      style={{ backgroundColor: activeColor, opacity }}
     />
   );
 }

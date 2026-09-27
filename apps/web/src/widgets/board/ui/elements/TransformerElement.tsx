@@ -1,7 +1,7 @@
 "use client";
 
 import type Konva from "konva";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { Transformer } from "react-konva";
 import { useShallow } from "zustand/react/shallow";
 
@@ -15,10 +15,11 @@ import {
 
 interface TransformerToolProps {
   canEdit: boolean;
-  ref: React.RefObject<Konva.Transformer | null>;
 }
 
-export function TransformerTool({ canEdit, ref }: TransformerToolProps) {
+export function TransformerTool({ canEdit }: TransformerToolProps) {
+  const transformerRef = useRef<Konva.Transformer>(null);
+
   const selectedIds = useBoardStore(useShallow((s) => s.selectedIds));
   const selectionType = useBoardStore(useShallow((s) => s.selectionType));
   const elements = useBoardStore(useShallow((s) => s.elements));
@@ -48,7 +49,7 @@ export function TransformerTool({ canEdit, ref }: TransformerToolProps) {
     .join(",");
 
   useEffect(() => {
-    const transformer = ref.current;
+    const transformer = transformerRef.current;
     if (!transformer) return;
 
     if (selectionType !== "transform") return void transformer.nodes();
@@ -60,11 +61,17 @@ export function TransformerTool({ canEdit, ref }: TransformerToolProps) {
     const nodes = getKonvaNodesFromLayer(contentLayer, validIds);
 
     transformer.nodes(nodes);
-  }, [ref, selectionType, presentSelectedIds]);
+  }, [transformerRef, selectionType, presentSelectedIds]);
+
+  useEffect(() => {
+    const transformer = transformerRef.current;
+    if (!transformer) return;
+    useBoardStore.getState().setTransformer(transformer);
+  }, [transformerRef]);
 
   return (
     <Transformer
-      ref={ref}
+      ref={transformerRef}
       id="transformer"
       keepRatio={keepRatio}
       enabledAnchors={enabledAnchors}

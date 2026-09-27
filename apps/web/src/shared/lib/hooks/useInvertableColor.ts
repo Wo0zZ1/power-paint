@@ -26,7 +26,7 @@ export function useInvertableColor(color: string, invertable: boolean = true) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setActiveColor(targetColor);
     } catch (error) {
-      console.error("Failed to invert color:", error);
+      console.error(`Failed to invert color [${color}]:`, error);
     }
 
     setIsloadding(false);

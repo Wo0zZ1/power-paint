@@ -33,6 +33,10 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: new URL(process.env.NEXT_PUBLIC_BASE_URL!).hostname,
       },
+      {
+        protocol: "https",
+        hostname: "**.ufs.sh",
+      },
     ],
     qualities: [25, 50, 75, 100],
   },

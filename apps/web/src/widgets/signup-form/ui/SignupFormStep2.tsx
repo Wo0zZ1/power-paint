@@ -1,14 +1,19 @@
 "use client";
 
-import { Info } from "lucide-react";
+import { ImageUpIcon, Info, Trash } from "lucide-react";
+import Image from "next/image";
 import { useTranslations } from "next-intl";
+import type { MouseEvent } from "react";
 import { useCallback } from "react";
+import { useDropzone } from "react-dropzone";
 import { Controller, useFormContext, useFormState } from "react-hook-form";
 
 import type { SignupFormStep2Data } from "@/shared/config";
 import { DEFAULT_USER_COLORS } from "@/shared/constants";
 import type { SupportedLocaleCode } from "@/shared/i18n";
 import { ALL_LOCALES } from "@/shared/i18n";
+import { useUploadThing } from "@/shared/lib/uploadthing";
+import { cn } from "@/shared/lib/utils";
 import {
   Field,
   Input,
@@ -20,6 +25,11 @@ import {
   FieldDescription,
   FieldTitle,
   ColorButton,
+  Button,
+  Empty,
+  EmptyMedia,
+  EmptyDescription,
+  Skeleton,
 } from "@/shared/ui";
 import { ColorInput } from "@/shared/ui/ColorInput";
 
@@ -29,9 +39,19 @@ export function SignupFormStep2() {
   const t = useTranslations();
   const tFields = useTranslations("auth.fields");
 
-  const { register, control } = useFormContext<SignupFormStep2Data>();
-
+  const { register, control, watch, setValue } =
+    useFormContext<SignupFormStep2Data>();
+  const picture = watch("image");
   const { errors } = useFormState({ control });
+
+  const { startUpload, isUploading } = useUploadThing("userPictureUploader", {
+    onClientUploadComplete: (res) => {
+      if (res && res[0]) setValue("image", res[0].ufsUrl);
+    },
+    onUploadError: (error) => {
+      alert(error.message);
+    },
+  });
 
   const handleChangeLanguage = useCallback(
     (fn: (e: SupportedLocaleCode) => void) => {
@@ -43,6 +63,32 @@ export function SignupFormStep2() {
     [],
   );
 
+  const onDrop = useCallback(
+    (acceptedFiles: File[]) => {
+      if (acceptedFiles.length === 0) return;
+
+      startUpload(acceptedFiles);
+    },
+    [startUpload],
+  );
+
+  const handleRemovePicture = useCallback(
+    (e: MouseEvent<HTMLButtonElement>) => {
+      e.stopPropagation();
+      setValue("image", "");
+    },
+    [setValue],
+  );
+
+  const { getRootProps, getInputProps, open, isDragActive } = useDropzone({
+    onDrop,
+    accept: { "image/*": [] },
+    maxFiles: 1,
+    noClick: true,
+    noKeyboard: true,
+    disabled: isUploading,
+  });
+
   return (
     <>
       <Field>
@@ -50,7 +96,7 @@ export function SignupFormStep2() {
           type="tel"
           id="phone"
           autoComplete="tel"
-          placeholder={t("auth.fields.phone.placeholder")}
+          placeholder={tFields("phone.placeholder")}
           className="h-12"
           autoFocus
           {...register("phone")}
@@ -139,10 +185,66 @@ export function SignupFormStep2() {
         </div>
       </Field>
 
-      {/* <Field>
+      <Field>
         <FieldTitle>{tFields("image.label")}</FieldTitle>
         <FieldDescription>{tFields("image.placeholder")}</FieldDescription>
-      </Field> */}
+        <div>
+          <div
+            {...getRootProps()}
+            className={cn(
+              "group aspect-square w-32 text-center overflow-clip rounded-xl border-2 border-dashed cursor-pointer transition-[border-color,background-color]",
+              {
+                "border-primary/50 bg-primary/5": isDragActive,
+                "border-transparent": picture,
+                "cursor-default": isUploading,
+              },
+            )}
+          >
+            <input {...getInputProps()} />
+
+            {picture ? (
+              <div className="relative w-full h-full bg-muted">
+                <Skeleton className="w-full h-full" />
+
+                <Image
+                  fill
+                  sizes="100%"
+                  src={picture}
+                  alt={tFields("image.preview")}
+                  unoptimized
+                  className="absolute inset-0 object-cover w-full h-full"
+                />
+
+                <Button
+                  size="icon-sm"
+                  variant="link"
+                  type="button"
+                  className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 hover:text-destructive transition-[opacity,color]"
+                  onClick={handleRemovePicture}
+                  disabled={isUploading}
+                >
+                  <Trash className="size-6" />
+                </Button>
+              </div>
+            ) : (
+              <Empty
+                className="w-full h-full select-none"
+                size="sm"
+                onClick={open}
+              >
+                <EmptyMedia className="mb-0">
+                  <ImageUpIcon className="size-6 text-muted-foreground" />
+                </EmptyMedia>
+                <EmptyDescription className="text-xs">
+                  {isUploading
+                    ? tFields("image.uploading")
+                    : tFields("image.empty")}
+                </EmptyDescription>
+              </Empty>
+            )}
+          </div>
+        </div>
+      </Field>
     </>
   );
 }

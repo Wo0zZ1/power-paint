@@ -140,6 +140,7 @@ services:
         NEXT_PUBLIC_WS_URL: $NEXT_PUBLIC_WS_URL
     environment:
       GATEWAY_URL: $GATEWAY_URL
+      UPLOADTHING_TOKEN: $UPLOADTHING_TOKEN
       PORT: 3000
     networks: [power-paint-network]
 
