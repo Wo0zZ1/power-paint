@@ -2,9 +2,9 @@ import type { useRouter } from "next/navigation";
 
 import type { SignupFormData, SignupCodeData } from "@/shared/config";
 import {
-  getSignupFormStep1Schema,
-  getSignupFormStep2Schema,
-  getSignupCodeSchema,
+  signupFormStep1Schema,
+  signupFormStep2Schema,
+  signupCodeSchema,
   ROUTES,
 } from "@/shared/config";
 import type { SupportedLocaleCode } from "@/shared/i18n";
@@ -22,26 +22,9 @@ interface buildSignupFlowProps {
 
 export const buildSignupFlow = ({ locale, router }: buildSignupFlowProps) => {
   const schemas = {
-    step1: getSignupFormStep1Schema({
-      firstNameTooShort: "auth.errors.first_name_too_short",
-      firstNameTooLong: "auth.errors.first_name_too_long",
-      lastNameTooShort: "auth.errors.last_name_too_short",
-      lastNameTooLong: "auth.errors.last_name_too_long",
-      invalidEmail: "auth.errors.invalid_email",
-      passwordTooShort: "auth.errors.password_too_short",
-      passwordTooLong: "auth.errors.password_too_long",
-      passwordsDontMatch: "auth.errors.passwords_do_not_match",
-      termsRequired: "auth.errors.terms_required",
-    }).loose(),
-    step2: getSignupFormStep2Schema({
-      invalidPhone: "auth.errors.invalid_phone",
-      invalidLocale: "auth.errors.invalid_locale",
-      invalidPreferredColor: "auth.errors.invalid_preferred_color",
-      invalidImage: "auth.errors.invalid_image",
-    }).loose(),
-    step3: getSignupCodeSchema({
-      invalidEmailCode: "auth.errors.invalid_email_code",
-    }).loose(),
+    step1: signupFormStep1Schema.loose(),
+    step2: signupFormStep2Schema.loose(),
+    step3: signupCodeSchema.loose(),
   } as const;
 
   const defaultValues: SignupFormValues = {

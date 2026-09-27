@@ -1,11 +1,9 @@
 import { Locale } from "@power-paint/db";
 import { z } from "zod";
 
-// Сообщения приходят параметрами, а не ключами i18n: так эти схемы были написаны
-// изначально, вызывающий подставляет уже переведённый текст.
-
 const phoneRegex = /^[\d+()\s-]{6,20}$/;
 const hexColorRegex = /^#?([a-fA-F0-9]{3}|[a-fA-F0-9]{6})$/;
+const emailCodeRegex = /^\d*$/;
 
 const isValidUrl = (value: string) => {
   try {
@@ -16,169 +14,98 @@ const isValidUrl = (value: string) => {
   }
 };
 
-export const getSigninSchema = ({
-  invalidEmail = "Invalid email address",
-}: {
-  invalidEmail?: string;
-} = {}) =>
-  z.object({
-    email: z.email({ error: invalidEmail }).toLowerCase(),
-    password: z.string(),
+const emailSchema = z.email({ error: "auth.errors.invalid_email" }).toLowerCase();
+
+const passwordSchema = z
+  .string()
+  .min(6, { error: "auth.errors.password_too_short" })
+  .max(20, { error: "auth.errors.password_too_long" });
+
+export const signinSchema = z.object({
+  email: emailSchema,
+  password: z.string(),
+});
+
+export type SigninData = z.infer<typeof signinSchema>;
+
+export const forgotPasswordSchema = z.object({
+  email: emailSchema,
+});
+
+export type ForgotPasswordData = z.infer<typeof forgotPasswordSchema>;
+
+export const resetPasswordSchema = z
+  .object({
+    password: passwordSchema,
+    passwordConfirm: z.string(),
+  })
+  .refine((data) => data.password === data.passwordConfirm, {
+    path: ["passwordConfirm"],
+    error: "auth.errors.passwords_do_not_match",
   });
 
-export type SigninData = z.infer<ReturnType<typeof getSigninSchema>>;
+export type ResetPasswordData = z.infer<typeof resetPasswordSchema>;
 
-export const getForgotPasswordSchema = ({
-  invalidEmail = "Invalid email address",
-}: {
-  invalidEmail?: string;
-} = {}) =>
-  z.object({
-    email: z.email({ error: invalidEmail }).toLowerCase(),
+export const signupFormStep1Schema = z
+  .object({
+    firstName: z
+      .string()
+      .min(1, { error: "auth.errors.first_name_too_short" })
+      .max(16, { error: "auth.errors.first_name_too_long" }),
+    lastName: z
+      .string()
+      .min(1, { error: "auth.errors.last_name_too_short" })
+      .max(16, { error: "auth.errors.last_name_too_long" }),
+    email: emailSchema,
+    password: passwordSchema,
+    passwordConfirm: z.string(),
+    termsOfService: z.boolean(),
+  })
+  .refine((data) => data.password === data.passwordConfirm, {
+    path: ["passwordConfirm"],
+    error: "auth.errors.passwords_do_not_match",
+  })
+  .refine((data) => data.termsOfService, {
+    path: ["termsOfService"],
+    error: "auth.errors.terms_required",
   });
 
-export type ForgotPasswordData = z.infer<
-  ReturnType<typeof getForgotPasswordSchema>
->;
+export type SignupFormStep1Data = z.infer<typeof signupFormStep1Schema>;
 
-interface ResetPasswordSchemaProps {
-  passwordTooShort?: string;
-  passwordTooLong?: string;
-  passwordsDontMatch?: string;
-}
-
-export const getResetPasswordSchema = ({
-  passwordTooShort = "Password must be at least 6 characters",
-  passwordTooLong = "Password must be less than 20 characters",
-  passwordsDontMatch = "Passwords do not match",
-}: ResetPasswordSchemaProps = {}) =>
-  z
-    .object({
-      password: z
-        .string()
-        .min(6, { error: passwordTooShort })
-        .max(20, { error: passwordTooLong }),
-      passwordConfirm: z.string(),
+export const signupFormStep2Schema = z.object({
+  phone: z
+    .string()
+    .trim()
+    .refine((value) => value === "" || phoneRegex.test(value), {
+      error: "auth.errors.invalid_phone",
     })
-    .refine((data) => data.password === data.passwordConfirm, {
-      path: ["passwordConfirm"],
-      error: passwordsDontMatch,
-    });
-
-export type ResetPasswordData = z.infer<
-  ReturnType<typeof getResetPasswordSchema>
->;
-
-interface SignupFormStep1SchemaProps {
-  firstNameTooShort?: string;
-  firstNameTooLong?: string;
-  lastNameTooShort?: string;
-  lastNameTooLong?: string;
-  invalidEmail?: string;
-  passwordTooShort?: string;
-  passwordTooLong?: string;
-  passwordsDontMatch?: string;
-  termsRequired?: string;
-}
-
-export const getSignupFormStep1Schema = ({
-  firstNameTooShort = "First name must be at least 1 character",
-  firstNameTooLong = "First name must be less than 16 characters",
-  lastNameTooShort = "Last name must be at least 1 character",
-  lastNameTooLong = "Last name must be less than 16 characters",
-  invalidEmail = "Invalid email address",
-  passwordTooShort = "Password must be at least 6 characters",
-  passwordTooLong = "Password must be less than 20 characters",
-  passwordsDontMatch = "Passwords do not match",
-  termsRequired = "You must accept the terms of service",
-}: SignupFormStep1SchemaProps = {}) =>
-  z
-    .object({
-      firstName: z
-        .string()
-        .min(1, { error: firstNameTooShort })
-        .max(16, { error: firstNameTooLong }),
-      lastName: z
-        .string()
-        .min(1, { error: lastNameTooShort })
-        .max(16, { error: lastNameTooLong }),
-      email: z.email({ error: invalidEmail }).toLowerCase(),
-      password: z
-        .string()
-        .min(6, { error: passwordTooShort })
-        .max(20, { error: passwordTooLong }),
-      passwordConfirm: z.string(),
-      termsOfService: z.boolean(),
+    .transform((v) => (v === "" ? null : v))
+    .optional(),
+  locale: z.enum(Locale, { error: "auth.errors.invalid_locale" }),
+  preferredColor: z
+    .string()
+    .trim()
+    .regex(hexColorRegex, { error: "auth.errors.invalid_preferred_color" }),
+  image: z
+    .string()
+    .trim()
+    .refine((value) => value === "" || isValidUrl(value), {
+      error: "auth.errors.invalid_image",
     })
-    .refine((data) => data.password === data.passwordConfirm, {
-      path: ["passwordConfirm"],
-      error: passwordsDontMatch,
-    })
-    .refine((data) => data.termsOfService, {
-      path: ["termsOfService"],
-      error: termsRequired,
-    });
+    .transform((v) => (v === "" ? null : v))
+    .optional(),
+});
 
-export type SignupFormStep1Data = z.infer<
-  ReturnType<typeof getSignupFormStep1Schema>
->;
+export type SignupFormStep2Data = z.infer<typeof signupFormStep2Schema>;
 
-interface SignupFormStep2SchemaProps {
-  invalidPhone?: string;
-  invalidPreferredColor?: string;
-  invalidImage?: string;
-  invalidLocale?: string;
-}
-
-export const getSignupFormStep2Schema = ({
-  invalidPhone = "Invalid phone number",
-  invalidPreferredColor = "Invalid hex color",
-  invalidImage = "Invalid image URL",
-  invalidLocale = "Unsupported language",
-}: SignupFormStep2SchemaProps = {}) =>
-  z.object({
-    phone: z
-      .string()
-      .trim()
-      .refine((value) => value === "" || phoneRegex.test(value), {
-        error: invalidPhone,
-      })
-      .transform((v) => (v === "" ? null : v))
-      .optional(),
-    locale: z.enum(Locale, { error: invalidLocale }),
-    preferredColor: z
-      .string()
-      .trim()
-      .regex(hexColorRegex, { error: invalidPreferredColor }),
-    image: z
-      .string()
-      .trim()
-      .refine((value) => value === "" || isValidUrl(value), {
-        error: invalidImage,
-      })
-      .transform((v) => (v === "" ? null : v))
-      .optional(),
-  });
-
-export type SignupFormStep2Data = z.infer<
-  ReturnType<typeof getSignupFormStep2Schema>
->;
-
-export const signupFormSchema = getSignupFormStep1Schema().and(
-  getSignupFormStep2Schema(),
-);
+export const signupFormSchema = signupFormStep1Schema.and(signupFormStep2Schema);
 
 export type SignupFormData = z.infer<typeof signupFormSchema>;
 
-const emailCodeRegex = /^\d*$/;
+export const signupCodeSchema = z.object({
+  emailCode: z
+    .string()
+    .regex(emailCodeRegex, { error: "auth.errors.invalid_email_code" }),
+});
 
-export const getSignupCodeSchema = ({
-  invalidEmailCode = "Invalid verification code",
-}: {
-  invalidEmailCode?: string;
-} = {}) =>
-  z.object({
-    emailCode: z.string().regex(emailCodeRegex, { error: invalidEmailCode }),
-  });
-
-export type SignupCodeData = z.infer<ReturnType<typeof getSignupCodeSchema>>;
+export type SignupCodeData = z.infer<typeof signupCodeSchema>;

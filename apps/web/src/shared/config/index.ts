@@ -1,12 +1,12 @@
 export { ROUTES } from "./routes";
 export { queryClientOptions } from "./queryClientConfig";
 export {
-  getSigninSchema,
-  getSignupCodeSchema,
-  getSignupFormStep1Schema,
-  getSignupFormStep2Schema,
-  getForgotPasswordSchema,
-  getResetPasswordSchema,
+  signinSchema,
+  signupCodeSchema,
+  signupFormStep1Schema,
+  signupFormStep2Schema,
+  forgotPasswordSchema,
+  resetPasswordSchema,
   signupFormSchema,
   type SigninData,
   type SignupCodeData,

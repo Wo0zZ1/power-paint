@@ -1,10 +1,10 @@
 export {
-  getForgotPasswordSchema,
-  getResetPasswordSchema,
-  getSigninSchema,
-  getSignupCodeSchema,
-  getSignupFormStep1Schema,
-  getSignupFormStep2Schema,
+  forgotPasswordSchema,
+  resetPasswordSchema,
+  signinSchema,
+  signupCodeSchema,
+  signupFormStep1Schema,
+  signupFormStep2Schema,
   signupFormSchema,
 } from "@power-paint/contracts";
 export type {

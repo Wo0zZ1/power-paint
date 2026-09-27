@@ -6,7 +6,7 @@ import { FormProvider, useForm } from "react-hook-form";
 
 import { cn } from "@/utils";
 
-import { getSigninSchema } from "@/shared/config/authSchemas";
+import { signinSchema } from "@/shared/config/authSchemas";
 import {
   Card,
   CardHeader,
@@ -34,10 +34,6 @@ export function SigninForm({ className }: LoginFormProps) {
     handleGithubSignIn,
     handleGoogleSignIn,
   } = useSignInHandlers();
-
-  const signinSchema = getSigninSchema({
-    invalidEmail: "errors.invalid_email",
-  });
 
   const methods = useForm({
     mode: "onSubmit",

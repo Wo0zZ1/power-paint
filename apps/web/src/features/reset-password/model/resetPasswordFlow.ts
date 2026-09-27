@@ -2,9 +2,9 @@ import type { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 import {
-  getForgotPasswordSchema,
-  getSignupCodeSchema,
-  getResetPasswordSchema,
+  forgotPasswordSchema,
+  signupCodeSchema,
+  resetPasswordSchema,
   ROUTES,
   type ForgotPasswordData,
   type SignupCodeData,
@@ -32,17 +32,9 @@ export const buildForgotPasswordFlow = ({
   router,
 }: BuildForgotPasswordFlowParams) => {
   const schemas = {
-    request: getForgotPasswordSchema({
-      invalidEmail: "errors.invalid_email",
-    }).loose(),
-    verify: getSignupCodeSchema({
-      invalidEmailCode: "auth.errors.invalid_email_code",
-    }).loose(),
-    reset: getResetPasswordSchema({
-      passwordTooShort: "auth.errors.password_too_short",
-      passwordTooLong: "auth.errors.password_too_long",
-      passwordsDontMatch: "auth.errors.passwords_do_not_match",
-    }).loose(),
+    request: forgotPasswordSchema.loose(),
+    verify: signupCodeSchema.loose(),
+    reset: resetPasswordSchema.loose(),
   } as const;
 
   const defaultValues: ForgotPasswordFormValues = {

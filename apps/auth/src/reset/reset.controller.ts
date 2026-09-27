@@ -7,9 +7,9 @@ import {
 	Res,
 } from '@nestjs/common'
 import {
-	getForgotPasswordSchema,
-	getResetPasswordSchema,
-	getSignupCodeSchema,
+	forgotPasswordSchema,
+	resetPasswordSchema,
+	signupCodeSchema,
 } from '@power-paint/contracts'
 import { ApiOperation, ApiTags } from '@nestjs/swagger'
 import type { Request, Response } from 'express'
@@ -19,9 +19,9 @@ import { CONFIG } from '../config'
 
 import { ResetService } from './reset.service'
 
-class ForgotPasswordDto extends createZodDto(getForgotPasswordSchema()) {}
-class ResetCodeDto extends createZodDto(getSignupCodeSchema()) {}
-class NewPasswordDto extends createZodDto(getResetPasswordSchema()) {}
+class ForgotPasswordDto extends createZodDto(forgotPasswordSchema) {}
+class ResetCodeDto extends createZodDto(signupCodeSchema) {}
+class NewPasswordDto extends createZodDto(resetPasswordSchema) {}
 
 const RESET_COOKIE = 'resetPasswordToken'
 

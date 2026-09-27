@@ -6,7 +6,7 @@ import {
 	Req,
 	Res,
 } from '@nestjs/common'
-import { getSignupCodeSchema, signupFormSchema } from '@power-paint/contracts'
+import { signupCodeSchema, signupFormSchema } from '@power-paint/contracts'
 import { ApiOperation, ApiTags } from '@nestjs/swagger'
 import type { Request, Response } from 'express'
 import { createZodDto } from 'nestjs-zod'
@@ -16,7 +16,7 @@ import { CONFIG } from '../config'
 import { SignupService } from './signup.service'
 
 class SignupDto extends createZodDto(signupFormSchema) {}
-class SignupCodeDto extends createZodDto(getSignupCodeSchema()) {}
+class SignupCodeDto extends createZodDto(signupCodeSchema) {}
 
 const VERIFICATION_COOKIE = 'signupVerificationId'
 

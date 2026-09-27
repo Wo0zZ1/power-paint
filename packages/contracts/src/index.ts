@@ -40,13 +40,13 @@ export type {
 } from "./workspace";
 
 export {
-  getForgotPasswordSchema,
-  getResetPasswordSchema,
-  getSigninSchema,
-  getSignupCodeSchema,
-  getSignupFormStep1Schema,
-  getSignupFormStep2Schema,
+  forgotPasswordSchema,
+  resetPasswordSchema,
+  signinSchema,
+  signupCodeSchema,
   signupFormSchema,
+  signupFormStep1Schema,
+  signupFormStep2Schema,
 } from "./auth";
 export type {
   ForgotPasswordData,
