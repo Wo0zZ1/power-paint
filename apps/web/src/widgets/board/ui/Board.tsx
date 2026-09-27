@@ -1,6 +1,6 @@
 import type { Board } from "@power-paint/db";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { notFound } from "next/navigation";
 
 import { getQueryClient } from "@/shared/api";
@@ -24,7 +24,11 @@ interface BoardProps {
 }
 
 export async function Board({ className, boardId }: BoardProps) {
-  const [session, cookieState] = await Promise.all([getSession(), cookies()]);
+  const [session, cookieState, headerStore] = await Promise.all([
+    getSession(),
+    cookies(),
+    headers(),
+  ]);
 
   const cookieString = cookieState.toString();
 
@@ -34,7 +38,11 @@ export async function Board({ className, boardId }: BoardProps) {
 
   try {
     boardWithAccess = await queryClient.fetchQuery(
-      getBoardQueryOption({ boardId, cookieString }),
+      getBoardQueryOption({
+        boardId,
+        cookieString,
+        forwardedFor: headerStore.get("x-forwarded-for"),
+      }),
     );
   } catch {
     notFound();

@@ -20,7 +20,7 @@ const fetchWorkspaces = async ({
   if (type) reqUrl += `type=${type}&`;
   if (userId) reqUrl += `userId=${userId}&`;
 
-  const response = await fetch(reqUrl, fetchInitWithCookies(cookieString));
+  const response = await fetch(reqUrl, fetchInitWithCookies({ cookieString }));
 
   if (!response.ok) throw new Error("Failed to fetch workspaces");
 
@@ -36,10 +36,27 @@ const fetchWorkspace = async ({
 }): Promise<WorkspaceWithAccess> => {
   const response = await fetch(
     `${url}/${workspaceId}`,
-    fetchInitWithCookies(cookieString),
+    fetchInitWithCookies({ cookieString }),
   );
 
   if (!response.ok) throw new Error("Failed to fetch workspace");
+
+  return response.json();
+};
+
+export const fetchWorkspaceMeta = async ({
+  workspaceId,
+  forwardedFor,
+}: {
+  workspaceId: Workspace["id"];
+  forwardedFor?: string | null;
+}): Promise<Pick<Workspace, "name">> => {
+  const response = await fetch(
+    `${url}/${workspaceId}/meta`,
+    fetchInitWithCookies({ forwardedFor }),
+  );
+
+  if (!response.ok) throw new Error("Failed to fetch workspace meta");
 
   return response.json();
 };

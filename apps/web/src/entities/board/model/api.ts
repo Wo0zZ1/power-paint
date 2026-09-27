@@ -21,7 +21,7 @@ const fetchBoards = async ({
   if (userId) reqUrl += `userId=${userId}&`;
   if (workspaceId) reqUrl += `workspaceId=${workspaceId}&`;
 
-  const response = await fetch(reqUrl, fetchInitWithCookies(cookieString));
+  const response = await fetch(reqUrl, fetchInitWithCookies({ cookieString }));
 
   if (!response.ok) throw new Error("Failed to fetch boards");
 
@@ -30,16 +30,38 @@ const fetchBoards = async ({
 
 const fetchBoard = async ({
   cookieString,
+  forwardedFor,
   boardId,
 }: {
   cookieString?: string;
+  forwardedFor?: string | null;
   boardId: string;
 }): Promise<BoardWithAccess> => {
   const reqUrl = `${url}/${boardId}?`;
 
-  const response = await fetch(reqUrl, fetchInitWithCookies(cookieString));
+  const response = await fetch(
+    reqUrl,
+    fetchInitWithCookies({ cookieString, forwardedFor }),
+  );
 
   if (!response.ok) throw new Error("Failed to fetch boards");
+
+  return response.json();
+};
+
+export const fetchBoardMeta = async ({
+  boardId,
+  forwardedFor,
+}: {
+  boardId: Board["id"];
+  forwardedFor?: string | null;
+}): Promise<Pick<Board, "name">> => {
+  const response = await fetch(
+    `${url}/${boardId}/meta`,
+    fetchInitWithCookies({ forwardedFor }),
+  );
+
+  if (!response.ok) throw new Error("Failed to fetch board meta");
 
   return response.json();
 };

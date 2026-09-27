@@ -1,26 +1,28 @@
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import type { Metadata } from "next";
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { notFound } from "next/navigation";
 import type { ReactNode } from "react";
 
 import { getQueryClient } from "@/shared/api";
-import { prisma } from "@/shared/lib/prisma";
 
 import type { WorkspaceWithAccess } from "@/entities/workspace";
-import { getWorkspaceQueryOption } from "@/entities/workspace/server";
+import {
+  fetchWorkspaceMeta,
+  getWorkspaceQueryOption,
+} from "@/entities/workspace/server";
 
 export const generateMetadata = async ({
   params,
 }: {
   params: Promise<{ uuid: string }>;
 }) => {
-  const { uuid } = await params;
+  const [{ uuid }, headerStore] = await Promise.all([params, headers()]);
 
-  const workspace = await prisma.workspace.findUnique({
-    where: { id: uuid },
-    select: { name: true },
-  });
+  const workspace = await fetchWorkspaceMeta({
+    workspaceId: uuid,
+    forwardedFor: headerStore.get("x-forwarded-for"),
+  }).catch(() => null);
 
   if (!workspace)
     return {

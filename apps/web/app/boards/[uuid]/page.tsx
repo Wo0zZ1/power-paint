@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 
 import { ROUTES } from "@/shared/config";
-import { prisma } from "@/shared/lib/prisma";
+
+import { fetchBoardMeta } from "@/entities/board/server";
 
 import { Board } from "@/widgets/board";
 
@@ -12,16 +14,12 @@ export async function generateMetadata({
 }) {
   const ORIGIN = process.env.NEXT_PUBLIC_BASE_URL as string;
 
-  const { uuid } = await params;
+  const [{ uuid }, headerStore] = await Promise.all([params, headers()]);
 
-  const board = await prisma.board.findUnique({
-    where: { id: uuid },
-    select: {
-      name: true,
-      lightPreview: true,
-      darkPreview: true,
-    },
-  });
+  const board = await fetchBoardMeta({
+    boardId: uuid,
+    forwardedFor: headerStore.get("x-forwarded-for"),
+  }).catch(() => null);
 
   if (!board) {
     return {

@@ -22,12 +22,14 @@ export const getBoardsQueryOption = ({
 export const getBoardQueryOption = ({
   boardId,
   cookieString,
+  forwardedFor,
 }: {
   boardId: string;
   cookieString: string;
+  forwardedFor: string | null;
 }) => {
   return queryOptions({
     queryKey: [BOARDS_QUERY_KEY, `board-${boardId}`],
-    queryFn: () => BoardsApi.getOne({ boardId, cookieString }),
+    queryFn: () => BoardsApi.getOne({ boardId, cookieString, forwardedFor }),
   });
 };

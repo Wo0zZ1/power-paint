@@ -1,4 +1,4 @@
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { cache } from "react";
 
 import { fetchSession } from "./api";
@@ -6,7 +6,10 @@ import { fetchSession } from "./api";
 // cache на время одного рендера: layout, страница и виджеты спрашивают сессию
 // независимо, а запрос уходит один раз.
 export const getSession = cache(async () => {
-  const cookieStore = await cookies();
+  const [cookieStore, headerStore] = await Promise.all([cookies(), headers()]);
 
-  return fetchSession(cookieStore.toString());
+  return fetchSession({
+    cookieString: cookieStore.toString(),
+    forwardedFor: headerStore.get("x-forwarded-for"),
+  });
 });

@@ -22,7 +22,6 @@
       "@/*": ["./src/*"],
       "@/public/*": ["./public/*"],
       "@/emails/*": ["./emails/*"],
-      "@/prisma/*": ["./prisma/*"],
       "@/entities/*": ["./src/entities/*"],
       "@/features/*": ["./src/features/*"],
       "@/widgets/*": ["./src/widgets/*"],

@@ -4,10 +4,11 @@ import { GET_BASE_API_URL, fetchInitWithCookies } from "@/shared/api";
 
 // Личность и профиль принадлежат разным сервисам, поэтому сессия склеивается
 // из двух ответов. Второй запрос уходит только при наличии первого.
-export const fetchSession = async (
-  cookieString?: string,
-): Promise<SessionUser | null> => {
-  const init = fetchInitWithCookies(cookieString);
+export const fetchSession = async (request: {
+  cookieString?: string;
+  forwardedFor?: string | null;
+}): Promise<SessionUser | null> => {
+  const init = fetchInitWithCookies(request);
 
   const identityResponse = await fetch(
     `${GET_BASE_API_URL()}/auth/me`,

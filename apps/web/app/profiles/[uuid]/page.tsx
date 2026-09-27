@@ -1,4 +1,4 @@
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { notFound } from "next/navigation";
 
 import { fetchInitWithCookies, GET_BASE_API_URL } from "@/shared/api";
@@ -10,13 +10,20 @@ export default async function ProfilePage({
 }: {
   params: Promise<{ uuid: number }>;
 }) {
-  const [{ uuid }, cookieStore] = await Promise.all([params, cookies()]);
+  const [{ uuid }, cookieStore, headerStore] = await Promise.all([
+    params,
+    cookies(),
+    headers(),
+  ]);
 
   const cookieString = cookieStore.toString();
 
   const userData = await fetch(
     `${url}/${uuid}`,
-    fetchInitWithCookies(cookieString),
+    fetchInitWithCookies({
+      cookieString,
+      forwardedFor: headerStore.get("x-forwarded-for"),
+    }),
   );
 
   if (!userData.ok) notFound();
