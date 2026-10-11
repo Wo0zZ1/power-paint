@@ -1,6 +1,14 @@
-import { Body, Controller, Get, Header, Param, Put, Query, Res } from '@nestjs/common'
+import {
+	Body,
+	Controller,
+	Get,
+	Header,
+	Param,
+	Put,
+	Query,
+	StreamableFile,
+} from '@nestjs/common'
 import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger'
-import type { Response } from 'express'
 
 import { CurrentUserId } from '../currentUserId.decorator'
 
@@ -16,16 +24,11 @@ export class PreviewController {
 	@ApiOperation({ summary: 'Снимок холста картинкой' })
 	@ApiQuery({ name: 'theme', required: false, enum: ['light', 'dark'] })
 	@Header('Cache-Control', 'public, max-age=3600, stale-while-revalidate=86400')
-	async get(
-		@Param('id') id: string,
-		@Res({ passthrough: true }) response: Response,
-		@Query('theme') theme?: string,
-	) {
+	// StreamableFile, а не Buffer: голый Buffer Nest сериализует в JSON.
+	async get(@Param('id') id: string, @Query('theme') theme?: string) {
 		const { contentType, body } = await this.previews.get(id, theme)
 
-		response.type(contentType)
-
-		return body
+		return new StreamableFile(body, { type: contentType })
 	}
 
 	@Put()
