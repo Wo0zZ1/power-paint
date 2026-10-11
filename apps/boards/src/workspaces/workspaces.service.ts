@@ -4,9 +4,13 @@ import {
 	NotFoundException,
 } from '@nestjs/common'
 import { AccessRole } from '@power-paint/contracts'
-import type { WorkspaceWithAccess } from '@power-paint/contracts'
+import type {
+	WorkspacesPage,
+	WorkspacesQuery,
+	WorkspaceWithAccess,
+} from '@power-paint/contracts'
 import { WorkspaceType } from '@power-paint/db'
-import type { Workspace as PrismaWorkspace, WorkspaceType as WorkspaceTypeValue } from '@power-paint/db'
+import type { Workspace as PrismaWorkspace } from '@power-paint/db'
 
 import { AccessService } from '../access/access.service'
 import { UsersClient } from '../clients/users.client'
@@ -32,15 +36,28 @@ export class WorkspacesService {
 	) {}
 
 	async getAll(
-		filters: { ownerId?: string; type?: WorkspaceTypeValue },
+		query: WorkspacesQuery,
 		userId?: string,
-	) {
+	): Promise<WorkspacesPage> {
 		if (userId) await this.ensurePersonal(userId)
 
-		const workspaces = await this.workspaces.findMany({
-			ownerId: filters.ownerId,
-			type: filters.type,
+		// Одна лишняя строка говорит, есть ли следующая страница, без отдельного count
+		const rows = await this.workspaces.findMany({
+			where: {
+				AND: [
+					{ ownerId: query.userId, type: query.type },
+					query.manageable
+						? this.access.manageableWorkspaces(userId)
+						: this.access.visibleWorkspaces(userId),
+				],
+			},
+			take: query.limit + 1,
+			cursor: query.cursor,
 		})
+
+		const workspaces = rows.slice(0, query.limit)
+		const nextCursor =
+			rows.length > query.limit ? workspaces[workspaces.length - 1].id : null
 
 		const enriched = await Promise.all(
 			workspaces.map(workspace => this.enrich(workspace as WorkspaceRow)),
@@ -53,9 +70,7 @@ export class WorkspacesService {
 			})),
 		)
 
-		return withAccess.filter(
-			({ accessRole }) => AccessRole[accessRole] >= AccessRole.VIEWER,
-		)
+		return { items: withAccess, nextCursor }
 	}
 
 	async getMeta(id: string) {

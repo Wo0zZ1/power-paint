@@ -13,11 +13,12 @@ const withoutPreviews = {
 export class BoardRepository {
 	constructor(private readonly prisma: PrismaService) {}
 
-	findMany(where: Prisma.BoardWhereInput) {
+	findMany({ where, take }: { where: Prisma.BoardWhereInput; take?: number }) {
 		return this.prisma.client.board.findMany({
 			where,
 			omit: withoutPreviews,
 			include: { members: true },
+			take,
 			orderBy: { updatedAt: 'desc' },
 		})
 	}

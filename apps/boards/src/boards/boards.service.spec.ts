@@ -22,6 +22,21 @@ const makeService = (board: { name: string } | null) => {
 }
 
 describe('BoardsService', () => {
+	test('Список досок отдаёт не больше limit - карусели хватает первых', async () => {
+		const findMany = jest.fn().mockResolvedValue([])
+		const service = new BoardsService(
+			{ findMany } as never,
+			{ visibleBoards: jest.fn().mockReturnValue({}) } as never,
+			{ enrich: jest.fn(async () => []) } as never,
+			{} as never,
+			{} as never,
+		)
+
+		await service.getAll({ workspaceId: 'w1', limit: 6 }, 'u1')
+
+		expect(findMany).toHaveBeenCalledWith(expect.objectContaining({ take: 6 }))
+	})
+
 	test('Метаданные доски отдают название', async () => {
 		await expect(makeService({ name: 'Схема' }).getMeta('b1')).resolves.toEqual({
 			name: 'Схема',

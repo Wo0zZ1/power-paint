@@ -8,11 +8,11 @@ import {
 	Post,
 	Query,
 } from '@nestjs/common'
-import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger'
+import { ApiOperation, ApiTags } from '@nestjs/swagger'
 
 import { CurrentUserId, OptionalUserId } from '../currentUserId.decorator'
 
-import { CreateBoardDto, UpdateBoardDto } from './board.dto'
+import { BoardsQueryDto, CreateBoardDto, UpdateBoardDto } from './board.dto'
 import { BoardsService } from './boards.service'
 
 @ApiTags('boards')
@@ -22,14 +22,11 @@ export class BoardsController {
 
 	@Get()
 	@ApiOperation({ summary: 'Доски, доступные пользователю' })
-	@ApiQuery({ name: 'userId', required: false })
-	@ApiQuery({ name: 'workspaceId', required: false })
 	getAll(
 		@OptionalUserId() actorId: string | undefined,
-		@Query('userId') ownerId?: string,
-		@Query('workspaceId') workspaceId?: string,
+		@Query() query: BoardsQueryDto,
 	) {
-		return this.boards.getAll({ ownerId, workspaceId }, actorId)
+		return this.boards.getAll(query, actorId)
 	}
 
 	@Get(':id/meta')

@@ -8,12 +8,15 @@ import {
 	Post,
 	Query,
 } from '@nestjs/common'
-import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger'
-import type { WorkspaceType } from '@power-paint/db'
+import { ApiOperation, ApiTags } from '@nestjs/swagger'
 
 import { CurrentUserId, OptionalUserId } from '../currentUserId.decorator'
 
-import { CreateWorkspaceDto, UpdateWorkspaceDto } from './workspace.dto'
+import {
+	CreateWorkspaceDto,
+	UpdateWorkspaceDto,
+	WorkspacesQueryDto,
+} from './workspace.dto'
 import { WorkspacesService } from './workspaces.service'
 
 @ApiTags('workspaces')
@@ -22,15 +25,12 @@ export class WorkspacesController {
 	constructor(private readonly workspaces: WorkspacesService) {}
 
 	@Get()
-	@ApiOperation({ summary: 'Рабочие области, доступные пользователю' })
-	@ApiQuery({ name: 'userId', required: false })
-	@ApiQuery({ name: 'type', required: false })
+	@ApiOperation({ summary: 'Страница рабочих областей, доступных пользователю' })
 	getAll(
 		@OptionalUserId() actorId: string | undefined,
-		@Query('userId') ownerId?: string,
-		@Query('type') type?: WorkspaceType,
+		@Query() query: WorkspacesQueryDto,
 	) {
-		return this.workspaces.getAll({ ownerId, type }, actorId)
+		return this.workspaces.getAll(query, actorId)
 	}
 
 	@Get(':id/meta')

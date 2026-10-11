@@ -2,7 +2,7 @@ import type {
   Workspace as PrismaWorkspace,
   WorkspaceMember,
 } from "@power-paint/db";
-import { MemberRole } from "@power-paint/db";
+import { MemberRole, WorkspaceType } from "@power-paint/db";
 import { z } from "zod";
 
 import { accessLevelSchema } from "./accessLevel";
@@ -64,4 +64,31 @@ export type Workspace = PrismaWorkspace & {
 export interface WorkspaceWithAccess {
   workspace: Workspace;
   accessRole: AccessRole;
+}
+
+// Список областей отдаётся страницами: всех областей пользователя, включая
+// чужие публичные, может быть сколько угодно. Потолок держит сервер.
+export const DEFAULT_WORKSPACES_PAGE_SIZE = 24;
+export const MAX_WORKSPACES_PAGE_SIZE = 100;
+
+export const workspacesQuerySchema = z.object({
+  type: z.enum(WorkspaceType).optional(),
+  userId: z.uuid().optional(),
+  // Только области, где можно создавать доски: владелец или администратор
+  manageable: z.stringbool().optional(),
+  limit: z.coerce
+    .number()
+    .int()
+    .min(1)
+    .max(MAX_WORKSPACES_PAGE_SIZE)
+    .default(DEFAULT_WORKSPACES_PAGE_SIZE),
+  cursor: z.uuid().optional(),
+});
+
+export type WorkspacesQuery = z.infer<typeof workspacesQuerySchema>;
+
+export interface WorkspacesPage {
+  items: WorkspaceWithAccess[];
+  // id последней области страницы; null - дальше ничего нет
+  nextCursor: string | null;
 }

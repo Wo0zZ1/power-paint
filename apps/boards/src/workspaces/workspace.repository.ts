@@ -16,11 +16,23 @@ const withBoardsAndMembers = {
 export class WorkspaceRepository {
 	constructor(private readonly prisma: PrismaService) {}
 
-	findMany(where: Prisma.WorkspaceWhereInput) {
+	findMany({
+		where,
+		take,
+		cursor,
+	}: {
+		where: Prisma.WorkspaceWhereInput
+		take: number
+		cursor?: string
+	}) {
 		return this.prisma.client.workspace.findMany({
 			where,
 			include: withBoardsAndMembers,
-			orderBy: { updatedAt: 'desc' },
+			take,
+			...(cursor && { cursor: { id: cursor }, skip: 1 }),
+			// id - второй ключ: при равном updatedAt порядок иначе не определён,
+			// и курсор мог бы пропустить или повторить область.
+			orderBy: [{ updatedAt: 'desc' }, { id: 'desc' }],
 		})
 	}
 

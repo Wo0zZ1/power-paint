@@ -67,6 +67,18 @@ export const updateBoardSchema = z.object({
 
 export type UpdateBoardData = z.infer<typeof updateBoardSchema>;
 
+export const MAX_BOARDS_LIMIT = 100;
+
+// limit нужен каруселям: им хватает первых досок, остальные открываются
+// на странице области.
+export const boardsQuerySchema = z.object({
+  userId: z.uuid().optional(),
+  workspaceId: z.uuid().optional(),
+  limit: z.coerce.number().int().min(1).max(MAX_BOARDS_LIMIT).optional(),
+});
+
+export type BoardsQuery = z.infer<typeof boardsQuerySchema>;
+
 // Участник приходит уже обогащённым: boards берёт профили из users
 // batch-запросом, связи в БД между схемами нет.
 export type BoardMemberWithUser = BoardMember & {

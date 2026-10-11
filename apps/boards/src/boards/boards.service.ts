@@ -4,7 +4,7 @@ import {
 	NotFoundException,
 } from '@nestjs/common'
 import { AccessRole } from '@power-paint/contracts'
-import type { BoardWithAccess } from '@power-paint/contracts'
+import type { BoardsQuery, BoardWithAccess } from '@power-paint/contracts'
 
 import { AccessService } from '../access/access.service'
 import { EventsService } from '../events/events.service'
@@ -24,23 +24,24 @@ export class BoardsService {
 		private readonly events: EventsService,
 	) {}
 
-	async getAll(filters: { ownerId?: string; workspaceId?: string }, userId?: string) {
+	async getAll(query: BoardsQuery, userId?: string) {
 		const boards = await this.boards.findMany({
-			ownerId: filters.ownerId,
-			workspaceId: filters.workspaceId,
+			where: {
+				AND: [
+					{ ownerId: query.userId, workspaceId: query.workspaceId },
+					this.access.visibleBoards(userId),
+				],
+			},
+			take: query.limit,
 		})
 
 		const enriched = await this.members.enrich(boards.map(b => b.members))
 
-		const withAccess = await Promise.all(
+		return Promise.all(
 			boards.map(async (board, index) => ({
 				board: { ...board, members: enriched[index] },
 				accessRole: await this.access.toBoard(board, userId),
 			})),
-		)
-
-		return withAccess.filter(
-			({ accessRole }) => AccessRole[accessRole] >= AccessRole.VIEWER,
 		)
 	}
 

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { AccessRole } from '@power-paint/contracts'
 import { AccessLevel, MemberRole } from '@power-paint/db'
-import type { Board, Workspace } from '@power-paint/db'
+import type { Board, Prisma, Workspace } from '@power-paint/db'
 
 import { PrismaService } from '../prisma.service'
 
@@ -87,5 +87,47 @@ export class AccessService {
 			roleByAccessLevel[board.accessLevel],
 			roleByAccessLevel[workspace.accessLevel],
 		)
+	}
+
+	// Те же правила, что в toWorkspace и toBoard, но условием для базы: список
+	// режется страницами, и фильтр после выборки делал бы страницы неполными.
+	visibleWorkspaces(userId?: string): Prisma.WorkspaceWhereInput {
+		const isPublic = { accessLevel: { not: AccessLevel.private } }
+
+		if (!userId) return isPublic
+
+		return {
+			OR: [{ ownerId: userId }, { members: { some: { userId } } }, isPublic],
+		}
+	}
+
+	manageableWorkspaces(userId?: string): Prisma.WorkspaceWhereInput {
+		if (!userId) return { id: { in: [] } }
+
+		return {
+			OR: [
+				{ ownerId: userId },
+				{ members: { some: { userId, role: MemberRole.admin } } },
+			],
+		}
+	}
+
+	visibleBoards(userId?: string): Prisma.BoardWhereInput {
+		const isPublic = [
+			{ accessLevel: { not: AccessLevel.private } },
+			{ workspace: { accessLevel: { not: AccessLevel.private } } },
+		]
+
+		if (!userId) return { OR: isPublic }
+
+		return {
+			OR: [
+				{ ownerId: userId },
+				{ workspace: { ownerId: userId } },
+				{ members: { some: { userId } } },
+				{ workspace: { members: { some: { userId } } } },
+				...isPublic,
+			],
+		}
 	}
 }

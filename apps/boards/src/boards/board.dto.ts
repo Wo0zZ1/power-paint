@@ -1,9 +1,14 @@
-import { createBoardSchema, updateBoardSchema } from '@power-paint/contracts'
+import {
+	boardsQuerySchema,
+	createBoardSchema,
+	updateBoardSchema,
+} from '@power-paint/contracts'
 import { createZodDto } from 'nestjs-zod'
 import { z } from 'zod'
 
 export class CreateBoardDto extends createZodDto(createBoardSchema) {}
 export class UpdateBoardDto extends createZodDto(updateBoardSchema) {}
+export class BoardsQueryDto extends createZodDto(boardsQuerySchema) {}
 
 const base64ImageSchema = z
 	.string()

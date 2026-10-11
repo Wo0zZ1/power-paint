@@ -51,11 +51,16 @@ const makeWritableService = (role = 'OWNER') => {
 	return { service, events }
 }
 
-const makeListingService = (hasPersonal: boolean) => {
+const row = (id: string) => ({ id, members: [], boards: [] })
+
+const makeListingService = (
+	hasPersonal: boolean,
+	rows: ReturnType<typeof row>[] = [],
+) => {
 	const repository = {
 		hasPersonal: jest.fn().mockResolvedValue(hasPersonal),
 		createPersonal: jest.fn(),
-		findMany: jest.fn().mockResolvedValue([]),
+		findMany: jest.fn().mockResolvedValue(rows),
 	}
 	const users = {
 		getMany: jest.fn().mockResolvedValue(
@@ -64,8 +69,12 @@ const makeListingService = (hasPersonal: boolean) => {
 	}
 	const service = new WorkspacesService(
 		repository as never,
-		{} as never,
-		{} as never,
+		{
+			visibleWorkspaces: jest.fn().mockReturnValue({}),
+			manageableWorkspaces: jest.fn().mockReturnValue({}),
+			toWorkspace: jest.fn().mockResolvedValue('VIEWER'),
+		} as never,
+		{ enrich: jest.fn(async (groups: unknown[]) => groups) } as never,
 		{} as never,
 		users as never,
 	)
@@ -74,10 +83,43 @@ const makeListingService = (hasPersonal: boolean) => {
 }
 
 describe('WorkspacesService', () => {
+	test('Страница режется по limit, а курсор указывает на её последнюю область', async () => {
+		const { service, repository } = makeListingService(true, [
+			row('w1'),
+			row('w2'),
+			row('w3'),
+		])
+
+		const page = await service.getAll({ limit: 2 }, 'u1')
+
+		expect(page.items.map(({ workspace }) => workspace.id)).toEqual(['w1', 'w2'])
+		expect(page.nextCursor).toBe('w2')
+		// Лишняя строка запрашивается, чтобы узнать о следующей странице без count
+		expect(repository.findMany).toHaveBeenCalledWith(expect.objectContaining({ take: 3 }))
+	})
+
+	test('На последней странице курсора нет', async () => {
+		const { service } = makeListingService(true, [row('w1')])
+
+		const page = await service.getAll({ limit: 2 }, 'u1')
+
+		expect(page.nextCursor).toBeNull()
+	})
+
+	test('Следующая страница начинается после курсора', async () => {
+		const { service, repository } = makeListingService(true)
+
+		await service.getAll({ limit: 2, cursor: 'w2' }, 'u1')
+
+		expect(repository.findMany).toHaveBeenCalledWith(
+			expect.objectContaining({ cursor: 'w2' }),
+		)
+	})
+
 	test('Пользователь без личной области получает её при запросе списка - иначе потерянное событие оставило бы его без области навсегда', async () => {
 		const { service, repository } = makeListingService(false)
 
-		await service.getAll({}, 'u1')
+		await service.getAll({ limit: 2 }, 'u1')
 
 		expect(repository.createPersonal).toHaveBeenCalledWith({
 			ownerId: 'u1',
@@ -88,7 +130,7 @@ describe('WorkspacesService', () => {
 	test('Личная область на месте - список ничего не создаёт', async () => {
 		const { service, repository } = makeListingService(true)
 
-		await service.getAll({}, 'u1')
+		await service.getAll({ limit: 2 }, 'u1')
 
 		expect(repository.createPersonal).not.toHaveBeenCalled()
 	})
@@ -96,7 +138,7 @@ describe('WorkspacesService', () => {
 	test('Анонимный список личную область не заводит', async () => {
 		const { service, repository } = makeListingService(false)
 
-		await service.getAll({})
+		await service.getAll({ limit: 2 })
 
 		expect(repository.hasPersonal).not.toHaveBeenCalled()
 	})

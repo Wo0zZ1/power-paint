@@ -12,13 +12,16 @@ export type {
 } from "./user";
 
 export {
+  boardsQuerySchema,
   createBoardSchema,
   getCreateBoardFormSchema,
+  MAX_BOARDS_LIMIT,
   updateBoardSchema,
 } from "./board";
 export type {
   Board,
   BoardMemberWithUser,
+  BoardsQuery,
   BoardWithAccess,
   CreateBoardData,
   CreateBoardFormData,
@@ -28,8 +31,11 @@ export type {
 export {
   createWorkspaceFormSchema,
   createWorkspaceSchema,
+  DEFAULT_WORKSPACES_PAGE_SIZE,
+  MAX_WORKSPACES_PAGE_SIZE,
   updateWorkspaceSchema,
   workspaceMemberSchema,
+  workspacesQuerySchema,
 } from "./workspace";
 export type {
   CreateWorkspaceData,
@@ -37,6 +43,8 @@ export type {
   UpdateWorkspaceData,
   Workspace,
   WorkspaceMemberWithUser,
+  WorkspacesPage,
+  WorkspacesQuery,
   WorkspaceWithAccess,
 } from "./workspace";
 
