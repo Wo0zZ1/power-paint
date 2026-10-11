@@ -6,8 +6,13 @@ map $http_upgrade $connection_upgrade {
 # Единственный upstream - шлюз. Раньше nginx сам разводил трафик между
 # фронтендом и WebSocket-сервером; теперь маршрутизация - забота шлюза,
 # а nginx остаётся краем: TLS, статика, проксирование.
+# Адрес шлюза перечитывается у DNS Docker: без этого nginx запоминает IP при
+# старте и после пересоздания контейнера шлюза отвечает 502 до своего рестарта.
+resolver 127.0.0.11 valid=10s ipv6=off;
+
 upstream gateway {
-    server ${GATEWAY_HOST}:${GATEWAY_PORT};
+    zone gateway 64k;
+    server ${GATEWAY_HOST}:${GATEWAY_PORT} resolve;
 }
 
 # Зона кэша только для статики Next. Страницы и API зависят от куки
