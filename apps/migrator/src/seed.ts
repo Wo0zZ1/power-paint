@@ -68,34 +68,33 @@ async function main() {
 	}
 
 	const user1 = await createUser({
-		name: 'Макс Wo0zZ1',
-		email: 'max@example.com',
-		image: 'https://avatars.githubusercontent.com/u/98224112?v=4',
-		// sha256 пароля qweqwe - старый формат: вход этим пользователем проверяет
+		name: 'Admin',
+		email: 'admin@mail.ru',
+		// sha256 пароля admin - старый формат: вход этим пользователем проверяет
 		// ленивое перехеширование в scrypt.
-		password: '3cc849279ba298b587a34cabaeffc5ecb3a044bbf97c516fab7ede9d1af77cfa',
+		password: '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918',
 		locale: Locale.ru,
 		preferredColor: '#6128a5',
 	})
 
 	const user1Workspaces = await createWorkspaces(user1.id, [
 		{
-			name: "Макс Wo0zZ1's workspace",
+			name: "Admin's workspace",
 			type: WorkspaceType.personal,
 			accessLevel: AccessLevel.private,
 		},
 		{
-			name: "Макс Wo0zZ1's private workspace",
+			name: "Admin's private workspace",
 			type: WorkspaceType.team,
 			accessLevel: AccessLevel.private,
 		},
 		{
-			name: "Макс Wo0zZ1's public view workspace",
+			name: "Admin's public view workspace",
 			type: WorkspaceType.team,
 			accessLevel: AccessLevel.public_view,
 		},
 		{
-			name: "Макс Wo0zZ1's public edit workspace",
+			name: "Admin's public edit workspace",
 			type: WorkspaceType.team,
 			accessLevel: AccessLevel.public_edit,
 		},
@@ -108,21 +107,21 @@ async function main() {
 			{
 				id: '00000000-0000-0000-0000-000000000001',
 				ownerId: user1.id,
-				name: "Макс Wo0zZ1's private board",
+				name: "Admin's private board",
 				workspaceId: user1PersonalWorkspace.id,
 				accessLevel: AccessLevel.private,
 			},
 			{
 				id: '00000000-0000-0000-0000-000000000002',
 				ownerId: user1.id,
-				name: "Макс Wo0zZ1's public view board",
+				name: "Admin's public view board",
 				workspaceId: user1PersonalWorkspace.id,
 				accessLevel: AccessLevel.public_view,
 			},
 			{
 				id: '00000000-0000-0000-0000-000000000003',
 				ownerId: user1.id,
-				name: "Макс Wo0zZ1's public edit board",
+				name: "Admin's public edit board",
 				workspaceId: user1PersonalWorkspace.id,
 				accessLevel: AccessLevel.public_edit,
 			},
