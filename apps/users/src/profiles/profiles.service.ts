@@ -1,5 +1,5 @@
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common'
-import type { PublicUser } from '@power-paint/contracts'
+import type { OwnProfile, PublicUser } from '@power-paint/contracts'
 import type { Profile } from '@power-paint/db'
 
 import { ProfileRepository } from './profile.repository'
@@ -30,6 +30,13 @@ export class ProfilesService {
 		if (!profile) throw new NotFoundException('Profile not found')
 
 		return toPublicUser(profile)
+	}
+
+	async getOwn(userId: string): Promise<OwnProfile> {
+		const profile = await this.profiles.findById(userId)
+		if (!profile) throw new NotFoundException('Profile not found')
+
+		return { ...toPublicUser(profile), phone: profile.phone, locale: profile.locale }
 	}
 
 	// Пачкой, а не по одному: boards обогащает списки участников одним запросом.

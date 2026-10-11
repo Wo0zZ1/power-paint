@@ -58,6 +58,13 @@ export class ProfilesController {
 		return this.profiles.search(query, Math.min(limit, MAX_USERS_BATCH_SIZE))
 	}
 
+	// Объявлен раньше :id, иначе «me» примут за id пользователя.
+	@Get('me')
+	@ApiOperation({ summary: 'Собственный профиль с закрытыми полями' })
+	getOwn(@CurrentUserId() actorId: string) {
+		return this.profiles.getOwn(actorId)
+	}
+
 	@Get(':id')
 	@ApiOperation({ summary: 'Профиль пользователя' })
 	getOne(@Param('id') id: string) {

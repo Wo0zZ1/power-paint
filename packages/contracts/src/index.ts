@@ -3,9 +3,15 @@ export type { AccessRoleValue } from "./accessRole";
 
 export { accessLevelSchema } from "./accessLevel";
 
-export { MAX_USERS_BATCH_SIZE } from "./user";
+export {
+  MAX_PROFILE_NAME_LENGTH,
+  MAX_USERS_BATCH_SIZE,
+  profileSettingsSchema,
+} from "./user";
 export type {
   Identity,
+  OwnProfile,
+  ProfileSettingsData,
   PublicUser,
   SessionUser,
   UserWithRole,

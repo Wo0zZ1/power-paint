@@ -1,4 +1,7 @@
-import type { MemberRole, Role } from "@power-paint/db";
+import type { Locale, MemberRole, Role } from "@power-paint/db";
+import { z } from "zod";
+
+import { signupFormStep2Schema } from "./auth";
 
 // Форма ответа сервиса users. Собирается из users.profile и не повторяет
 // структуру таблицы: email здесь - денормализованная копия из auth.
@@ -29,3 +32,23 @@ export interface Identity {
   email: string;
   role: Role;
 }
+
+// Свой профиль: к публичным полям добавлено то, что видит только владелец.
+export interface OwnProfile extends PublicUser {
+  phone: string | null;
+  locale: Locale;
+}
+
+export const MAX_PROFILE_NAME_LENGTH = 64;
+
+export const profileSettingsSchema = signupFormStep2Schema
+  .pick({ phone: true, preferredColor: true, image: true })
+  .extend({
+    name: z
+      .string()
+      .trim()
+      .min(1, { error: "settings.errors.name_too_short" })
+      .max(MAX_PROFILE_NAME_LENGTH, { error: "settings.errors.name_too_long" }),
+  });
+
+export type ProfileSettingsData = z.infer<typeof profileSettingsSchema>;
