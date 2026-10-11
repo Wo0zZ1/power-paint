@@ -1,6 +1,7 @@
 export const ROUTES = {
   ROOT: "/",
   PROFILE: (uuid?: string) => `/profiles/${uuid}` as const,
+  SETTINGS: "/settings",
   BOARD: (boardId: string) => `/boards/${boardId}` as const,
   DASHBOARD: {
     ROOT: "/dashboard",

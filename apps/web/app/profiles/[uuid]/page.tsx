@@ -1,51 +1,49 @@
-import { cookies, headers } from "next/headers";
+import type { Metadata } from "next";
+import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 
-import { fetchInitWithCookies, GET_BASE_API_URL } from "@/shared/api";
+import { getQueryClient } from "@/shared/api";
+import { getSession } from "@/shared/session/server";
+import type { PublicUser } from "@/shared/types";
 
-const url = GET_BASE_API_URL() + "/users";
+import { getUserQueryOption } from "@/entities/user/server";
+
+import { UserProfile } from "@/widgets/user-profile";
+
+export const metadata: Metadata = {
+  title: "Profile",
+  description: "Power Paint user profile",
+};
 
 export default async function ProfilePage({
   params,
 }: {
-  params: Promise<{ uuid: number }>;
+  params: Promise<{ uuid: string }>;
 }) {
-  const [{ uuid }, cookieStore, headerStore] = await Promise.all([
+  const [{ uuid }, cookieStore, session] = await Promise.all([
     params,
     cookies(),
-    headers(),
+    getSession(),
   ]);
 
-  const cookieString = cookieStore.toString();
+  const queryClient = getQueryClient();
 
-  const userData = await fetch(
-    `${url}/${uuid}`,
-    fetchInitWithCookies({
-      cookieString,
-      forwardedFor: headerStore.get("x-forwarded-for"),
-    }),
+  let user: PublicUser;
+
+  try {
+    user = await queryClient.fetchQuery(
+      getUserQueryOption({
+        userId: uuid,
+        cookieString: cookieStore.toString(),
+      }),
+    );
+  } catch {
+    notFound();
+  }
+
+  return (
+    <div className="flex flex-col grow container mx-auto my-8 px-4">
+      <UserProfile user={user} isOwn={session?.id === user.id} />
+    </div>
   );
-
-  if (!userData.ok) notFound();
-
-  const user = await userData.json();
-
-  return <div>{JSON.stringify(user)}</div>;
-
-  // TODO implement
-
-  // const queryClient = getQueryClient();
-
-  // let userProfile: unknown;
-
-  // try {
-  //   userProfile = await queryClient.fetchQuery(
-  //     getProfileQueryOption({
-  //       profileId: uuid,
-  //       cookieString: cookieStore.toString(),
-  //     }),
-  //   );
-  // } catch {
-  //   notFound();
-  // }
 }

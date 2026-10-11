@@ -20,3 +20,9 @@ export const useGetUsersQuery = ({
     staleTime: 1000 * 60,
   });
 };
+
+export const useGetOwnProfileQuery = () =>
+  useQuery({
+    queryKey: [USERS_QUERY_KEY, "me"],
+    queryFn: () => UsersApi.getOwn(),
+  });

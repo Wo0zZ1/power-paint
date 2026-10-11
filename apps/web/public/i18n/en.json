@@ -85,7 +85,8 @@
         "placeholder": "Drag and drop your profile image here",
         "uploading": "Uploading...",
         "empty": "Drag and drop or click to upload",
-        "preview": "Preview"
+        "preview": "Preview",
+        "remove": "Remove picture"
       },
       "email_code": {
         "label": "Verification Code",
@@ -161,7 +162,40 @@
   "settings": {
     "title": "Settings",
     "theme": "Theme",
-    "language": "Language"
+    "language": "Language",
+    "description": "Manage your profile and how Power Paint looks.",
+    "themes": {
+      "light": "Light theme",
+      "dark": "Dark theme",
+      "system": "System theme"
+    },
+    "profile": {
+      "title": "Profile",
+      "description": "This is how collaborators see you on boards and in member lists.",
+      "name": "Name",
+      "phone": "Phone",
+      "save": "Save changes",
+      "saving": "Saving...",
+      "saved": "Profile updated",
+      "failed": "Could not save the profile. Try again."
+    },
+    "appearance": {
+      "title": "Appearance",
+      "description": "The theme applies to this device. The language is used in the interface and in emails."
+    },
+    "errors": {
+      "name_too_short": "Enter a name",
+      "name_too_long": "Name is too long"
+    }
+  },
+  "user_profile": {
+    "joined": "Joined",
+    "cursor_color": "Cursor color",
+    "edit": "Edit profile",
+    "notFound": {
+      "title": "Profile not found",
+      "description": "The user you are looking for does not exist."
+    }
   },
   "dashboard": {
     "title": "Dashboard",

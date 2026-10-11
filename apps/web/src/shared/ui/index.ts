@@ -35,6 +35,7 @@ export * from "./switch";
 export * from "./ColorInput";
 export * from "./ColorButton";
 export * from "./ColorSwatch";
+export * from "./PreferredColorPicker";
 export * from "./NumberInput";
 export * from "./UserAvatar";
 export * from "./UserBadge";
