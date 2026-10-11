@@ -61,6 +61,9 @@ export class SignupService {
 			expiresAt,
 		)
 
+		if (!pending)
+			throw new BadRequestException('auth.errors.verification_not_started')
+
 		await this.sendCode(pending.email, pending.firstName, pending.locale, code)
 
 		return { ok: true }
@@ -68,6 +71,8 @@ export class SignupService {
 
 	async verify(verificationId: string, emailCode: string) {
 		const pending = await this.signups.incrementAttempts(verificationId)
+
+		if (!pending) throw new BadRequestException('auth.errors.invalid_email_code')
 
 		if (pending.expiresAt < new Date())
 			throw new BadRequestException('auth.errors.code_expired')

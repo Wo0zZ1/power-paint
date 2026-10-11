@@ -22,18 +22,24 @@ export class ResetRepository {
 		})
 	}
 
-	incrementAttempts(id: string) {
-		return this.prisma.client.passwordReset.update({
+	// id приходит из куки и может указывать на сброс, которого уже нет, - это
+	// не сбой, поэтому null вместо исключения update.
+	async incrementAttempts(id: string) {
+		const [record] = await this.prisma.client.passwordReset.updateManyAndReturn({
 			where: { id },
 			data: { attempts: { increment: 1 } },
 		})
+
+		return record ?? null
 	}
 
-	replaceCode(id: string, codeHash: string, expiresAt: Date) {
-		return this.prisma.client.passwordReset.update({
+	async replaceCode(id: string, codeHash: string, expiresAt: Date) {
+		const [record] = await this.prisma.client.passwordReset.updateManyAndReturn({
 			where: { id },
 			data: { codeHash, expiresAt, attempts: 0 },
 		})
+
+		return record ?? null
 	}
 
 	deleteById(id: string) {

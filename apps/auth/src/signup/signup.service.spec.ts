@@ -8,6 +8,38 @@ jest.mock('../email/templates/signup', () => ({ SignupEmail: jest.fn() }))
 jest.mock('../email/mailer.service', () => ({ MailerService: jest.fn() }))
 
 describe('SignupService', () => {
+	test('Код к регистрации, которой уже нет, отклоняется как неверный, а не падает', async () => {
+		const signups = { incrementAttempts: jest.fn().mockResolvedValue(null) }
+
+		const service = new SignupService(
+			signups as never,
+			{} as never,
+			{} as never,
+			{} as never,
+			{} as never,
+		)
+
+		await expect(service.verify('stale', '123456')).rejects.toThrow(
+			'auth.errors.invalid_email_code',
+		)
+	})
+
+	test('Повторная отправка кода для регистрации, которой уже нет, отклоняется понятной ошибкой', async () => {
+		const signups = { refreshCode: jest.fn().mockResolvedValue(null) }
+
+		const service = new SignupService(
+			signups as never,
+			{} as never,
+			{} as never,
+			{} as never,
+			{} as never,
+		)
+
+		await expect(service.resend('stale')).rejects.toThrow(
+			'auth.errors.verification_not_started',
+		)
+	})
+
 	test('Если профиль не создался, должен убрать и профиль, и учётную запись', async () => {
 		const signups = {
 			incrementAttempts: jest.fn().mockResolvedValue({

@@ -19,18 +19,26 @@ export class SignupRepository {
 		})
 	}
 
-	incrementAttempts(verificationId: string) {
-		return this.prisma.client.signupVerification.update({
-			where: { verificationId },
-			data: { attempts: { increment: 1 } },
-		})
+	// verificationId приходит из куки: регистрацию могли отменить или начать
+	// заново в другой вкладке, поэтому null вместо исключения update.
+	async incrementAttempts(verificationId: string) {
+		const [pending] =
+			await this.prisma.client.signupVerification.updateManyAndReturn({
+				where: { verificationId },
+				data: { attempts: { increment: 1 } },
+			})
+
+		return pending ?? null
 	}
 
-	refreshCode(verificationId: string, codeHash: string, expiresAt: Date) {
-		return this.prisma.client.signupVerification.update({
-			where: { verificationId },
-			data: { codeHash, expiresAt, attempts: 0 },
-		})
+	async refreshCode(verificationId: string, codeHash: string, expiresAt: Date) {
+		const [pending] =
+			await this.prisma.client.signupVerification.updateManyAndReturn({
+				where: { verificationId },
+				data: { codeHash, expiresAt, attempts: 0 },
+			})
+
+		return pending ?? null
 	}
 
 	deletePending(verificationId: string) {

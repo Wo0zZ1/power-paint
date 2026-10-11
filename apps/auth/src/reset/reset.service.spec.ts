@@ -20,6 +20,8 @@ const build = () => {
 			expiresAt: new Date(Date.now() + 60_000),
 		}),
 		applyNewPassword: jest.fn().mockResolvedValue(['session-1', 'session-2']),
+		incrementAttempts: jest.fn(),
+		replaceCode: jest.fn(),
 	}
 
 	// Письмо, которое никогда не уходит: ответ, ждущий его, не вернётся вовсе.
@@ -45,6 +47,22 @@ describe('ResetService', () => {
 			resetId: 'reset-1',
 		})
 	}, 1_000)
+
+	test('Код к сбросу, которого нет, отклоняется как неверный - иначе ответ выдаёт, что адрес не зарегистрирован', async () => {
+		const { service, resets } = build()
+		resets.incrementAttempts.mockResolvedValue(null)
+
+		await expect(service.verifyCode('unknown', '123456')).rejects.toThrow(
+			'auth.errors.invalid_email_code',
+		)
+	})
+
+	test('Повторная отправка кода для сброса, которого нет, отвечает успехом', async () => {
+		const { service, resets } = build()
+		resets.replaceCode.mockResolvedValue(null)
+
+		await expect(service.resend('unknown')).resolves.toEqual({ ok: true })
+	})
 
 	test('Смена пароля должна сообщать об отозванных сессиях, чтобы шлюз забыл их', async () => {
 		const { service, events } = build()

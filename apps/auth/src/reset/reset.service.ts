@@ -58,6 +58,10 @@ export class ResetService {
 			expiresAt,
 		)
 
+		// Сброс для незарегистрированного адреса существует только в куке:
+		// ответ тот же, что и для настоящего, письмо просто не уходит.
+		if (!record) return { ok: true }
+
 		await this.sendCodeByUserId(record.userId, code)
 
 		return { ok: true }
@@ -67,6 +71,8 @@ export class ResetService {
 	// а токен уходит в куку и живёт до смены пароля.
 	async verifyCode(resetId: string, emailCode: string) {
 		const record = await this.resets.incrementAttempts(resetId)
+
+		if (!record) throw new BadRequestException('auth.errors.invalid_email_code')
 
 		if (record.expiresAt < new Date())
 			throw new BadRequestException('auth.errors.code_expired')
