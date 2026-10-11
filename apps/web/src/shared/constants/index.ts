@@ -8,3 +8,4 @@ export * from "./accessRole";
 export * from "./memberRole";
 export * from "./board";
 export * from "./ui";
+export * from "./http";

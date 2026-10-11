@@ -1,9 +1,12 @@
 import type { Identity, PublicUser, SessionUser } from "@power-paint/contracts";
 
 import { GET_BASE_API_URL, fetchInitWithCookies } from "@/shared/api";
+import { HTTP_UNAUTHORIZED } from "@/shared/constants";
 
 // Личность и профиль принадлежат разным сервисам, поэтому сессия склеивается
 // из двух ответов. Второй запрос уходит только при наличии первого.
+// null - только когда известно, что пользователь не вошёл. Отказ по лимиту или
+// упавший сервис бросают ошибку: иначе вошедшего выбросило бы на страницу входа.
 export const fetchSession = async (request: {
   cookieString?: string;
   forwardedFor?: string | null;
@@ -15,7 +18,8 @@ export const fetchSession = async (request: {
     init,
   );
 
-  if (!identityResponse.ok) return null;
+  if (identityResponse.status === HTTP_UNAUTHORIZED) return null;
+  if (!identityResponse.ok) throw new Error("Failed to fetch session");
 
   const identity: Identity = await identityResponse.json();
 
@@ -24,7 +28,7 @@ export const fetchSession = async (request: {
     init,
   );
 
-  if (!profileResponse.ok) return null;
+  if (!profileResponse.ok) throw new Error("Failed to fetch profile");
 
   const profile: PublicUser = await profileResponse.json();
 

@@ -4,7 +4,7 @@ import { getTranslations } from "next-intl/server";
 import type { ReactNode } from "react";
 
 import { ROUTES } from "@/shared/config";
-import { getSession } from "@/shared/session/server";
+import { getKnownSession } from "@/shared/session/server";
 
 export default async function DashboardLayout({
   children,
@@ -13,7 +13,7 @@ export default async function DashboardLayout({
 }) {
   const [t, session] = await Promise.all([
     getTranslations("dashboard"),
-    getSession(),
+    getKnownSession(),
   ]);
 
   if (!session) redirect(ROUTES.SIGNIN);

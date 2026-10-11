@@ -1,1 +1,1 @@
-export { getSession } from "./getSession";
+export { getKnownSession, getSession } from "./getSession";
