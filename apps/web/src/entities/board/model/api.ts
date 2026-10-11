@@ -11,15 +11,18 @@ const fetchBoards = async ({
   cookieString,
   userId,
   workspaceId,
+  limit,
 }: {
   cookieString?: string;
   userId?: string;
   workspaceId?: string;
+  limit?: number;
 } = {}): Promise<BoardWithAccess[]> => {
   let reqUrl = url + "?";
 
   if (userId) reqUrl += `userId=${userId}&`;
   if (workspaceId) reqUrl += `workspaceId=${workspaceId}&`;
+  if (limit) reqUrl += `limit=${limit}&`;
 
   const response = await fetch(reqUrl, fetchInitWithCookies({ cookieString }));
 

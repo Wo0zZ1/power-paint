@@ -2,6 +2,7 @@
 
 import { useTranslations } from "next-intl";
 
+import { CAROUSEL_ITEMS_LIMIT } from "@/shared/constants";
 import {
   Carousel,
   CarouselContent,
@@ -34,7 +35,10 @@ export function BoardsCarousel({ workspace }: BoardsCarouselProps) {
     isLoading,
     isError,
     error,
-  } = useGetBoardsQuery({ workspaceId: workspace.id });
+  } = useGetBoardsQuery({
+    workspaceId: workspace.id,
+    limit: CAROUSEL_ITEMS_LIMIT,
+  });
 
   const {
     selectedBoard,

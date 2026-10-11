@@ -10,7 +10,6 @@ import { Controller, useForm } from "react-hook-form";
 import { cn } from "@/utils";
 
 import { ROUTES } from "@/shared/config";
-import { AccessRole } from "@/shared/constants";
 import {
   DialogContent,
   DialogHeader,
@@ -37,7 +36,7 @@ import {
   getCreateBoardFormSchema,
   useCreateBoardMutation,
 } from "@/entities/board";
-import { useGetWorkspacesQuery } from "@/entities/workspace";
+import { useGetManageableWorkspacesQuery } from "@/entities/workspace";
 
 interface CreateBoardModalProps {
   open: boolean;
@@ -55,12 +54,10 @@ export function CreateBoardModal({
   const t = useTranslations();
   const router = useRouter();
 
-  const { data } = useGetWorkspacesQuery();
+  const { data } = useGetManageableWorkspacesQuery();
   const createBoardMutation = useCreateBoardMutation();
 
-  const filteredWorkspaces =
-    data?.filter((wa) => AccessRole[wa.accessRole] >= AccessRole.ADMIN) ?? [];
-  const workspaces = filteredWorkspaces.map((wa) => wa.workspace);
+  const workspaces = data?.items.map((wa) => wa.workspace) ?? [];
   const workspaceIds = workspaces.map((w) => w.id);
   const createBoardSchema = getCreateBoardFormSchema(workspaceIds);
 

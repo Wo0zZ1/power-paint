@@ -3,7 +3,7 @@ import type { Workspace, WorkspaceType } from "@power-paint/db";
 import { GET_BASE_API_URL, fetchInitWithCookies } from "@/shared/api";
 
 import type { CreateWorkspaceData, UpdateWorkspaceData } from "./schemas";
-import type { WorkspaceWithAccess } from "./types";
+import type { WorkspacesPage, WorkspaceWithAccess } from "./types";
 
 export const url = GET_BASE_API_URL() + "/workspaces";
 
@@ -11,14 +11,23 @@ const fetchWorkspaces = async ({
   cookieString,
   type,
   userId,
+  manageable,
+  limit,
+  cursor,
 }: {
   cookieString?: string;
   type?: WorkspaceType;
   userId?: string;
-}): Promise<WorkspaceWithAccess[]> => {
+  manageable?: boolean;
+  limit?: number;
+  cursor?: string;
+}): Promise<WorkspacesPage> => {
   let reqUrl = url + "?";
   if (type) reqUrl += `type=${type}&`;
   if (userId) reqUrl += `userId=${userId}&`;
+  if (manageable) reqUrl += "manageable=true&";
+  if (limit) reqUrl += `limit=${limit}&`;
+  if (cursor) reqUrl += `cursor=${cursor}&`;
 
   const response = await fetch(reqUrl, fetchInitWithCookies({ cookieString }));
 

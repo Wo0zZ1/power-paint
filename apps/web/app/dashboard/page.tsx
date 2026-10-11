@@ -35,9 +35,10 @@ export default async function DashboardPage() {
         getWorkspacesQueryOption({
           cookieString: cookieStore.toString(),
           type: "personal",
+          limit: 1,
         }),
       )
-    )[0];
+    ).items[0];
   } catch (err) {
     console.error("Dashboard error details:", err);
     throw new Error("Failed to fetch personal workspace");

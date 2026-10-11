@@ -7,7 +7,7 @@ import { cn } from "@/shared/lib/utils";
 
 import { getBoardsQueryOption } from "@/entities/board/server";
 import type { WorkspaceWithAccess } from "@/entities/workspace";
-import { getWorkspacesQueryOption } from "@/entities/workspace/server";
+import { getManageableWorkspacesQueryOption } from "@/entities/workspace/server";
 
 import { CreateBoardButton } from "@/features/create-board";
 
@@ -39,7 +39,9 @@ export async function BoardsGridBlock({
   );
 
   await queryClient.prefetchQuery(
-    getWorkspacesQueryOption({ cookieString: cookieStore.toString() }),
+    getManageableWorkspacesQueryOption({
+      cookieString: cookieStore.toString(),
+    }),
   );
 
   return (

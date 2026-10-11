@@ -3,20 +3,17 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { WORKSPACES_QUERY_KEY } from "@/shared/constants/queryKeys";
 
 import { WorkspacesApi } from "./api";
-import type { WorkspaceWithAccess } from "./types";
 
+// Списки областей разбиты на страницы и лимиты, и точечно поправить каждую
+// закэшированную страницу сложнее, чем перезапросить их.
 export const useCreateWorkspaceMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: WorkspacesApi.createOne,
 
-    onSuccess: (data) => {
-      queryClient.setQueryData(
-        [WORKSPACES_QUERY_KEY, "team", {}],
-        (oldData?: WorkspaceWithAccess[]) => [data, ...(oldData ?? [])],
-      );
-    },
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: [WORKSPACES_QUERY_KEY] }),
 
     onError: (error, variables) => {
       console.error("Error creating workspace:", error, variables);
@@ -30,17 +27,8 @@ export const useUpdateWorkspaceMutation = () => {
   return useMutation({
     mutationFn: WorkspacesApi.updateOne,
 
-    onSuccess: (data) => {
-      queryClient.setQueryData(
-        [WORKSPACES_QUERY_KEY, "team", {}],
-        (oldData?: WorkspaceWithAccess[]) => [
-          data,
-          ...(oldData ?? []).filter(
-            (w) => w.workspace.id !== data.workspace.id,
-          ),
-        ],
-      );
-    },
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: [WORKSPACES_QUERY_KEY] }),
 
     onError: (error, variables) => {
       console.error("Error updating workspace:", error, variables);
@@ -54,13 +42,8 @@ export const useDeleteWorkspaceMutation = () => {
   return useMutation({
     mutationFn: WorkspacesApi.removeOne,
 
-    onSuccess: (_, workspaceId) => {
-      queryClient.setQueryData(
-        [WORKSPACES_QUERY_KEY, "team", {}],
-        (oldData?: WorkspaceWithAccess[]) =>
-          (oldData ?? []).filter((w) => w.workspace.id !== workspaceId),
-      );
-    },
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: [WORKSPACES_QUERY_KEY] }),
 
     onError: (error, variables) => {
       console.error("Error deleting workspace:", error, variables);

@@ -7,15 +7,18 @@ import { BoardsApi } from "./api";
 export const getBoardsQueryOption = ({
   userId,
   workspaceId,
+  limit,
   cookieString,
 }: {
   userId?: string;
   workspaceId?: string;
+  limit?: number;
   cookieString: string;
 }) => {
   return queryOptions({
-    queryKey: [BOARDS_QUERY_KEY, `workspace-${workspaceId}`, { userId }],
-    queryFn: () => BoardsApi.getAll({ userId, workspaceId, cookieString }),
+    queryKey: [BOARDS_QUERY_KEY, `workspace-${workspaceId}`, { userId, limit }],
+    queryFn: () =>
+      BoardsApi.getAll({ userId, workspaceId, limit, cookieString }),
   });
 };
 

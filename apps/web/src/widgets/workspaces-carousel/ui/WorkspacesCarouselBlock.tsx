@@ -3,6 +3,7 @@ import { cookies } from "next/headers";
 import type { ReactNode } from "react";
 
 import { getQueryClient } from "@/shared/api";
+import { CAROUSEL_ITEMS_LIMIT } from "@/shared/constants";
 import { cn } from "@/shared/lib/utils";
 
 import { getWorkspacesQueryOption } from "@/entities/workspace/server";
@@ -29,6 +30,7 @@ export async function WorkspacesCarouselBlock({
     getWorkspacesQueryOption({
       cookieString: cookieStore.toString(),
       type: "team",
+      limit: CAROUSEL_ITEMS_LIMIT,
     }),
   );
 

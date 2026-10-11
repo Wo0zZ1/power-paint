@@ -1,4 +1,5 @@
 export type {
+  WorkspacesPage,
   WorkspaceWithAccess,
   Workspace,
   WorkspaceMemberWithUser,
@@ -6,15 +7,17 @@ export type {
 
 export { WorkspaceCard } from "./ui/WorkspaceCard";
 
-export { useGetWorkspacesQuery } from "./model/queries";
+export {
+  useGetManageableWorkspacesQuery,
+  useGetWorkspacesInfiniteQuery,
+  useGetWorkspacesQuery,
+} from "./model/queries";
 
 export {
   useCreateWorkspaceMutation,
   useUpdateWorkspaceMutation,
   useDeleteWorkspaceMutation,
 } from "./model/mutations";
-
-export { getPersonalWorkspace } from "./model/utils";
 
 export {
   createWorkspaceFormSchema,

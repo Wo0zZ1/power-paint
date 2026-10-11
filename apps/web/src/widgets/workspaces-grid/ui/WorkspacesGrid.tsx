@@ -2,7 +2,12 @@
 
 import { useTranslations } from "next-intl";
 
-import { useGetWorkspacesQuery, WorkspaceCard } from "@/entities/workspace";
+import { Button, Spinner } from "@/shared/ui";
+
+import {
+  useGetWorkspacesInfiniteQuery,
+  WorkspaceCard,
+} from "@/entities/workspace";
 
 import { ChangeWorkspaceAccessModal } from "@/features/change-workspace-access";
 import { DeleteWorkspaceModal } from "@/features/delete-workspace";
@@ -16,9 +21,16 @@ import { LoadingWorkspaceGrid } from "./LoadingWorkspacesGrid";
 export function WorkspacesGrid() {
   const t = useTranslations();
 
-  const { data, isLoading, isError, error } = useGetWorkspacesQuery({
-    type: "team",
-  });
+  const {
+    data,
+    isLoading,
+    isError,
+    error,
+    hasNextPage,
+    fetchNextPage,
+    isFetchingNextPage,
+  } = useGetWorkspacesInfiniteQuery({ type: "team" });
+  const workspaces = data?.pages.flatMap((page) => page.items);
 
   const {
     selectedWorkspace,
@@ -40,8 +52,8 @@ export function WorkspacesGrid() {
   return (
     <>
       <div className="grid grid-cols-1 gap-4 xs:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
-        {data && data.length > 0 ? (
-          data.map(({ workspace, accessRole }) => (
+        {workspaces && workspaces.length > 0 ? (
+          workspaces.map(({ workspace, accessRole }) => (
             <WorkspaceCard
               key={workspace.id}
               workspace={workspace}
@@ -56,6 +68,18 @@ export function WorkspacesGrid() {
           <p className="text-muted-foreground">{t("workspace.noWorkspaces")}</p>
         )}
       </div>
+
+      {hasNextPage && (
+        <Button
+          variant="secondary"
+          className="mt-6 mx-auto flex"
+          onClick={() => fetchNextPage()}
+          disabled={isFetchingNextPage}
+        >
+          {isFetchingNextPage && <Spinner />}
+          {t("workspace.load_more")}
+        </Button>
+      )}
 
       <RenameWorkspaceModal
         key={`rename-${selectedWorkspace?.workspace.id}`}

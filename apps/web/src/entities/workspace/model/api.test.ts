@@ -25,4 +25,14 @@ describe("WorkspacesApi", () => {
 
     expect(sentContentType()).toBe("application/json");
   });
+
+  test("Страница запрашивается с лимитом и курсором - их ждёт сервис досок", async () => {
+    await WorkspacesApi.getAll({ type: "team", limit: 12, cursor: "w-12" });
+
+    const url = new URL(String(fetchMock.mock.calls[0][0]), "http://localhost");
+
+    expect(url.searchParams.get("type")).toBe("team");
+    expect(url.searchParams.get("limit")).toBe("12");
+    expect(url.searchParams.get("cursor")).toBe("w-12");
+  });
 });

@@ -3,7 +3,7 @@ import { cookies } from "next/headers";
 
 import { getQueryClient } from "@/shared/api";
 
-import { getWorkspacesQueryOption } from "@/entities/workspace/server";
+import { getWorkspacesInfiniteQueryOption } from "@/entities/workspace/server";
 
 import { CreateWorkspaceButton } from "@/features/create-workspace";
 
@@ -21,8 +21,8 @@ export async function WorkspacesGridBlock({
   const queryClient = getQueryClient();
   const cookieStore = await cookies();
 
-  await queryClient.prefetchQuery(
-    getWorkspacesQueryOption({
+  await queryClient.prefetchInfiniteQuery(
+    getWorkspacesInfiniteQueryOption({
       cookieString: cookieStore.toString(),
       type: "team",
     }),

@@ -3,12 +3,12 @@ import { cookies } from "next/headers";
 import type { ReactNode } from "react";
 
 import { getQueryClient } from "@/shared/api";
-import { AccessRole } from "@/shared/constants";
+import { AccessRole, CAROUSEL_ITEMS_LIMIT } from "@/shared/constants";
 import { cn } from "@/shared/lib/utils";
 
 import { getBoardsQueryOption } from "@/entities/board/server";
 import type { WorkspaceWithAccess } from "@/entities/workspace";
-import { getWorkspacesQueryOption } from "@/entities/workspace/server";
+import { getManageableWorkspacesQueryOption } from "@/entities/workspace/server";
 
 import { CreateBoardButton } from "@/features/create-board";
 
@@ -35,12 +35,15 @@ export async function BoardsCarouselBlock({
   await queryClient.prefetchQuery(
     getBoardsQueryOption({
       workspaceId: workspace.id,
+      limit: CAROUSEL_ITEMS_LIMIT,
       cookieString: cookieStore.toString(),
     }),
   );
 
   await queryClient.prefetchQuery(
-    getWorkspacesQueryOption({ cookieString: cookieStore.toString() }),
+    getManageableWorkspacesQueryOption({
+      cookieString: cookieStore.toString(),
+    }),
   );
 
   return (

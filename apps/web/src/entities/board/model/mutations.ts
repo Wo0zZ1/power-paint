@@ -5,6 +5,8 @@ import type { BoardWithAccess } from "@/shared/types";
 
 import { BoardsApi } from "./api";
 
+// Список досок области лежит в кэше в нескольких вариантах - полный для
+// сетки и с лимитом для карусели, - поэтому правятся все по префиксу ключа.
 export const useCreateBoardMutation = () => {
   const queryClient = useQueryClient();
 
@@ -12,8 +14,8 @@ export const useCreateBoardMutation = () => {
     mutationFn: BoardsApi.createOne,
 
     onSuccess: (data) => {
-      queryClient.setQueryData(
-        [BOARDS_QUERY_KEY, `workspace-${data.board.workspaceId}`, {}],
+      queryClient.setQueriesData(
+        { queryKey: [BOARDS_QUERY_KEY, `workspace-${data.board.workspaceId}`] },
         (oldData?: BoardWithAccess[]) => [data, ...(oldData ?? [])],
       );
 
@@ -40,8 +42,8 @@ export const useUpdateBoardMutation = () => {
         () => data,
       );
 
-      queryClient.setQueryData(
-        [BOARDS_QUERY_KEY, `workspace-${data.board.workspaceId}`, {}],
+      queryClient.setQueriesData(
+        { queryKey: [BOARDS_QUERY_KEY, `workspace-${data.board.workspaceId}`] },
         (oldData?: BoardWithAccess[]) =>
           (oldData ?? []).map((w) => (w.board.id === data.board.id ? data : w)),
       );
@@ -64,8 +66,8 @@ export const useDeleteBoardMutation = () => {
     mutationFn: BoardsApi.removeOne,
 
     onSuccess: (data) => {
-      queryClient.setQueryData(
-        [BOARDS_QUERY_KEY, `workspace-${data.board.workspaceId}`, {}],
+      queryClient.setQueriesData(
+        { queryKey: [BOARDS_QUERY_KEY, `workspace-${data.board.workspaceId}`] },
         (oldData?: BoardWithAccess[]) =>
           (oldData ?? []).filter((w) => w.board.id !== data.board.id),
       );

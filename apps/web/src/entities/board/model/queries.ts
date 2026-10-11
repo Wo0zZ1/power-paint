@@ -7,13 +7,15 @@ import { BoardsApi } from "./api";
 export const useGetBoardsQuery = ({
   userId,
   workspaceId,
+  limit,
 }: {
   userId?: string;
   workspaceId?: string;
+  limit?: number;
 }) => {
   return useQuery({
-    queryKey: [BOARDS_QUERY_KEY, `workspace-${workspaceId}`, { userId }],
-    queryFn: () => BoardsApi.getAll({ userId, workspaceId }),
+    queryKey: [BOARDS_QUERY_KEY, `workspace-${workspaceId}`, { userId, limit }],
+    queryFn: () => BoardsApi.getAll({ userId, workspaceId, limit }),
   });
 };
 

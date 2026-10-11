@@ -1,26 +1,53 @@
+import { MAX_WORKSPACES_PAGE_SIZE } from "@power-paint/contracts";
 import type { WorkspaceType } from "@power-paint/db";
-import { queryOptions } from "@tanstack/react-query";
+import { infiniteQueryOptions, queryOptions } from "@tanstack/react-query";
 
 import { WORKSPACES_QUERY_KEY } from "@/shared/constants";
 
 import { WorkspacesApi } from "./api";
 
 export const getWorkspacesQueryOption = ({
-  userId,
+  type,
+  limit,
+  manageable,
+  cookieString,
+}: {
+  type?: WorkspaceType;
+  limit?: number;
+  manageable?: boolean;
+  cookieString: string;
+}) => {
+  return queryOptions({
+    queryKey: [WORKSPACES_QUERY_KEY, "list", { type, limit, manageable }],
+    queryFn: () =>
+      WorkspacesApi.getAll({ type, limit, manageable, cookieString }),
+  });
+};
+
+export const getManageableWorkspacesQueryOption = ({
+  cookieString,
+}: {
+  cookieString: string;
+}) =>
+  getWorkspacesQueryOption({
+    manageable: true,
+    limit: MAX_WORKSPACES_PAGE_SIZE,
+    cookieString,
+  });
+
+export const getWorkspacesInfiniteQueryOption = ({
   type,
   cookieString,
 }: {
-  userId?: string;
   type?: WorkspaceType;
   cookieString: string;
 }) => {
-  const queryKey = type
-    ? [WORKSPACES_QUERY_KEY, type, { userId }]
-    : [WORKSPACES_QUERY_KEY, "all", { userId }];
-
-  return queryOptions({
-    queryKey,
-    queryFn: () => WorkspacesApi.getAll({ userId, type, cookieString }),
+  return infiniteQueryOptions({
+    queryKey: [WORKSPACES_QUERY_KEY, "infinite", { type }],
+    queryFn: ({ pageParam }) =>
+      WorkspacesApi.getAll({ type, cursor: pageParam, cookieString }),
+    initialPageParam: undefined as string | undefined,
+    getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
   });
 };
 

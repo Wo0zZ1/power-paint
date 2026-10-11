@@ -2,6 +2,7 @@
 
 import { useTranslations } from "next-intl";
 
+import { CAROUSEL_ITEMS_LIMIT } from "@/shared/constants";
 import { cn } from "@/shared/lib/utils";
 import {
   Carousel,
@@ -31,7 +32,9 @@ export function WorkspacesCarousel({ className }: WorkspacesCarouselProps) {
 
   const { data, isLoading, isError, error } = useGetWorkspacesQuery({
     type: "team",
+    limit: CAROUSEL_ITEMS_LIMIT,
   });
+  const workspaces = data?.items;
 
   const {
     selectedWorkspace,
@@ -56,9 +59,9 @@ export function WorkspacesCarousel({ className }: WorkspacesCarouselProps) {
         opts={{ align: "start", skipSnaps: true }}
         className={cn(className)}
       >
-        {data && data?.length > 0 ? (
+        {workspaces && workspaces.length > 0 ? (
           <CarouselContent>
-            {data.map(({ workspace, accessRole }) => (
+            {workspaces.map(({ workspace, accessRole }) => (
               <CarouselItem
                 key={workspace.id}
                 className="basis-1/1 xs:basis-1/2 md:basis-1/3 lg:basis-1/3 xl:basis-1/4"

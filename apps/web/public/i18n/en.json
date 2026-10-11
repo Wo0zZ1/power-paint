@@ -217,7 +217,8 @@
       "warningDescription": "This action cannot be undone. All data associated with this workspace will be permanently deleted.",
       "inputLabel": "To confirm, enter \"{workspaceName}\" in the field below:",
       "inputPlaceholder": "Enter workspace name"
-    }
+    },
+    "load_more": "Show more"
   },
   "board": {
     "errors": {
