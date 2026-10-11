@@ -4,11 +4,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
-import preview from "@/public/assets/preview1.jpeg";
 import { cn } from "@/utils";
 
 import { ROUTES } from "@/shared/config";
 import { getSystemTheme, useTheme } from "@/shared/lib/theme";
+import { Skeleton } from "@/shared/ui";
 
 interface BoardCardImageProps {
   className?: string;
@@ -52,37 +52,26 @@ export function BoardCardImage({
         className="relative w-full h-full block aspect-video overflow-hidden"
         href={ROUTES.BOARD(boardId)}
       >
-        <Image
-          fill
-          quality={75}
-          sizes="100%"
-          loading="lazy"
-          src={preview}
-          placeholder="blur"
-          blurDataURL={preview.src}
-          alt="Board preview image"
-          className={cn("object-cover")}
-        />
+        <Skeleton className="absolute inset-0 rounded-none" />
 
-        <div
-          className={cn(
-            "absolute inset-0 bg-card transition-opacity opacity-0",
-            { "opacity-100": isImageLoaded },
-          )}
-        >
+        {/* Картинка есть всегда: доску без снимка сервер отдаёт заглушкой */}
+        {imageUrl && (
           <Image
             fill
-            quality={75}
             sizes="100%"
             loading="lazy"
-            src={imageUrl || preview}
+            src={imageUrl}
             alt="Board preview image"
             unoptimized={true}
             onLoad={() => setIsImageLoaded(true)}
-            onError={() => setIsImageLoaded(false)}
-            className={cn("object-cover duration-500")}
+            className={cn(
+              "object-cover opacity-0 transition-opacity duration-500",
+              {
+                "opacity-100": isImageLoaded,
+              },
+            )}
           />
-        </div>
+        )}
       </Link>
     </div>
   );

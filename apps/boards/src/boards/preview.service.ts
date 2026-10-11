@@ -9,6 +9,7 @@ import { AccessService } from '../access/access.service'
 
 import { BoardRepository } from './board.repository'
 import type { SavePreviewDto } from './board.dto'
+import { PREVIEW_PLACEHOLDER } from './preview.placeholder'
 
 interface PreviewImage {
 	contentType: string
@@ -33,7 +34,9 @@ export class PreviewService {
 				? (board.darkPreview ?? board.lightPreview)
 				: (board.lightPreview ?? board.darkPreview)
 
-		if (!dataUrl) throw new NotFoundException('Board preview is not available')
+		// Снимка ещё нет, пока доску не открыли в редакторе. Заглушку отдаёт сервер,
+		// чтобы у карточки всегда была картинка, а в консоли не копились 404.
+		if (!dataUrl) return PREVIEW_PLACEHOLDER
 
 		const matched = dataUrl.match(/^data:(image\/\w+);base64,(.+)$/)
 		if (!matched) throw new NotFoundException('Invalid board preview format')
