@@ -1,11 +1,10 @@
 import { Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common'
 import { EVENT_STREAMS, userCreatedSchema } from '@power-paint/contracts'
 import type { UserCreatedEvent } from '@power-paint/contracts'
-import { AccessLevel, WorkspaceType } from '@power-paint/db'
 import { consumeGroup } from '@power-paint/events'
 
 import { CONFIG } from '../config'
-import { PrismaService } from '../prisma.service'
+import { WorkspaceRepository } from '../workspaces/workspace.repository'
 
 const CONSUMER_GROUP = 'boards'
 
@@ -13,7 +12,7 @@ const CONSUMER_GROUP = 'boards'
 export class UserCreatedListener implements OnModuleInit, OnModuleDestroy {
 	private consumer?: ReturnType<typeof consumeGroup>
 
-	constructor(private readonly prisma: PrismaService) {}
+	constructor(private readonly workspaces: WorkspaceRepository) {}
 
 	onModuleInit() {
 		this.consumer = consumeGroup({
@@ -29,18 +28,9 @@ export class UserCreatedListener implements OnModuleInit, OnModuleDestroy {
 		return this.consumer?.close()
 	}
 
-	// Доставка повторяется, пока обработчик не подтвердит событие, поэтому он
-	// идемпотентен: вторую личную область не даёт создать уникальный индекс,
-	// а skipDuplicates превращает повтор в пустую вставку вместо ошибки.
+	// Доставка повторяется, пока обработчик не подтвердит событие, поэтому
+	// создание идемпотентно - см. WorkspaceRepository.createPersonal.
 	async createPersonalWorkspace({ userId, name }: UserCreatedEvent) {
-		await this.prisma.client.workspace.createMany({
-			data: {
-				ownerId: userId,
-				name: `${name}'s Workspace`,
-				type: WorkspaceType.personal,
-				accessLevel: AccessLevel.private,
-			},
-			skipDuplicates: true,
-		})
+		await this.workspaces.createPersonal({ ownerId: userId, name })
 	}
 }

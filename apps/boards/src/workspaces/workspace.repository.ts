@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common'
+import { AccessLevel, WorkspaceType } from '@power-paint/db'
 import type { MemberRole, Prisma } from '@power-paint/db'
 
 import { PrismaService } from '../prisma.service'
@@ -34,6 +35,30 @@ export class WorkspaceRepository {
 		return this.prisma.client.workspace.findUnique({
 			where: { id },
 			include: withBoardsAndMembers,
+		})
+	}
+
+	async hasPersonal(ownerId: string) {
+		const personal = await this.prisma.client.workspace.findFirst({
+			where: { ownerId, type: WorkspaceType.personal },
+			select: { id: true },
+		})
+
+		return Boolean(personal)
+	}
+
+	// Личную область заводят и обработчик события, и восстановление при чтении,
+	// иногда одновременно. Вторую не даёт создать уникальный индекс, а
+	// skipDuplicates превращает повтор в пустую вставку вместо ошибки.
+	createPersonal({ ownerId, name }: { ownerId: string; name: string }) {
+		return this.prisma.client.workspace.createMany({
+			data: {
+				ownerId,
+				name: `${name}'s Workspace`,
+				type: WorkspaceType.personal,
+				accessLevel: AccessLevel.private,
+			},
+			skipDuplicates: true,
 		})
 	}
 

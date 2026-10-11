@@ -73,6 +73,20 @@ describe('MembersService', () => {
 		expect(members[0].user.id).toBe('u1')
 	})
 
+	test('Пользователь, которого нет в users, не проходит проверку - запись с ним осталась бы ничьей', async () => {
+		const { service } = makeService([profile('u1', 'Максим')])
+
+		await expect(service.assertExist(['u1', 'u-нет'])).rejects.toThrow(
+			'errors.unknown_user',
+		)
+	})
+
+	test('Существующие пользователи проходят проверку', async () => {
+		const { service } = makeService([profile('u1', 'Максим')])
+
+		await expect(service.assertExist(['u1'])).resolves.toBeUndefined()
+	})
+
 	test('Пустой набор не идёт в users вовсе', async () => {
 		const { service, getMany } = makeService([])
 

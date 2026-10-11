@@ -40,7 +40,14 @@ export const updateWorkspaceSchema = z.object({
   ownerId: z.uuid().optional(),
   name: workspaceNameSchema.optional(),
   accessLevel: accessLevelSchema.optional(),
-  members: z.array(workspaceMemberSchema).optional(),
+  members: z
+    .array(workspaceMemberSchema)
+    .refine(
+      (members) =>
+        new Set(members.map(({ userId }) => userId)).size === members.length,
+      "workspace.errors.duplicate_member",
+    )
+    .optional(),
 });
 
 export type UpdateWorkspaceData = z.infer<typeof updateWorkspaceSchema>;

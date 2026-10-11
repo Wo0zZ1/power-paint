@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+import { BadRequestException, Injectable } from '@nestjs/common'
 import type { PublicUser } from '@power-paint/contracts'
 
 import { UsersClient } from './clients/users.client'
@@ -33,5 +33,17 @@ export class MembersService {
 				return [{ ...member, user }]
 			}),
 		)
+	}
+
+	// Связи между схемами нет, поэтому существование пользователя проверяется
+	// здесь: иначе участник-призрак остался бы в boards, а передача владения
+	// несуществующему пользователю навсегда закрыла бы доску.
+	async assertExist(userIds: string[]): Promise<void> {
+		const unique = [...new Set(userIds)]
+
+		const profiles = await this.users.getMany(unique)
+
+		if (unique.some(userId => !profiles.has(userId)))
+			throw new BadRequestException('errors.unknown_user')
 	}
 }

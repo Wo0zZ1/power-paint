@@ -98,6 +98,11 @@ export class BoardsService {
 		if (data.ownerId && AccessRole[accessRole] < AccessRole.OWNER)
 			throw new ForbiddenException()
 
+		await this.members.assertExist([
+			...(data.members ?? []).map(member => member.userId),
+			...(data.ownerId ? [data.ownerId] : []),
+		])
+
 		const updated = await this.boards.update(
 			id,
 			{ name: data.name, accessLevel: data.accessLevel, ownerId: data.ownerId },

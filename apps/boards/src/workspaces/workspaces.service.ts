@@ -9,6 +9,7 @@ import { WorkspaceType } from '@power-paint/db'
 import type { Workspace as PrismaWorkspace, WorkspaceType as WorkspaceTypeValue } from '@power-paint/db'
 
 import { AccessService } from '../access/access.service'
+import { UsersClient } from '../clients/users.client'
 import { EventsService } from '../events/events.service'
 import { MembersService } from '../members.service'
 
@@ -27,12 +28,15 @@ export class WorkspacesService {
 		private readonly access: AccessService,
 		private readonly members: MembersService,
 		private readonly events: EventsService,
+		private readonly users: UsersClient,
 	) {}
 
 	async getAll(
 		filters: { ownerId?: string; type?: WorkspaceTypeValue },
 		userId?: string,
 	) {
+		if (userId) await this.ensurePersonal(userId)
+
 		const workspaces = await this.workspaces.findMany({
 			ownerId: filters.ownerId,
 			type: filters.type,
@@ -103,6 +107,11 @@ export class WorkspacesService {
 		if (data.ownerId && AccessRole[accessRole] < AccessRole.OWNER)
 			throw new ForbiddenException()
 
+		await this.members.assertExist([
+			...(data.members ?? []).map(member => member.userId),
+			...(data.ownerId ? [data.ownerId] : []),
+		])
+
 		const updated = await this.workspaces.update(
 			id,
 			{ name: data.name, accessLevel: data.accessLevel, ownerId: data.ownerId },
@@ -150,6 +159,17 @@ export class WorkspacesService {
 		if (AccessRole[accessRole] < minimum) throw new ForbiddenException()
 
 		return accessRole
+	}
+
+	// Событие о новом пользователе auth шлёт без гарантии доставки и может его
+	// потерять. Тогда личная область досоздаётся здесь, при первом же списке.
+	private async ensurePersonal(userId: string) {
+		if (await this.workspaces.hasPersonal(userId)) return
+
+		const profile = (await this.users.getMany([userId])).get(userId)
+		if (!profile) return
+
+		await this.workspaces.createPersonal({ ownerId: userId, name: profile.name })
 	}
 
 	// Участники области и участники всех её досок обогащаются одним запросом.

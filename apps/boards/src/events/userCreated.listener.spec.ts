@@ -3,6 +3,7 @@ import { randomUUID } from 'node:crypto'
 import { WorkspaceType } from '@power-paint/db'
 
 import { PrismaService } from '../prisma.service'
+import { WorkspaceRepository } from '../workspaces/workspace.repository'
 
 import { UserCreatedListener } from './userCreated.listener'
 
@@ -13,7 +14,7 @@ const describeIntegration =
 
 describeIntegration('UserCreatedListener (нужна живая база)', () => {
 	const prisma = new PrismaService()
-	const listener = new UserCreatedListener(prisma)
+	const listener = new UserCreatedListener(new WorkspaceRepository(prisma))
 
 	afterAll(() => prisma.client.$disconnect())
 

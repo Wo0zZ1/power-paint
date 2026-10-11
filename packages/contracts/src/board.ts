@@ -55,7 +55,14 @@ export const updateBoardSchema = z.object({
   ownerId: z.uuid().optional(),
   name: boardNameSchema.optional(),
   accessLevel: accessLevelSchema.optional(),
-  members: z.array(boardMemberSchema).optional(),
+  members: z
+    .array(boardMemberSchema)
+    .refine(
+      (members) =>
+        new Set(members.map(({ userId }) => userId)).size === members.length,
+      "board.errors.duplicate_member",
+    )
+    .optional(),
 });
 
 export type UpdateBoardData = z.infer<typeof updateBoardSchema>;
