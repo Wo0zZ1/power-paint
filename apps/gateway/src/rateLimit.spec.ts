@@ -1,6 +1,10 @@
+import type { AddressInfo } from 'node:net'
+
+import express from 'express'
 import type { NextFunction, Request, Response } from 'express'
 
-import { rateLimit } from './rateLimit'
+import { CONFIG } from './config'
+import { mountRateLimits, rateLimit } from './rateLimit'
 import { redis } from './redis'
 
 // Скользящее окно живёт в Redis, и подменять его моком бессмысленно: проверять
@@ -48,9 +52,31 @@ const call = async (limiter: ReturnType<typeof rateLimit>, address: string) => {
 	return { passed: (next as jest.Mock).mock.calls.length > 0, response }
 }
 
+// Шлюз в миниатюре: личность уже установлена, лимиты смонтированы как в server.ts.
+const serve = async (userId: string) => {
+	const app = express()
+
+	app.use((request, _, next) => {
+		request.identity = { userId, role: 'user' }
+		next()
+	})
+	mountRateLimits(app)
+	app.use((_, response) => {
+		response.json({ ok: true })
+	})
+
+	const server = app.listen(0)
+	await new Promise(resolve => server.once('listening', resolve))
+
+	return {
+		url: `http://127.0.0.1:${(server.address() as AddressInfo).port}`,
+		close: () => new Promise(resolve => server.close(resolve)),
+	}
+}
+
 describeIntegration('rateLimit (нужен живой Redis)', () => {
 	test('Запросы в пределах лимита проходят, следующий получает 429', async () => {
-		const limiter = rateLimit(3)
+		const limiter = rateLimit({ scope: 'test', max: 3 })
 		const address = `test-${Date.now()}`
 
 		const results = []
@@ -62,7 +88,7 @@ describeIntegration('rateLimit (нужен живой Redis)', () => {
 	})
 
 	test('Отказ содержит Retry-After', async () => {
-		const limiter = rateLimit(1)
+		const limiter = rateLimit({ scope: 'test', max: 1 })
 		const address = `test-retry-${Date.now()}`
 
 		await call(limiter, address)
@@ -71,8 +97,29 @@ describeIntegration('rateLimit (нужен живой Redis)', () => {
 		expect(response.headers['retry-after']).toBeDefined()
 	})
 
+	test('Проверка сессии не расходует лимит входа - иначе после нескольких переходов по страницам пользователя выбрасывает на вход', async () => {
+		const { url, close } = await serve(`limits-${Date.now()}`)
+
+		for (let i = 0; i <= CONFIG.RATE_LIMIT_AUTH_MAX; i++) await fetch(`${url}/api/auth/me`)
+		const login = await fetch(`${url}/api/auth/login`, { method: 'POST' })
+
+		await close()
+		expect(login.status).toBe(200)
+	})
+
+	test('Вход по-прежнему ограничен строгим лимитом', async () => {
+		const { url, close } = await serve(`brute-${Date.now()}`)
+
+		const statuses = []
+		for (let i = 0; i <= CONFIG.RATE_LIMIT_AUTH_MAX; i++)
+			statuses.push((await fetch(`${url}/api/auth/login`, { method: 'POST' })).status)
+
+		await close()
+		expect(statuses.at(-1)).toBe(429)
+	})
+
 	test('Лимит считается по ключу, а не глобально', async () => {
-		const limiter = rateLimit(1)
+		const limiter = rateLimit({ scope: 'test', max: 1 })
 		const suffix = Date.now()
 
 		await call(limiter, `first-${suffix}`)

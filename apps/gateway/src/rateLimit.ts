@@ -1,4 +1,4 @@
-import type { NextFunction, Request, Response } from 'express'
+import type { Express, NextFunction, Request, Response } from 'express'
 
 import { clientAddress } from './clientAddress'
 import { CONFIG } from './config'
@@ -36,15 +36,17 @@ const consume = async (key: string, max: number): Promise<LimitResult> => {
 // придёт с одного адреса и упрётся в лимит как один клиент.
 const limitKey = (request: Request) =>
 	request.identity
-		? `rate:user:${request.identity.userId}`
-		: `rate:ip:${clientAddress(request)}`
+		? `user:${request.identity.userId}`
+		: `ip:${clientAddress(request)}`
 
-export const rateLimit = (max: number) =>
+// У каждого лимита свой счётчик: в общем ключе обычная навигация съедала бы
+// строгий лимит входа, и пользователя выбрасывало бы из приложения.
+export const rateLimit = ({ scope, max }: { scope: string; max: number }) =>
 	async (request: Request, response: Response, next: NextFunction) => {
 		let result: LimitResult
 
 		try {
-			result = await consume(limitKey(request), max)
+			result = await consume(`rate:${scope}:${limitKey(request)}`, max)
 		} catch (error) {
 			// Redis недоступен - пропускаем. Лимит защищает от злоупотребления,
 			// но не ценой полной недоступности сервиса.
@@ -60,5 +62,19 @@ export const rateLimit = (max: number) =>
 		return response.status(429).json({ message: 'Too many requests' })
 	}
 
-export const generalRateLimit = rateLimit(CONFIG.RATE_LIMIT_MAX)
-export const authRateLimit = rateLimit(CONFIG.RATE_LIMIT_AUTH_MAX)
+const generalRateLimit = rateLimit({ scope: 'general', max: CONFIG.RATE_LIMIT_MAX })
+const credentialsRateLimit = rateLimit({
+	scope: 'credentials',
+	max: CONFIG.RATE_LIMIT_AUTH_MAX,
+})
+
+export const mountRateLimits = (app: Express) => {
+	// Жёсткий лимит - только там, где перебирают пароль или код из письма.
+	// Проверка сессии (/api/auth/me) идёт на каждый рендер страницы и под ним
+	// исчерпала бы лимит за пару минут обычной работы.
+	app.use(
+		['/api/auth/login', '/api/auth/signup', '/api/auth/reset-password'],
+		credentialsRateLimit,
+	)
+	app.use(['/api/auth', '/api/users', '/api/boards', '/api/workspaces'], generalRateLimit)
+}
