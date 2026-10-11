@@ -30,7 +30,12 @@
     "invalid_data": "Please fill in all required fields correctly.",
     "invalid_credentials": "Invalid email or password. Please try again.",
     "invalid_email": "Please enter a valid email.",
-    "unknown_user": "This user does not exist."
+    "unknown_user": "This user does not exist.",
+    "unavailable": {
+      "title": "Service is temporarily unavailable",
+      "description": "Your session is safe. Please try again in a moment.",
+      "retry": "Try again"
+    }
   },
   "auth": {
     "signin_title": "Login to continue",
@@ -72,7 +77,8 @@
       },
       "preferred_color": {
         "label": "Preferred Color",
-        "description": "It will be used to highlight your contributions"
+        "description": "It will be used to highlight your contributions",
+        "option": "Color {color}"
       },
       "image": {
         "label": "Profile Image",

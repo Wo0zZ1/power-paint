@@ -167,6 +167,10 @@ export function SignupFormStep2() {
                       key={c}
                       color={c}
                       active={c === field.value}
+                      aria-pressed={c === field.value}
+                      aria-label={tFields("preferred_color.option", {
+                        color: c,
+                      })}
                       onSelect={field.onChange}
                       invertable
                       className="my-auto size-8 outline-2 outline-offset-2 rounded-full"
