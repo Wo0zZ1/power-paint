@@ -29,7 +29,8 @@
     "unknown_error": "Something went wrong. Please try again.",
     "invalid_data": "Please fill in all required fields correctly.",
     "invalid_credentials": "Invalid email or password. Please try again.",
-    "invalid_email": "Please enter a valid email."
+    "invalid_email": "Please enter a valid email.",
+    "unknown_user": "This user does not exist."
   },
   "auth": {
     "signin_title": "Login to continue",
@@ -96,6 +97,7 @@
       "invalid_email_code": "Invalid verification code.",
       "code_expired": "Verification code has expired.",
       "compromised_email_code": "Too many attempts. Request a new code.",
+      "verification_not_started": "The sign-up session has expired. Please start again.",
       "password_too_short": "Password must be at least 6 characters.",
       "password_too_long": "Password must be less than 20 characters.",
       "passwords_do_not_match": "Passwords do not match.",
@@ -166,7 +168,8 @@
       "invalid_access_level": "Invalid access level",
       "invalid_member_role": "Invalid member role",
       "invalid_id": "Invalid workspace ID format",
-      "not_found_or_no_access": "Selected workspace does not exist or you don't have access"
+      "not_found_or_no_access": "Selected workspace does not exist or you don't have access",
+      "duplicate_member": "A user can be added only once"
     },
     "plural": "Workspaces",
     "all": "All Workspaces",
@@ -214,7 +217,8 @@
     "errors": {
       "name_too_short": "Name must be at least 3 characters long",
       "name_too_long": "Name must be less than 25 characters long",
-      "invalid_member_role": "Invalid member role"
+      "invalid_member_role": "Invalid member role",
+      "duplicate_member": "A user can be added only once"
     },
     "context_menu": {
       "copy": "Copy",
